@@ -1,0 +1,63 @@
+{
+    "name": "vueinjar",
+    "version": "0.0.0",
+    "type": "module",
+    "author": {
+        "name": "Leonid",
+        "email": "markgrushevski@gmail.com",
+        "url": "https://github.com/markgrushevski"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/markgrushevski/vueinjar.git"
+    },
+    "bugs": {
+        "url": "https://github.com/markgrushevski/vueinjar/issues"
+    },
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "module": "./dist/lib/vueinjar.js",
+    "main": "./dist/lib/vueinjar.umd.cjs",
+    "types": "",
+    "exports": {
+        ".": {
+            "import": "./dist/lib/vueinjar.js",
+            "require": "./dist/lib/vueinjar.umd.cjs"
+        }
+    },
+    "scripts": {
+        "dev:preview": "vite",
+        "dev:types": "vue-tsc --watch --noEmit",
+        "build": "vite build && vue-tsc --emitDeclarationOnly --declaration",
+        "lint:prettier": "npx prettier --write **/*.{vue,ts,json,md,html}",
+        "lint:stylelint": "npx stylelint --fix **/*.{vue,css}",
+        "lint:eslint": "npx eslint --fix **/*.{vue,ts}",
+        "lint:all": "npm run lint:prettier && npm run lint:stylelint && npm run lint:eslint",
+        "prepare": "husky install"
+    },
+    "dependencies": {
+        "vue": "^3.3.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.5.1",
+        "@typescript-eslint/eslint-plugin": "^6.4.0",
+        "@typescript-eslint/parser": "^6.4.0",
+        "@vitejs/plugin-vue": "^4.3.1",
+        "autoprefixer": "^10.4.15",
+        "eslint": "^8.47.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-vue": "^9.17.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^14.0.0",
+        "postcss-html": "^1.5.0",
+        "prettier": "^3.0.2",
+        "stylelint": "^15.10.3",
+        "stylelint-config-standard-vue": "^1.0.0",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.9",
+        "vue-eslint-parser": "^9.3.1",
+        "vue-tsc": "^1.8.8"
+    }
+}
