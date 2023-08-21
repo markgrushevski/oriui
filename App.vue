@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconWrapper } from './components';
+import { IconWrapper } from './dist';
 </script>
 
 <template>

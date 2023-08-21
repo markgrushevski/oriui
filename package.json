@@ -1,6 +1,6 @@
 {
     "name": "vueinjar",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "type": "module",
     "author": {
         "name": "Leonid",
@@ -18,19 +18,19 @@
     "files": [
         "dist"
     ],
-    "module": "./dist/lib/vueinjar.js",
-    "main": "./dist/lib/vueinjar.umd.cjs",
-    "types": "",
+    "module": "dist/index.js",
+    "main": "./dist/index.cjs",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/lib/vueinjar.js",
-            "require": "./dist/lib/vueinjar.umd.cjs"
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
         }
     },
     "scripts": {
-        "dev:preview": "vite",
-        "dev:types": "vue-tsc --watch --noEmit",
-        "build": "vite build && vue-tsc --emitDeclarationOnly --declaration",
+        "dev": "vite",
+        "dev:types": "vue-tsc --watch",
+        "build": "vite build && vue-tsc",
         "lint:prettier": "npx prettier --write **/*.{vue,ts,json,md,html}",
         "lint:stylelint": "npx stylelint --fix **/*.{vue,css}",
         "lint:eslint": "npx eslint --fix **/*.{vue,ts}",

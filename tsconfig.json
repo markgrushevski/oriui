@@ -5,7 +5,7 @@
         "module": "esnext",
         "target": "esnext",
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "components",
         "skipLibCheck": true,
         "isolatedModules": true,
         "esModuleInterop": true,
@@ -13,8 +13,10 @@
         "allowImportingTsExtensions": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
+        "declaration": true,
         "declarationMap": true,
-        "declarationDir": "dist/types",
+        "emitDeclarationOnly": true,
+        "declarationDir": "dist",
         "moduleResolution": "bundler",
         "lib": ["DOM", "DOM.Iterable", "ESNext"]
     }

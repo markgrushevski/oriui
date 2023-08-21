@@ -7,8 +7,8 @@ withDefaults(
         heightIcon?: string;
     }>(),
     {
-        width: '1.25em',
-        height: '1.25em',
+        width: '1.5rem',
+        height: '1.5rem',
         widthIcon: '100%',
         heightIcon: '100%'
     }
@@ -21,8 +21,8 @@ withDefaults(
 
 <style module="IconWrapper">
 .wrapper {
-    width: v-bind(width);
-    height: v-bind(height);
+    width: v-bind('width');
+    height: v-bind('height');
     display: inline-block;
 }
 
