@@ -23,17 +23,16 @@
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "types/index.d.ts",
-    "style": "dist/style.css",
+    "styles": "dist/style.css",
     "exports": {
         ".": {
             "types": "./types/index.d.ts",
-            "import": "./dist/index.js",
+            "default": "./dist/index.js",
             "style": "./dist/style.css"
         },
-        "./style": {
+        "./styles": {
             "default": "./dist/style.css"
-        },
-        "./*": "./*"
+        }
     },
     "scripts": {
         "dev": "vite",
