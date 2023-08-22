@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import './dist/style.css';
 import { IconWrapper } from './dist';
 </script>
 
