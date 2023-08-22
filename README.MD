@@ -1,6 +1,6 @@
 ## Usage
 
 ```js
-import "vueinjar/style"
+import "vueinjar/styles"
 import { IconWrapper } from "vueinjar"
 ```
