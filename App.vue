@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import './dist/style.css';
-import { IconWrapper } from './dist';
+import { IconWrapper } from '../vueinjar';
+import '../vueinjar/style';
 </script>
 
 <template>

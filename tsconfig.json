@@ -16,7 +16,7 @@
         "declaration": true,
         "declarationMap": true,
         "emitDeclarationOnly": true,
-        "declarationDir": "dist",
+        "declarationDir": "types",
         "moduleResolution": "bundler",
         "lib": ["DOM", "DOM.Iterable", "ESNext"]
     }
