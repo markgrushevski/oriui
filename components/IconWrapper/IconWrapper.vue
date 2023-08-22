@@ -1,33 +1,18 @@
-<script lang="ts" setup>
-withDefaults(
-    defineProps<{
-        width?: string;
-        height?: string;
-        widthIcon?: string;
-        heightIcon?: string;
-    }>(),
-    {
-        width: '1.5rem',
-        height: '1.5rem',
-        widthIcon: '100%',
-        heightIcon: '100%'
-    }
-);
-</script>
+<script lang="ts" setup></script>
 
 <template>
-    <span :class="IconWrapper.wrapper"><slot /></span>
+    <div :class="$style.wrapper"><slot /></div>
 </template>
 
-<style module="IconWrapper">
+<style module>
 .wrapper {
-    width: v-bind('width');
-    height: v-bind('height');
     display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .wrapper svg {
-    width: v-bind('widthIcon');
-    height: v-bind('heightIcon');
+    width: 100%;
+    height: 100%;
 }
 </style>
