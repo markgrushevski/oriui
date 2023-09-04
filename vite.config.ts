@@ -8,7 +8,7 @@ export default defineConfig({
     plugins: [ vue() ],
     build: { 
         sourcemap: true,
-        lib: { entry: resolve(__dirname, 'components/index.ts'), name: 'vueinjar', fileName: 'index', formats: ['es', 'umd'] },
+        lib: { entry: resolve(__dirname, 'components/index.ts'), name: 'vueinjar', fileName: 'index', formats: ['es'] },
         rollupOptions: { external: ['vue'], output: { globals: { vue: 'Vue' } } }
     },
     esbuild: { sourcemap: 'external' },
