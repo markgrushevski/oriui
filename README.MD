@@ -2,5 +2,5 @@
 
 ```js
 import "vueinjar/styles"
-import { IconWrapper } from "vueinjar"
+import { ... } from "vueinjar"
 ```
