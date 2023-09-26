@@ -3,11 +3,10 @@
 import { onMounted, ref } from 'vue';
 
 /* ============= production components =================== */
-//import "vueinjar/styles";
-//import { WrapperIcon, WeatherWidget } from "vueinjar";
+import { WrapperIcon, WeatherWidget } from 'vueinjar';
 
 /* ================ dev components ====================== */
-import { WrapperIcon, WeatherWidget } from '../';
+//import { WrapperIcon, WeatherWidget } from '../';
 
 /* ===================== docs =========================== */
 import { TheLogo, SectionDocs, SectionComponent } from '@docs/components';

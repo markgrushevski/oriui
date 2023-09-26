@@ -13,35 +13,36 @@ const dirEntries = readdirSync('./lib').map((path) => {
 // prettier-ignore
 export default defineConfig({
     plugins: [vue(), libInjectCss()],
+    preview: {},
     build: {
         sourcemap: true,
         copyPublicDir: false,
-        cssCodeSplit:true,
+        cssCodeSplit: true,
         lib: {
-            formats: ["es"],
+            formats: ['es'],
             entry: Object.fromEntries(dirEntries)
         },
         rollupOptions: {
-            external: ["vue"],
+            external: ['vue'],
             output: {
                 preserveModules: false,
-                exports: "named",
-                entryFileNames: "[name].js",
-                assetFileNames: "assets/[name].[hash][extname]",
+                exports: 'named',
+                entryFileNames: '[name].js',
+                assetFileNames: 'assets/[name].[hash][extname]',
                 chunkFileNames: 'chunks/[name].[hash].js',
-                globals: { vue: "Vue" }
+                globals: { vue: 'Vue' }
             }
         }
     },
-    esbuild: { sourcemap: "external" },
-    css: { 
-        postcss: { plugins: [autoprefixer] }, 
-        devSourcemap: true 
+    esbuild: { sourcemap: 'external' },
+    css: {
+        postcss: { plugins: [autoprefixer] },
+        devSourcemap: true
     },
     resolve: {
         alias: {
-            "@docs": fileURLToPath(new URL("./docs", import.meta.url)),
-            "@lib": fileURLToPath(new URL("./lib", import.meta.url))
+            '@docs': fileURLToPath(new URL('./docs', import.meta.url)),
+            '@lib': fileURLToPath(new URL('./lib', import.meta.url))
         }
     }
 });
