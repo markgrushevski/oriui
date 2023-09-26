@@ -1,0 +1,6 @@
+{
+    "private": "true",
+    "devDependencies": {
+        "vueinjar": "^0.0.8"
+    }
+}

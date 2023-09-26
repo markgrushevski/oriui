@@ -1,23 +1,4 @@
 {
-    "include": ["components"],
-    "compilerOptions": {
-        "strict": true,
-        "module": "esnext",
-        "target": "esnext",
-        "baseUrl": ".",
-        "rootDir": "components",
-        "skipLibCheck": true,
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "verbatimModuleSyntax": true,
-        "allowImportingTsExtensions": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "declaration": true,
-        "declarationMap": true,
-        "emitDeclarationOnly": true,
-        "declarationDir": "types",
-        "moduleResolution": "bundler",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"]
-    }
+    "files": [],
+    "references": [{ "path": "./tsconfig.docs.json" }, { "path": "./tsconfig.lib.json" }]
 }

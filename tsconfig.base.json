@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "esnext",
+        "target": "esnext",
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "verbatimModuleSyntax": true,
+        "allowImportingTsExtensions": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "baseUrl": ".",
+        "incremental": true,
+        "composite": true,
+        "paths": {
+            "@docs/*": ["./docs/*"],
+            "@lib": ["./lib"]
+        }
+    }
+}
