@@ -38,7 +38,7 @@
         "types:watch": "vue-tsc --build --watch",
         "build": "vite build && npm run types",
         "build:watch": "vite build --watch",
-        "build:docs": "vite build -c vite.docs.js",
+        "build:docs": "cd ./docs && npm ci && cd ../ && vite build -c vite.docs.js",
         "lint:prettier": "npx prettier --write **/*.{vue,ts,json,md,html}",
         "lint:stylelint": "npx stylelint --fix **/*.{vue,css}",
         "lint:eslint": "npx eslint --fix **/*.{vue,ts}",
