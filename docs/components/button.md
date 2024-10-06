@@ -3,8 +3,8 @@ prev:
     text: 'Avatar'
     link: '/components/avatar'
 next:
-    text: 'Button'
-    link: '/components/button'
+    text: 'Card'
+    link: '/components/card'
 ---
 
 <script setup>

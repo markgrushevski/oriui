@@ -2,17 +2,17 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
+    srcDir: './docs',
     vite: {
         resolve: {
             alias: {
-                '@lib': fileURLToPath(new URL('../../lib', import.meta.url))
+                '@lib': fileURLToPath(new URL('../lib', import.meta.url))
             }
         }
     },
     title: 'VueInJar',
     description: 'Component & helpers library📚',
-    base: '/docs',
-    head: [['link', { rel: 'icon', href: '/docs/favicon.ico' }]],
+    head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
     markdown: {
         theme: { dark: 'vesper', light: 'rose-pine-dawn' }
     },

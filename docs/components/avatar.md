@@ -7,7 +7,7 @@ next:
 <script setup>
 import { VAvatar } from '@lib';
 
-const imageLink = '/docs/image-example.jpg';
+const imageLink = '/image-example.jpg';
 </script>
 
 # Avatar
