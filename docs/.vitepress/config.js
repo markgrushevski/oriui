@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-    base: '/docs/',
+    base: process.env.NODE_ENV === 'production' ? '/' : '/docs/',
     vite: {
         resolve: {
             alias: {
