@@ -40,13 +40,6 @@ export default defineConfig({
                     { text: 'Card', link: '/card' },
                     { text: 'Icon', link: '/icon' }
                 ]
-            },
-            {
-                text: 'Helpers',
-                items: [
-                    { text: 'Debounce', link: '/helpers/debounce' },
-                    { text: 'Throttle', link: '/helpers/throttle' }
-                ]
             }
         ],
         socialLinks: [{ icon: 'github', link: 'https://github.com/markgrushevski/vueinjar' }]

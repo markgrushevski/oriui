@@ -1,7 +1,6 @@
 ---
 ---
 
-# Hello there!
+# Welcoming (⌒‿⌒)
 
-This library will never be production-ready!  
-Just because I plan to use this project only for myself :)
+<p style="font-size: larger">I started developing this library for myself.<br/>So using it at your own risk ┐( ˘ ､ ˘ )┌</p>

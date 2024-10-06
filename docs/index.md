@@ -7,20 +7,14 @@ hero:
     tagline: Yet another UI experience
     actions:
         - theme: brand
-          text: Get started
+          text: The story begins with...
           link: /guide/get-started
-        - theme: alt
-          text: Components
-          link: /guide/components
-        - theme: alt
-          text: Helpers
-          link: /guide/helpers
 
 features:
     - title: Inspired by Material 3
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      details: Based on https://m3.material.io with some reimagination
     - title: Threeshakeable
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      details: Import only that you need
     - title: Customizable
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      details: Reassign sizes, color and etc. in library classes
 ---

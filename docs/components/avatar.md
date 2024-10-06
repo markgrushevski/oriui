@@ -1,7 +1,4 @@
 ---
-prev:
-    text: 'Avatar'
-    link: '/components/avatar'
 next:
     text: 'Button'
     link: '/components/button'
