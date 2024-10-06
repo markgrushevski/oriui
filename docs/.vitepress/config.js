@@ -1,8 +1,10 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 
+const base = process.env.NODE_ENV === 'production' ? '/' : '/docs/';
+
 export default defineConfig({
-    base: process.env.NODE_ENV === 'production' ? '/' : '/docs/',
+    base,
     vite: {
         resolve: {
             alias: {
@@ -12,7 +14,7 @@ export default defineConfig({
     },
     title: 'VueInJar',
     description: 'Component & helpers library📚',
-    head: [['link', { rel: 'icon', href: '/docs/favicon.ico' }]],
+    head: [['link', { rel: 'icon', href: `${base}/favicon.ico` }]],
     markdown: {
         theme: { dark: 'vesper', light: 'rose-pine-dawn' }
     },
