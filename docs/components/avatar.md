@@ -7,7 +7,8 @@ next:
 <script setup>
 import { VAvatar } from '@lib';
 
-const imageLink = '/docs/image-example.jpg';
+const base = process.env.NODE_ENV === 'production' ? '' : '/docs';
+const imageLink = `${base}/image-example.jpg`;
 </script>
 
 # Avatar

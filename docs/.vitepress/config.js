@@ -14,7 +14,7 @@ export default defineConfig({
     },
     title: 'VueInJar',
     description: 'Component & helpers library📚',
-    head: [['link', { rel: 'icon', href: `${base}/favicon.ico` }]],
+    head: [['link', { rel: 'icon', href: `${base}favicon.ico` }]],
     markdown: {
         theme: { dark: 'vesper', light: 'rose-pine-dawn' }
     },
