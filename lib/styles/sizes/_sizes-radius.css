@@ -1,6 +1,6 @@
 .v-size-radius {
     --v-size-radius-step: calc(var(--v-size-radius_md) / 4);
-    
+
     --v-size-radius_zero: 0;
     --v-size-radius_xs: calc(var(--v-size-radius_md) - var(--v-size-radius-step) * 3);
     --v-size-radius_sm: calc(var(--v-size-radius_md) - var(--v-size-radius-step) * 2);
@@ -8,7 +8,7 @@
     --v-size-radius_lg: calc(var(--v-size-radius_md) + var(--v-size-radius-step) * 2);
     --v-size-radius_xl: calc(var(--v-size-radius_md) + var(--v-size-radius-step) * 4);
     --v-size-radius_rounded: 9999px;
-    
+
     --v-size-radius: var(--v-size-radius_md);
 }
 

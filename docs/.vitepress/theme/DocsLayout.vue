@@ -34,14 +34,11 @@ onMounted(() => {
     --vp-custom-block-font-size: 16px;
 }
 
-.custom-block .vij {
-}
-
 .custom-block .vij.flex {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 16px;
 }
 

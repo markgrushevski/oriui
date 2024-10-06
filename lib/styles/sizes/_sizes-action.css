@@ -6,9 +6,9 @@
     --v-size-action_lg: 48px;
     --v-size-action_xl: 60px;
     --v-size-action_xxl: 68px;
-    
+
     --v-size-action: var(--v-size-action_text);
-    
+
     --v-size-action-space_text: 0;
     --v-size-action-space_xs: 10px;
     --v-size-action-space_sm: 12px;
@@ -16,7 +16,7 @@
     --v-size-action-space_lg: 12px;
     --v-size-action-space_xl: 10px;
     --v-size-action-space_xxl: 12px;
-    
+
     --v-size-action-space: var(--v-size-action-space_text);
 }
 
@@ -47,7 +47,6 @@
 .v-size-action.v-size-action_xxl {
     --v-size-action: var(--v-size-action_xxl);
 }
-
 
 .v-size-action.v-size-action-space {
     padding: var(--v-size-action-space);

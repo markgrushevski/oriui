@@ -7,6 +7,13 @@
                 "message": "Expected BEM naming convention."
             }
         ],
+        "custom-property-pattern": [
+            "[a-z]+(-[a-z]+)*(_[a-z]+){0,2}",
+            {
+                "message": "Expected kebab-case or BEM naming convention."
+            }
+        ],
+        "no-empty-source": null,
         "color-function-notation": ["modern", { "ignore": ["with-var-inside"] }],
         "color-hex-length": "long",
         "custom-property-empty-line-before": null,

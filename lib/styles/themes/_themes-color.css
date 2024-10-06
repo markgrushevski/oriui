@@ -25,11 +25,12 @@
     --v-color_warn: var(--v-color_warn-light);
     --v-color_danger: var(--v-color_danger-light);
     --v-color_info: var(--v-color_info-light);
-    
+
     --v-color: currentColor;
 }
 
-:root.light, .v-theme_light {
+:root.light,
+.v-theme_light {
     color-scheme: light;
     --v-color_primary: var(--v-color_primary-light);
     --v-color_secondary: var(--v-color_secondary-light);
@@ -41,7 +42,8 @@
     --v-color_info: var(--v-color_info-light);
 }
 
-:root.dark, .v-theme_dark {
+:root.dark,
+.v-theme_dark {
     color-scheme: dark;
     --v-color_primary: var(--v-color_primary-dark);
     --v-color_secondary: var(--v-color_secondary-dark);

@@ -1,6 +1,7 @@
-:root, .v-size-gap {
+:root,
+.v-size-gap {
     --v-size-gap-step: calc(var(--v-size-gap_md) / 4);
-    
+
     --v-size-gap_zero: 0;
     --v-size-gap_xs: calc(var(--v-size-gap_md) - var(--v-size-gap-step) * 3);
     --v-size-gap_sm: calc(var(--v-size-gap_md) - var(--v-size-gap-step) * 2);
@@ -8,7 +9,7 @@
     --v-size-gap_lg: calc(var(--v-size-gap_md) + var(--v-size-gap-step) * 2);
     --v-size-gap_xl: calc(var(--v-size-gap_md) + var(--v-size-gap-step) * 4);
     --v-size-gap_xxl: calc(var(--v-size-gap_md) + var(--v-size-gap-step) * 8);
-    
+
     --v-size-gap: var(--v-size-gap_md);
 }
 

@@ -10,8 +10,10 @@ const p = withDefaults(
         /** @default "left" */
         iconPosition?: CenteredPosition;
         inline?: boolean;
+        /** @default "rounded" */
         radius?: RadiusSize;
         shadow?: boolean;
+        /** @default "lg" */
         size?: ActionSize;
         spaced?: boolean;
         subtitle?: string;
@@ -36,6 +38,8 @@ const name = computed(() => {
         const letter2 = word2?.[0] ?? '';
         return letter1.toUpperCase() + letter2.toUpperCase();
     }
+
+    return '';
 });
 </script>
 
@@ -89,12 +93,6 @@ const name = computed(() => {
     width: max-content;
 }
 
-.v-avatar.v-avatar_titled .v-avatar__image,
-.v-avatar.v-avatar_titled .v-avatar__backdrop {
-    width: var(--v-size-action);
-    height: var(--v-size-action);
-}
-
 .v-avatar__image,
 .v-avatar__backdrop {
     width: 100%;
@@ -114,8 +112,13 @@ const name = computed(() => {
     font-size: max(10px, var(--v-font-size));
 }
 
-.v-avatar__text {
+.v-avatar.v-avatar_titled .v-avatar__image,
+.v-avatar.v-avatar_titled .v-avatar__backdrop {
+    width: var(--v-size-action);
+    height: var(--v-size-action);
+}
 
+.v-avatar__text {
     display: flex;
     flex-direction: column;
     margin-left: calc(var(--v-size-gap) * 1.5);

@@ -1,12 +1,8 @@
-node_modules/
-dist/
-.vscode/
-.idea/
-types/
+.idea
+.vscode
+cache
+dist
+node_modules
+types
 
 *.tsbuildinfo
-
- .vitepress/dist/
- .vitepress/cache/
-
-old/

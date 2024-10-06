@@ -6,6 +6,7 @@ withDefaults(
         color?: ThemeColor;
         icon?: string;
         inline?: boolean;
+        /** @default "text" */
         size?: ActionSize;
         spaced?: boolean;
     }>(),

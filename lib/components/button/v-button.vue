@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
 import {
     type BlockSize,
     type Variant,
     type ThemeColor,
-    VSpinner,
-    VIcon,
     type CenteredPosition,
-    type RadiusSize
+    type RadiusSize,
+    VSpinner,
+    VIcon
 } from '@lib';
 
-const p = withDefaults(
+withDefaults(
     defineProps<{
         /**
          * @description An HTML tag name, a Component name or Component class reference.

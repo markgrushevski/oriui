@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { type BlockSize, type RadiusSize, type ThemeColor, type Variant, VAvatar, VIcon } from '@lib';
+import { type RadiusSize, type ThemeColor, type Variant, VAvatar, VIcon } from '@lib';
 
-const p = withDefaults(
+withDefaults(
     defineProps<{
         prependAvatar?: string;
         prependIcon?: string;
@@ -83,7 +83,6 @@ const p = withDefaults(
 
 <style>
 .v-card {
-
     min-width: min-content;
     min-height: min-content;
 
@@ -128,15 +127,6 @@ const p = withDefaults(
     flex-direction: row;
 }
 
-.v-card > .v-card__actions:not(:last-child),
-.v-card > .v-card__header:not(:last-child),
-.v-card > .v-card__body:not(:last-child) {
-    margin-bottom: var(--v-size-gap);
-}
-
-.v-card .v-card__actions {
-}
-
 .v-card .v-card__header {
     display: flex;
     align-items: center;
@@ -158,6 +148,9 @@ const p = withDefaults(
     font-size: 0.875rem;
 }
 
-.v-card .v-card__body {
+.v-card > .v-card__actions:not(:last-child),
+.v-card > .v-card__header:not(:last-child),
+.v-card > .v-card__body:not(:last-child) {
+    margin-bottom: var(--v-size-gap);
 }
 </style>

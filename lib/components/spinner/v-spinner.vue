@@ -5,6 +5,7 @@ withDefaults(
     defineProps<{
         color?: ThemeColor;
         inline?: boolean;
+        /** @default "text" */
         size?: ActionSize;
     }>(),
     { size: 'text' }

@@ -183,7 +183,7 @@ ij_javascript_ternary_operation_wrap = off
 ij_javascript_union_types_wrap = on_every_item
 ij_javascript_use_chained_calls_group_indents = true
 ij_javascript_use_double_quotes = true
-ij_javascript_use_explicit_js_extension = true
+ij_javascript_use_explicit_js_extension = always_js
 ij_javascript_use_path_mapping = always
 ij_javascript_use_public_modifier = false
 ij_javascript_use_semicolon_after_statement = true
@@ -477,9 +477,6 @@ ij_editorconfig_space_after_comma = true
 ij_editorconfig_space_before_colon = false
 ij_editorconfig_space_before_comma = false
 ij_editorconfig_spaces_around_assignment_operators = true
-
-[{*.http,*.rest}]
-ij_http-request_call_parameters_wrap = on_every_item
 
 [{*.yaml,*.yml}]
 ij_yaml_align_values_properties = do_not_align
