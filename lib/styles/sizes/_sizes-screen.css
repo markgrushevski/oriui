@@ -1,0 +1,8 @@
+:root{
+    --v-size-screen_xs: 600px;
+    --v-size-screen_sm: 840px;
+    --v-size-screen_md: 1200px;
+    --v-size-screen_lg: 1600px;
+    --v-size-screen_xl: 1920px;
+    --v-size-screen_xxl: 2560px;
+}

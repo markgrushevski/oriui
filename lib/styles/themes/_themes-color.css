@@ -1,0 +1,86 @@
+:root {
+    --v-color_primary-light: hsl(190 100% 70%);
+    --v-color_secondary-light: hsl(0 0% 85%);
+    --v-color_surface-light: #f7f7f8;
+    --v-color_background-light: #ffffff;
+    --v-color_success-light: hsl(120 70% 60%);
+    --v-color_warn-light: hsl(30 100% 65%);
+    --v-color_danger-light: hsl(0 100% 70%);
+    --v-color_info-light: hsl(270 100% 75%);
+
+    --v-color_primary-dark: hsl(190 100% 40%);
+    --v-color_secondary-dark: hsl(0 0% 35%);
+    --v-color_surface-dark: #191919;
+    --v-color_background-dark: #171717;
+    --v-color_success-dark: hsl(120 40% 40%);
+    --v-color_warn-dark: hsl(30 70% 45%);
+    --v-color_danger-dark: hsl(0 50% 45%);
+    --v-color_info-dark: hsl(270 50% 45%);
+
+    --v-color_primary: var(--v-color_primary-light);
+    --v-color_secondary: var(--v-color_secondary-light);
+    --v-color_surface: var(--v-color_surface-light);
+    --v-color_background: var(--v-color_background-light);
+    --v-color_success: var(--v-color_success-light);
+    --v-color_warn: var(--v-color_warn-light);
+    --v-color_danger: var(--v-color_danger-light);
+    --v-color_info: var(--v-color_info-light);
+    
+    --v-color: currentColor;
+}
+
+:root.light, .v-theme_light {
+    color-scheme: light;
+    --v-color_primary: var(--v-color_primary-light);
+    --v-color_secondary: var(--v-color_secondary-light);
+    --v-color_surface: var(--v-color_surface-light);
+    --v-color_background: var(--v-color_background-light);
+    --v-color_success: var(--v-color_success-light);
+    --v-color_warn: var(--v-color_warn-light);
+    --v-color_danger: var(--v-color_danger-light);
+    --v-color_info: var(--v-color_info-light);
+}
+
+:root.dark, .v-theme_dark {
+    color-scheme: dark;
+    --v-color_primary: var(--v-color_primary-dark);
+    --v-color_secondary: var(--v-color_secondary-dark);
+    --v-color_surface: var(--v-color_surface-dark);
+    --v-color_background: var(--v-color_background-dark);
+    --v-color_success: var(--v-color_success-dark);
+    --v-color_warn: var(--v-color_warn-dark);
+    --v-color_danger: var(--v-color_danger-dark);
+    --v-color_info: var(--v-color_info-dark);
+}
+
+.v-color.v-color_primary {
+    --v-color: var(--v-color_primary);
+}
+
+.v-color.v-color_secondary {
+    --v-color: var(--v-color_secondary);
+}
+
+.v-color.v-color_surface {
+    --v-color: var(--v-color_surface);
+}
+
+.v-color.v-color_background {
+    --v-color: var(--v-color_background);
+}
+
+.v-color.v-color_success {
+    --v-color: var(--v-color_success);
+}
+
+.v-color.v-color_warn {
+    --v-color: var(--v-color_warn);
+}
+
+.v-color.v-color_danger {
+    --v-color: var(--v-color_danger);
+}
+
+.v-color.v-color_info {
+    --v-color: var(--v-color_info);
+}

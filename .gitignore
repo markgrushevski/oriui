@@ -3,3 +3,10 @@ dist/
 .vscode/
 .idea/
 types/
+
+*.tsbuildinfo
+
+ docs/.vitepress/dist/
+ docs/.vitepress/cache/
+
+old/

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 0 22 22" width="24" height="24">
+    <defs>
+        <clipPath id="cut">
+            <path
+                d="
+                    M 2,3
+                    h 7.25
+                    l 2.75,4.5
+                    l 2.75,-4.5
+                    h 7.25
+                    l -10,17
+                    l -10,-17
+                    Z
+                "
+            />
+        </clipPath>
+    </defs>
+    
+    <polygon
+        clip-path="url(#cut)"
+        stroke="transparent"
+        stroke-width="0"
+        fill="#e6be86"
+        points="2,3 12,20 22,3"
+    />
+
+    <polygon
+        clip-path="url(#cut)"
+        stroke="transparent"
+        stroke-width="0"
+        fill="#ebe6dc"
+        points="5,3 12,15.5 19,3"
+    />
+
+    <polygon
+        clip-path="url(#cut)"
+        stroke="transparent"
+        stroke-width="0"
+        fill="#f4be68"
+        points="6.25,3 12,13.25 17.75,3"
+    />
+</svg>

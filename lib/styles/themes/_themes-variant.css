@@ -1,0 +1,62 @@
+.v-variant {
+    --v-variant-border-color: transparent;
+    --v-variant-opacity: 1;
+    --v-variant-bg-color: transparent;
+    --v-variant-text-color: currentColor;
+}
+
+.v-variant.v-variant_fill {
+    --v-variant-border-color: transparent;
+    --v-variant-opacity: 1;
+    --v-variant-bg-color: var(--v-color);
+    --v-variant-text-color: currentColor;
+}
+
+.v-variant.v-variant_tonal {
+    --v-variant-border-color: transparent;
+    --v-variant-opacity: 1;
+    --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 75%);
+    --v-variant-text-color: var(--v-color);
+}
+
+.v-variant.v-variant_outline {
+    --v-variant-border-color: var(--v-color);
+    --v-variant-opacity: 1;
+    --v-variant-bg-color: transparent;
+    --v-variant-text-color: var(--v-color);
+}
+
+.v-variant.v-variant_text {
+    --v-variant-border-color: transparent;
+    --v-variant-opacity: 1;
+    --v-variant-bg-color: transparent;
+    --v-variant-text-color: var(--v-color);
+}
+
+.v-variant.v-variant_plain {
+    --v-variant-border-color: transparent;
+    --v-variant-opacity: 0.5;
+    --v-variant-bg-color: transparent;
+    --v-variant-text-color: var(--v-color);
+}
+
+.v-variant.v-variant_fill:hover {
+    --v-variant-bg-color: color-mix(in srgb, var(--v-color), white 15%);
+}
+
+.v-variant.v-variant_tonal:hover {
+    --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 65%);
+}
+
+.v-variant.v-variant_outline:hover {
+    --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
+}
+
+.v-variant.v-variant_text:hover {
+    --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
+}
+
+.v-variant.v-variant_plain:hover {
+    --v-variant-opacity: 1;
+}
+

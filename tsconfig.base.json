@@ -16,7 +16,6 @@
         "incremental": true,
         "composite": true,
         "paths": {
-            "@docs/*": ["./docs/*"],
             "@lib": ["./lib"]
         }
     }

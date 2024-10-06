@@ -1,0 +1,16 @@
+.v-shadow {
+    box-shadow:
+        0 2px 4px 0 rgb(0 0 0 / 0.2),
+        0 3px 10px 0 rgb(0 0 0 / 0.19);
+}
+
+.v-disabled {
+    opacity: 0.2;
+    cursor: default;
+    pointer-events: none;
+}
+
+.v-loading {
+    cursor: default;
+    pointer-events: none;
+}

@@ -1,5 +1,6 @@
-node_modules/
-dist/
-.vscode/
 .idea/
-types
+.vscode/
+dist/
+node_modules/
+
+types/
