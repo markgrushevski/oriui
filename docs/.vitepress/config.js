@@ -14,7 +14,13 @@ export default defineConfig({
     },
     title: 'VueInJar',
     description: 'Component & helpers library📚',
-    head: [['link', { rel: 'icon', href: `${base}favicon.ico` }]],
+    head: [
+        ['link', { rel: 'icon', href: `${base}favicon.ico` }],
+        ['script', {}, 'window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };'],
+        ['script', { defer: '', src: '/_vercel/insights/script.js' }],
+        ['script', {}, 'window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };'],
+        ['script', { defer: '', src: '/_vercel/speed-insights/script.js' }]
+    ],
     markdown: {
         theme: { dark: 'vesper', light: 'rose-pine-dawn' }
     },
