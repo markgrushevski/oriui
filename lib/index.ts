@@ -1,8 +1,8 @@
 import type { App, Plugin } from 'vue';
 import './styles/styles.css';
 
+export * from './types.ts';
 export * from './components';
-export * from './customization';
 
 export function createVueinjar(): Plugin<[]> {
     return {
