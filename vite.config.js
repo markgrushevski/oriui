@@ -36,7 +36,6 @@ const componentsEntries = getDirEntries('lib/components');
 const entries = [...componentsEntries, ...baseEntries];
 const entriesMap = new Map(entries);
 const buildLibEntry = Object.fromEntries(entriesMap);
-console.log(buildLibEntry);
 
 export default defineConfig({
     plugins: [vue(), libInjectCss()],
