@@ -1,6 +1,7 @@
 {
     "name": "vueinjar",
     "description": "Vue components library 📚",
+    "license": "MIT",
     "version": "0.3.0",
     "type": "module",
     "author": {
@@ -15,7 +16,6 @@
     "bugs": {
         "url": "https://github.com/markgrushevski/vueinjar/issues"
     },
-    "license": "MIT",
     "files": [
         "dist",
         "types"
