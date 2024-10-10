@@ -7,7 +7,7 @@ import {
     type RadiusSize,
     VSpinner,
     VIcon
-} from '@lib';
+} from '../../';
 
 withDefaults(
     defineProps<{

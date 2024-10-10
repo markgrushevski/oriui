@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ActionSize, ThemeColor } from '@lib';
+import type { ActionSize, ThemeColor } from '../../';
 
 withDefaults(
     defineProps<{

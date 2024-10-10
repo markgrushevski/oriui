@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type RadiusSize, type ThemeColor, type Variant, VAvatar, VIcon } from '@lib';
+import { type RadiusSize, type ThemeColor, type Variant, VAvatar, VIcon } from '../../';
 
 withDefaults(
     defineProps<{

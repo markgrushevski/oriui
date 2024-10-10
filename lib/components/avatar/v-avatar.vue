@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type { ActionSize, CenteredPosition, RadiusSize, ThemeColor } from '@lib';
+import type { ActionSize, CenteredPosition, RadiusSize, ThemeColor } from '../../';
 
 defineOptions({ inheritAttrs: false });
 

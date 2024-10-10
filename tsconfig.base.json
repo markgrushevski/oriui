@@ -14,9 +14,6 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "baseUrl": ".",
         "incremental": true,
-        "composite": true,
-        "paths": {
-            "@lib": ["./lib"]
-        }
+        "composite": true
     }
 }
