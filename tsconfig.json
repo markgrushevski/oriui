@@ -1,4 +1,24 @@
 {
-    "files": [],
-    "references": [{ "path": "./tsconfig.lib.json" }]
+    "include": ["lib"],
+    "compilerOptions": {
+        "rootDir": "lib",
+        "declaration": true,
+        "declarationMap": false,
+        "emitDeclarationOnly": true,
+        "declarationDir": "./types",
+        "strict": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "verbatimModuleSyntax": true,
+        "allowImportingTsExtensions": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "baseUrl": ".",
+        "incremental": true
+    }
 }

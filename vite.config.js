@@ -2,8 +2,9 @@ import { readdirSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import autoprefixer from 'autoprefixer';
+import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
+import autoprefixer from 'autoprefixer';
 
 function getDirEntries(dirPath) {
     /** @type {[string, string][]} */
@@ -38,43 +39,38 @@ const entriesMap = new Map(entries);
 const buildLibEntry = Object.fromEntries(entriesMap);
 
 export default defineConfig({
-    plugins: [vue(), libInjectCss()],
+    plugins: [vue(), dts({ tsconfigPath: './tsconfig.json', staticImport: true }), libInjectCss()],
     preview: {},
     build: {
-        sourcemap: true,
+        sourcemap: false,
         copyPublicDir: false,
         lib: {
             formats: ['es'],
-            entry: buildLibEntry
-            // entry: 'lib/index.ts'
+            //entry: buildLibEntry
+            entry: 'lib/index.ts'
         },
         rollupOptions: {
             external: ['vue'],
-            /* output: {
+            output: {
+                globals: { vue: 'Vue' },
                 preserveModules: true,
                 exports: 'named',
                 entryFileNames: '[name].js',
-                assetFileNames: '[name].[hash][extname]',
-                globals: { vue: 'Vue' }
-            } */
-            output: {
+                assetFileNames: '[name].[hash][extname]'
+            }
+            /* output: {
+                globals: { vue: 'Vue' },
                 preserveModules: false,
                 exports: 'named',
                 entryFileNames: '[name].js',
                 assetFileNames: 'assets/[name][extname]',
-                chunkFileNames: 'chunks/[name].[hash].js',
-                globals: { vue: 'Vue' }
-            }
+                chunkFileNames: 'chunks/[name].[hash].js'
+            } */
         }
     },
     esbuild: { sourcemap: 'external' },
     css: {
         postcss: { plugins: [autoprefixer] },
         devSourcemap: true
-    },
-    resolve: {
-        alias: {
-            '@lib': fileURLToPath(new URL('./lib', import.meta.url))
-        }
     }
 });
