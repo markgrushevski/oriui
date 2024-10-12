@@ -1,13 +1,5 @@
 <script setup>
-import { getCurrentInstance, onMounted } from 'vue';
 import DefaultTheme from 'vitepress/theme';
-import { createVueinjar } from '@lib';
-
-onMounted(() => {
-    const vueinjar = createVueinjar();
-    const app = getCurrentInstance().appContext.app;
-    app.use(vueinjar);
-});
 </script>
 
 <template>
