@@ -11,7 +11,6 @@ function getDirEntries(dirPath) {
     const entries = [];
     for (const path of readdirSync(dirPath)) {
         if (path === 'styles') continue;
-        if (path === 'types.ts') continue;
 
         const isFile = path.includes('.');
         const subPath = dirPath.split('/')[1] ? dirPath.split('/')[1] + '/' : '';
@@ -36,17 +35,24 @@ const baseEntries = getDirEntries('lib');
 const componentsEntries = getDirEntries('lib/components');
 const entries = [...componentsEntries, ...baseEntries];
 const entriesMap = new Map(entries);
-const buildLibEntry = Object.fromEntries(entriesMap);
+const libEntries = Object.fromEntries(entriesMap);
 
 export default defineConfig({
-    plugins: [vue(), dts({ tsconfigPath: './tsconfig.json', staticImport: true }), libInjectCss()],
-    preview: {},
+    plugins: [
+        vue(),
+        dts({
+            tsconfigPath: './tsconfig.json',
+            staticImport: true
+        })
+        /* libInjectCss() */
+    ],
     build: {
-        sourcemap: false,
+        sourcemap: true,
         copyPublicDir: false,
+        cssCodeSplit: true,
         lib: {
             formats: ['es'],
-            //entry: buildLibEntry
+            // entry: libEntries
             entry: 'lib/index.ts'
         },
         rollupOptions: {
@@ -56,7 +62,13 @@ export default defineConfig({
                 preserveModules: true,
                 exports: 'named',
                 entryFileNames: '[name].js',
-                assetFileNames: '[name].[hash][extname]'
+                assetFileNames: '[name][extname]',
+                banner: (chunk) => {
+                    const name = chunk.fileName.split('/').at(-1);
+                    if (name === 'index.js') return `import "./styles/styles.css"`;
+                    else if (name.includes('.vue.js')) return `import "./${name.replace('.vue.js', '.css')}"`;
+                    else return '';
+                }
             }
             /* output: {
                 globals: { vue: 'Vue' },

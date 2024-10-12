@@ -3,7 +3,7 @@
     "compilerOptions": {
         "rootDir": "lib",
         "declaration": true,
-        "declarationMap": false,
+        "declarationMap": true,
         "emitDeclarationOnly": true,
         "declarationDir": "./types",
         "strict": true,
