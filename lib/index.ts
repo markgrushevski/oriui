@@ -1,6 +1,6 @@
 import './styles/styles.css';
 
-export { VSpinner, VIcon, VAvatar, VButton, VCard } from './components';
+export * from './components';
 
 /* ==================== Sizes ==================== */
 

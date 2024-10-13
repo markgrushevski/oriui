@@ -1,50 +1,27 @@
-import { readdirSync } from 'node:fs';
-import { fileURLToPath, URL } from 'node:url';
+// import { globSync } from 'glob';
+// import { relative, extname } from 'node:path';
+// import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
-import { libInjectCss } from 'vite-plugin-lib-inject-css';
+// import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import autoprefixer from 'autoprefixer';
 
-function getDirEntries(dirPath) {
-    /** @type {[string, string][]} */
-    const entries = [];
-    for (const path of readdirSync(dirPath)) {
-        if (path === 'styles') continue;
-
-        const isFile = path.includes('.');
-        const subPath = dirPath.split('/')[1] ? dirPath.split('/')[1] + '/' : '';
-        const fileEntryName = path.slice(0, path.indexOf('.'));
-        const dirEntryName = `${path}/index`;
-
-        /** @type {string} */
-        const entryName = subPath + (isFile ? fileEntryName : dirEntryName);
-        const entryValue = (isFile ? dirPath : `${dirPath}/${path}`) + '/index.ts';
-
-        if (entryName === 'index' || entryName === 'components/index') continue;
-
-        entries.push([entryName, entryValue]);
-    }
-
-    entries.unshift(['index', 'lib/index.ts'], ['components/index', 'lib/components/index.ts']);
-
-    return entries;
-}
-
-const baseEntries = getDirEntries('lib');
-const componentsEntries = getDirEntries('lib/components');
-const entries = [...componentsEntries, ...baseEntries];
-const entriesMap = new Map(entries);
-const libEntries = Object.fromEntries(entriesMap);
+/* const entries = Object.fromEntries(
+    globSync('lib/!**!/index.ts').map((file) => [
+        relative('lib', file.slice(0, file.length - extname(file).length)),
+        fileURLToPath(new URL(file, import.meta.url))
+    ])
+); */
 
 export default defineConfig({
     plugins: [
         vue(),
+        // libInjectCss(),
         dts({
             tsconfigPath: './tsconfig.json',
             staticImport: true
         })
-        /* libInjectCss() */
     ],
     build: {
         sourcemap: true,
@@ -52,17 +29,17 @@ export default defineConfig({
         cssCodeSplit: true,
         lib: {
             formats: ['es'],
-            // entry: libEntries
             entry: 'lib/index.ts'
+            // entry: entries
         },
         rollupOptions: {
             external: ['vue'],
             output: {
-                globals: { vue: 'Vue' },
                 preserveModules: true,
+                globals: { vue: 'Vue' },
                 exports: 'named',
                 entryFileNames: '[name].js',
-                assetFileNames: '[name][extname]',
+                assetFileNames: '[name].[ext]',
                 banner: (chunk) => {
                     const name = chunk.fileName.split('/').at(-1);
                     if (name === 'index.js') return `import "./styles/styles.css"`;
@@ -71,11 +48,11 @@ export default defineConfig({
                 }
             }
             /* output: {
-                globals: { vue: 'Vue' },
                 preserveModules: false,
+                globals: { vue: 'Vue' },
                 exports: 'named',
                 entryFileNames: '[name].js',
-                assetFileNames: 'assets/[name][extname]',
+                assetFileNames: 'assets/[name].[ext]',
                 chunkFileNames: 'chunks/[name].[hash].js'
             } */
         }

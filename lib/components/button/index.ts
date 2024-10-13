@@ -1,1 +1,2 @@
-export { default as VButton } from './v-button.vue';
+import VButton from './v-button.vue';
+export default VButton;

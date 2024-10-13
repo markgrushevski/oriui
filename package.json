@@ -2,7 +2,7 @@
     "name": "vueinjar",
     "description": "Vue components library 📚",
     "license": "MIT",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "type": "module",
     "author": {
         "name": "Leonid",
@@ -27,8 +27,7 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
-        "./package.json": "./package.json",
-        "./*": "./*"
+        "./package.json": "./package.json"
     },
     "sideEffects": [
         "**/*.css"
@@ -37,7 +36,7 @@
         "dev": "vite",
         "types": "vue-tsc --noEmit",
         "types:watch": "vue-tsc --noEmit --watch",
-        "build": "vite build && npm run types",
+        "build": "vite build",
         "build:watch": "vite build --watch",
         "lint:prettier": "npx prettier --write **/*.{vue,js,ts,json,md,html,css}",
         "lint:stylelint": "npx stylelint --fix lib/**/*.{vue,css}",
@@ -50,7 +49,7 @@
         "docs:preview": "vitepress preview docs"
     },
     "peerDependencies": {
-        "vue": ">=3"
+        "vue": "^3"
     },
     "devDependencies": {
         "@eslint/js": "^9.11.0",
@@ -63,6 +62,7 @@
         "eslint": "^9.12.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-vue": "^9.28.0",
+        "glob": "^11.0.0",
         "globals": "^15.10.0",
         "husky": "^9.1.6",
         "lint-staged": "^15.2.10",
