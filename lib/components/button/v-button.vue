@@ -109,13 +109,15 @@ withDefaults(
 
 .v-button.v-button_fluid {
     display: flex;
-    width: 100%;
 }
 
 .v-button.v-button_icon {
     width: var(--v-size-action);
     height: var(--v-size-action);
+
     padding: 0;
+
+    font-size: calc(var(--v-size-action) / 2);
 }
 
 .v-button.v-button_icon-position_top {

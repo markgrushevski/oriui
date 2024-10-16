@@ -4,7 +4,7 @@
         "rootDir": "lib",
         "declaration": true,
         "declarationMap": true,
-        "emitDeclarationOnly": true,
+        "emitDeclarationOnly": false,
         "declarationDir": "./types",
         "strict": true,
         "module": "ESNext",

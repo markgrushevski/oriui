@@ -87,6 +87,7 @@ withDefaults(
     min-height: min-content;
 
     padding: var(--v-size-gap_xl);
+
     overflow: hidden;
 
     transition:

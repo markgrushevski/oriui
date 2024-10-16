@@ -1,7 +1,7 @@
 :root {
     --v-color_primary-light: hsl(190 100% 70%);
     --v-color_secondary-light: hsl(0 0% 85%);
-    --v-color_surface-light: #f7f7f8;
+    --v-color_surface-light: #f0f2f6;
     --v-color_background-light: #ffffff;
     --v-color_success-light: hsl(120 70% 60%);
     --v-color_warn-light: hsl(30 100% 65%);
@@ -11,7 +11,7 @@
     --v-color_primary-dark: hsl(190 100% 40%);
     --v-color_secondary-dark: hsl(0 0% 35%);
     --v-color_surface-dark: #191919;
-    --v-color_background-dark: #171717;
+    --v-color_background-dark: #121212;
     --v-color_success-dark: hsl(120 40% 40%);
     --v-color_warn-dark: hsl(30 70% 45%);
     --v-color_danger-dark: hsl(0 50% 45%);
