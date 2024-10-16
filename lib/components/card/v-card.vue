@@ -3,19 +3,21 @@ import { type RadiusSize, type ThemeColor, type Variant, VAvatar, VIcon } from '
 
 withDefaults(
     defineProps<{
-        prependAvatar?: string;
-        prependIcon?: string;
         appendAvatar?: string;
         appendIcon?: string;
-        image?: string;
-        icon?: string;
         /** @default "primary" */
         color?: ThemeColor;
         disabled?: boolean;
         fluid?: boolean;
+        icon?: string;
+        image?: string;
         loading?: boolean;
+        prependAvatar?: string;
+        prependIcon?: string;
         /** @default "rounded" */
         radius?: RadiusSize;
+        reverseAppendedActions?: boolean;
+        reversePrependedActions?: boolean;
         subtitle?: string;
         text?: string;
         title?: string;
@@ -46,7 +48,11 @@ withDefaults(
         ]"
     >
         <slot>
-            <div v-if="$slots['actions-prepend']" class="v-card__actions">
+            <div
+                v-if="$slots['actions-prepend']"
+                :class="{ 'v-card__actions_reverse': reversePrependedActions }"
+                class="v-card__actions"
+            >
                 <slot name="actions-prepend"></slot>
             </div>
             <div class="v-card__header">
@@ -74,7 +80,11 @@ withDefaults(
             <div class="v-card__body">
                 <slot name="body">{{ text }}</slot>
             </div>
-            <div v-if="$slots['actions-append']" class="v-card__actions">
+            <div
+                v-if="$slots['actions-append']"
+                :class="{ 'v-card__actions_reverse': reverseAppendedActions }"
+                class="v-card__actions"
+            >
                 <slot name="actions-append"></slot>
             </div>
         </slot>
@@ -112,22 +122,6 @@ withDefaults(
     width: 100%;
 }
 
-.v-card.v-card_icon-position_top {
-    flex-direction: column;
-}
-
-.v-card.v-card_icon-position_right {
-    flex-direction: row-reverse;
-}
-
-.v-card.v-card_icon-position_bottom {
-    flex-direction: column-reverse;
-}
-
-.v-card.v-card_icon-position_left {
-    flex-direction: row;
-}
-
 .v-card .v-card__header {
     display: flex;
     align-items: center;
@@ -147,6 +141,16 @@ withDefaults(
 .v-card .v-card__subtitle {
     opacity: 0.8;
     font-size: 0.875rem;
+}
+
+.v-card .v-card__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--v-size-gap);
+}
+
+.v-card .v-card__actions.v-card__actions_reverse {
+    flex-direction: row-reverse;
 }
 
 .v-card > .v-card__actions:not(:last-child),

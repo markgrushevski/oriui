@@ -5,7 +5,7 @@
     --v-font-size_text: 1em;
     --v-font-size_xs: calc(var(--v-font-size_md) - var(--v-font-size-step_dec) * 2);
     --v-font-size_sm: calc(var(--v-font-size_md) - var(--v-font-size-step_dec) * 1);
-    --v-font-size_md: 14px;
+    --v-font-size_md: 16px;
     --v-font-size_lg: calc(var(--v-font-size_md) + var(--v-font-size-step_inc) * 1);
     --v-font-size_xl: calc(var(--v-font-size_md) + var(--v-font-size-step_inc) * 2);
     --v-font-size_xxl: calc(var(--v-font-size_md) + var(--v-font-size-step_inc) * 3);

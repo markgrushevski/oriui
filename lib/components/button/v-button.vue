@@ -109,6 +109,7 @@ withDefaults(
 
 .v-button.v-button_fluid {
     display: flex;
+    width: 100%;
 }
 
 .v-button.v-button_icon {
