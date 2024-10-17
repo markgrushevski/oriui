@@ -40,22 +40,27 @@
     --v-variant-text-color: var(--v-color);
 }
 
-.v-variant.v-variant_fill:hover {
+.v-variant.v-variant_fill.v-active,
+.v-button.v-variant.v-variant_fill:hover {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), white 15%);
 }
 
-.v-variant.v-variant_tonal:hover {
+.v-variant.v-variant_tonal.v-active,
+.v-button.v-variant.v-variant_tonal:hover {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 65%);
 }
 
-.v-variant.v-variant_outline:hover {
+.v-variant.v-variant_outline.v-active,
+.v-button.v-variant.v-variant_outline:hover {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
 }
 
-.v-variant.v-variant_text:hover {
+.v-variant.v-variant_text.v-active,
+.v-button.v-variant.v-variant_text:hover {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
 }
 
-.v-variant.v-variant_plain:hover {
+.v-variant.v-variant_plain.v-active,
+.v-button.v-variant.v-variant_plain:hover {
     --v-variant-opacity: 1;
 }

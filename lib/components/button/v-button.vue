@@ -11,6 +11,7 @@ import {
 
 withDefaults(
     defineProps<{
+        active?: boolean;
         /**
          * @description An HTML tag name, a Component name or Component class reference.
          * @default "button"
@@ -57,6 +58,7 @@ withDefaults(
                 [`v-font-size v-font-size_${size}`]: size,
                 [`v-variant v-variant_${variant}`]: variant,
                 [`v-color v-color_${color}`]: color,
+                'v-active': active,
                 'v-loading': loading,
                 'v-disabled': disabled
             }
@@ -123,6 +125,8 @@ withDefaults(
 
 .v-button.v-button_icon-position_top {
     flex-direction: column;
+
+    /* font-size: calc(var(--v-font-size) - var(--v-font-size-step_dec) * 1); */
 }
 
 .v-button.v-button_icon-position_right {
@@ -131,9 +135,15 @@ withDefaults(
 
 .v-button.v-button_icon-position_bottom {
     flex-direction: column-reverse;
+
+    /* font-size: calc(var(--v-font-size) - var(--v-font-size-step_dec) * 1); */
 }
 
 .v-button.v-button_icon-position_left {
     flex-direction: row;
+}
+
+.v-button:not(.v-button_icon) .v-button__icon {
+    font-size: calc(var(--v-font-size) + 2px);
 }
 </style>
