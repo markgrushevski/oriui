@@ -41,26 +41,56 @@
 }
 
 .v-variant.v-variant_fill.v-active,
-.v-button.v-variant.v-variant_fill:hover {
+.v-button.v-variant.v-variant_fill:active {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), white 15%);
 }
 
+@media (hover: hover) {
+    .v-button.v-variant.v-variant_fill:hover {
+        --v-variant-bg-color: color-mix(in srgb, var(--v-color), white 15%);
+    }
+}
+
 .v-variant.v-variant_tonal.v-active,
-.v-button.v-variant.v-variant_tonal:hover {
+.v-button.v-variant.v-variant_tonal:active {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 65%);
 }
 
+@media (hover: hover) {
+    .v-button.v-variant.v-variant_tonal:hover {
+        --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 65%);
+    }
+}
+
 .v-variant.v-variant_outline.v-active,
-.v-button.v-variant.v-variant_outline:hover {
+.v-button.v-variant.v-variant_outline:active {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
+}
+
+@media (hover: hover) {
+    .v-button.v-variant.v-variant_outline:hover {
+        --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
+    }
 }
 
 .v-variant.v-variant_text.v-active,
-.v-button.v-variant.v-variant_text:hover {
+.v-button.v-variant.v-variant_text:active {
     --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
 }
 
+@media (hover: hover) {
+    .v-button.v-variant.v-variant_text:hover {
+        --v-variant-bg-color: color-mix(in srgb, var(--v-color), transparent 90%);
+    }
+}
+
 .v-variant.v-variant_plain.v-active,
-.v-button.v-variant.v-variant_plain:hover {
+.v-button.v-variant.v-variant_plain:active {
     --v-variant-opacity: 1;
+}
+
+@media (hover: hover) {
+    .v-button.v-variant.v-variant_plain:hover {
+        --v-variant-opacity: 1;
+    }
 }

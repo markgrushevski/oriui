@@ -5,12 +5,12 @@
 }
 
 .v-disabled {
-    opacity: 0.2;
-    cursor: default;
-    pointer-events: none;
+    opacity: 0.2 !important;
+    cursor: default !important;
+    pointer-events: none !important;
 }
 
 .v-loading {
-    cursor: default;
-    pointer-events: none;
+    cursor: default !important;
+    pointer-events: none !important;
 }
