@@ -70,8 +70,7 @@ const name = computed(() => {
 
 <style>
 .v-avatar {
-    --v-font-size-step: 4px;
-    --v-font-size_md: 16px;
+    --v-font-size_md: calc(1rem + 2px);
     --v-color: #00000018;
 
     display: flex;
