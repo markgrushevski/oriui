@@ -78,7 +78,7 @@ withDefaults(
                 </div>
             </div>
             <div class="v-card__body">
-                <slot name="default">{{ text }}</slot>
+                <slot name="body">{{ text }}</slot>
             </div>
             <div
                 v-if="$slots['actions-append']"
