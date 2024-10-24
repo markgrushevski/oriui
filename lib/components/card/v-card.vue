@@ -96,7 +96,6 @@ withDefaults(
 <style>
 .v-card {
     min-width: min-content;
-    min-height: min-content;
 
     padding: var(--v-size-gap_xl);
 
