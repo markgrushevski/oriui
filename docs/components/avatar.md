@@ -57,17 +57,31 @@ const imageLink = '...';
         subtitle="statesman · lawyer · writer · orator"
         size="xxl"
     />
+    <v-avatar
+        text="Marcus Tullius Cicero"
+        title="Marcus Tullius Cicero"
+        subtitle="statesman · lawyer · writer · orator"
+        size="xxl"
+        reverse
+    />
 </template>
 ```
 
 :::info Output
 
-<div class="vij flex">
+<div class="vij flex" style="gap: 32px">
     <v-avatar 
         text="Marcus Tullius Cicero"
         title="Marcus Tullius Cicero" 
         subtitle="statesman · lawyer · writer · orator" 
         size="xxl"
+    />
+    <v-avatar
+        text="Marcus Tullius Cicero"
+        title="Marcus Tullius Cicero"
+        subtitle="statesman · lawyer · writer · orator"
+        size="xxl"
+        reverse
     />
 </div>
 

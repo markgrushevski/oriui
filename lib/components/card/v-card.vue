@@ -23,6 +23,7 @@ withDefaults(
         title?: string;
         /** @default "fill" */
         variant?: Variant;
+        row?: boolean;
     }>(),
     {
         color: 'surface',
@@ -39,6 +40,7 @@ withDefaults(
             {
                 'v-card_icon': !text,
                 'v-card_fluid': fluid,
+                'v-card_row': row,
                 [`v-size-radius v-size-radius_${radius}`]: radius,
                 [`v-variant v-variant_${variant}`]: variant,
                 [`v-color v-color_${color}`]: color,
@@ -77,7 +79,7 @@ withDefaults(
                     </slot>
                 </div>
             </div>
-            <div class="v-card__body">
+            <div v-if="$slots['body'] || text" class="v-card__body">
                 <slot name="body">{{ text }}</slot>
             </div>
             <div
@@ -122,8 +124,14 @@ withDefaults(
     width: 100%;
 }
 
+.v-card.v-card_row {
+    display: flex;
+    gap: calc(var(--v-size-gap) * 2);
+}
+
 .v-card .v-card__header {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: stretch;
     gap: calc(var(--v-size-gap) * 1.5);
@@ -145,6 +153,7 @@ withDefaults(
 
 .v-card .v-card__actions {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: var(--v-size-gap);
 }
@@ -153,9 +162,9 @@ withDefaults(
     flex-direction: row-reverse;
 }
 
-.v-card > .v-card__actions:not(:last-child),
-.v-card > .v-card__header:not(:last-child),
-.v-card > .v-card__body:not(:last-child) {
+.v-card:not(.v-card_row) > .v-card__actions:not(:last-child),
+.v-card:not(.v-card_row) > .v-card__header:not(:last-child),
+.v-card:not(.v-card_row) > .v-card__body:not(:last-child) {
     margin-bottom: var(--v-size-gap);
 }
 </style>

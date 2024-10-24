@@ -19,6 +19,7 @@ const p = withDefaults(
         subtitle?: string;
         text?: string;
         title?: string;
+        reverse?: boolean;
     }>(),
     {
         iconPosition: 'left',
@@ -48,6 +49,7 @@ const name = computed(() => {
         :class="[
             'v-avatar',
             {
+                'v-avatar_reverse': reverse,
                 'v-avatar_inline': inline,
                 'v-avatar_titled': title || subtitle,
                 [`v-avatar_icon-position_${iconPosition}`]: iconPosition && (title || subtitle),
@@ -76,6 +78,7 @@ const name = computed(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: calc(var(--v-size-gap) * 1.5);
 
     width: var(--v-size-action);
     height: var(--v-size-action);
@@ -90,6 +93,10 @@ const name = computed(() => {
 
 .v-avatar.v-avatar_titled {
     width: max-content;
+}
+
+.v-avatar.v-avatar_reverse {
+    flex-direction: row-reverse;
 }
 
 .v-avatar__image,
@@ -120,11 +127,14 @@ const name = computed(() => {
 .v-avatar__text {
     display: flex;
     flex-direction: column;
-    margin-left: calc(var(--v-size-gap) * 1.5);
 
     font-size: max(10px, calc(var(--v-font-size) - var(--v-font-size-step_dec) * 2));
     line-height: 1.5;
     white-space: nowrap;
+}
+
+.v-avatar.v-avatar_reverse .v-avatar__text {
+    align-items: flex-end;
 }
 
 .v-avatar__subtitle {
