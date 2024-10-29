@@ -48,9 +48,9 @@
     --v-size-action: var(--v-size-action_xxl);
 }
 
-.v-size-action.v-size-action-space {
+/* .v-size-action.v-size-action-space {
     padding: var(--v-size-action-space);
-}
+} */
 
 .v-size-action.v-size-action-space_text {
     --v-size-action-space: var(--v-size-action-space_text);

@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type { ActionSize, CenteredPosition, RadiusSize, ThemeColor } from '../../';
+import type { ActionSize, RadiusSize, ThemeColor } from '../../';
 
 defineOptions({ inheritAttrs: false });
 
 const p = withDefaults(
     defineProps<{
         color?: ThemeColor;
-        /** @default "left" */
-        iconPosition?: CenteredPosition;
         inline?: boolean;
         /** @default "rounded" */
         radius?: RadiusSize;
@@ -22,7 +20,6 @@ const p = withDefaults(
         reverse?: boolean;
     }>(),
     {
-        iconPosition: 'left',
         radius: 'rounded',
         size: 'lg'
     }
@@ -52,7 +49,6 @@ const name = computed(() => {
                 'v-avatar_reverse': reverse,
                 'v-avatar_inline': inline,
                 'v-avatar_titled': title || subtitle,
-                [`v-avatar_icon-position_${iconPosition}`]: iconPosition && (title || subtitle),
                 [`v-size-action v-size-action_${size}`]: size,
                 [`v-size-action-space v-size-action-space_${size}`]: size && spaced,
                 [`v-size-radius v-size-radius_${radius}`]: radius,
