@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {
-    type BlockSize,
+    type ActionSize,
     type Variant,
     type ThemeColor,
     type CenteredPosition,
@@ -28,7 +28,7 @@ withDefaults(
         /** @default "rounded" */
         radius?: RadiusSize;
         /** @default "md" */
-        size?: BlockSize;
+        size?: ActionSize;
         text?: string;
         /** @default "fill" */
         variant?: Variant;
