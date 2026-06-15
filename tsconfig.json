@@ -1,7 +1,7 @@
 {
-    "include": ["lib"],
+    "include": ["src"],
     "compilerOptions": {
-        "rootDir": "lib",
+        "rootDir": "src",
         "declaration": true,
         "declarationMap": true,
         "emitDeclarationOnly": false,
@@ -18,7 +18,6 @@
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "bundler",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "baseUrl": ".",
         "incremental": true
     }
 }
