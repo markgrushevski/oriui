@@ -1,38 +1,55 @@
-:root,
-.ori-size-gap {
-    --ori-size-gap-step: calc(var(--ori-size-gap_md) / 4);
+@layer ori.tokens {
+    :root {
+        --ori-size-gap-step: calc(var(--ori-size-gap_md) / 4);
 
-    --ori-size-gap_zero: 0;
-    --ori-size-gap_xs: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 3);
-    --ori-size-gap_sm: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 2);
-    --ori-size-gap_md: 8px;
-    --ori-size-gap_lg: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 2);
-    --ori-size-gap_xl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 4);
-    --ori-size-gap_xxl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 8);
+        --ori-size-gap_zero: 0;
+        --ori-size-gap_xs: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 3);
+        --ori-size-gap_sm: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 2);
+        --ori-size-gap_md: 8px;
+        --ori-size-gap_lg: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 2);
+        --ori-size-gap_xl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 4);
+        --ori-size-gap_xxl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 8);
 
-    --ori-size-gap: var(--ori-size-gap_md);
+        --ori-size-gap: var(--ori-size-gap_md);
+    }
 }
 
-.ori-size-gap.ori-size-gap_zero {
-    --ori-size-gap: var(--ori-size-gap_zero);
-}
+@layer ori.utilities {
+    .ori-size-gap {
+        --ori-size-gap-step: calc(var(--ori-size-gap_md) / 4);
 
-.ori-size-gap.ori-size-gap_xs {
-    --ori-size-gap: var(--ori-size-gap_xs);
-}
+        --ori-size-gap_zero: 0;
+        --ori-size-gap_xs: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 3);
+        --ori-size-gap_sm: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 2);
+        --ori-size-gap_md: 8px;
+        --ori-size-gap_lg: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 2);
+        --ori-size-gap_xl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 4);
+        --ori-size-gap_xxl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 8);
 
-.ori-size-gap.ori-size-gap_sm {
-    --ori-size-gap: var(--ori-size-gap_sm);
-}
+        --ori-size-gap: var(--ori-size-gap_md);
+    }
 
-.ori-size-gap.ori-size-gap_md {
-    --ori-size-gap: var(--ori-size-gap_md);
-}
+    .ori-size-gap.ori-size-gap_zero {
+        --ori-size-gap: var(--ori-size-gap_zero);
+    }
 
-.ori-size-gap.ori-size-gap_lg {
-    --ori-size-gap: var(--ori-size-gap_lg);
-}
+    .ori-size-gap.ori-size-gap_xs {
+        --ori-size-gap: var(--ori-size-gap_xs);
+    }
 
-.ori-size-gap.ori-size-gap_xl {
-    --ori-size-gap: var(--ori-size-gap_xl);
+    .ori-size-gap.ori-size-gap_sm {
+        --ori-size-gap: var(--ori-size-gap_sm);
+    }
+
+    .ori-size-gap.ori-size-gap_md {
+        --ori-size-gap: var(--ori-size-gap_md);
+    }
+
+    .ori-size-gap.ori-size-gap_lg {
+        --ori-size-gap: var(--ori-size-gap_lg);
+    }
+
+    .ori-size-gap.ori-size-gap_xl {
+        --ori-size-gap: var(--ori-size-gap_xl);
+    }
 }
