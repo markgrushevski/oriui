@@ -1,8 +1,8 @@
 {
-    "name": "vueinjar",
-    "description": "Vue components library 📚",
+    "name": "oriui",
+    "description": "Layered Vue 3 UI library: styled components + headless behavior + standalone CSS design system (織り)",
     "license": "MIT",
-    "version": "0.3.18",
+    "version": "1.0.0-alpha.0",
     "type": "module",
     "engines": {
         "node": ">=20.19.0"

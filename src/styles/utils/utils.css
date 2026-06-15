@@ -1,16 +1,16 @@
-.v-shadow {
+.ori-shadow {
     box-shadow:
         0 2px 4px 0 rgb(0 0 0 / 0.2),
         0 3px 10px 0 rgb(0 0 0 / 0.19);
 }
 
-.v-disabled {
+.ori-disabled {
     opacity: 0.2 !important;
     cursor: default !important;
     pointer-events: none !important;
 }
 
-.v-loading {
+.ori-loading {
     cursor: default !important;
     pointer-events: none !important;
 }

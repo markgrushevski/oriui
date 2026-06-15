@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-    name: VueInJar
+    name: oriUI
     text: Components<br/>library📚
     tagline: Yet another UI experience
     actions:

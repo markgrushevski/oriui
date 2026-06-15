@@ -1,8 +1,8 @@
 :root {
-    --v-size-screen_xs: 600px;
-    --v-size-screen_sm: 840px;
-    --v-size-screen_md: 1200px;
-    --v-size-screen_lg: 1600px;
-    --v-size-screen_xl: 1920px;
-    --v-size-screen_xxl: 2560px;
+    --ori-size-screen_xs: 600px;
+    --ori-size-screen_sm: 840px;
+    --ori-size-screen_md: 1200px;
+    --ori-size-screen_lg: 1600px;
+    --ori-size-screen_xl: 1920px;
+    --ori-size-screen_xxl: 2560px;
 }

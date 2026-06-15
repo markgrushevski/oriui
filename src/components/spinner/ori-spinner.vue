@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ActionSize, ThemeColor } from '../../';
+import type { ActionSize, ThemeColor } from '../../types';
 
 withDefaults(
     defineProps<{
@@ -15,33 +15,33 @@ withDefaults(
 <template>
     <div
         :class="[
-            'v-spinner',
+            'ori-spinner',
             {
-                'v-spinner_inline': inline,
-                [`v-size-action v-size-action_${size}`]: size,
-                [`v-color v-color_${color}`]: color
+                'ori-spinner_inline': inline,
+                [`ori-size-action ori-size-action_${size}`]: size,
+                [`ori-color ori-color_${color}`]: color
             }
         ]"
     ></div>
 </template>
 
 <style>
-.v-spinner {
-    --v-color: currentcolor;
+.ori-spinner {
+    --ori-color: currentcolor;
 
     display: block;
 
-    width: var(--v-size-action);
-    height: var(--v-size-action);
+    width: var(--ori-size-action);
+    height: var(--ori-size-action);
 
     animation: rotation 1s linear infinite;
 
-    border: 2px solid var(--v-color);
+    border: 2px solid var(--ori-color);
     border-radius: 50%;
     border-bottom-color: transparent;
 }
 
-.v-spinner.v-spinner_inline {
+.ori-spinner.ori-spinner_inline {
     display: inline-block;
     margin: 0.25em;
 }

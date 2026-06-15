@@ -8,12 +8,12 @@ export default defineConfig({
     vite: {
         resolve: {
             alias: {
-                '@lib': fileURLToPath(new URL('../../lib', import.meta.url))
+                '@lib': fileURLToPath(new URL('../../src', import.meta.url))
             }
         }
     },
-    title: 'VueInJar',
-    description: 'Component & helpers library📚',
+    title: 'oriUI',
+    description: 'Layered Vue 3 UI library (織り)',
     head: [
         ['link', { rel: 'icon', href: `${base}favicon.ico` }],
         ['script', {}, 'window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };'],
