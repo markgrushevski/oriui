@@ -1,88 +1,46 @@
-:root {
-    --ori-color_primary-light: hsl(190 100% 70%);
-    --ori-color_secondary-light: hsl(0 0% 85%);
-    --ori-color_surface-light: #f0f2f6;
-    --ori-color_background-light: #ffffff;
-    --ori-color_success-light: hsl(120 70% 60%);
-    --ori-color_warn-light: hsl(30 100% 65%);
-    --ori-color_danger-light: hsl(0 100% 70%);
-    --ori-color_info-light: hsl(270 100% 75%);
+/* ============================================================
+   Color utility classes — layer: ori.utilities
+   Each class sets --ori-color and --ori-color-on so that
+   variant and component rules can read a single resolved alias.
+   ============================================================ */
+@layer ori.utilities {
+    .ori-color.ori-color_primary {
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+    }
 
-    --ori-color_primary-dark: hsl(190 100% 40%);
-    --ori-color_secondary-dark: hsl(0 0% 35%);
-    --ori-color_surface-dark: #191919;
-    --ori-color_background-dark: #121212;
-    --ori-color_success-dark: hsl(120 40% 40%);
-    --ori-color_warn-dark: hsl(30 70% 45%);
-    --ori-color_danger-dark: hsl(0 50% 45%);
-    --ori-color_info-dark: hsl(270 50% 45%);
+    .ori-color.ori-color_secondary {
+        --ori-color: var(--ori-color-secondary);
+        --ori-color-on: var(--ori-color-on-secondary);
+    }
 
-    --ori-color_primary: var(--ori-color_primary-light);
-    --ori-color_secondary: var(--ori-color_secondary-light);
-    --ori-color_surface: var(--ori-color_surface-light);
-    --ori-color_background: var(--ori-color_background-light);
-    --ori-color_success: var(--ori-color_success-light);
-    --ori-color_warn: var(--ori-color_warn-light);
-    --ori-color_danger: var(--ori-color_danger-light);
-    --ori-color_info: var(--ori-color_info-light);
+    .ori-color.ori-color_surface {
+        --ori-color: var(--ori-color-surface);
+        --ori-color-on: var(--ori-color-on-surface);
+    }
 
-    --ori-color: currentColor;
-}
+    .ori-color.ori-color_background {
+        --ori-color: var(--ori-color-background);
+        --ori-color-on: var(--ori-color-on-background);
+    }
 
-:root.light,
-.ori-theme_light {
-    color-scheme: light;
-    --ori-color_primary: var(--ori-color_primary-light);
-    --ori-color_secondary: var(--ori-color_secondary-light);
-    --ori-color_surface: var(--ori-color_surface-light);
-    --ori-color_background: var(--ori-color_background-light);
-    --ori-color_success: var(--ori-color_success-light);
-    --ori-color_warn: var(--ori-color_warn-light);
-    --ori-color_danger: var(--ori-color_danger-light);
-    --ori-color_info: var(--ori-color_info-light);
-}
+    .ori-color.ori-color_success {
+        --ori-color: var(--ori-color-success);
+        --ori-color-on: var(--ori-color-on-success);
+    }
 
-:root.dark,
-.ori-theme_dark {
-    color-scheme: dark;
-    --ori-color_primary: var(--ori-color_primary-dark);
-    --ori-color_secondary: var(--ori-color_secondary-dark);
-    --ori-color_surface: var(--ori-color_surface-dark);
-    --ori-color_background: var(--ori-color_background-dark);
-    --ori-color_success: var(--ori-color_success-dark);
-    --ori-color_warn: var(--ori-color_warn-dark);
-    --ori-color_danger: var(--ori-color_danger-dark);
-    --ori-color_info: var(--ori-color_info-dark);
-}
+    .ori-color.ori-color_warn {
+        --ori-color: var(--ori-color-warn);
+        --ori-color-on: var(--ori-color-on-warn);
+    }
 
-.ori-color.ori-color_primary {
-    --ori-color: var(--ori-color_primary);
-}
+    .ori-color.ori-color_danger {
+        --ori-color: var(--ori-color-danger);
+        --ori-color-on: var(--ori-color-on-danger);
+    }
 
-.ori-color.ori-color_secondary {
-    --ori-color: var(--ori-color_secondary);
-}
-
-.ori-color.ori-color_surface {
-    --ori-color: var(--ori-color_surface);
-}
-
-.ori-color.ori-color_background {
-    --ori-color: var(--ori-color_background);
-}
-
-.ori-color.ori-color_success {
-    --ori-color: var(--ori-color_success);
-}
-
-.ori-color.ori-color_warn {
-    --ori-color: var(--ori-color_warn);
-}
-
-.ori-color.ori-color_danger {
-    --ori-color: var(--ori-color_danger);
-}
-
-.ori-color.ori-color_info {
-    --ori-color: var(--ori-color_info);
+    .ori-color.ori-color_info {
+        --ori-color: var(--ori-color-info);
+        --ori-color-on: var(--ori-color-on-info);
+    }
 }

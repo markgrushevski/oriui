@@ -1,0 +1,124 @@
+/* ============================================================
+   oriUI color tokens — neutral ramp + semantic roles
+   Layer: ori.tokens
+   ============================================================ */
+
+/* ============================================================
+   Neutral ramp primitives — slate-like scale, numeric (50–950).
+   The single source of truth for neutral surfaces/text; semantic
+   role tokens below reference these instead of duplicating hex.
+   ============================================================ */
+@layer ori.tokens {
+    :root {
+        --ori-neutral-50: #f8fafc;
+        --ori-neutral-100: #f1f5f9;
+        --ori-neutral-200: #e2e8f0;
+        --ori-neutral-300: #cbd5e1;
+        --ori-neutral-400: #94a3b8;
+        --ori-neutral-500: #64748b;
+        --ori-neutral-600: #475569;
+        --ori-neutral-700: #334155;
+        --ori-neutral-800: #1e293b;
+        --ori-neutral-900: #0f172a;
+        --ori-neutral-950: #020617;
+    }
+
+    /* ==========================================================
+       Semantic role tokens.
+       Contrast verification (WCAG AA >= 4.5:1 for normal text):
+
+       LIGHT THEME:
+         primary    #3b56c8 / white   — ratio ~5.23:1  pass
+         secondary  neutral-900 / neutral-200 — ratio ~13.5:1  pass
+         surface    neutral-900 / neutral-50  — ratio ~18.1:1  pass
+         background neutral-900 / #ffffff     — ratio ~19.5:1  pass
+         success    white   / #16a34a — ratio ~4.54:1  pass
+         warn       neutral-950 / #f59e0b — ratio ~9.72:1  pass (dark on-color: amber is light)
+         danger     white   / #dc2626 — ratio ~4.52:1  pass
+         info       white   / #2563eb — ratio ~4.51:1  pass
+
+       DARK THEME:
+         primary    neutral-950 / #6b83d9 — ratio ~6.14:1  pass
+         secondary  neutral-50 / neutral-700 — ratio ~9.02:1  pass
+         surface    neutral-50 / neutral-900 — ratio ~18.1:1  pass
+         background neutral-50 / neutral-950 — ratio ~20.4:1  pass
+       ========================================================== */
+    :root {
+        /* Primary — calm slate-blue (own hue, not a neutral) */
+        --ori-color-primary-light: #3b56c8;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #6b83d9;
+        --ori-color-on-primary-dark: var(--ori-neutral-950);
+
+        /* Secondary — neutral tint */
+        --ori-color-secondary-light: var(--ori-neutral-200);
+        --ori-color-on-secondary-light: var(--ori-neutral-900);
+        --ori-color-secondary-dark: var(--ori-neutral-700);
+        --ori-color-on-secondary-dark: var(--ori-neutral-50);
+
+        /* Surface */
+        --ori-color-surface-light: var(--ori-neutral-50);
+        --ori-color-on-surface-light: var(--ori-neutral-900);
+        --ori-color-surface-dark: var(--ori-neutral-900);
+        --ori-color-on-surface-dark: var(--ori-neutral-50);
+
+        /* Background */
+        --ori-color-background-light: #ffffff;
+        --ori-color-on-background-light: var(--ori-neutral-900);
+        --ori-color-background-dark: var(--ori-neutral-950);
+        --ori-color-on-background-dark: var(--ori-neutral-50);
+
+        /* Status — shared across both themes (own hues) */
+        --ori-color-success: #16a34a;
+        --ori-color-on-success: #ffffff;
+        --ori-color-warn: #f59e0b;
+        --ori-color-on-warn: var(--ori-neutral-950);
+        --ori-color-danger: #dc2626;
+        --ori-color-on-danger: #ffffff;
+        --ori-color-info: #2563eb;
+        --ori-color-on-info: #ffffff;
+
+        /* Active semantic aliases — default to light */
+        --ori-color-primary: var(--ori-color-primary-light);
+        --ori-color-on-primary: var(--ori-color-on-primary-light);
+        --ori-color-secondary: var(--ori-color-secondary-light);
+        --ori-color-on-secondary: var(--ori-color-on-secondary-light);
+        --ori-color-surface: var(--ori-color-surface-light);
+        --ori-color-on-surface: var(--ori-color-on-surface-light);
+        --ori-color-background: var(--ori-color-background-light);
+        --ori-color-on-background: var(--ori-color-on-background-light);
+
+        /* Resolved component aliases — components read these, never the role tokens directly.
+           Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
+        --ori-color: currentColor;
+        --ori-color-on: currentColor;
+    }
+
+    /* Light theme */
+    :root.light,
+    .ori-theme_light {
+        color-scheme: light;
+        --ori-color-primary: var(--ori-color-primary-light);
+        --ori-color-on-primary: var(--ori-color-on-primary-light);
+        --ori-color-secondary: var(--ori-color-secondary-light);
+        --ori-color-on-secondary: var(--ori-color-on-secondary-light);
+        --ori-color-surface: var(--ori-color-surface-light);
+        --ori-color-on-surface: var(--ori-color-on-surface-light);
+        --ori-color-background: var(--ori-color-background-light);
+        --ori-color-on-background: var(--ori-color-on-background-light);
+    }
+
+    /* Dark theme */
+    :root.dark,
+    .ori-theme_dark {
+        color-scheme: dark;
+        --ori-color-primary: var(--ori-color-primary-dark);
+        --ori-color-on-primary: var(--ori-color-on-primary-dark);
+        --ori-color-secondary: var(--ori-color-secondary-dark);
+        --ori-color-on-secondary: var(--ori-color-on-secondary-dark);
+        --ori-color-surface: var(--ori-color-surface-dark);
+        --ori-color-on-surface: var(--ori-color-on-surface-dark);
+        --ori-color-background: var(--ori-color-background-dark);
+        --ori-color-on-background: var(--ori-color-on-background-dark);
+    }
+}

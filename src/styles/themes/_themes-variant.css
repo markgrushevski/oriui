@@ -1,96 +1,103 @@
-.ori-variant {
-    --ori-variant-border-color: transparent;
-    --ori-variant-opacity: 1;
-    --ori-variant-bg-color: transparent;
-    --ori-variant-text-color: currentColor;
-}
+/* ============================================================
+   Variant utility classes — layer: ori.utilities
+   ============================================================ */
+@layer ori.utilities {
+    .ori-variant {
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: transparent;
+        --ori-variant-text-color: currentColor;
+    }
 
-.ori-variant.ori-variant_fill {
-    --ori-variant-border-color: transparent;
-    --ori-variant-opacity: 1;
-    --ori-variant-bg-color: var(--ori-color);
-    --ori-variant-text-color: currentColor;
-}
+    .ori-variant.ori-variant_fill {
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: var(--ori-color);
+        /* Use the on-color for correct contrast on filled backgrounds.
+           Falls back to currentColor when --ori-color-on is not set (e.g. avatar, icon). */
+        --ori-variant-text-color: var(--ori-color-on);
+    }
 
-.ori-variant.ori-variant_tonal {
-    --ori-variant-border-color: transparent;
-    --ori-variant-opacity: 1;
-    --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
-    --ori-variant-text-color: var(--ori-color);
-}
+    .ori-variant.ori-variant_tonal {
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
+        --ori-variant-text-color: var(--ori-color);
+    }
 
-.ori-variant.ori-variant_outline {
-    --ori-variant-border-color: var(--ori-color);
-    --ori-variant-opacity: 1;
-    --ori-variant-bg-color: transparent;
-    --ori-variant-text-color: var(--ori-color);
-}
+    .ori-variant.ori-variant_outline {
+        --ori-variant-border-color: var(--ori-color);
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: transparent;
+        --ori-variant-text-color: var(--ori-color);
+    }
 
-.ori-variant.ori-variant_text {
-    --ori-variant-border-color: transparent;
-    --ori-variant-opacity: 1;
-    --ori-variant-bg-color: transparent;
-    --ori-variant-text-color: var(--ori-color);
-}
+    .ori-variant.ori-variant_text {
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: transparent;
+        --ori-variant-text-color: var(--ori-color);
+    }
 
-.ori-variant.ori-variant_plain {
-    --ori-variant-border-color: transparent;
-    --ori-variant-opacity: 0.5;
-    --ori-variant-bg-color: transparent;
-    --ori-variant-text-color: var(--ori-color);
-}
+    .ori-variant.ori-variant_plain {
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 0.5;
+        --ori-variant-bg-color: transparent;
+        --ori-variant-text-color: var(--ori-color);
+    }
 
-.ori-variant.ori-variant_fill.ori-active,
-.ori-button.ori-variant.ori-variant_fill:active {
-    --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
-}
-
-@media (hover: hover) {
-    .ori-button.ori-variant.ori-variant_fill:hover {
+    .ori-variant.ori-variant_fill.ori-active,
+    .ori-button.ori-variant.ori-variant_fill:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
-}
 
-.ori-variant.ori-variant_tonal.ori-active,
-.ori-button.ori-variant.ori-variant_tonal:active {
-    --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
-}
+    @media (hover: hover) {
+        .ori-button.ori-variant.ori-variant_fill:hover {
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
+        }
+    }
 
-@media (hover: hover) {
-    .ori-button.ori-variant.ori-variant_tonal:hover {
+    .ori-variant.ori-variant_tonal.ori-active,
+    .ori-button.ori-variant.ori-variant_tonal:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
     }
-}
 
-.ori-variant.ori-variant_outline.ori-active,
-.ori-button.ori-variant.ori-variant_outline:active {
-    --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
-}
+    @media (hover: hover) {
+        .ori-button.ori-variant.ori-variant_tonal:hover {
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
+        }
+    }
 
-@media (hover: hover) {
-    .ori-button.ori-variant.ori-variant_outline:hover {
+    .ori-variant.ori-variant_outline.ori-active,
+    .ori-button.ori-variant.ori-variant_outline:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
-}
 
-.ori-variant.ori-variant_text.ori-active,
-.ori-button.ori-variant.ori-variant_text:active {
-    --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
-}
+    @media (hover: hover) {
+        .ori-button.ori-variant.ori-variant_outline:hover {
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
+        }
+    }
 
-@media (hover: hover) {
-    .ori-button.ori-variant.ori-variant_text:hover {
+    .ori-variant.ori-variant_text.ori-active,
+    .ori-button.ori-variant.ori-variant_text:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
-}
 
-.ori-variant.ori-variant_plain.ori-active,
-.ori-button.ori-variant.ori-variant_plain:active {
-    --ori-variant-opacity: 1;
-}
+    @media (hover: hover) {
+        .ori-button.ori-variant.ori-variant_text:hover {
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
+        }
+    }
 
-@media (hover: hover) {
-    .ori-button.ori-variant.ori-variant_plain:hover {
+    .ori-variant.ori-variant_plain.ori-active,
+    .ori-button.ori-variant.ori-variant_plain:active {
         --ori-variant-opacity: 1;
+    }
+
+    @media (hover: hover) {
+        .ori-button.ori-variant.ori-variant_plain:hover {
+            --ori-variant-opacity: 1;
+        }
     }
 }

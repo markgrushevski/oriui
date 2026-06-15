@@ -1,5 +1,22 @@
-@import 'sizes/sizes.css';
+/* ============================================================
+   oriUI — global styles entry point
+   Declare the cascade layer order once. Rules in later layers
+   win over earlier ones. Unlayered component style blocks
+   intentionally still win over all layers — a future phase
+   moves them into ori.components.
+   ============================================================ */
+@layer ori.reset, ori.tokens, ori.base, ori.components, ori.utilities;
+
+/* Each imported partial declares its own @layer block internally.
+   The order here determines source order within each layer. */
+@import 'reset.css';
+@import 'sizes/_sizes-screen.css';
+@import 'sizes/_sizes-action.css';
+@import 'sizes/_sizes-gap.css';
+@import 'sizes/_sizes-radius.css';
 @import 'positions/positions.css';
-@import 'themes/themes.css';
+@import 'themes/_themes-color-tokens.css';
+@import 'themes/_themes-color.css';
+@import 'themes/_themes-variant.css';
+@import 'fonts/_fonts-size.css';
 @import 'utils/utils.css';
-@import 'fonts/fonts.css';

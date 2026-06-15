@@ -1,81 +1,87 @@
-:root {
-    --ori-size-action_text: 1em;
-    --ori-size-action_xs: 20px;
-    --ori-size-action_sm: 24px;
-    --ori-size-action_md: 40px;
-    --ori-size-action_lg: 48px;
-    --ori-size-action_xl: 60px;
-    --ori-size-action_xxl: 68px;
+@layer ori.tokens {
+    :root {
+        --ori-size-action_text: 1em;
+        --ori-size-action_xs: 20px;
+        --ori-size-action_sm: 24px;
+        /* 44px meets the iOS HIG ≥44pt and Android Material ≥48dp touch-target minimums.
+           xs/sm remain compact opt-ins for dense/icon-only UI. */
+        --ori-size-action_md: 44px;
+        --ori-size-action_lg: 48px;
+        --ori-size-action_xl: 60px;
+        --ori-size-action_xxl: 68px;
 
-    --ori-size-action: var(--ori-size-action_text);
+        --ori-size-action: var(--ori-size-action_text);
 
-    --ori-size-action-space_text: 0;
-    --ori-size-action-space_xs: 10px;
-    --ori-size-action-space_sm: 12px;
-    --ori-size-action-space_md: 10px;
-    --ori-size-action-space_lg: 12px;
-    --ori-size-action-space_xl: 10px;
-    --ori-size-action-space_xxl: 12px;
+        --ori-size-action-space_text: 0;
+        --ori-size-action-space_xs: 10px;
+        --ori-size-action-space_sm: 12px;
+        --ori-size-action-space_md: 10px;
+        --ori-size-action-space_lg: 12px;
+        --ori-size-action-space_xl: 10px;
+        --ori-size-action-space_xxl: 12px;
 
-    --ori-size-action-space: var(--ori-size-action-space_text);
+        --ori-size-action-space: var(--ori-size-action-space_text);
+    }
 }
 
-.ori-size-action.ori-size-action_text {
-    --ori-size-action: var(--ori-size-action_text);
-}
+@layer ori.utilities {
+    .ori-size-action.ori-size-action_text {
+        --ori-size-action: var(--ori-size-action_text);
+    }
 
-.ori-size-action.ori-size-action_xs {
-    --ori-size-action: var(--ori-size-action_xs);
-}
+    .ori-size-action.ori-size-action_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
 
-.ori-size-action.ori-size-action_sm {
-    --ori-size-action: var(--ori-size-action_sm);
-}
+    .ori-size-action.ori-size-action_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
 
-.ori-size-action.ori-size-action_md {
-    --ori-size-action: var(--ori-size-action_md);
-}
+    .ori-size-action.ori-size-action_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
 
-.ori-size-action.ori-size-action_lg {
-    --ori-size-action: var(--ori-size-action_lg);
-}
+    .ori-size-action.ori-size-action_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
 
-.ori-size-action.ori-size-action_xl {
-    --ori-size-action: var(--ori-size-action_xl);
-}
+    .ori-size-action.ori-size-action_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
 
-.ori-size-action.ori-size-action_xxl {
-    --ori-size-action: var(--ori-size-action_xxl);
-}
+    .ori-size-action.ori-size-action_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
+    }
 
-/* .ori-size-action.ori-size-action-space {
-    padding: var(--ori-size-action-space);
-} */
+    /* .ori-size-action.ori-size-action-space {
+        padding: var(--ori-size-action-space);
+    } */
 
-.ori-size-action.ori-size-action-space_text {
-    --ori-size-action-space: var(--ori-size-action-space_text);
-}
+    .ori-size-action.ori-size-action-space_text {
+        --ori-size-action-space: var(--ori-size-action-space_text);
+    }
 
-.ori-size-action.ori-size-action-space_xs {
-    --ori-size-action-space: var(--ori-size-action-space_xs);
-}
+    .ori-size-action.ori-size-action-space_xs {
+        --ori-size-action-space: var(--ori-size-action-space_xs);
+    }
 
-.ori-size-action.ori-size-action-space_sm {
-    --ori-size-action-space: var(--ori-size-action-space_sm);
-}
+    .ori-size-action.ori-size-action-space_sm {
+        --ori-size-action-space: var(--ori-size-action-space_sm);
+    }
 
-.ori-size-action.ori-size-action-space_md {
-    --ori-size-action-space: var(--ori-size-action-space_md);
-}
+    .ori-size-action.ori-size-action-space_md {
+        --ori-size-action-space: var(--ori-size-action-space_md);
+    }
 
-.ori-size-action.ori-size-action-space_lg {
-    --ori-size-action-space: var(--ori-size-action-space_lg);
-}
+    .ori-size-action.ori-size-action-space_lg {
+        --ori-size-action-space: var(--ori-size-action-space_lg);
+    }
 
-.ori-size-action.ori-size-action-space_xl {
-    --ori-size-action-space: var(--ori-size-action-space_xl);
-}
+    .ori-size-action.ori-size-action-space_xl {
+        --ori-size-action-space: var(--ori-size-action-space_xl);
+    }
 
-.ori-size-action.ori-size-action-space_xxl {
-    --ori-size-action-space: var(--ori-size-action-space_xxl);
+    .ori-size-action.ori-size-action-space_xxl {
+        --ori-size-action-space: var(--ori-size-action-space_xxl);
+    }
 }

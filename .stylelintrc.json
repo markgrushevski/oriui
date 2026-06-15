@@ -8,7 +8,7 @@
             }
         ],
         "custom-property-pattern": [
-            "[a-z]+(-[a-z]+)*(_[a-z]+){0,2}",
+            "^[a-z]+(-[a-z0-9]+)*(_[a-z0-9]+){0,2}$",
             {
                 "message": "Expected kebab-case or BEM naming convention."
             }
