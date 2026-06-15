@@ -122,19 +122,18 @@
         --ori-color-on-background: var(--ori-color-on-background-dark);
     }
 
-    /* Signature "ori" skin (bold coral, "Dzen-Origami" palette).
+    /* Signature "ori" skin (graphite ink + paper, "Dzen-Origami" palette).
        Apply via data-ori-skin='ori' on the html element; page-level
        (per-subtree skins would need light-dark() - see DECISIONS.md).
        Overrides the role source tokens, so the light/dark machinery above
-       still applies on top. Note: coral #e63946 on white is ~4.2:1 - meets
-       WCAG AA for large text / UI (3:1) but not normal-text AA (4.5:1).
-       A deliberate trade for the bold look; the default neutral skin stays
-       strict AA. */
+       still applies on top. Graphite primary stays distinct from the red
+       danger status; coral is reserved as a future sparing accent.
+       Strict WCAG AA throughout (graphite / paper are high-contrast). */
     :root[data-ori-skin='ori'] {
-        --ori-color-primary-light: #e63946;
-        --ori-color-on-primary-light: #ffffff;
-        --ori-color-primary-dark: #e63946;
-        --ori-color-on-primary-dark: #ffffff;
+        --ori-color-primary-light: #2b2d42;
+        --ori-color-on-primary-light: #f4f1de;
+        --ori-color-primary-dark: #f4f1de;
+        --ori-color-on-primary-dark: #2b2d42;
 
         --ori-color-secondary-light: #ddb892;
         --ori-color-on-secondary-light: #2b2d42;

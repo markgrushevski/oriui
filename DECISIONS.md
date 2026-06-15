@@ -38,11 +38,12 @@ resolves on top. This is **page-level** (the active alias resolves at `:root`, s
 descendant wouldn't propagate). Per-subtree skins (e.g. a theme gallery showing several at
 once) would need a `light-dark()` restructure — deferred, noted as a future option.
 
-**Signature "ori" skin (織り):** bold coral — primary `#e63946`, milky surface `#f4f1de`,
-wood secondary `#ddb892`, graphite text `#2b2d42` (user chose the bold mapping over a
-graphite-primary one). Trade-off accepted: coral-on-white is ~4.2:1 (WCAG AA for large text /
-UI 3:1, not normal-text 4.5:1), and coral primary visually neighbours the red danger status.
-The default neutral skin stays strict AA; expressive themes may relax to AA-large.
+**Signature "ori" skin (織り):** graphite ink + paper — primary `#2b2d42` (paper text),
+secondary wood `#ddb892`, surface milky `#f4f1de`, background ivory `#fffdf6`; status colors
+stay default. Coral `#e63946` is reserved as a future sparing accent. The user first picked a
+bold coral primary, then reverted: coral sits at nearly the same hue as the red danger status
+(confusing) and only met AA-large. Graphite primary is fully WCAG AA and clearly distinct from
+the danger status.
 
 ## Styling: standalone CSS, no Tailwind in core
 
