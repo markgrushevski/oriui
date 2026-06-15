@@ -8,7 +8,7 @@ next:
 ---
 
 <script setup>
-import { VCard, VButton } from '@lib';
+import { OriCard, OriButton } from '@lib';
 
 const base = process.env.NODE_ENV === 'production' ? '' : '/docs';
 const imageLink = `${base}/image-example.jpg`;
@@ -24,34 +24,34 @@ Element for handling any content
 
 ```vue {2}
 <script setup>
-import { VCard } from 'vueinjar';
+import { OriCard } from 'oriui';
 
 const imageLink = '...';
 const iconPath = '...';
 </script>
 
 <template>
-    <v-card
+    <ori-card
         :prepend-avatar="imageLink"
         :append-icon="iconPath"
         title="Title"
         subtitle="Subtitle"
         text="Lorem ipsum dolor sit amet, consectetur adipisicing..."
-    ></v-card>
+    ></ori-card>
 </template>
 ```
 
 :::info Output
 
 <div class="vij flex">
-    <v-card 
+    <ori-card 
         :prepend-avatar="imageLink" 
         :append-icon="iconPath" 
         title="Title" 
         subtitle="Subtitle" 
         text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur atque deleniti facere iure magni nulla placeat repudiandae veniam, vero."
         style="margin-block: 8px;"
-    ></v-card>
+    ></ori-card>
 </div>
 
 :::
@@ -61,14 +61,14 @@ const iconPath = '...';
 <!-- prettier-ignore-start -->
 ```vue {2}
 <script setup>
-import { VCard } from 'vueinjar';
+import { OriCard } from 'oriui';
 
 const imageLink = '...';
 const iconPath = '...';
 </script>
 
 <template>
-    <v-card
+    <ori-card
         :prepend-avatar="imageLink"
         :append-icon="copyIcon"
         title="Title"
@@ -76,9 +76,9 @@ const iconPath = '...';
         row
     >
         <template #actions-append>
-            <v-button text="Do something" variant="tonal" />
+            <ori-button text="Do something" variant="tonal" />
         </template>
-    </v-card>
+    </ori-card>
 </template>
 ```
 <!-- prettier-ignore-end -->
@@ -86,7 +86,7 @@ const iconPath = '...';
 :::info Output
 
 <div class="vij flex">
-    <v-card
+    <ori-card
         :prepend-avatar="imageLink"
         :append-icon="copyIcon"
         title="Title"
@@ -94,9 +94,9 @@ const iconPath = '...';
         row
     >
         <template #actions-append>
-            <v-button text="Do something" variant="tonal" />
+            <ori-button text="Do something" variant="tonal" />
         </template>
-    </v-card>
+    </ori-card>
 </div>
 
 :::

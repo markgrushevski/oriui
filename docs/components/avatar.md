@@ -5,7 +5,7 @@ next:
 ---
 
 <script setup>
-import { VAvatar } from '@lib';
+import { OriAvatar } from '@lib';
 
 const base = process.env.NODE_ENV === 'production' ? '' : '/docs';
 const imageLink = `${base}/image-example.jpg`;
@@ -19,24 +19,24 @@ Base element for avatar image
 
 ```vue {2}
 <script setup>
-import { VAvatar } from 'vueinjar';
+import { OriAvatar } from 'oriui';
 
 const imageLink = '...';
 </script>
 
 <template>
-    <v-avatar />
-    <v-avatar text="Some name" />
-    <v-avatar :src="imageLink" />
+    <ori-avatar />
+    <ori-avatar text="Some name" />
+    <ori-avatar :src="imageLink" />
 </template>
 ```
 
 :::info Output
 
 <div class="vij flex">
-    <v-avatar />
-    <v-avatar text="Some name" />
-    <v-avatar :src="imageLink" />
+    <ori-avatar />
+    <ori-avatar text="Some name" />
+    <ori-avatar :src="imageLink" />
 </div>
 
 :::
@@ -45,19 +45,19 @@ const imageLink = '...';
 
 ```vue {2}
 <script setup>
-import { VAvatar } from 'vueinjar';
+import { OriAvatar } from 'oriui';
 
 const imageLink = '...';
 </script>
 
 <template>
-    <v-avatar
+    <ori-avatar
         text="Marcus Tullius Cicero"
         title="Marcus Tullius Cicero"
         subtitle="statesman · lawyer · writer · orator"
         size="xxl"
     />
-    <v-avatar
+    <ori-avatar
         text="Marcus Tullius Cicero"
         title="Marcus Tullius Cicero"
         subtitle="statesman · lawyer · writer · orator"
@@ -70,13 +70,13 @@ const imageLink = '...';
 :::info Output
 
 <div class="vij flex" style="gap: 32px">
-    <v-avatar 
+    <ori-avatar 
         text="Marcus Tullius Cicero"
         title="Marcus Tullius Cicero" 
         subtitle="statesman · lawyer · writer · orator" 
         size="xxl"
     />
-    <v-avatar
+    <ori-avatar
         text="Marcus Tullius Cicero"
         title="Marcus Tullius Cicero"
         subtitle="statesman · lawyer · writer · orator"
@@ -91,34 +91,34 @@ const imageLink = '...';
 
 ```vue {2}
 <script setup>
-import { VAvatar } from 'vueinjar';
+import { OriAvatar } from 'oriui';
 </script>
 
 <template>
-    <v-avatar text="Some name" />
-    <v-avatar text="Some name" color="primary" />
-    <v-avatar text="Some name" color="secondary" />
-    <v-avatar text="Some name" color="surface" />
-    <v-avatar text="Some name" color="background" />
-    <v-avatar text="Some name" color="success" />
-    <v-avatar text="Some name" color="warn" />
-    <v-avatar text="Some name" color="danger" />
-    <v-avatar text="Some name" color="info" />
+    <ori-avatar text="Some name" />
+    <ori-avatar text="Some name" color="primary" />
+    <ori-avatar text="Some name" color="secondary" />
+    <ori-avatar text="Some name" color="surface" />
+    <ori-avatar text="Some name" color="background" />
+    <ori-avatar text="Some name" color="success" />
+    <ori-avatar text="Some name" color="warn" />
+    <ori-avatar text="Some name" color="danger" />
+    <ori-avatar text="Some name" color="info" />
 </template>
 ```
 
 :::info Output
 
 <div class="vij flex column center">
-    <v-avatar text="Some name" />
-    <v-avatar text="Some name" color="primary" />
-    <v-avatar text="Some name" color="secondary" />
-    <v-avatar text="Some name" color="surface" />
-    <v-avatar text="Some name" color="background" />
-    <v-avatar text="Some name" color="success" />
-    <v-avatar text="Some name" color="warn" />
-    <v-avatar text="Some name" color="danger" />
-    <v-avatar text="Some name" color="info" />
+    <ori-avatar text="Some name" />
+    <ori-avatar text="Some name" color="primary" />
+    <ori-avatar text="Some name" color="secondary" />
+    <ori-avatar text="Some name" color="surface" />
+    <ori-avatar text="Some name" color="background" />
+    <ori-avatar text="Some name" color="success" />
+    <ori-avatar text="Some name" color="warn" />
+    <ori-avatar text="Some name" color="danger" />
+    <ori-avatar text="Some name" color="info" />
 </div>
 
 :::

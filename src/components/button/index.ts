@@ -1,1 +1,1 @@
-export { default as VButton } from './v-button.vue';
+export { default as OriButton } from './ori-button.vue';
