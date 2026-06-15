@@ -30,6 +30,7 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
+        "./css": "./dist/styles/styles.css",
         "./package.json": "./package.json"
     },
     "sideEffects": [
