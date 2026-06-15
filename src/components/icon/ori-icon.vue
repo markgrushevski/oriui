@@ -1,17 +1,13 @@
 <script lang="ts" setup>
 import type { ActionSize, ThemeColor } from '../../types';
 
-withDefaults(
-    defineProps<{
-        color?: ThemeColor;
-        icon?: string;
-        inline?: boolean;
-        /** @default "text" */
-        size?: ActionSize;
-        spaced?: boolean;
-    }>(),
-    { size: 'text' }
-);
+const { size = 'text' } = defineProps<{
+    color?: ThemeColor;
+    icon?: string;
+    inline?: boolean;
+    size?: ActionSize;
+    spaced?: boolean;
+}>();
 </script>
 
 <template>

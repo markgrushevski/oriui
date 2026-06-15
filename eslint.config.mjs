@@ -24,7 +24,8 @@ export default tseslint.config(
             }
         },
         rules: {
-            'vue/require-default-prop': 'off'
+            'vue/require-default-prop': 'off',
+            'vue/no-setup-props-reactivity-loss': 'error'
         }
     },
     configPrettier

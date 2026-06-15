@@ -3,36 +3,30 @@ import type { RadiusSize, ThemeColor, Variant } from '../../types';
 import { OriAvatar } from '../avatar';
 import { OriIcon } from '../icon';
 
-withDefaults(
-    defineProps<{
-        appendAvatar?: string;
-        appendIcon?: string;
-        /** @default "primary" */
-        color?: ThemeColor;
-        disabled?: boolean;
-        fluid?: boolean;
-        icon?: string;
-        image?: string;
-        loading?: boolean;
-        prependAvatar?: string;
-        prependIcon?: string;
-        /** @default "rounded" */
-        radius?: RadiusSize;
-        reverseAppendedActions?: boolean;
-        reversePrependedActions?: boolean;
-        subtitle?: string;
-        text?: string;
-        title?: string;
-        /** @default "fill" */
-        variant?: Variant;
-        row?: boolean;
-    }>(),
-    {
-        color: 'surface',
-        radius: 'lg',
-        variant: 'fill'
-    }
-);
+const {
+    color = 'surface',
+    radius = 'lg',
+    variant = 'fill'
+} = defineProps<{
+    appendAvatar?: string;
+    appendIcon?: string;
+    color?: ThemeColor;
+    disabled?: boolean;
+    fluid?: boolean;
+    icon?: string;
+    image?: string;
+    loading?: boolean;
+    prependAvatar?: string;
+    prependIcon?: string;
+    radius?: RadiusSize;
+    reverseAppendedActions?: boolean;
+    reversePrependedActions?: boolean;
+    subtitle?: string;
+    text?: string;
+    title?: string;
+    variant?: Variant;
+    row?: boolean;
+}>();
 </script>
 
 <template>
