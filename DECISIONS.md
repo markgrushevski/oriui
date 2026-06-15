@@ -27,10 +27,22 @@ instead of relaxing the rule). Judgment-heavy work needs Opus review.
 
 ## Design system = token contract + skins (not "be Material 3")
 
-Default skin is vendor-neutral (slate ramp + a calm slate-blue accent; red/green/amber are
-reserved for status, not brand). The signature "ori" (織り) theme and a preset gallery are
-optional skins; Material 3 / iOS are just other skins. Rejected: anchoring on Material 3 —
-too vendor-specific for a layered, skinnable system.
+Default skin is vendor-neutral (slate ramp + a calm slate-blue accent; status hues
+red/green/amber are reserved for status, not brand) and stays strict WCAG AA. Optional skins
+override the role source tokens; Material 3 / iOS would just be more skins. Rejected:
+anchoring on Material 3 — too vendor-specific for a layered, skinnable system.
+
+**Skin mechanism:** a skin is applied via `data-ori-skin="<name>"` on `<html>` and overrides
+the `--ori-color-<role>-<light|dark>` source tokens; the existing light/dark machinery then
+resolves on top. This is **page-level** (the active alias resolves at `:root`, so a skin on a
+descendant wouldn't propagate). Per-subtree skins (e.g. a theme gallery showing several at
+once) would need a `light-dark()` restructure — deferred, noted as a future option.
+
+**Signature "ori" skin (織り):** bold coral — primary `#e63946`, milky surface `#f4f1de`,
+wood secondary `#ddb892`, graphite text `#2b2d42` (user chose the bold mapping over a
+graphite-primary one). Trade-off accepted: coral-on-white is ~4.2:1 (WCAG AA for large text /
+UI 3:1, not normal-text 4.5:1), and coral primary visually neighbours the red danger status.
+The default neutral skin stays strict AA; expressive themes may relax to AA-large.
 
 ## Styling: standalone CSS, no Tailwind in core
 

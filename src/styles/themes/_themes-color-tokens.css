@@ -32,10 +32,10 @@
          secondary  neutral-900 / neutral-200 — ratio ~13.5:1  pass
          surface    neutral-900 / neutral-50  — ratio ~18.1:1  pass
          background neutral-900 / #ffffff     — ratio ~19.5:1  pass
-         success    white   / #16a34a — ratio ~4.54:1  pass
+         success    white   / #15803d — ratio ~5.9:1   pass
          warn       neutral-950 / #f59e0b — ratio ~9.72:1  pass (dark on-color: amber is light)
-         danger     white   / #dc2626 — ratio ~4.52:1  pass
-         info       white   / #2563eb — ratio ~4.51:1  pass
+         danger     white   / #b91c1c — ratio ~6.4:1   pass
+         info       white   / #1d4ed8 — ratio ~6.5:1   pass
 
        DARK THEME:
          primary    neutral-950 / #6b83d9 — ratio ~6.14:1  pass
@@ -69,13 +69,13 @@
         --ori-color-on-background-dark: var(--ori-neutral-50);
 
         /* Status — shared across both themes (own hues) */
-        --ori-color-success: #16a34a;
+        --ori-color-success: #15803d;
         --ori-color-on-success: #ffffff;
         --ori-color-warn: #f59e0b;
         --ori-color-on-warn: var(--ori-neutral-950);
-        --ori-color-danger: #dc2626;
+        --ori-color-danger: #b91c1c;
         --ori-color-on-danger: #ffffff;
-        --ori-color-info: #2563eb;
+        --ori-color-info: #1d4ed8;
         --ori-color-on-info: #ffffff;
 
         /* Active semantic aliases — default to light */
@@ -120,5 +120,35 @@
         --ori-color-on-surface: var(--ori-color-on-surface-dark);
         --ori-color-background: var(--ori-color-background-dark);
         --ori-color-on-background: var(--ori-color-on-background-dark);
+    }
+
+    /* Signature "ori" skin (bold coral, "Dzen-Origami" palette).
+       Apply via data-ori-skin='ori' on the html element; page-level
+       (per-subtree skins would need light-dark() - see DECISIONS.md).
+       Overrides the role source tokens, so the light/dark machinery above
+       still applies on top. Note: coral #e63946 on white is ~4.2:1 - meets
+       WCAG AA for large text / UI (3:1) but not normal-text AA (4.5:1).
+       A deliberate trade for the bold look; the default neutral skin stays
+       strict AA. */
+    :root[data-ori-skin='ori'] {
+        --ori-color-primary-light: #e63946;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #e63946;
+        --ori-color-on-primary-dark: #ffffff;
+
+        --ori-color-secondary-light: #ddb892;
+        --ori-color-on-secondary-light: #2b2d42;
+        --ori-color-secondary-dark: #8c6d52;
+        --ori-color-on-secondary-dark: #f4f1de;
+
+        --ori-color-surface-light: #f4f1de;
+        --ori-color-on-surface-light: #2b2d42;
+        --ori-color-surface-dark: #2b2d42;
+        --ori-color-on-surface-dark: #f4f1de;
+
+        --ori-color-background-light: #fffdf6;
+        --ori-color-on-background-light: #2b2d42;
+        --ori-color-background-dark: #1f2030;
+        --ori-color-on-background-dark: #f4f1de;
     }
 }
