@@ -4,31 +4,27 @@ import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 
 defineOptions({ inheritAttrs: false });
 
-const p = withDefaults(
-    defineProps<{
-        color?: ThemeColor;
-        inline?: boolean;
-        /** @default "rounded" */
-        radius?: RadiusSize;
-        shadow?: boolean;
-        /** @default "lg" */
-        size?: ActionSize;
-        spaced?: boolean;
-        subtitle?: string;
-        text?: string;
-        title?: string;
-        reverse?: boolean;
-    }>(),
-    {
-        radius: 'rounded',
-        size: 'lg'
-    }
-);
+const {
+    radius = 'rounded',
+    size = 'lg',
+    text
+} = defineProps<{
+    color?: ThemeColor;
+    inline?: boolean;
+    radius?: RadiusSize;
+    shadow?: boolean;
+    size?: ActionSize;
+    spaced?: boolean;
+    subtitle?: string;
+    text?: string;
+    title?: string;
+    reverse?: boolean;
+}>();
 
 const loaded = ref(false);
 
 const name = computed(() => {
-    const words = p.text?.trim()?.split(' ') ?? [];
+    const words = text?.trim()?.split(' ') ?? [];
 
     if (words.length > 0) {
         const [word1, word2] = words;

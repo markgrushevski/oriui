@@ -3,39 +3,28 @@ import type { ActionSize, Variant, ThemeColor, CenteredPosition, RadiusSize } fr
 import { OriSpinner } from '../spinner';
 import { OriIcon } from '../icon';
 
-withDefaults(
-    defineProps<{
-        active?: boolean;
-        /**
-         * @description An HTML tag name, a Component name or Component class reference.
-         * @default "button"
-         * */
-        as?: string | object;
-        /** @default "primary" */
-        color?: ThemeColor;
-        disabled?: boolean;
-        fluid?: boolean;
-        icon?: string;
-        /** @default "left" */
-        iconPosition?: CenteredPosition;
-        loading?: boolean;
-        /** @default "rounded" */
-        radius?: RadiusSize;
-        /** @default "md" */
-        size?: ActionSize;
-        text?: string;
-        /** @default "fill" */
-        variant?: Variant;
-    }>(),
-    {
-        as: 'button',
-        color: 'primary',
-        iconPosition: 'left',
-        radius: 'rounded',
-        size: 'md',
-        variant: 'fill'
-    }
-);
+const {
+    as = 'button',
+    color = 'primary',
+    iconPosition = 'left',
+    radius = 'rounded',
+    size = 'md',
+    variant = 'fill'
+} = defineProps<{
+    active?: boolean;
+    /** An HTML tag name, a Component name or Component class reference. */
+    as?: string | object;
+    color?: ThemeColor;
+    disabled?: boolean;
+    fluid?: boolean;
+    icon?: string;
+    iconPosition?: CenteredPosition;
+    loading?: boolean;
+    radius?: RadiusSize;
+    size?: ActionSize;
+    text?: string;
+    variant?: Variant;
+}>();
 </script>
 
 <template>
