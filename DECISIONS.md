@@ -4,6 +4,28 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Docs = a dogfooded Nuxt app built with oriUI (replaces VitePress)
+
+The docs site is the project's portfolio centerpiece, so it is built **with oriUI itself** —
+the way Nuxt UI / PrimeVue / Vuetify dogfood their own libraries — rather than on VitePress's
+own design-system theme (which you fight to override). Decision: a **Nuxt 4 + Nuxt Content 3**
+app provides the undifferentiated plumbing (routing, markdown→Vue via MDC, SSG, search) while
+the entire visible surface (shell, nav, demos, toggles) is oriUI. The docs' needs become the
+**forcing function** for the component catalog + headless layer — every shell piece that isn't
+yet an ori component is the next thing to build.
+
+- **Layout:** docs is a private **npm workspace** (`docs/`, `workspaces: ["docs"]`); a single
+  root `npm install` installs it. It imports components as `from 'oriui'`, aliased in
+  `nuxt.config` to `../src` for live HMR (dogfoods source; a true package dep arrives with the
+  `@oriui/*` monorepo split). Publishing is unaffected — `files: ["dist"]`, docs is `private`.
+- **Theming:** the whole shell uses `--ori-color-*` tokens, so the nav theme (light/dark via
+  `html.dark`) + skin (`data-ori-skin`) toggles reskin the entire site, not just the demos. An
+  inline head script applies the saved theme/skin before paint (no flash).
+- **Trade-off accepted (user chose "commit to Nuxt now"):** more non-ori scaffolding up front
+  (shell starts as plain markup, replaced by ori components as they land) in exchange for the
+  "this is a real app built on my library" signal sooner. Rejected: staged VitePress-theme
+  dogfooding (cheaper, but VitePress's shell never becomes truly ours).
+
 ## Living preview = the VitePress docs, not a standalone playground
 
 The dev playground (`index.html` + `playground/`) duplicated what the docs already do — the

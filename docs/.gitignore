@@ -1,0 +1,9 @@
+# Nuxt dev/build artifacts
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+node_modules
+*.log

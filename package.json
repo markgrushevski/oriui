@@ -22,6 +22,9 @@
     "files": [
         "dist"
     ],
+    "workspaces": [
+        "docs"
+    ],
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -37,7 +40,7 @@
         "**/*.css"
     ],
     "scripts": {
-        "dev": "vitepress dev docs",
+        "dev": "npm run dev --workspace docs",
         "types": "vue-tsc --noEmit",
         "types:watch": "vue-tsc --noEmit --watch",
         "build": "vite build && vue-tsc -p tsconfig.build.json",
@@ -48,9 +51,9 @@
         "lint:all": "npm run lint:prettier && npm run lint:stylelint && npm run lint:eslint",
         "prepare": "husky",
         "prepack": "npm run build",
-        "docs:dev": "vitepress dev docs",
-        "docs:build": "vitepress build docs",
-        "docs:preview": "vitepress preview docs"
+        "docs:dev": "npm run dev --workspace docs",
+        "docs:build": "npm run generate --workspace docs",
+        "docs:preview": "npm run preview --workspace docs"
     },
     "peerDependencies": {
         "vue": "^3"

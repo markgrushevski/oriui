@@ -1,0 +1,63 @@
+<script setup lang="ts">
+import { onMounted } from 'vue';
+
+const { theme, skin, init, toggleTheme, toggleSkin } = useOriTheme();
+
+const nav = [
+    { label: 'Home', to: '/' },
+    { label: 'Playground', to: '/playground' },
+    { label: 'Get started', to: '/guide/get-started' }
+];
+
+const sidebar = [
+    { title: 'Guide', links: [{ label: 'Get started', to: '/guide/get-started' }] },
+    { title: 'Components', links: [{ label: 'Button', to: '/components/button' }] },
+    { title: 'Showcase', links: [{ label: 'Playground', to: '/playground' }] }
+];
+
+onMounted(init);
+</script>
+
+<template>
+    <div class="docs">
+        <header class="docs-nav">
+            <NuxtLink to="/" class="docs-brand">oriUI</NuxtLink>
+
+            <nav class="docs-nav__links">
+                <NuxtLink v-for="item in nav" :key="item.to" :to="item.to">{{ item.label }}</NuxtLink>
+            </nav>
+
+            <span class="docs-nav__spacer" />
+
+            <ClientOnly>
+                <OriButton
+                    size="sm"
+                    variant="outline"
+                    color="primary"
+                    :text="theme === 'dark' ? '☾ Dark' : '☀ Light'"
+                    @click="toggleTheme"
+                />
+                <OriButton size="sm" variant="outline" color="primary" :text="`skin: ${skin}`" @click="toggleSkin" />
+            </ClientOnly>
+
+            <a class="docs-nav__gh" href="https://github.com/markgrushevski/vueinjar" target="_blank" rel="noopener">
+                GitHub
+            </a>
+        </header>
+
+        <div class="docs-body">
+            <aside class="docs-sidebar">
+                <div v-for="group in sidebar" :key="group.title" class="docs-sidebar__group">
+                    <p class="docs-sidebar__title">{{ group.title }}</p>
+                    <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to" class="docs-sidebar__link">
+                        {{ link.label }}
+                    </NuxtLink>
+                </div>
+            </aside>
+
+            <main class="docs-main">
+                <slot />
+            </main>
+        </div>
+    </div>
+</template>
