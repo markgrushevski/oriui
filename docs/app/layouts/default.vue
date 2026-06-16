@@ -15,7 +15,12 @@ const sidebar = [
     { title: 'Showcase', links: [{ label: 'Playground', to: '/playground' }] }
 ];
 
-onMounted(init);
+const { init: initFramework } = useOriFramework();
+
+onMounted(() => {
+    init();
+    initFramework();
+});
 </script>
 
 <template>
