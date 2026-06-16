@@ -4,6 +4,21 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## No-framework / htmx is a first-class target for `oriui/css`
+
+The `oriui/css` layer (pure `.ori-*` classes + zero-runtime token theming) works with **no JS
+framework** — server-rendered **htmx**, Astro, and plain HTML are first-class. The server emits
+`<button class="ori-button ori-variant_fill …" hx-get="/x">`, htmx swaps fragments: no build step,
+no hydration. Theme/skin are a `.dark` class / `data-ori-skin` attribute on `<html>` that the
+server (or a tiny inline script) sets — zero JS theming runtime; CSS transitions compose with
+`hx-swap`. (The DaisyUI-with-htmx niche, minus Tailwind.) The styled **Vue** layer is N/A in htmx;
+the **headless** layer is Vue-oriented today.
+
+Complex behavior htmx doesn't provide (focus-trap, roving-tabindex) → a **future** `oriui/headless`
+vanilla adapter via Zag's `@zag-js/vanilla` behind the existing contract (deferred). Recorded as an
+explicit target: "works even without a JS framework" is a strong portfolio signal and shapes the
+docs applicability matrix (and an optional HTML/htmx tab in the Example switcher).
+
 ## Docs: per-component pages, framework-switchable examples, Vercel SSG
 
 Four docs requirements (user):
