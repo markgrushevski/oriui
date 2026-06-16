@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-const { theme, skin, init, toggleTheme, toggleSkin } = useOriTheme();
+const { theme, init, toggleTheme } = useOriTheme();
 
 const nav = [
     { label: 'Home', to: '/' },
@@ -51,7 +51,7 @@ onMounted(() => {
                     :text="theme === 'dark' ? '☾ Dark' : '☀ Light'"
                     @click="toggleTheme"
                 />
-                <OriButton size="sm" variant="outline" color="primary" :text="`skin: ${skin}`" @click="toggleSkin" />
+                <SkinPicker />
             </ClientOnly>
 
             <a class="docs-nav__gh" href="https://github.com/markgrushevski/vueinjar" target="_blank" rel="noopener">
