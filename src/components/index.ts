@@ -7,3 +7,4 @@ export * from './dialog';
 export * from './input';
 export * from './checkbox';
 export * from './switch';
+export * from './radio';

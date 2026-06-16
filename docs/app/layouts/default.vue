@@ -27,6 +27,7 @@ const sidebar = [
             { label: 'Dialog', to: '/components/dialog' },
             { label: 'Icon', to: '/components/icon' },
             { label: 'Input', to: '/components/input' },
+            { label: 'Radio', to: '/components/radio' },
             { label: 'Spinner', to: '/components/spinner' },
             { label: 'Switch', to: '/components/switch' }
         ]
