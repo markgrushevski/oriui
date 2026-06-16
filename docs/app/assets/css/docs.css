@@ -399,6 +399,11 @@ a {
     color: inherit;
 }
 
+/* Demo helper — keep example cards card-width instead of filling the canvas. */
+.doc-card {
+    max-width: 340px;
+}
+
 @media (max-width: 720px) {
     .docs-sidebar {
         display: none;

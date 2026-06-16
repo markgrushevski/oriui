@@ -27,7 +27,13 @@ const features = [
 
         <div class="home__cta">
             <OriButton :as="NuxtLink" to="/guide/get-started" text="Get started" color="primary" />
-            <OriButton :as="NuxtLink" to="/playground" text="Live playground" variant="outline" color="primary" />
+            <OriButton
+                :as="NuxtLink"
+                to="/components/button"
+                text="Browse components"
+                variant="outline"
+                color="primary"
+            />
         </div>
 
         <div class="home__features">

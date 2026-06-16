@@ -73,8 +73,8 @@ Every example below is live, with its source switchable between **Vue** (the sty
 ## States
 
 ::example
-:ori-button{text="loading" loading="true" color="primary"}
-:ori-button{text="disabled" disabled="true" color="primary"}
+:ori-button{text="loading" :loading="true" color="primary"}
+:ori-button{text="disabled" :disabled="true" color="primary"}
 
 #vue
 
