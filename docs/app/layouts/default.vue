@@ -23,10 +23,12 @@ const sidebar = [
             { label: 'Avatar', to: '/components/avatar' },
             { label: 'Button', to: '/components/button' },
             { label: 'Card', to: '/components/card' },
+            { label: 'Checkbox', to: '/components/checkbox' },
             { label: 'Dialog', to: '/components/dialog' },
             { label: 'Icon', to: '/components/icon' },
             { label: 'Input', to: '/components/input' },
-            { label: 'Spinner', to: '/components/spinner' }
+            { label: 'Spinner', to: '/components/spinner' },
+            { label: 'Switch', to: '/components/switch' }
         ]
     }
 ];
