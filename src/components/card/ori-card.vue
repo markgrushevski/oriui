@@ -39,11 +39,11 @@ const {
                 'ori-card_row': row,
                 [`ori-size-radius ori-size-radius_${radius}`]: radius,
                 [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color,
-                'ori-loading': loading,
-                'ori-disabled': disabled
+                [`ori-color ori-color_${color}`]: color
             }
         ]"
+        :aria-disabled="disabled ? 'true' : undefined"
+        :aria-busy="loading ? 'true' : undefined"
     >
         <slot>
             <div
@@ -113,6 +113,15 @@ const {
 
     font-size: 1rem;
     overflow-wrap: break-word;
+}
+
+.ori-card[aria-disabled='true'] {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.ori-card[aria-busy='true'] {
+    pointer-events: none;
 }
 
 .ori-card.ori-card_fluid {

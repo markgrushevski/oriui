@@ -40,16 +40,19 @@ const {
                 [`ori-size-radius ori-size-radius_${radius}`]: radius,
                 [`ori-font-size ori-font-size_${size}`]: size,
                 [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color,
-                'ori-active': active,
-                'ori-loading': loading,
-                'ori-disabled': disabled
+                [`ori-color ori-color_${color}`]: color
             }
         ]"
+        :type="as === 'button' ? 'button' : undefined"
+        :disabled="as === 'button' && (disabled || loading) ? true : undefined"
+        :aria-disabled="disabled ? 'true' : undefined"
+        :aria-busy="loading ? 'true' : undefined"
+        :data-active="active ? '' : undefined"
+        :tabindex="disabled && as !== 'button' ? -1 : undefined"
     >
         <slot>
             <ori-icon v-if="icon && !loading" :icon="icon" class="ori-button__icon" />
-            <ori-spinner v-else-if="loading" class="ori-button__icon" />
+            <ori-spinner v-else-if="loading" aria-hidden="true" class="ori-button__icon" />
 
             <span v-if="text" class="ori-button__text">{{ text }}</span>
         </slot>
@@ -90,6 +93,21 @@ const {
     cursor: pointer;
     user-select: none;
     gap: 0.125em 0.375em;
+}
+
+.ori-button:focus-visible {
+    outline: 2px solid var(--ori-color-primary);
+    outline-offset: 2px;
+}
+
+.ori-button:disabled,
+.ori-button[aria-disabled='true'] {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.ori-button[aria-busy='true'] {
+    pointer-events: none;
 }
 
 .ori-button.ori-button_fluid {

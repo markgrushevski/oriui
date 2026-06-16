@@ -46,7 +46,7 @@
         --ori-variant-text-color: var(--ori-color);
     }
 
-    .ori-variant.ori-variant_fill.ori-active,
+    .ori-variant.ori-variant_fill[data-active],
     .ori-button.ori-variant.ori-variant_fill:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
@@ -57,7 +57,7 @@
         }
     }
 
-    .ori-variant.ori-variant_tonal.ori-active,
+    .ori-variant.ori-variant_tonal[data-active],
     .ori-button.ori-variant.ori-variant_tonal:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
     }
@@ -68,7 +68,7 @@
         }
     }
 
-    .ori-variant.ori-variant_outline.ori-active,
+    .ori-variant.ori-variant_outline[data-active],
     .ori-button.ori-variant.ori-variant_outline:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
@@ -79,7 +79,7 @@
         }
     }
 
-    .ori-variant.ori-variant_text.ori-active,
+    .ori-variant.ori-variant_text[data-active],
     .ori-button.ori-variant.ori-variant_text:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
@@ -90,7 +90,7 @@
         }
     }
 
-    .ori-variant.ori-variant_plain.ori-active,
+    .ori-variant.ori-variant_plain[data-active],
     .ori-button.ori-variant.ori-variant_plain:active {
         --ori-variant-opacity: 1;
     }

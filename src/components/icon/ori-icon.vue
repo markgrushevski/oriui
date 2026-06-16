@@ -5,6 +5,7 @@ const { size = 'text' } = defineProps<{
     color?: ThemeColor;
     icon?: string;
     inline?: boolean;
+    label?: string;
     size?: ActionSize;
     spaced?: boolean;
 }>();
@@ -21,6 +22,9 @@ const { size = 'text' } = defineProps<{
                 [`ori-color ori-color_${color}`]: color
             }
         ]"
+        :role="label ? 'img' : undefined"
+        :aria-label="label || undefined"
+        :aria-hidden="label ? undefined : 'true'"
     >
         <slot>
             <svg v-if="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
