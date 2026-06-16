@@ -50,6 +50,22 @@ const plus = 'M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z';
                 <OriSpinner color="primary" size="xl" />
             </div>
         </section>
+
+        <section>
+            <h3>Dialog — powered by Zag (focus trap · Escape · scroll lock)</h3>
+            <div class="ori-pg__row">
+                <OriDialog title="Weave a dialog">
+                    <template #trigger="{ props }">
+                        <OriButton v-bind="props" text="Open dialog" color="primary" />
+                    </template>
+                    <p>
+                        This modal's behavior comes from Zag through oriUI's swappable headless contract — focus is
+                        trapped, Escape closes it, the page behind is scroll-locked, and it's announced as aria-modal.
+                        The same component would run on a different engine by changing one line.
+                    </p>
+                </OriDialog>
+            </div>
+        </section>
     </div>
 </template>
 

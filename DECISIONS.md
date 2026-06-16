@@ -4,6 +4,26 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Native default for simple behavior, Zag for complex; a deep own-engine is a separate project
+
+Portfolio reasoning (user asked what's best for a portfolio): do **not** build a full own headless
+inside oriUI — it muddies oriUI's story (design system / CSS / a11y / library engineering + the
+mature "integrate, don't reinvent" judgment) and invites an unflattering same-repo comparison to
+Zag. Concretely:
+
+- **Simple primitives** (disclosure, toggle) keep a tiny **native zero-dependency default** — they
+  work out of the box ("daisyUI-simple"); that is a feature, not reinvention.
+- **Complex behavior** (dialog, menu, combobox, listbox, datepicker — focus traps, typeahead, RTL,
+  full keyboard) uses the **Zag adapter** (opt-in). Reinventing those is the foolish part; a focus
+  trap looks identical in a portfolio whether it's ours or Zag's.
+- **A deep from-scratch headless engine belongs in its own focused project** if you want to show
+  that skill — and the swappable contract here lets you plug it into oriUI later as another adapter
+  (the two portfolio pieces then link). Don't block oriUI on it.
+
+One contract, three sources (native / Zag / your own). `useDisclosure` has a native default;
+`useDialog` has **no** native default and requires an adapter (fails loud with guidance) — it is by
+definition the hard case we delegate. oriUI's energy goes to its niche.
+
 ## Headless = use Zag, don't reinvent it; keep a swappable contract (supersedes the next entry)
 
 After building the native Disclosure (below) to understand the model, the call: **don't compete
