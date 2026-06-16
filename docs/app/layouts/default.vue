@@ -10,7 +10,13 @@ const nav = [
 ];
 
 const sidebar = [
-    { title: 'Guide', links: [{ label: 'Get started', to: '/guide/get-started' }] },
+    {
+        title: 'Guide',
+        links: [
+            { label: 'Get started', to: '/guide/get-started' },
+            { label: 'Using CSS', to: '/guide/css' }
+        ]
+    },
     {
         title: 'Components',
         links: [

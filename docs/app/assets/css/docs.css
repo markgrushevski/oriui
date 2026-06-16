@@ -388,6 +388,30 @@ a {
     color: inherit;
 }
 
+.prose table {
+    width: 100%;
+    margin: 0 0 16px;
+
+    font-size: 14px;
+
+    border-collapse: collapse;
+}
+
+.prose th,
+.prose td {
+    padding: 8px 12px;
+
+    border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
+
+    text-align: left;
+}
+
+.prose th {
+    background: color-mix(in srgb, var(--ori-color-on-background) 4%, transparent);
+
+    font-weight: 700;
+}
+
 /* Demo helper — keep example cards card-width instead of filling the canvas. */
 .doc-card {
     max-width: 340px;
