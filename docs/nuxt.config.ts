@@ -10,6 +10,13 @@ export default defineNuxtConfig({
     devtools: { enabled: false },
     devServer: { port: 5173 },
 
+    // On Vercel, Nitro auto-detects the env (VERCEL=1) and switches to the `vercel-static`
+    // preset, emitting the Build Output API to `.vercel/output` instead of `.output/public`.
+    // That mismatches vercel.json (`outputDirectory: docs/.output/public`), so deploys fail with
+    // "No Output Directory named 'public' found". Pin the plain `static` preset so `nuxi generate`
+    // always writes to docs/.output/public, where vercel.json serves it from.
+    nitro: { preset: 'static' },
+
     alias: {
         oriui: resolve('../src/index.ts'),
         '@oriui/core': resolve('../packages/core/src/index.ts'),
