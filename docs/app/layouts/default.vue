@@ -49,6 +49,8 @@ onMounted(() => {
 
             <span class="docs-nav__spacer" />
 
+            <CommandPalette />
+
             <ClientOnly>
                 <OriButton
                     size="sm"
