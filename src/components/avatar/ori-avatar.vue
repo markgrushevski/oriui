@@ -53,8 +53,15 @@ const name = computed(() => {
             }
         ]"
     >
-        <img v-if="$attrs.src" v-show="loaded" class="ori-avatar__image" v-bind="$attrs" @load="loaded = true" />
-        <div v-if="!$attrs.src || !loaded" class="ori-avatar__backdrop">{{ name }}</div>
+        <img
+            v-if="$attrs.src"
+            v-show="loaded"
+            class="ori-avatar__image"
+            v-bind="$attrs"
+            :alt="text || ''"
+            @load="loaded = true"
+        />
+        <div v-if="!$attrs.src || !loaded" aria-hidden="true" class="ori-avatar__backdrop">{{ name }}</div>
         <div v-if="title || subtitle" class="ori-avatar__text">
             <div class="ori-avatar__title">{{ title }}</div>
             <div class="ori-avatar__subtitle">{{ subtitle }}</div>

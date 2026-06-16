@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { ActionSize, ThemeColor } from '../../types';
 
-const { size = 'text' } = defineProps<{
+const { label = 'Loading', size = 'text' } = defineProps<{
     color?: ThemeColor;
     inline?: boolean;
+    label?: string;
     size?: ActionSize;
 }>();
 </script>
@@ -18,6 +19,8 @@ const { size = 'text' } = defineProps<{
                 [`ori-color ori-color_${color}`]: color
             }
         ]"
+        role="status"
+        :aria-label="label"
     ></div>
 </template>
 

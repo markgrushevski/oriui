@@ -4,6 +4,14 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Reorder: a11y-polish the 5 components before the headless adapter (Phase 4 ↔ 5)
+
+The current components are presentational; a full headless contract + Reka adapter pays off
+for interactive widgets (Modal / Menu / Combobox) that don't exist yet, so building it now
+risks a wrong abstraction. Bring the 5 components to production a11y first (dynamic state via
+attributes, `:focus-visible`, roles/labels), then ground the headless contract + swappable
+adapter on the first genuinely interactive component. Approved by the user (fewer reworks).
+
 ## Working mode: Opus implements, decisions written here, user compacts
 
 Opus does implementation directly (best judgment + continuity); every key decision lands in
