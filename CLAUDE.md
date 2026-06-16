@@ -27,7 +27,8 @@ layer exists (5 components: Button, Card, Avatar, Icon, Spinner).
 - `npm run build` — build to `dist/` (Vite → JS/CSS, then **vue-tsc** → `.d.ts`)
 - `npm run types` — type-check without emit (`vue-tsc --noEmit`)
 - `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite)
-- `npm run lint:all` — prettier + stylelint + eslint (with `--fix`)
+- `npm run lint:all` — prettier + stylelint + eslint (with `--fix`); `lint:ci` is the check-mode gate
+  (no `--fix`) the GitHub Actions CI runs alongside `types` / `test:types` / `test` / `build`
 - `npm run docs:dev` / `docs:build` — VitePress docs
 
 Type declarations come from **vue-tsc** (`tsconfig.build.json`), NOT vite-plugin-dts

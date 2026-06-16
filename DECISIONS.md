@@ -4,7 +4,21 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
-## Testing: Vitest + happy-dom + @vue/test-utils + axe (Phase 6)
+## CI: GitHub Actions quality gate (Phase 8, first slice)
+
+`.github/workflows/ci.yml` runs on push to `main` + every PR: **lint → types → test → build**
+across a Node matrix (`20.19.0` — the Vite 8 floor from `engines` — and `22`). Decisions:
+
+- **Separate `lint:ci` (check mode) from the local `lint:*` (fix mode).** The everyday scripts run
+  `prettier --write` / `--fix` for DX; CI must _fail_ on drift, so `lint:ci` runs `prettier --check`,
+  `stylelint`, and `eslint` with no auto-fix. The type gate runs both `types` (lib) and `test:types`.
+- **Reordered `.lintstagedrc.json` so Prettier runs LAST** (after `stylelint --fix` / `eslint --fix`).
+  The old order let stylelint reformat _after_ Prettier, so committed SFCs could be left
+  not-Prettier-clean (caught here: `ori-dialog.vue` had a stray blank line). Prettier-last makes it
+  authoritative. Added `.prettierignore` entries for generated output (`.output`, `.nuxt`, `coverage`).
+- **Deploy stays Vercel-side**, not in Actions — Vercel's Git integration builds `npm run docs:build`
+  on push (preset pinned in an earlier commit). **npm publish via changesets is deferred** — it needs
+  an `NPM_TOKEN` secret and a release-flow decision (alpha `next` tag), which are the maintainer's call.
 
 **Stack** — Vitest 4 (the line that peer-supports Vite 8), happy-dom (fast, no layout engine),
 `@vue/test-utils` for mounting, `axe-core` for structural a11y. Lives in `tests/` (out of `src`,

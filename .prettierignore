@@ -1,8 +1,13 @@
 .idea
 .vscode
 cache
+coverage
 dist
 node_modules
 types
+
+# generated build output (Nuxt docs SSG, Nitro)
+.output
+.nuxt
 
 *.tsbuildinfo
