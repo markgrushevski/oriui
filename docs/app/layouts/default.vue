@@ -11,7 +11,15 @@ const nav = [
 
 const sidebar = [
     { title: 'Guide', links: [{ label: 'Get started', to: '/guide/get-started' }] },
-    { title: 'Components', links: [{ label: 'Button', to: '/components/button' }] },
+    {
+        title: 'Components',
+        links: [
+            { label: 'Avatar', to: '/components/avatar' },
+            { label: 'Button', to: '/components/button' },
+            { label: 'Icon', to: '/components/icon' },
+            { label: 'Spinner', to: '/components/spinner' }
+        ]
+    },
     { title: 'Showcase', links: [{ label: 'Playground', to: '/playground' }] }
 ];
 
