@@ -81,7 +81,10 @@ a {
         repeating-linear-gradient(45deg, #ffffff40 0 2px, transparent 2px 4px),
         linear-gradient(135deg, var(--ori-color-primary), var(--ori-color-info));
 
-    box-shadow: var(--ori-shadow-sm);
+    /* a faint spirit-light halo */
+    box-shadow:
+        var(--ori-shadow-sm),
+        0 0 10px color-mix(in srgb, var(--ori-color-primary) 45%, transparent);
 }
 
 .docs-nav__links {

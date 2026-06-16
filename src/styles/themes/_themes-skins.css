@@ -9,6 +9,53 @@
    Layer: ori.tokens
    ============================================================ */
 @layer ori.tokens {
+    /* Sumi (墨, ink) — graphite ink on warm washi paper. The 織り interpretation;
+       graphite stays distinct from the red danger status. Strict WCAG AA. */
+    :root[data-ori-skin='sumi'] {
+        --ori-color-primary-light: #2b2d42;
+        --ori-color-on-primary-light: #f4f1de;
+        --ori-color-primary-dark: #f4f1de;
+        --ori-color-on-primary-dark: #2b2d42;
+
+        --ori-color-secondary-light: #ddb892;
+        --ori-color-on-secondary-light: #2b2d42;
+        --ori-color-secondary-dark: #8c6d52;
+        --ori-color-on-secondary-dark: #f4f1de;
+
+        --ori-color-surface-light: #f4f1de;
+        --ori-color-on-surface-light: #2b2d42;
+        --ori-color-surface-dark: #2b2d42;
+        --ori-color-on-surface-dark: #f4f1de;
+
+        --ori-color-background-light: #fffdf6;
+        --ori-color-on-background-light: #2b2d42;
+        --ori-color-background-dark: #1f2030;
+        --ori-color-on-background-dark: #f4f1de;
+    }
+
+    /* Indigo — calm confident indigo on cool grey (oriUI's previous default). */
+    :root[data-ori-skin='indigo'] {
+        --ori-color-primary-light: #4f46e5;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #818cf8;
+        --ori-color-on-primary-dark: #0a0e16;
+
+        --ori-color-secondary-light: var(--ori-neutral-200);
+        --ori-color-on-secondary-light: var(--ori-neutral-900);
+        --ori-color-secondary-dark: var(--ori-neutral-700);
+        --ori-color-on-secondary-dark: var(--ori-neutral-50);
+
+        --ori-color-surface-light: #ffffff;
+        --ori-color-on-surface-light: var(--ori-neutral-900);
+        --ori-color-surface-dark: #161b26;
+        --ori-color-on-surface-dark: var(--ori-neutral-50);
+
+        --ori-color-background-light: #f5f6f8;
+        --ori-color-on-background-light: var(--ori-neutral-900);
+        --ori-color-background-dark: #0a0e16;
+        --ori-color-on-background-dark: var(--ori-neutral-50);
+    }
+
     /* Tech — cool cyan on slate. SaaS / developer-tool register. */
     :root[data-ori-skin='tech'] {
         --ori-color-primary-light: #0e7490;

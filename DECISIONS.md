@@ -4,6 +4,20 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Default skin = "Ori" (luminous azure/cyan); indigo & graphite become named skins
+
+User feedback: the default's colours should evoke the word "ori" — which reads as the Ori game's
+ethereal blue/cyan/white spirit-light ("blue and white, maybe neon"). So the **default (no-attribute
+base) skin is now "Ori"**: a luminous azure `#0369a1` (light) / glowing cyan `#38bdf8` (dark) on
+ink-navy + cool white, with a deep ori-night `#06131f` page in dark. Strict WCAG AA (≥5.9:1). A faint
+spirit-light halo on the docs brand mark sells the "neon" without touching text contrast.
+
+Nothing was lost: the previous indigo default became the **"Indigo"** skin, and the graphite/paper
+織り skin was renamed **"Sumi" (墨, ink)** to free the "Ori" name for the signature default. The base
+skin id is `ori` (= no `data-ori-skin` attribute); 7 skins total — Ori, Sumi, Indigo, Tech, Health,
+Luxury, Cyber. The depth/elevation work from the entry below still stands; only the default accent
+hue changed.
+
 ## Default skin refresh: depth (elevated surfaces) + indigo accent + 織り weave identity
 
 User feedback: the original neutral default read flat and "uninteresting" — `surface` (`neutral-50`)

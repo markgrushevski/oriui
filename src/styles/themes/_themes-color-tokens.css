@@ -24,55 +24,57 @@
     }
 
     /* ==========================================================
-       Semantic role tokens.
+       Semantic role tokens — the DEFAULT skin is "Ori": a luminous
+       azure (light) / glowing cyan (dark) on ink + cool white, evoking
+       the Ori game's spirit-light. Other skins live in _themes-skins.css.
        Contrast verification (WCAG AA >= 4.5:1 for normal text):
 
        LIGHT THEME:
-         primary    white / #4f46e5 (indigo-600) — ratio ~6.20:1  pass
-         secondary  neutral-900 / neutral-200     — ratio ~13.5:1  pass
-         surface    neutral-900 / #ffffff         — ratio ~19.5:1  pass
-         background neutral-900 / #f5f6f8          — ratio ~18.3:1  pass
+         primary    white / #0369a1 (azure)  — ratio ~5.9:1   pass
+         secondary  #0c4a6e / #e0f2fe         — ratio ~8.3:1   pass
+         surface    #0a2233 / #ffffff         — ratio ~16.9:1  pass
+         background #0a2233 / #f3f8fc          — ratio ~15.8:1  pass
          success    white / #15803d — ratio ~5.9:1   pass
          warn       neutral-950 / #f59e0b — ratio ~9.72:1  pass (dark on-color: amber is light)
          danger     white / #b91c1c — ratio ~6.4:1   pass
          info       white / #1d4ed8 — ratio ~6.5:1   pass
 
        DARK THEME:
-         primary    #0a0e16 / #818cf8 (indigo-400) — ratio ~6.45:1  pass
-         secondary  neutral-50 / neutral-700       — ratio ~9.02:1  pass
-         surface    neutral-50 / #161b26           — ratio ~16.0:1  pass
-         background neutral-50 / #0a0e16           — ratio ~18.8:1  pass
+         primary    #06131f / #38bdf8 (cyan)  — ratio ~8.9:1   pass
+         secondary  #e6f3fb / #14384e          — ratio ~10.3:1  pass
+         surface    #e6f3fb / #0e2536          — ratio ~14.1:1  pass
+         background #e6f3fb / #06131f          — ratio ~16.8:1  pass
 
-       Surface lifts clearly off the page now (white panels on a soft-grey
-       page in light; an elevated slate panel on inky black in dark), paired
-       with the --ori-shadow-* elevation tokens in _themes-elevation.css.
+       Surface lifts off the page (white panels on a cool near-white page in
+       light; an elevated navy panel on deep ori-night in dark), paired with
+       the --ori-shadow-* elevation tokens in _themes-elevation.css.
        ========================================================== */
     :root {
-        /* Primary — confident indigo (own hue, not a neutral) */
-        --ori-color-primary-light: #4f46e5;
+        /* Primary — luminous azure (light) → glowing cyan (dark): the spirit-light */
+        --ori-color-primary-light: #0369a1;
         --ori-color-on-primary-light: #ffffff;
-        --ori-color-primary-dark: #818cf8;
-        --ori-color-on-primary-dark: #0a0e16;
+        --ori-color-primary-dark: #38bdf8;
+        --ori-color-on-primary-dark: #06131f;
 
-        /* Secondary — neutral tint */
-        --ori-color-secondary-light: var(--ori-neutral-200);
-        --ori-color-on-secondary-light: var(--ori-neutral-900);
-        --ori-color-secondary-dark: var(--ori-neutral-700);
-        --ori-color-on-secondary-dark: var(--ori-neutral-50);
+        /* Secondary — soft sky tint */
+        --ori-color-secondary-light: #e0f2fe;
+        --ori-color-on-secondary-light: #0c4a6e;
+        --ori-color-secondary-dark: #14384e;
+        --ori-color-on-secondary-dark: #e6f3fb;
 
-        /* Surface — elevated panels: white on the soft page in light,
-           a lifted slate above the inky page in dark. */
+        /* Surface — elevated panels: white on the cool page in light,
+           a lifted navy above the ori-night page in dark. */
         --ori-color-surface-light: #ffffff;
-        --ori-color-on-surface-light: var(--ori-neutral-900);
-        --ori-color-surface-dark: #161b26;
-        --ori-color-on-surface-dark: var(--ori-neutral-50);
+        --ori-color-on-surface-light: #0a2233;
+        --ori-color-surface-dark: #0e2536;
+        --ori-color-on-surface-dark: #e6f3fb;
 
-        /* Background — the page: a soft cool grey in light so white surfaces
-           read as elevated; inky near-black in dark. */
-        --ori-color-background-light: #f5f6f8;
-        --ori-color-on-background-light: var(--ori-neutral-900);
-        --ori-color-background-dark: #0a0e16;
-        --ori-color-on-background-dark: var(--ori-neutral-50);
+        /* Background — the page: a cool near-white with a faint blue cast in
+           light; a deep ori-night blue in dark. */
+        --ori-color-background-light: #f3f8fc;
+        --ori-color-on-background-light: #0a2233;
+        --ori-color-background-dark: #06131f;
+        --ori-color-on-background-dark: #e6f3fb;
 
         /* Status — shared across both themes (own hues) */
         --ori-color-success: #15803d;
@@ -128,32 +130,6 @@
         --ori-color-on-background: var(--ori-color-on-background-dark);
     }
 
-    /* Signature "ori" skin (graphite ink + paper, "Dzen-Origami" palette).
-       Apply via data-ori-skin='ori' on the html element; page-level
-       (per-subtree skins would need light-dark() - see DECISIONS.md).
-       Overrides the role source tokens, so the light/dark machinery above
-       still applies on top. Graphite primary stays distinct from the red
-       danger status; coral is reserved as a future sparing accent.
-       Strict WCAG AA throughout (graphite / paper are high-contrast). */
-    :root[data-ori-skin='ori'] {
-        --ori-color-primary-light: #2b2d42;
-        --ori-color-on-primary-light: #f4f1de;
-        --ori-color-primary-dark: #f4f1de;
-        --ori-color-on-primary-dark: #2b2d42;
-
-        --ori-color-secondary-light: #ddb892;
-        --ori-color-on-secondary-light: #2b2d42;
-        --ori-color-secondary-dark: #8c6d52;
-        --ori-color-on-secondary-dark: #f4f1de;
-
-        --ori-color-surface-light: #f4f1de;
-        --ori-color-on-surface-light: #2b2d42;
-        --ori-color-surface-dark: #2b2d42;
-        --ori-color-on-surface-dark: #f4f1de;
-
-        --ori-color-background-light: #fffdf6;
-        --ori-color-on-background-light: #2b2d42;
-        --ori-color-background-dark: #1f2030;
-        --ori-color-on-background-dark: #f4f1de;
-    }
+    /* Preset skins (Sumi 墨, Indigo, Tech, Health, Luxury, Cyber) live in
+       _themes-skins.css — each overrides these role tokens via data-ori-skin. */
 }
