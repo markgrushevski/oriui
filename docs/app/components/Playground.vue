@@ -44,8 +44,13 @@ const plus = 'M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z';
                     text="Cards sit on --ori-color-surface; text uses the matching on-color."
                     :prepend-icon="plus"
                 />
-                <OriAvatar text="Ada Lovelace" title="Ada Lovelace" subtitle="Engineer" />
-                <OriAvatar text="Grace Hopper" />
+                <OriAvatar
+                    src="/image-example.jpg"
+                    text="Marcus Tullius Cicero"
+                    title="Marcus Tullius Cicero"
+                    subtitle="statesman · lawyer · writer · orator"
+                />
+                <OriAvatar text="Marcus Tullius Cicero" />
                 <OriIcon :icon="plus" color="primary" size="xl" />
                 <OriSpinner color="primary" size="xl" />
             </div>
