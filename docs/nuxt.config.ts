@@ -11,7 +11,9 @@ export default defineNuxtConfig({
     devServer: { port: 5173 },
 
     alias: {
-        oriui: resolve('../src/index.ts')
+        oriui: resolve('../src/index.ts'),
+        '@oriui/core': resolve('../packages/core/src/index.ts'),
+        '@oriui/vue': resolve('../packages/vue/src/index.ts')
     },
 
     css: [resolve('../src/styles/styles.css'), resolve('./app/assets/css/docs.css')],

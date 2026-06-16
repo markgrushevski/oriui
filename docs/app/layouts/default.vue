@@ -47,12 +47,11 @@ onMounted(init);
 
         <div class="docs-body">
             <aside class="docs-sidebar">
-                <div v-for="group in sidebar" :key="group.title" class="docs-sidebar__group">
-                    <p class="docs-sidebar__title">{{ group.title }}</p>
+                <SidebarGroup v-for="group in sidebar" :key="group.title" :title="group.title">
                     <NuxtLink v-for="link in group.links" :key="link.to" :to="link.to" class="docs-sidebar__link">
                         {{ link.label }}
                     </NuxtLink>
-                </div>
+                </SidebarGroup>
             </aside>
 
             <main class="docs-main">

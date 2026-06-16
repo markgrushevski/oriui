@@ -4,6 +4,60 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Headless = framework-agnostic core + thin per-framework adapters (Zag-mirrored)
+
+Chosen over Vue-only composables — the user wants genuine multi-framework (Vue now, Svelte
+next, maybe React). The architecture mirrors Zag.js / Ark UI (verified against their source):
+
+- **`core/` (vanilla TS, zero framework deps):** per-primitive `machine` (a tiny typed reducer
+  and a `scope` for deterministic, SSR-safe ids) plus `connect(service, normalizeProps)`
+  returning **prop-getters per anatomy "part"** (`getRootProps`, `getTriggerProps`,
+  `getContentProps`). Getters carry ARIA, ids, `data-state`, real attributes (`hidden`,
+  `aria-expanded`) and event handlers that `send()` — our "state via attributes" contract.
+- **Per-framework adapter = only three small things:** (1) a `bindable` reactive cell (Vue
+  `shallowRef`, Svelte 5 `$state`, identical interface); (2) `normalizeProps` (Vue
+  `onInput`/object-style ↔ Svelte `oninput`/string-style); (3) a ~20-line `useMachine` owning
+  lifecycle. Re-render is the normal path: wrap `connect` in `computed` / `$derived`.
+- **Public API = composables returning prop-getters**, not renderless components:
+  `useDisclosure(opts) → { rootProps, triggerProps, contentProps, state }`. Smallest stable
+  contract; maps 1:1 to the Svelte twin. Reactive options as getters; SSR ids via `useId()` /
+  `$props.id()`.
+- **Hand-roll the core; no state-machine dependency.** For Disclosure/Toggle/Tabs the machine
+  is a ~10-line reducer (Zag's own core is "a minimal xstate fsm"). Copy Zag's
+  `create-anatomy.ts` (~40 LOC) and `merge-props.ts` (~60 LOC) verbatim (MIT, with attribution).
+  Real difficulty is focus / roving-tabindex / keyboard (Tabs) — budget a `dom-query`-like helper.
+- **Swappable-adapter framing corrected: own ↔ Zag, not own ↔ Reka.** Reka UI (ex-Radix-Vue) is
+  **Vue-only** (Radix context-components, no Zag — verified, no `@zag-js` dep). Mirroring Zag's
+  `useMachine → connect(service, normalize) → spread getters` seam lets us drop real
+  `@zag-js/<component>` machines behind our `connect` for hard widgets (combobox/date) later.
+
+First primitives, driven by docs needs: **Disclosure** (sidebar groups, mobile nav) →
+**Toggle** (OriButton toggle state) → **Tabs** (example demo/source switch).
+
+## Packaging = scoped monorepo packages, not subpath exports
+
+Multi-framework needs **separate npm packages**: `dependencies`/`peerDependencies` are declared
+once per package, so a single `oriui` with `./headless/vue` + `./headless/svelte` subpaths would
+force a Svelte consumer to carry `vue` as a peer (and vice-versa). Ark UI proves the split —
+`@ark-ui/vue` (peer vue) and `@ark-ui/svelte` (peer svelte) are separate; a Svelte app installs
+zero Vue. So: `@oriui/core` (vanilla TS) ← `@oriui/vue` (peer vue), later `@oriui/svelte` (peer
+svelte); styled stays `oriui`; `@oriui/css` split deferred.
+
+- **Build:** per-package — `tsup` (core, ESM), Vite-lib + `vue-tsc` (vue, reuse current),
+  `svelte-package` (svelte, later); validate exports with `publint` + `@arethetypeswrong/cli`.
+- **Tooling:** keep **npm workspaces** for now (pnpm's phantom-dep strictness pays off at Svelte
+  time — switch then); `changesets` at first publish; skip Turborepo/Nx (overkill solo).
+- **Testing (Phase 6):** vitest + @testing-library/{dom,user-event,jest-dom,vue,svelte} +
+  axe-core + vitest-axe (matches Ark's own stack).
+
+## Docs tooling: add nuxt-llms; mcp-toolkit optional; spyglass no
+
+`nuxt-llms` (NuxtLabs) auto-generates `llms.txt` / `llms-full.txt` with built-in `@nuxt/content`
+integration — a cheap, modern "AI-readable docs" signal. `@nuxtjs/mcp-toolkit` (dev-time MCP
+server to introspect the app) is a nice DX extra — optional, deferred. `nuxt-spyglass`
+(experimental unified logs) is a debug tool, not docs infra — skip. For the docs UI later:
+`@nuxt/icon` (Iconify) + `@nuxt/fonts`.
+
 ## Docs = a dogfooded Nuxt app built with oriUI (replaces VitePress)
 
 The docs site is the project's portfolio centerpiece, so it is built **with oriUI itself** —
