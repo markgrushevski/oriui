@@ -196,7 +196,8 @@ force a Svelte consumer to carry `vue` as a peer (and vice-versa). Ark UI proves
 zero Vue. So: `@oriui/core` (vanilla TS) ← `@oriui/vue` (peer vue), later `@oriui/svelte` (peer
 svelte); styled stays `oriui`; `@oriui/css` split deferred.
 
-- **Build:** per-package — `tsup` (core, ESM), Vite-lib + `vue-tsc` (vue, reuse current),
+- **Build:** per-package — `tsdown` (headless `@oriui/core` + `@oriui/vue`, ESM + dts; migrated off
+  `tsup`, now maintenance-mode), Vite-lib + `vue-tsc` (styled `oriui`, SFCs + CSS),
   `svelte-package` (svelte, later); validate exports with `publint` + `@arethetypeswrong/cli`.
 - **Tooling:** keep **npm workspaces** for now (pnpm's phantom-dep strictness pays off at Svelte
   time — switch then); `changesets` at first publish; skip Turborepo/Nx (overkill solo).

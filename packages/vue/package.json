@@ -20,7 +20,7 @@
         "./package.json": "./package.json"
     },
     "scripts": {
-        "build": "tsup",
+        "build": "tsdown",
         "types": "tsc --noEmit"
     },
     "peerDependencies": {
