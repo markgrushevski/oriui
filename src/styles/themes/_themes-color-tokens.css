@@ -28,27 +28,31 @@
        Contrast verification (WCAG AA >= 4.5:1 for normal text):
 
        LIGHT THEME:
-         primary    #3b56c8 / white   — ratio ~5.23:1  pass
-         secondary  neutral-900 / neutral-200 — ratio ~13.5:1  pass
-         surface    neutral-900 / neutral-50  — ratio ~18.1:1  pass
-         background neutral-900 / #ffffff     — ratio ~19.5:1  pass
-         success    white   / #15803d — ratio ~5.9:1   pass
+         primary    white / #4f46e5 (indigo-600) — ratio ~6.20:1  pass
+         secondary  neutral-900 / neutral-200     — ratio ~13.5:1  pass
+         surface    neutral-900 / #ffffff         — ratio ~19.5:1  pass
+         background neutral-900 / #f5f6f8          — ratio ~18.3:1  pass
+         success    white / #15803d — ratio ~5.9:1   pass
          warn       neutral-950 / #f59e0b — ratio ~9.72:1  pass (dark on-color: amber is light)
-         danger     white   / #b91c1c — ratio ~6.4:1   pass
-         info       white   / #1d4ed8 — ratio ~6.5:1   pass
+         danger     white / #b91c1c — ratio ~6.4:1   pass
+         info       white / #1d4ed8 — ratio ~6.5:1   pass
 
        DARK THEME:
-         primary    neutral-950 / #6b83d9 — ratio ~6.14:1  pass
-         secondary  neutral-50 / neutral-700 — ratio ~9.02:1  pass
-         surface    neutral-50 / neutral-900 — ratio ~18.1:1  pass
-         background neutral-50 / neutral-950 — ratio ~20.4:1  pass
+         primary    #0a0e16 / #818cf8 (indigo-400) — ratio ~6.45:1  pass
+         secondary  neutral-50 / neutral-700       — ratio ~9.02:1  pass
+         surface    neutral-50 / #161b26           — ratio ~16.0:1  pass
+         background neutral-50 / #0a0e16           — ratio ~18.8:1  pass
+
+       Surface lifts clearly off the page now (white panels on a soft-grey
+       page in light; an elevated slate panel on inky black in dark), paired
+       with the --ori-shadow-* elevation tokens in _themes-elevation.css.
        ========================================================== */
     :root {
-        /* Primary — calm slate-blue (own hue, not a neutral) */
-        --ori-color-primary-light: #3b56c8;
+        /* Primary — confident indigo (own hue, not a neutral) */
+        --ori-color-primary-light: #4f46e5;
         --ori-color-on-primary-light: #ffffff;
-        --ori-color-primary-dark: #6b83d9;
-        --ori-color-on-primary-dark: var(--ori-neutral-950);
+        --ori-color-primary-dark: #818cf8;
+        --ori-color-on-primary-dark: #0a0e16;
 
         /* Secondary — neutral tint */
         --ori-color-secondary-light: var(--ori-neutral-200);
@@ -56,16 +60,18 @@
         --ori-color-secondary-dark: var(--ori-neutral-700);
         --ori-color-on-secondary-dark: var(--ori-neutral-50);
 
-        /* Surface */
-        --ori-color-surface-light: var(--ori-neutral-50);
+        /* Surface — elevated panels: white on the soft page in light,
+           a lifted slate above the inky page in dark. */
+        --ori-color-surface-light: #ffffff;
         --ori-color-on-surface-light: var(--ori-neutral-900);
-        --ori-color-surface-dark: var(--ori-neutral-900);
+        --ori-color-surface-dark: #161b26;
         --ori-color-on-surface-dark: var(--ori-neutral-50);
 
-        /* Background */
-        --ori-color-background-light: #ffffff;
+        /* Background — the page: a soft cool grey in light so white surfaces
+           read as elevated; inky near-black in dark. */
+        --ori-color-background-light: #f5f6f8;
         --ori-color-on-background-light: var(--ori-neutral-900);
-        --ori-color-background-dark: var(--ori-neutral-950);
+        --ori-color-background-dark: #0a0e16;
         --ori-color-on-background-dark: var(--ori-neutral-50);
 
         /* Status — shared across both themes (own hues) */

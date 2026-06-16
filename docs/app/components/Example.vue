@@ -49,23 +49,31 @@ const active = computed<Framework | undefined>(() =>
 
 <style>
 .example {
-    margin: 20px 0;
+    margin: 24px 0;
 
     overflow: hidden;
 
-    border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
-    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 10%, transparent);
+    border-radius: 14px;
+
+    background: var(--ori-color-surface);
+
+    box-shadow: var(--ori-shadow-md);
 }
 
+/* The live preview is a clean canvas — a faint dot grid signals "playground". */
 .example__preview {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
 
-    padding: 24px;
+    padding: 28px 24px;
 
-    background: var(--ori-color-background);
+    background:
+        radial-gradient(color-mix(in srgb, var(--ori-color-on-surface) 7%, transparent) 1px, transparent 1px) 0 0 / 16px
+            16px,
+        var(--ori-color-surface);
 }
 
 .example__bar {
@@ -74,9 +82,9 @@ const active = computed<Framework | undefined>(() =>
 
     padding: 6px 8px;
 
-    border-top: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--ori-color-on-surface) 10%, transparent);
 
-    background: var(--ori-color-surface);
+    background: color-mix(in srgb, var(--ori-color-on-surface) 3%, var(--ori-color-surface));
 }
 
 .example__tab {
@@ -96,7 +104,8 @@ const active = computed<Framework | undefined>(() =>
 }
 
 .example__tab[data-active] {
-    background: color-mix(in srgb, var(--ori-color-on-surface) 10%, transparent);
+    background: color-mix(in srgb, var(--ori-color-primary) 14%, transparent);
+    color: var(--ori-color-primary);
     opacity: 1;
 }
 
