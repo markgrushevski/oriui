@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 
-const base = process.env.NODE_ENV === 'production' ? '/' : '/docs/';
+const base = '/';
 
 export default defineConfig({
     base,
@@ -31,7 +31,8 @@ export default defineConfig({
             {
                 text: 'Guide',
                 items: [{ text: 'Get started', link: '/guide/get-started' }]
-            }
+            },
+            { text: 'Playground', link: '/playground' }
         ],
         sidebar: [
             {
@@ -46,8 +47,13 @@ export default defineConfig({
                     { text: 'Avatar', link: '/avatar' },
                     { text: 'Button', link: '/button' },
                     { text: 'Card', link: '/card' },
-                    { text: 'Icon', link: '/icon' }
+                    { text: 'Icon', link: '/icon' },
+                    { text: 'Spinner', link: '/spinner' }
                 ]
+            },
+            {
+                text: 'Showcase',
+                items: [{ text: 'Playground', link: '/playground' }]
             }
         ],
         socialLinks: [{ icon: 'github', link: 'https://github.com/markgrushevski/vueinjar' }]

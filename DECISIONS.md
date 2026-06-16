@@ -4,6 +4,18 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Living preview = the VitePress docs, not a standalone playground
+
+The dev playground (`index.html` + `playground/`) duplicated what the docs already do — the
+docs render live components through the `@lib` → `src/` alias. Consolidated onto one preview
+surface: `npm run dev` now runs VitePress, the playground grid moved to `docs/playground.md`,
+and component pages grow alongside each feature (so Phase 7 becomes polish + comparison prose +
+theme gallery, not a from-scratch docs build). Light/dark rides VitePress's built-in appearance
+toggle — our dark selector is `:root.dark`, which VitePress sets on `<html>` — so only a nav
+**skin** toggle is custom (switches `data-ori-skin`, neutral ↔ ori, persisted to localStorage).
+The full foundation (`styles.css`, not just `reset.css`) is imported in the docs theme and the
+5 components are globally registered, so tokens and components are available site-wide.
+
 ## Reorder: a11y-polish the 5 components before the headless adapter (Phase 4 ↔ 5)
 
 The current components are presentational; a full headless contract + Reka adapter pays off

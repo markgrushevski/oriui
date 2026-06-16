@@ -1,9 +1,44 @@
 <script setup>
 import DefaultTheme from 'vitepress/theme';
+import { ref, onMounted, watch } from 'vue';
+
+const Layout = DefaultTheme.Layout;
+const skin = ref('neutral');
+
+function apply(value) {
+    const el = document.documentElement;
+    if (value === 'ori') el.setAttribute('data-ori-skin', 'ori');
+    else el.removeAttribute('data-ori-skin');
+}
+
+onMounted(() => {
+    skin.value = localStorage.getItem('ori-skin') === 'ori' ? 'ori' : 'neutral';
+    apply(skin.value);
+});
+
+watch(skin, (value) => {
+    localStorage.setItem('ori-skin', value);
+    apply(value);
+});
 </script>
 
 <template>
-    <DefaultTheme.Layout />
+    <Layout>
+        <!-- Light/dark rides VitePress's built-in appearance toggle (our dark selector is
+             :root.dark, which VitePress sets on <html>). This adds only the skin switch. -->
+        <template #nav-bar-content-after>
+            <ClientOnly>
+                <button
+                    class="ori-skin-toggle"
+                    type="button"
+                    :title="`oriUI skin: ${skin}`"
+                    @click="skin = skin === 'ori' ? 'neutral' : 'ori'"
+                >
+                    skin: {{ skin }}
+                </button>
+            </ClientOnly>
+        </template>
+    </Layout>
 </template>
 
 <style>
@@ -24,6 +59,29 @@ import DefaultTheme from 'vitepress/theme';
     );
 
     --vp-custom-block-font-size: 16px;
+}
+
+.ori-skin-toggle {
+    margin-left: 12px;
+    padding: 4px 10px;
+
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-1);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background-color 0.2s;
+}
+
+.ori-skin-toggle:hover {
+    border-color: var(--vp-c-brand-1);
 }
 
 .custom-block .vij.flex {
