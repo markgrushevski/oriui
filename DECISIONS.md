@@ -4,6 +4,26 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Default skin refresh: depth (elevated surfaces) + indigo accent + 織り weave identity
+
+User feedback: the original neutral default read flat and "uninteresting" — `surface` (`neutral-50`)
+sat ~2% off a white `background`, so cards/examples/nav melted into the page, and the slate-blue
+accent (`#3b56c8`), used sparingly, left the whole site grayscale. Revised the **default skin** (not
+the signature `ori` skin) for depth and character while staying vendor-neutral + strict WCAG AA:
+
+- **Surface now lifts off the page.** Light: soft-grey page `#f5f6f8` + **white** panels; dark: inky
+  `#0a0e16` page + an elevated slate `#161b26` panel. Added **`--ori-shadow-{sm,md,lg,ring}`**
+  elevation tokens (`themes/_themes-elevation.css`, theme-aware) so panels cast a real, cool-tinted
+  shadow instead of relying on a hairline border.
+- **Confident indigo primary** `#4f46e5` (light) / `#818cf8` (dark) — modern, AA both ways
+  (~6.2:1 / ~6.45:1). Status hues stay reserved; indigo is not a status color.
+- **Docs identity (織り "weaving"):** a CSS-only diagonal-crosshatch + indigo-bloom hero backdrop, an
+  ink→indigo gradient title, a woven brand-mark tile, a pill kicker, indigo active states, and a
+  canvas-style (dotted) Example preview with elevation. Pure tokens/CSS — zero runtime.
+
+Rejected promoting the warm `ori` skin to default: it's the _signature_ skin, deliberately distinct
+from the neutral "safe" default, which stays cool-neutral (Linear / Radix / Vercel register).
+
 ## No-framework / htmx is a first-class target for `oriui/css`
 
 The `oriui/css` layer (pure `.ori-*` classes + zero-runtime token theming) works with **no JS
@@ -204,8 +224,9 @@ instead of relaxing the rule). Judgment-heavy work needs Opus review.
 
 ## Design system = token contract + skins (not "be Material 3")
 
-Default skin is vendor-neutral (slate ramp + a calm slate-blue accent; status hues
-red/green/amber are reserved for status, not brand) and stays strict WCAG AA. Optional skins
+Default skin is vendor-neutral (cool slate ramp + a confident **indigo** accent over **elevated
+surfaces** — see the refresh entry above; status hues red/green/amber are reserved for status, not
+brand) and stays strict WCAG AA. Optional skins
 override the role source tokens; Material 3 / iOS would just be more skins. Rejected:
 anchoring on Material 3 — too vendor-specific for a layered, skinnable system.
 

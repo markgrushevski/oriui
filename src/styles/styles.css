@@ -16,6 +16,7 @@
 @import 'sizes/_sizes-radius.css';
 @import 'positions/positions.css';
 @import 'themes/_themes-color-tokens.css';
+@import 'themes/_themes-elevation.css';
 @import 'themes/_themes-color.css';
 @import 'themes/_themes-variant.css';
 @import 'fonts/_fonts-size.css';
