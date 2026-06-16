@@ -1,5 +1,6 @@
-// Engine-agnostic resolver components consume
+// Engine-agnostic resolvers components consume
 export { useDisclosure } from './use-disclosure';
+export { useDialog } from './use-dialog';
 
 // Adapter selection
 export { provideHeadless, OriHeadless } from './plugin';
@@ -15,5 +16,8 @@ export {
     type UseDisclosureOptions,
     type DisclosureControl,
     type DisclosureAdapter,
+    type UseDialogOptions,
+    type DialogControl,
+    type DialogAdapter,
     type HeadlessAdapters
 } from './contract';
