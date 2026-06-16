@@ -62,7 +62,7 @@ onMounted(() => {
                 <SkinPicker />
             </ClientOnly>
 
-            <a class="docs-nav__gh" href="https://github.com/markgrushevski/vueinjar" target="_blank" rel="noopener">
+            <a class="docs-nav__gh" href="https://github.com/markgrushevski/oriui" target="_blank" rel="noopener">
                 GitHub
             </a>
         </header>

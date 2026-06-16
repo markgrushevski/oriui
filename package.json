@@ -14,10 +14,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/markgrushevski/vueinjar.git"
+        "url": "git+https://github.com/markgrushevski/oriui.git"
     },
     "bugs": {
-        "url": "https://github.com/markgrushevski/vueinjar/issues"
+        "url": "https://github.com/markgrushevski/oriui/issues"
     },
     "files": [
         "dist"
