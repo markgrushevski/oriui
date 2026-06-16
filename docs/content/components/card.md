@@ -6,8 +6,24 @@ title: Card
 
 A surface container for grouping related content — a header (prepend slot · title · subtitle ·
 append slot), a body, and optional action rows. It is the most _composed_ styled component, yet the
-standalone markup is just nested `.ori-card__*` elements, so it works without Vue (the **Svelte**
-tab below is also the htmx / Astro / plain-HTML markup).
+standalone markup is just nested `.ori-card__*` elements, so it works without Vue. Flip its source
+between **Vue** (the styled component) and **HTML** (the standalone `oriui/css` classes — the same
+markup for htmx, Astro, Svelte, or plain HTML).
+
+## Classes
+
+A card composes a block class plus paired token utilities — each pair is a base class (`ori-color`)
+plus a scale value (`ori-color_surface`). The Vue `<OriCard>` props map 1:1 to these.
+
+| Class                                                                                                                                                                                  | Category | Values (default in **bold**)                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `ori-card`                                                                                                                                                                             | Block    | required base class                                                                             |
+| `ori-variant` + `ori-variant_*`                                                                                                                                                        | Variant  | **`fill`** · `tonal` · `outline` · `text` · `plain`                                             |
+| `ori-color` + `ori-color_*`                                                                                                                                                            | Color    | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · **`surface`** · `background` |
+| `ori-size-radius` + `ori-size-radius_*`                                                                                                                                                | Radius   | `zero` · `xs` · `sm` · `md` · **`lg`** · `xl` · `rounded`                                       |
+| `ori-card_row` · `ori-card_fluid` · `ori-card_icon`                                                                                                                                    | Modifier | horizontal layout · full width · icon-only (no `text`)                                          |
+| `ori-card__header` · `ori-card__header-prepend` · `ori-card__headline` · `ori-card__title` · `ori-card__subtitle` · `ori-card__header-append` · `ori-card__body` · `ori-card__actions` | Parts    | header row · leading slot · headline · title · subtitle · trailing slot · body · action row     |
+| `aria-disabled` · `aria-busy`                                                                                                                                                          | State    | real attributes, not classes (`disabled` / `loading` props)                                     |
 
 ## Anatomy
 
@@ -28,9 +44,10 @@ A card with a leading icon, a title + subtitle headline, and a body. The body te
 />
 ```
 
-#svelte
+#html
 
-```svelte
+```html
+<!-- full default class set: radius_lg + variant_fill + color_surface -->
 <div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__header-prepend">
@@ -68,9 +85,10 @@ the surface, `tonal` is a soft wash, `outline` is just a border.
 <OriCard variant="outline" color="primary" title="Outline" text="A bordered, transparent card." />
 ```
 
-#svelte
+#html
 
-```svelte
+```html
+<!-- full set once, then just swap the variant pair: ori-variant_fill → _tonal / _outline -->
 <div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_primary">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Fill</div></div>
@@ -78,8 +96,18 @@ the surface, `tonal` is a soft wash, `outline` is just a border.
     <div class="ori-card__body">A filled card on the primary color.</div>
 </div>
 
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_tonal ori-color ori-color_primary">
-    …
+<div class="ori-card … ori-variant ori-variant_tonal ori-color ori-color_primary">
+    <div class="ori-card__header">
+        <div class="ori-card__headline"><div class="ori-card__title">Tonal</div></div>
+    </div>
+    <div class="ori-card__body">A soft tonal wash of the color.</div>
+</div>
+
+<div class="ori-card … ori-variant ori-variant_outline ori-color ori-color_primary">
+    <div class="ori-card__header">
+        <div class="ori-card__headline"><div class="ori-card__title">Outline</div></div>
+    </div>
+    <div class="ori-card__body">A bordered, transparent card.</div>
 </div>
 ```
 
@@ -98,12 +126,24 @@ the surface, `tonal` is a soft wash, `outline` is just a border.
 <OriCard :row="true" :prepend-icon="plusPath" title="Row layout" subtitle="header and body side by side" />
 ```
 
-#svelte
+#html
 
-```svelte
-<div class="ori-card ori-card_row ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
-    <div class="ori-card__header">…</div>
-    <div class="ori-card__body">…</div>
+```html
+<!-- ori-card_row sits alongside the full default token set and lays header + body horizontally -->
+<div
+    class="ori-card ori-card_row ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface"
+>
+    <div class="ori-card__header">
+        <div class="ori-card__header-prepend">
+            <i class="ori-icon ori-size-action ori-size-action_sm" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
+            </i>
+        </div>
+        <div class="ori-card__headline">
+            <div class="ori-card__title">Row layout</div>
+            <div class="ori-card__subtitle">header and body side by side</div>
+        </div>
+    </div>
 </div>
 ```
 
@@ -125,11 +165,26 @@ classes, matching the rest of the library.
 <OriCard :loading="true" title="Loading" text="aria-busy while content is fetched." />
 ```
 
-#svelte
+#html
 
-```svelte
-<div class="ori-card … " aria-disabled="true">…</div>
-<div class="ori-card … " aria-busy="true">…</div>
+```html
+<!-- state is real attributes, not classes -->
+<div
+    class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface"
+    aria-disabled="true"
+>
+    <div class="ori-card__header">
+        <div class="ori-card__headline"><div class="ori-card__title">Disabled</div></div>
+    </div>
+    <div class="ori-card__body">aria-disabled, dimmed, non-interactive.</div>
+</div>
+
+<div class="ori-card … ori-variant ori-variant_fill ori-color ori-color_surface" aria-busy="true">
+    <div class="ori-card__header">
+        <div class="ori-card__headline"><div class="ori-card__title">Loading</div></div>
+    </div>
+    <div class="ori-card__body">aria-busy while content is fetched.</div>
+</div>
 ```
 
 ::
