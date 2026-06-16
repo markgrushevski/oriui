@@ -55,6 +55,13 @@ async function copy() {
 
 <style>
 .ori-code {
+    /* Light — pairs with the github-light Shiki tokens (Nuxt Content emits dual
+       github-light/github-dark themes and switches token colours on html.dark). */
+    --code-bg: #f6f8fa;
+    --code-fg: #1f2328;
+    --code-bar: #ebeef2;
+    --code-border: #d0d7de;
+
     margin: 0 0 16px;
 
     overflow: hidden;
@@ -64,6 +71,14 @@ async function copy() {
     box-shadow: var(--ori-shadow-md);
 }
 
+/* Dark — pairs with the github-dark tokens, on a deep navy code surface (Ori-aligned). */
+:root.dark .ori-code {
+    --code-bg: #0f1d2e;
+    --code-fg: #e6f3fb;
+    --code-bar: #0a1626;
+    --code-border: color-mix(in srgb, #ffffff 8%, transparent);
+}
+
 .ori-code__bar {
     display: flex;
     align-items: center;
@@ -71,13 +86,13 @@ async function copy() {
 
     padding: 6px 10px 6px 14px;
 
-    border-bottom: 1px solid color-mix(in srgb, #ffffff 8%, transparent);
+    border-bottom: 1px solid var(--code-border);
 
-    background: var(--ori-neutral-950);
+    background: var(--code-bar);
 }
 
 .ori-code__lang {
-    color: var(--ori-neutral-400);
+    color: color-mix(in srgb, var(--code-fg) 55%, transparent);
 
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 11px;
@@ -89,11 +104,11 @@ async function copy() {
 .ori-code__copy {
     padding: 3px 10px;
 
-    border: 1px solid color-mix(in srgb, #ffffff 14%, transparent);
+    border: 1px solid var(--code-border);
     border-radius: 6px;
 
     background: none;
-    color: var(--ori-neutral-200);
+    color: color-mix(in srgb, var(--code-fg) 80%, transparent);
 
     font-size: 11px;
     font-weight: 600;
@@ -102,19 +117,26 @@ async function copy() {
 }
 
 .ori-code__copy:hover {
-    background: color-mix(in srgb, #ffffff 8%, transparent);
+    background: color-mix(in srgb, var(--code-fg) 8%, transparent);
+    color: var(--code-fg);
 }
 
 .ori-code__copy[data-copied] {
-    border-color: color-mix(in srgb, #4ade80 40%, transparent);
-    color: #4ade80;
+    border-color: color-mix(in srgb, #16a34a 45%, transparent);
+    color: #16a34a;
 }
 
-/* Fold the inner <pre> into the code card (override .prose pre's own margin/radius/shadow). */
+/* The inner Shiki <pre> fills the card with theme-aware code colours. */
 .prose .ori-code pre {
     margin: 0;
+    padding: 16px;
+
+    overflow-x: auto;
 
     border-radius: 0;
+
+    background: var(--code-bg);
+    color: var(--code-fg);
 
     box-shadow: none;
 }

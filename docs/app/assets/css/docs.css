@@ -382,20 +382,6 @@ a {
     font-size: 0.9em;
 }
 
-.prose pre {
-    margin: 0 0 16px;
-    padding: 16px;
-
-    overflow-x: auto;
-
-    border-radius: 10px;
-
-    background: var(--ori-neutral-900);
-    color: var(--ori-neutral-100);
-
-    box-shadow: var(--ori-shadow-md);
-}
-
 .prose pre code {
     padding: 0;
     background: none;
