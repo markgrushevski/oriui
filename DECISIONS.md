@@ -4,7 +4,34 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Headless = use Zag, don't reinvent it; keep a swappable contract (supersedes the next entry)
+
+After building the native Disclosure (below) to understand the model, the call: **don't compete
+with Zag on behavior.** Its edge cases (focus trap/return, typeahead, RTL, WAI-ARIA keyboard,
+pointer vs touch) are years of tested work a fresh reimplementation would only do worse — and a
+correct focus trap looks identical in a portfolio whether it's ours or Zag's. ori's _original_
+contribution is the end Zag has nothing of: the **design-system / token contract + skins, the
+standalone CSS layer, and a11y-checked on-color tokens.** So:
+
+- **Behavior = Zag** (recommended default adapter). Components depend on a thin **contract**
+  (`DisclosureAdapter` returning normalized prop-getters), not on a concrete engine.
+- **Swappable** via provide/inject (`OriHeadless` plugin / `provideHeadless`): an app runs our
+  components on Zag, on our **native** `@oriui/core` adapter, or on a user-supplied one — same
+  markup. If runtime swap ever proves messy, the fallback is the simpler "enable Zag or use no
+  headless" toggle (user-approved).
+- **The native `@oriui/core` Disclosure is kept** as the reference/default adapter and the "one
+  primitive built to understand the internals" — not expanded into a full catalog. We will not
+  hand-roll Toggle/Tabs/etc.; those come from Zag behind the contract.
+- Zag adapter is prototyped in the docs app first (consumer side); promote to an `@oriui/zag`
+  package when worth publishing (keeps Zag out of native-only consumers' trees).
+
+The mature build-vs-reuse call: understand Zag enough to mirror it, then spend energy where ori
+is unique. Reka UI stays a possible _Vue-only_ alternative adapter; Zag generalizes to Svelte/React.
+
 ## Headless = framework-agnostic core + thin per-framework adapters (Zag-mirrored)
+
+**Superseded by the entry above** — kept for the rationale, and because the native adapter remains
+the reference implementation behind the contract.
 
 Chosen over Vue-only composables — the user wants genuine multi-framework (Vue now, Svelte
 next, maybe React). The architecture mirrors Zag.js / Ark UI (verified against their source):
