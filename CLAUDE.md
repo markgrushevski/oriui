@@ -26,11 +26,18 @@ layer exists (5 components: Button, Card, Avatar, Icon, Spinner).
 - `npm run dev` — Vite dev server (playground)
 - `npm run build` — build to `dist/` (Vite → JS/CSS, then **vue-tsc** → `.d.ts`)
 - `npm run types` — type-check without emit (`vue-tsc --noEmit`)
+- `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite)
 - `npm run lint:all` — prettier + stylelint + eslint (with `--fix`)
 - `npm run docs:dev` / `docs:build` — VitePress docs
 
 Type declarations come from **vue-tsc** (`tsconfig.build.json`), NOT vite-plugin-dts
 (v5 dropped `.vue` SFC support). The build fails on type errors.
+
+Tests live in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe-core), kept out of `src`
+so they never touch the lib build or `npm run types`. They assert the **behavior/a11y contracts**
+(real `disabled`, `aria-busy`, roles, focus guards), the **headless contract** (OriDialog driven by
+a fake `DialogAdapter` — no Zag), and **token contrast** (`tests/tokens.contrast.test.ts` parses the
+skin CSS and asserts every role/on-role pair meets WCAG AA). `test:types` uses `tsconfig.vitest.json`.
 
 ## Structure
 

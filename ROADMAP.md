@@ -35,7 +35,10 @@ a11y, tests, strong docs).
    (Superseded "own ↔ Reka" — see DECISIONS.md.) Next: promote `OriDialog` into the `oriui` package.
 5. 🔄 **Styled components** — a11y pass on the 5 done (state-via-attributes, focus-visible); next:
    `glass` variant + catalog expansion (forms, overlays) on the headless contract.
-6. ⬜ **Testing** — Vitest + Testing Library + axe-core/vitest-axe; Playwright visual/e2e.
+6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (93 tests, ~95% line cov on
+   components): behavior/a11y contracts, OriDialog on a fake adapter, **executable token-contrast**
+   (every skin's role/on-role pair asserted WCAG AA — already caught a real Sumi failure). Chose VTU
+   over Testing Library (DECISIONS.md). Next: Playwright visual/e2e.
 7. 🔄 **Docs** — dogfooded **Nuxt 4 + Nuxt Content 3** app, UI built on oriUI (not VitePress). To do:
     - **every component gets a full page** (intro + explanation + props/slots + a11y);
     - **per-component playground** — demos + explanation live ON the component page; retire the
