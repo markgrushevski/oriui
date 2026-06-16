@@ -15,11 +15,36 @@ woven around shared design tokens:
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
 Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); key decisions and
-their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md).
+their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
+non-obvious implementation gotchas in [NOTES.md](NOTES.md).
 
-**Status:** foundation refactor in progress. Done — toolchain modernization, rebrand
-vueinjar → oriUI. Next — token/skin system, headless layer. Currently only the styled
-layer exists (5 components: Button, Card, Avatar, Icon, Spinner).
+**Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
+vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
+swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **10 styled components** (Button,
+Card, Avatar, Icon, Spinner, Dialog, Input, Checkbox, Switch, RadioGroup). Next — more form/overlay
+components, the docs-template rollout, npm publish.
+
+## Working modes (solo / orchestrated)
+
+Two ways to run, same foundation — the main session is always the orchestrator (plans, integrates,
+talks to you); modes differ in **who executes**.
+
+- **Solo (default):** one model does everything end-to-end. Best for sequential/focused work, small
+  changes, and conversation.
+- **Orchestrated (opt-in):** work fans out to role-configured subagents running in parallel via the
+  Workflow tool — faster wall-clock on _parallelizable_ work (several components/pages, an audit, a
+  multi-dimension review), at higher token cost. It does **not** speed up a single sequential task.
+
+**Protocol:** default to solo. Before a substantial _parallelizable_ task, **ask** which mode (with a
+rough estimate: roles, agent count, tokens). Trivial/conversational turns stay solo silently. A
+standing override ("always orchestrate" / "always solo" / "ask each time") holds until changed; the
+default is "ask each time".
+
+**Roles** (`.claude/agents/`): `oriui-builder` (Opus), `oriui-test-author` (Sonnet),
+`oriui-docs-author` (Sonnet), `oriui-reviewer` (Opus). They share the bar by reading
+CLAUDE.md / DECISIONS.md / REVIEW.md / NOTES.md; agents **report** new gotchas and the orchestrator
+records them in NOTES.md (so nothing is analyzed twice). Agents touch only their own files; the
+orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid parallel-edit conflicts.
 
 ## Commands
 
