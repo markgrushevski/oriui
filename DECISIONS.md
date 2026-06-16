@@ -4,6 +4,30 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Testing: Vitest + happy-dom + @vue/test-utils + axe (Phase 6)
+
+**Stack** — Vitest 4 (the line that peer-supports Vite 8), happy-dom (fast, no layout engine),
+`@vue/test-utils` for mounting, `axe-core` for structural a11y. Lives in `tests/` (out of `src`,
+so the lib build and `npm run types` never see it); a dedicated `vitest.config.ts` keeps the
+lib build's externals/preserveModules out of the test run and aliases `@oriui/*` to package
+**source** so the suite needs no `build:packages` first (clean-CI friendly).
+
+- **Rejected `@testing-library/vue`** (listed in the original plan): these tests assert classes,
+  attributes and ARIA — VTU queries them more directly, and `axe-core` covers the "test like a
+  user" a11y dimension better than role-queries would. Lean dependency surface; can add later.
+- **Contrast is an executable test, not a comment.** `tests/tokens.contrast.test.ts` parses the
+  token CSS, resolves `var(--ori-neutral-*)`, and asserts every role/on-role pair (base + 6 skins,
+  light+dark, +status) meets WCAG AA >= 4.5:1. It immediately caught a real failure (Sumi
+  `secondary-dark` at 4.18:1 -> darkened to `#7e5e44`, 5.18:1), making the "every colour ships a
+  contrast-checked on-color" promise enforceable on every change.
+- **Headless contract tested without Zag.** OriDialog is driven by a fake in-memory `DialogAdapter`
+  (`tests/helpers/fake-dialog.ts`) that emits the contract's accessible prop shape. This unit-tests
+  the component against the _contract_ (proving swappability) and keeps Zag — a docs/app dependency,
+  not a lib one — out of the library's test graph. Also asserts the no-adapter case fails loud.
+- **Playwright/visual regression deferred.** The component + a11y + contrast unit layer delivers
+  most of the signal at a fraction of the flakiness; visual-regression E2E is a later add (Phase 8
+  CI), not a blocker for the first test pass.
+
 ## OriDialog promoted into the `oriui` package: styled = headless + css (depends on @oriui/vue)
 
 The first behavioral styled component now lives in the library (moved out of the docs prototype).
