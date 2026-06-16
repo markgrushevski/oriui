@@ -15,7 +15,7 @@ woven around shared design tokens:
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
 Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); key decisions and
-their rationale in [DECISIONS.md](DECISIONS.md).
+their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md).
 
 **Status:** foundation refactor in progress. Done — toolchain modernization, rebrand
 vueinjar → oriUI. Next — token/skin system, headless layer. Currently only the styled
