@@ -11,6 +11,13 @@ visible `:focus-visible` ring.
 Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
 standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
 
+## Classes
+
+A button is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
+scale value (`ori-color_primary`), so one class repoints one token. The Vue props below map 1:1 to these.
+
+:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
+
 ## Variants
 
 Five visual styles, all driven by the `ori-variant` token pair.
@@ -329,23 +336,6 @@ rendered element — the tag given by `as`.
 | Slot      | Description                                                                                      |
 | --------- | ------------------------------------------------------------------------------------------------ |
 | `default` | Replaces the built-in content (icon + text). Supply your own markup; you own its layout/spacing. |
-
-## CSS classes
-
-The CSS layer composes a button from a block class plus paired token utilities — each pair is a base
-class (`ori-color`) plus a scale value (`ori-color_primary`), so a class repoints one token. The Vue
-props above map 1:1 to these.
-
-| Class                                    | Category | Values (default in **bold**)                                                     |
-| ---------------------------------------- | -------- | -------------------------------------------------------------------------------- |
-| `ori-button`                             | Block    | required base class                                                              |
-| `ori-variant` + `ori-variant_*`          | Variant  | **`fill`** · `tonal` · `outline` · `text` · `plain`                              |
-| `ori-color` + `ori-color_*`              | Color    | **`primary`** · `secondary` · `success` · `warn` · `danger` · `info` · `surface` |
-| `ori-size-action` + `ori-size-action_*`  | Size     | `xs` · `sm` · **`md`** · `lg` · `xl` · `xxl`                                     |
-| `ori-size-radius` + `ori-size-radius_*`  | Radius   | `zero` · `xs` · `sm` · `md` · `lg` · `xl` · **`rounded`**                        |
-| `ori-button_fluid` · `ori-button_icon`   | Layout   | full-width · icon-only                                                           |
-| `ori-button__icon` · `ori-button__text`  | Parts    | icon / label elements                                                            |
-| `disabled` · `aria-busy` · `data-active` | State    | real attributes, not classes                                                     |
 
 ## Accessibility
 

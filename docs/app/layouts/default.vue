@@ -18,19 +18,32 @@ const sidebar = [
         ]
     },
     {
-        title: 'Components',
+        title: 'Actions',
         links: [
-            { label: 'Avatar', to: '/components/avatar' },
             { label: 'Button', to: '/components/button' },
-            { label: 'Card', to: '/components/card' },
+            { label: 'Dialog', to: '/components/dialog' }
+        ]
+    },
+    {
+        title: 'Data input',
+        links: [
             { label: 'Checkbox', to: '/components/checkbox' },
-            { label: 'Dialog', to: '/components/dialog' },
-            { label: 'Icon', to: '/components/icon' },
             { label: 'Input', to: '/components/input' },
             { label: 'Radio', to: '/components/radio' },
-            { label: 'Spinner', to: '/components/spinner' },
             { label: 'Switch', to: '/components/switch' }
         ]
+    },
+    {
+        title: 'Data display',
+        links: [
+            { label: 'Avatar', to: '/components/avatar' },
+            { label: 'Card', to: '/components/card' },
+            { label: 'Icon', to: '/components/icon' }
+        ]
+    },
+    {
+        title: 'Feedback',
+        links: [{ label: 'Spinner', to: '/components/spinner' }]
     }
 ];
 
