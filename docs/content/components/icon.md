@@ -5,8 +5,22 @@ title: Icon
 # Icon
 
 An inline SVG icon driven by a path string. Decorative by default (`aria-hidden`); pass a `label`
-to expose it to assistive tech as an image. Flip the source between **Vue** and **Svelte** (the
-standalone `.ori-*` classes — the same markup you'd use in htmx, Astro, or plain HTML).
+to expose it to assistive tech as an image. Flip its source between **Vue** (the styled component)
+and **HTML** (the standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+
+## Classes
+
+An icon composes a block class plus paired token utilities — each pair is a base class (`ori-color`)
+plus a scale value (`ori-color_primary`). The Vue `<OriIcon>` props map 1:1 to these. There is no
+variant or radius — an icon only takes a size and an optional color.
+
+| Class                                   | Category | Values (default in **bold**)                                                                    |
+| --------------------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `ori-icon`                              | Block    | required base class                                                                             |
+| `ori-size-action` + `ori-size-action_*` | Size     | `xs` · `sm` · `md` · `lg` · `xl` · `xxl` (default inherits text)                                |
+| `ori-color` + `ori-color_*`             | Color    | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background`     |
+| `ori-icon_inline`                       | Modifier | inline flow (`inline` prop)                                                                     |
+| `aria-hidden` · `role="img"`            | State    | decorative by default (`aria-hidden="true"`); a `label` switches to `role="img"` + `aria-label` |
 
 ## Sizes
 
@@ -23,9 +37,13 @@ standalone `.ori-*` classes — the same markup you'd use in htmx, Astro, or pla
 <OriIcon :icon="plusPath" size="xl" />
 ```
 
-#svelte
+#html
 
-```svelte
+```html
+<!-- ori-size-action drives the icon box; aria-hidden because it is decorative -->
+<i class="ori-icon ori-size-action ori-size-action_sm" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
+</i>
 <i class="ori-icon ori-size-action ori-size-action_xl" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
@@ -48,11 +66,15 @@ standalone `.ori-*` classes — the same markup you'd use in htmx, Astro, or pla
 <OriIcon :icon="plusPath" color="danger" size="lg" />
 ```
 
-#svelte
+#html
 
-```svelte
+```html
+<!-- add the ori-color pair: ori-color ori-color_<color> -->
 <i class="ori-icon ori-size-action ori-size-action_lg ori-color ori-color_primary" aria-hidden="true">
-    <svg viewBox="0 0 24 24"><path d="…" /></svg>
+    <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
+</i>
+<i class="ori-icon ori-size-action ori-size-action_lg ori-color ori-color_danger" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
 ```
 
