@@ -4,6 +4,25 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Docs IA: component page is the single source (class table + Vue/HTML tabs); CSS guide = concepts
+
+User likes DaisyUI's model — one component page carrying both the live examples and the CSS-class
+usage, so examples aren't duplicated across sections. Adapted to oriUI's two layers:
+
+- The **component page is the single source** for that component's examples. The Example framework
+  tabs already make one example serve both audiences — **Vue** (the styled component) and **HTML**
+  (the standalone `.ori-*` classes; relabeled from "Svelte" — the static markup is identical and
+  "HTML" covers htmx / Astro / Svelte / plain-HTML at once). The HTML tab shows the _complete_ class
+  set (the old Svelte snippets were missing the size/radius/font pairs).
+- Each component page gets a DaisyUI-style **class-reference table** at the top (block / variant /
+  color / size / radius / state) — the canonical `.ori-*` reference, in one place.
+- `/guide/css` is **concepts only**: setup, how the compound classes compose, zero-runtime theming,
+  and the applicability matrix — no per-component examples (they would duplicate the component pages).
+
+Net: examples live once (component pages), the class reference lives once (per-component table),
+concepts live once (the CSS guide). Done for Button as the exemplar; the same table + HTML tab roll
+out to the other component pages.
+
 ## Default skin = "Ori" (luminous azure/cyan); indigo & graphite become named skins
 
 User feedback: the default's colours should evoke the word "ori" — which reads as the Ori game's

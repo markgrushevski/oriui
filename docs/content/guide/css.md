@@ -26,57 +26,35 @@ Or drop it in with no build step at all:
 <link rel="stylesheet" href="https://unpkg.com/oriui/dist/styles/styles.css" />
 ```
 
-## Compose with classes
+## How the classes compose
 
-Every component is built from the **same token-driven classes**: a block class (`ori-button`) plus
-paired utilities — `ori-size-action ori-size-action_md` (sizing), `ori-size-radius ori-size-radius_rounded`
-(corners), `ori-font-size ori-font-size_md`, `ori-variant ori-variant_fill`, and
-`ori-color ori-color_primary`. Each pair is a base class + a scale value, so a class can repoint a
-single token. Here are three buttons built entirely from CSS — no framework:
-
-::example
-<button class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_md ori-variant ori-variant_fill ori-color ori-color_primary">Fill</button>
-<button class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_md ori-variant ori-variant_tonal ori-color ori-color_primary">Tonal</button>
-<button class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_md ori-variant ori-variant_outline ori-color ori-color_primary">Outline</button>
-
-#html
+Every component is built from a **block class** plus **paired token utilities** — `ori-size-action_*`
+(sizing), `ori-size-radius_*` (corners), `ori-font-size_*`, `ori-variant_*` (style), and
+`ori-color_*` (color). Each pair is a base class plus a scale value, so a single class repoints a
+single token:
 
 ```html
 <button
-    class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded
-               ori-font-size ori-font-size_md ori-variant ori-variant_fill ori-color ori-color_primary"
+    class="ori-button
+               ori-size-action ori-size-action_md
+               ori-size-radius ori-size-radius_rounded
+               ori-font-size ori-font-size_md
+               ori-variant ori-variant_fill
+               ori-color ori-color_primary"
 >
-    Fill
+    Button
 </button>
-
-<!-- swap the last two pairs for other looks -->
-<button class="ori-button … ori-variant ori-variant_tonal ori-color ori-color_primary">Tonal</button>
-<button class="ori-button … ori-variant ori-variant_outline ori-color ori-color_danger">Outline · danger</button>
 ```
 
-::
+Swap `ori-variant_fill` → `_tonal`, or `ori-color_primary` → `ori-color_danger`, and nothing else
+changes. The verbosity is the point — it is what lets any single token be repointed, and it is the
+**same markup** whether rendered from Vue, Svelte, htmx, Astro, or hand-written HTML. Dynamic state
+is real **attributes**, not classes (`disabled`, `aria-busy="true"`, `aria-pressed`), so it stays
+accessible and identical across every layer.
 
-The verbosity is deliberate: the same compound classes are what give the CSS layer its ergonomics and
-let any single token be repointed. Swap `ori-color_primary` → `ori-color_danger`, or
-`ori-size-action_md` → `ori-size-action_lg`, and nothing else changes.
-
-## State via attributes
-
-Dynamic state is expressed as **real attributes**, not classes — so it stays accessible and behaves
-identically across every layer (Vue, Svelte, htmx, plain HTML):
-
-::example
-<button class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_md ori-variant ori-variant_fill ori-color ori-color_primary" disabled>Disabled</button>
-<button class="ori-button ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_md ori-variant ori-variant_fill ori-color ori-color_success" aria-busy="true">Loading</button>
-
-#html
-
-```html
-<button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_primary" disabled>Disabled</button>
-<button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_success" aria-busy="true">Loading</button>
-```
-
-::
+> Per-component class tables and live examples (each with an **HTML** tab — the canonical,
+> copy-pasteable markup) live on the component pages, e.g. [Button](/components/button). This guide
+> covers only the cross-cutting concerns below: setup, theming, and where each layer fits.
 
 ## Theming — zero runtime
 
