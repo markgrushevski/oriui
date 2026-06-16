@@ -44,7 +44,7 @@
         "dev": "npm run dev --workspace docs",
         "types": "vue-tsc --noEmit",
         "types:watch": "vue-tsc --noEmit --watch",
-        "build": "vite build && vue-tsc -p tsconfig.build.json",
+        "build": "npm run build:packages && vite build && vue-tsc -p tsconfig.build.json",
         "build:packages": "npm run build -w @oriui/core && npm run build -w @oriui/vue",
         "build:watch": "vite build --watch",
         "lint:prettier": "npx prettier --write **/*.{vue,js,ts,json,md,html,css}",
@@ -56,6 +56,9 @@
         "docs:dev": "npm run dev --workspace docs",
         "docs:build": "npm run generate --workspace docs",
         "docs:preview": "npm run preview --workspace docs"
+    },
+    "dependencies": {
+        "@oriui/vue": "*"
     },
     "peerDependencies": {
         "vue": "^3"

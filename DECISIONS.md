@@ -4,6 +4,25 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## OriDialog promoted into the `oriui` package: styled = headless + css (depends on @oriui/vue)
+
+The first behavioral styled component now lives in the library (moved out of the docs prototype).
+`oriui` gains a runtime **dependency on `@oriui/vue`** — `OriDialog` consumes `useDialog()`, so the
+layering is literally "styled = headless + css". Mechanics:
+
+- `@oriui/vue` (+ `@oriui/core`) are **external** in the Vite lib build (not bundled); the import is
+  preserved and resolved from the consumer's deps. The root `build` script runs `build:packages`
+  first so `vue-tsc` can resolve the package `.d.ts` (fresh-clone / CI safe). Verified: the built
+  `ori-dialog.js` keeps `import … from '@oriui/vue'` and the types flow through the barrel.
+- The library can't use Nuxt's `<ClientOnly>`, so the Teleport is gated on a `mounted` ref —
+  SSR-stable in any Vue/Nuxt host. Styles are tokenized (`--ori-color-surface`, `--ori-shadow-lg`).
+- `useDialog` still has **no native default** — the consumer wires a dialog adapter via `OriHeadless`
+  (e.g. Zag), per the native-simple / Zag-complex split. The docs `DialogDemo` now imports
+  `OriDialog` from `oriui` and the prototype is deleted; build + live behavior both verified.
+- `@oriui/vue` is a regular `dependency` (not peer) for DX — the contract core is tiny and the
+  behavioral components need it. The 5 presentational components don't import it, so a Button-only
+  consumer tree-shakes it out.
+
 ## Docs IA: component page is the single source (class table + Vue/HTML tabs); CSS guide = concepts
 
 User likes DaisyUI's model — one component page carrying both the live examples and the CSS-class
