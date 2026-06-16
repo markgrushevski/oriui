@@ -37,7 +37,7 @@
         "**/*.css"
     ],
     "scripts": {
-        "dev": "vite",
+        "dev": "vitepress dev docs",
         "types": "vue-tsc --noEmit",
         "types:watch": "vue-tsc --noEmit --watch",
         "build": "vite build && vue-tsc -p tsconfig.build.json",
