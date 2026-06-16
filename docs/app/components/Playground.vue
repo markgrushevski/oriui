@@ -1,9 +1,9 @@
-<script setup>
-import { OriButton, OriCard, OriAvatar, OriIcon, OriSpinner } from '@lib';
+<script setup lang="ts">
+import { OriButton, OriCard, OriAvatar, OriIcon, OriSpinner } from 'oriui';
 
-const variants = ['fill', 'tonal', 'outline', 'text', 'plain'];
-const colors = ['primary', 'secondary', 'success', 'warn', 'danger', 'info'];
-const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
+const variants = ['fill', 'tonal', 'outline', 'text', 'plain'] as const;
+const colors = ['primary', 'secondary', 'success', 'warn', 'danger', 'info'] as const;
+const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 const plus = 'M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z';
 </script>
 
