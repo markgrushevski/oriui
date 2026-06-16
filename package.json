@@ -55,6 +55,7 @@
         "lint:stylelint": "npx stylelint --fix src/**/*.{vue,css}",
         "lint:eslint": "npx eslint --fix src/**/*.{vue,ts}",
         "lint:all": "npm run lint:prettier && npm run lint:stylelint && npm run lint:eslint",
+        "lint:ci": "prettier --check \"**/*.{vue,js,ts,json,md,html,css}\" && stylelint \"src/**/*.{vue,css}\" && eslint \"src/**/*.{vue,ts}\"",
         "prepare": "husky",
         "prepack": "npm run build",
         "docs:dev": "npm run dev --workspace docs",

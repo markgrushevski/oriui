@@ -1,0 +1,45 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+# One run per ref; cancel superseded runs to save minutes.
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    quality:
+        name: quality (node ${{ matrix.node }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            # Test the engines floor (20.19, required by Vite 8) and current LTS.
+            matrix:
+                node: ['20.19.0', '22']
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: npm
+
+            - name: Install (npm ci — root + workspaces)
+              run: npm ci
+
+            - name: Lint (prettier / stylelint / eslint, check mode)
+              run: npm run lint:ci
+
+            - name: Type-check (library + test suite)
+              run: |
+                  npm run types
+                  npm run test:types
+
+            - name: Test (vitest + axe)
+              run: npm run test
+
+            - name: Build (headless packages -> lib -> .d.ts)
+              run: npm run build

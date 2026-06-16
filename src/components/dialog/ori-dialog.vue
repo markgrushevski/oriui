@@ -56,7 +56,6 @@ onMounted(() => (mounted.value = true));
 }
 
 .ori-dialog__positioner {
-
     display: flex;
     position: fixed;
     z-index: 51;
