@@ -41,7 +41,9 @@ standing override ("always orchestrate" / "always solo" / "ask each time") holds
 default is "ask each time".
 
 **Roles** (`.claude/agents/`): `oriui-builder` (Opus), `oriui-test-author` (Sonnet),
-`oriui-docs-author` (Sonnet), `oriui-reviewer` (Opus). They share the bar by reading
+`oriui-docs-author` (Sonnet); review lenses `oriui-reviewer` (Opus, code/contract),
+`oriui-design-reviewer` (Opus, visual/UX), `oriui-a11y-auditor` (Opus, deep a11y), and
+`oriui-perf-reviewer` (Sonnet, size/zero-runtime). They share the bar by reading
 CLAUDE.md / DECISIONS.md / REVIEW.md / NOTES.md; agents **report** new gotchas and the orchestrator
 records them in NOTES.md (so nothing is analyzed twice). Agents touch only their own files; the
 orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid parallel-edit conflicts.
