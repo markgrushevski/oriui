@@ -16,6 +16,9 @@ Layers (each independently consumable via subpath exports):
 - `oriui/headless` — behavior contract; swappable adapter (native / Zag / your own)
 - `oriui/css` — standalone CSS classes + tokens (Tailwind-free, DaisyUI-like)
 
+The `oriui/css` layer needs **no JS framework** — server-rendered **htmx**, Astro, and plain HTML
+are first-class scenarios (just classes + zero-runtime token theming).
+
 Design system = **token contract + skins** (default neutral, signature "ori" / 織り,
 preset gallery; Material 3 / iOS as optional skins). Platform: web-first with mobile-first
 styling; optional `hybrid` (Capacitor) mode. Ambition: portfolio-grade (clean architecture,
@@ -39,7 +42,9 @@ a11y, tests, strong docs).
       separate `/playground` route (its grid distributes into the pages);
     - **framework-switchable examples (Vue ↔ Svelte)** — global toggle (like the skin switch); live
       demo stays Vue, code shown for the selected framework (Svelte via the standalone `.ori-*` css);
-    - idea + comparisons + theme gallery + `nuxt-llms` (llms.txt).
+    - idea + comparisons + **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML /
+      Capacitor / Electron) — htmx & no-framework are first-class for the css layer (the Example
+      switcher can gain an HTML/htmx tab); theme gallery + `nuxt-llms` (llms.txt).
 8. ⬜ **CI/CD + deploy** — host docs on **Vercel** (static SSG via `nuxi generate`, output
    `docs/.output/public`, install at repo root); GitHub Actions (lint/types/test/build), changesets, badges.
 
@@ -48,6 +53,8 @@ a11y, tests, strong docs).
 - Full hybrid/Capacitor mode (haptics, native gestures); iOS adaptive skin.
 - Optional Tailwind v4 preset adapter; monorepo split `@oriui/*` (started: `@oriui/core`,
   `@oriui/vue`; full split + pnpm/changesets deferred).
+- `oriui/headless` for **no-framework / htmx** via Zag's `@zag-js/vanilla` behind the contract
+  (an `@oriui/vanilla` adapter) — complex behavior (focus-trap, roving-tabindex) without a framework.
 - Component catalog expansion (forms, overlays) — after the foundation.
 - **Ionic is deliberately NOT a target** (it's a competitor, not a backend; Capacitor is
   supported without it via the planned hybrid mode).
