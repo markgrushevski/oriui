@@ -1,3 +1,19 @@
-export { useDisclosure, type UseDisclosureOptions, type UseDisclosureReturn } from './use-disclosure';
+// Engine-agnostic resolver components consume
+export { useDisclosure } from './use-disclosure';
+
+// Adapter selection
+export { provideHeadless, OriHeadless } from './plugin';
+
+// Built-in native adapter (default) + the low-level bridge for writing your own
+export { nativeDisclosure } from './native';
 export { useService } from './use-machine';
 export { normalizeProps, type VuePropTypes } from './normalize-props';
+
+// Contract
+export {
+    ORI_HEADLESS,
+    type UseDisclosureOptions,
+    type DisclosureControl,
+    type DisclosureAdapter,
+    type HeadlessAdapters
+} from './contract';
