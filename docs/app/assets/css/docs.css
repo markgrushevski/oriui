@@ -114,13 +114,42 @@ a {
 }
 
 .docs-sidebar__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     margin: 0 0 8px;
+    padding: 0;
+
+    border: 0;
+
+    background: none;
+    color: inherit;
 
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     opacity: 0.5;
+
+    cursor: pointer;
+}
+
+.docs-sidebar__title:hover {
+    opacity: 0.8;
+}
+
+.docs-sidebar__chevron {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.docs-sidebar__chevron[data-open] {
+    transform: rotate(90deg);
+}
+
+.docs-sidebar__links[hidden] {
+    display: none;
 }
 
 .docs-sidebar__link {
