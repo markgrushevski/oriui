@@ -1,8 +1,23 @@
 <script setup lang="ts">
-// A documentation example: a live (Vue) preview + the source code, switchable Vue <-> Svelte.
-// The tabs set the GLOBAL framework preference, so every Example on the site follows along.
-// Default slot = the live preview; #vue / #svelte slots = the code blocks.
+import { computed, useSlots } from 'vue';
+import type { Framework } from '../composables/useOriFramework';
+
+// A documentation example: a live (Vue) preview + the source code, switchable across the
+// frameworks the page provides. Default slot = the live preview; #vue / #svelte / #html slots =
+// the code blocks. Tabs appear only for provided slots; the global preference picks the active one.
 const { framework, setFramework } = useOriFramework();
+const slots = useSlots();
+
+const ALL: { key: Framework; label: string }[] = [
+    { key: 'vue', label: 'Vue' },
+    { key: 'svelte', label: 'Svelte' },
+    { key: 'html', label: 'HTML' }
+];
+
+const available = computed(() => ALL.filter((f) => slots[f.key]));
+const active = computed<Framework | undefined>(() =>
+    available.value.some((f) => f.key === framework.value) ? framework.value : available.value[0]?.key
+);
 </script>
 
 <template>
@@ -11,31 +26,22 @@ const { framework, setFramework } = useOriFramework();
             <slot />
         </div>
 
-        <div class="example__bar">
+        <div v-if="available.length" class="example__bar">
             <button
+                v-for="f in available"
+                :key="f.key"
                 type="button"
                 class="example__tab"
-                :data-active="framework === 'vue' || undefined"
-                @click="setFramework('vue')"
+                :data-active="active === f.key || undefined"
+                @click="setFramework(f.key)"
             >
-                Vue
-            </button>
-            <button
-                type="button"
-                class="example__tab"
-                :data-active="framework === 'svelte' || undefined"
-                @click="setFramework('svelte')"
-            >
-                Svelte
+                {{ f.label }}
             </button>
         </div>
 
         <div class="example__code">
-            <div v-show="framework === 'vue'">
-                <slot name="vue" />
-            </div>
-            <div v-show="framework === 'svelte'">
-                <slot name="svelte" />
+            <div v-for="f in available" v-show="active === f.key" :key="f.key">
+                <slot :name="f.key" />
             </div>
         </div>
     </div>
