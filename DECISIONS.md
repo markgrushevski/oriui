@@ -4,6 +4,25 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Docs: per-component pages, framework-switchable examples, Vercel SSG
+
+Four docs requirements (user):
+
+- **Hosted on Vercel as a static site.** Deploy via `nuxi generate` (SSG — fast, cheap, ideal for
+  docs): install at the repo **root** (npm workspaces), build `npm run docs:build`, output
+  `docs/.output/public`. (SSR on Vercel is possible via Nitro's vercel preset, but SSG is simpler
+  and enough here.)
+- **Every component gets a full page** — intro + explanation + props/slots + a11y notes + live demos.
+- **The playground lives ON each component page, not a separate route.** Retire `/playground`; its
+  grid distributes into the per-component pages. A shared `Demo`/`Example` wrapper = live preview +
+  source, reused everywhere (theme/skin are already global).
+- **Framework-switchable examples (Vue ↔ Svelte).** The css layer is framework-agnostic, so each
+  example shows code for both. A global toggle (like the skin switch, persisted) selects which code
+  is shown. The **live** demo stays Vue (the docs host); Svelte gets a **code** example using the
+  standalone `.ori-*` classes (and later `@oriui/svelte`). Mirrors how agnostic libs (Zag) do a
+  framework switcher; truly-live Svelte islands are out of scope for now. Build the `Example`
+  component with this switch from the start so component pages don't need reworking.
+
 ## Native default for simple behavior, Zag for complex; a deep own-engine is a separate project
 
 Portfolio reasoning (user asked what's best for a portfolio): do **not** build a full own headless
