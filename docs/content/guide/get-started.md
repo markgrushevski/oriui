@@ -31,4 +31,4 @@ import 'oriui/css';
 ```
 
 That is all — components are themeable through design tokens, with light/dark and swappable
-skins out of the box. See them live on the [Playground](/playground).
+skins out of the box. See them live on the [component pages](/components/button).

@@ -61,7 +61,8 @@ const active = computed<Framework | undefined>(() =>
     box-shadow: var(--ori-shadow-md);
 }
 
-/* The live preview is a clean canvas — a faint dot grid signals "playground". */
+/* The live preview is a canvas on the page background, so surface-coloured
+   components (cards) elevate on it — a faint dot grid signals "playground". */
 .example__preview {
     display: flex;
     flex-wrap: wrap;
@@ -71,9 +72,9 @@ const active = computed<Framework | undefined>(() =>
     padding: 28px 24px;
 
     background:
-        radial-gradient(color-mix(in srgb, var(--ori-color-on-surface) 7%, transparent) 1px, transparent 1px) 0 0 / 16px
-            16px,
-        var(--ori-color-surface);
+        radial-gradient(color-mix(in srgb, var(--ori-color-on-background) 7%, transparent) 1px, transparent 1px) 0 0 /
+            16px 16px,
+        var(--ori-color-background);
 }
 
 .example__bar {

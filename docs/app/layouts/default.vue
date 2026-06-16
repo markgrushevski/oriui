@@ -5,7 +5,7 @@ const { theme, skin, init, toggleTheme, toggleSkin } = useOriTheme();
 
 const nav = [
     { label: 'Home', to: '/' },
-    { label: 'Playground', to: '/playground' },
+    { label: 'Components', to: '/components/button' },
     { label: 'Get started', to: '/guide/get-started' }
 ];
 
@@ -16,11 +16,12 @@ const sidebar = [
         links: [
             { label: 'Avatar', to: '/components/avatar' },
             { label: 'Button', to: '/components/button' },
+            { label: 'Card', to: '/components/card' },
+            { label: 'Dialog', to: '/components/dialog' },
             { label: 'Icon', to: '/components/icon' },
             { label: 'Spinner', to: '/components/spinner' }
         ]
-    },
-    { title: 'Showcase', links: [{ label: 'Playground', to: '/playground' }] }
+    }
 ];
 
 const { init: initFramework } = useOriFramework();
