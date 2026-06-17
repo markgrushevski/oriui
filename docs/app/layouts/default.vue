@@ -61,9 +61,18 @@ const sections = [
     },
     {
         title: 'Headless',
-        links: [
-            { label: 'useDisclosure', to: '/headless/use-disclosure' },
-            { label: 'useDialog', to: '/headless/use-dialog' }
+        groups: [
+            {
+                title: 'Core',
+                links: [{ label: 'Overview', to: '/headless/core' }]
+            },
+            {
+                title: 'Vue',
+                links: [
+                    { label: 'useDisclosure', to: '/headless/use-disclosure' },
+                    { label: 'useDialog', to: '/headless/use-dialog' }
+                ]
+            }
         ]
     }
 ];
