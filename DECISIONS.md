@@ -4,6 +4,23 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Trunk-based `main`; a release is a separate tagged event
+
+`main` is an always-green **trunk**, not a release-only branch: coherent, green work merges in
+continuously — the docs site deploys from `main`, so doc and fix work shouldn't wait on the npm
+cadence. A **release** is a distinct, deliberate event layered on top — bump the three packages in
+lockstep, publish ([RELEASING.md](RELEASING.md)), and **tag `vX.Y.Z`** on the release commit, so
+every published npm version maps to an exact commit. Decoupling "on `main`" from "published" is the
+reason internal deps are pinned and publishing is its own runbook.
+
+- **`--no-ff` merges** into `main` (user preference): the merge commit keeps each branch as a single
+  unit in `main`'s first-parent history. Work lands on **short-lived topic branches** off `main` —
+  `refactor/oriui-foundation` was a one-off foundation epic, not the ongoing model.
+- Rejected **release-gated `main`** (advance `main` only at releases): it would leave the live docs
+  stale between alpha publishes — bad for a portfolio site.
+
+The full branch / commit / release workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Docs IA: Reka-style sections; framework split is per-component, not a nav branch
 
 Reworked the docs navigation to the Reka/Radix model (user-driven). The top level is four sections:
