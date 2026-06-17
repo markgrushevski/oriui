@@ -117,15 +117,37 @@ a {
     flex: 1;
 }
 
-.docs-nav__gh {
+/* Icon-only language button (placeholder — disabled until i18n lands). */
+.docs-nav__lang {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: none;
     color: var(--ori-color-on-background);
-    font-size: 14px;
-    font-weight: 600;
     opacity: 0.72;
+
+    cursor: pointer;
 }
 
-.docs-nav__gh:hover {
+.docs-nav__lang:hover {
+    background: color-mix(in srgb, var(--ori-color-on-background) 8%, transparent);
     opacity: 1;
+}
+
+.docs-nav__lang:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.docs-nav__lang:disabled:hover {
+    background: none;
 }
 
 /* Body */
@@ -139,7 +161,16 @@ a {
 }
 
 .docs-sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: flex-start;
+
     flex: 0 0 200px;
+    max-height: calc(100vh - 100px);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .docs-sidebar__group {
@@ -173,7 +204,14 @@ a {
 }
 
 .docs-sidebar__chevron {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+
     font-size: 14px;
+    line-height: 1;
     transition: transform 0.2s ease;
 }
 
@@ -246,6 +284,7 @@ a {
 
     max-height: calc(100vh - 100px);
 
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
@@ -282,6 +321,15 @@ a {
     opacity: 1;
 }
 
+/* Scroll-spy: the heading currently in view. */
+.docs-toc__link_active {
+    border-left-color: var(--ori-color-primary);
+
+    color: var(--ori-color-primary);
+
+    opacity: 1;
+}
+
 .docs-toc__link_sub {
     padding-left: 26px;
     font-size: 12px;
@@ -297,6 +345,7 @@ a {
 .home {
     position: relative;
     max-width: 820px;
+    margin: 0 auto;
     padding: 56px 0 40px;
 }
 
@@ -516,7 +565,14 @@ a {
 }
 
 .docs-navtree__chevron {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+
     font-size: 14px;
+    line-height: 1;
     opacity: 0.5;
     transition: transform 0.2s ease;
 }
@@ -602,6 +658,7 @@ a {
     width: min(84vw, 320px);
     padding: 16px 18px;
 
+    overflow-x: hidden;
     overflow-y: auto;
 
     background: var(--ori-color-surface);
@@ -635,17 +692,40 @@ a {
     opacity: 1;
 }
 
-.docs-drawer__foot {
+/* ── Social links — bottom of the side nav (shared by the sidebar + the drawer) ── */
+.docs-social {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 10px;
 
-    margin-top: 20px;
+    margin-top: 24px;
     padding-top: 16px;
 
-    border-top: 1px solid color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
+}
 
+.docs-social__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--ori-color-on-background);
     font-size: 14px;
+    font-weight: 600;
+    opacity: 0.75;
+}
+
+.docs-social__link:hover {
+    opacity: 1;
+}
+
+.docs-social__icon {
+    flex: 0 0 auto;
+}
+
+/* In the full-height drawer, pin the social links to the very bottom. */
+.docs-drawer .docs-social {
+    margin-top: auto;
 }
 
 /* ── Responsive: collapse the header to a burger + drawer, hide the sidebar ── */
@@ -660,5 +740,14 @@ a {
 
     .docs-sidebar {
         display: none;
+    }
+}
+
+/* Theme picker + language button stay in the header at every width; GitHub lives in the side nav.
+   Tighten the header a touch on phones. */
+@media (max-width: 520px) {
+    .docs-nav {
+        gap: 8px;
+        padding: 10px 12px;
     }
 }
