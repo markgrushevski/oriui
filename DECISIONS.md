@@ -4,6 +4,16 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Dropped silent no-op props (Avatar `shadow`, Card `icon`)
+
+The first orchestrated docs review surfaced props declared in the SFCs but never wired to the
+template — silent no-ops a consumer could set with zero effect (a misleading API, worse than a
+missing feature). Removed `shadow` from OriAvatar and `icon` from OriCard (the latter redundant with
+`prependIcon` / `appendIcon`). `OriCard.image` is kept for now but **documented as a reserved/planned
+hero image** — the rule going forward: a reserved feature ships with real behaviour, not as a no-op
+prop. (Pre-1.0 alpha, so the removal is a free breaking change.) Notable: the multi-agent review
+earned its keep by finding real component bugs while writing the docs.
+
 ## CI: GitHub Actions quality gate (Phase 8, first slice)
 
 `.github/workflows/ci.yml` runs on push to `main` + every PR: **lint → types → test → build**

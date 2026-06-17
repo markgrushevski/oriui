@@ -427,26 +427,25 @@ the button order (e.g. destructive action on the right).
 
 ## Props
 
-| Prop                      | Type         | Default     | Description                                                                                                                                                                  |
-| ------------------------- | ------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `appendAvatar`            | `string`     | —           | URL for an avatar in the trailing header slot.                                                                                                                               |
-| `appendIcon`              | `string`     | —           | SVG path for an icon in the trailing header slot.                                                                                                                            |
-| `color`                   | `ThemeColor` | `'surface'` | Semantic role: primary · secondary · success · warn · danger · info · surface · background.                                                                                  |
-| `disabled`                | `boolean`    | —           | Sets `aria-disabled="true"` and `pointer-events: none`.                                                                                                                      |
-| `fluid`                   | `boolean`    | —           | Stretches the card to full container width (`ori-card_fluid`).                                                                                                               |
-| `icon`                    | `string`     | —           | Declared but not currently rendered by the template (reserved). Note: the `ori-card_icon` class is applied automatically whenever `text` is absent, regardless of this prop. |
-| `image`                   | `string`     | —           | Reserved for a hero image URL (not yet rendered by the template).                                                                                                            |
-| `loading`                 | `boolean`    | —           | Sets `aria-busy="true"` and `pointer-events: none`.                                                                                                                          |
-| `prependAvatar`           | `string`     | —           | URL for an avatar in the leading header slot.                                                                                                                                |
-| `prependIcon`             | `string`     | —           | SVG path for an icon in the leading header slot.                                                                                                                             |
-| `radius`                  | `RadiusSize` | `'lg'`      | Corner radius: `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`.                                                                                                        |
-| `reverseAppendedActions`  | `boolean`    | —           | Reverses the flex direction of the `actions-append` row.                                                                                                                     |
-| `reversePrependedActions` | `boolean`    | —           | Reverses the flex direction of the `actions-prepend` row.                                                                                                                    |
-| `row`                     | `boolean`    | —           | Horizontal layout — header and body side by side (`ori-card_row`).                                                                                                           |
-| `subtitle`                | `string`     | —           | Subtitle below the title; falls back to the `subtitle` slot.                                                                                                                 |
-| `text`                    | `string`     | —           | Body text; falls back to the `body` slot.                                                                                                                                    |
-| `title`                   | `string`     | —           | Primary heading; falls back to the `title` slot.                                                                                                                             |
-| `variant`                 | `Variant`    | `'fill'`    | Visual style: `fill` · `tonal` · `outline` · `text` · `plain`.                                                                                                               |
+| Prop                      | Type         | Default     | Description                                                                                 |
+| ------------------------- | ------------ | ----------- | ------------------------------------------------------------------------------------------- |
+| `appendAvatar`            | `string`     | —           | URL for an avatar in the trailing header slot.                                              |
+| `appendIcon`              | `string`     | —           | SVG path for an icon in the trailing header slot.                                           |
+| `color`                   | `ThemeColor` | `'surface'` | Semantic role: primary · secondary · success · warn · danger · info · surface · background. |
+| `disabled`                | `boolean`    | —           | Sets `aria-disabled="true"` and `pointer-events: none`.                                     |
+| `fluid`                   | `boolean`    | —           | Stretches the card to full container width (`ori-card_fluid`).                              |
+| `image`                   | `string`     | —           | Reserved for a hero image URL (not yet rendered by the template).                           |
+| `loading`                 | `boolean`    | —           | Sets `aria-busy="true"` and `pointer-events: none`.                                         |
+| `prependAvatar`           | `string`     | —           | URL for an avatar in the leading header slot.                                               |
+| `prependIcon`             | `string`     | —           | SVG path for an icon in the leading header slot.                                            |
+| `radius`                  | `RadiusSize` | `'lg'`      | Corner radius: `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`.                       |
+| `reverseAppendedActions`  | `boolean`    | —           | Reverses the flex direction of the `actions-append` row.                                    |
+| `reversePrependedActions` | `boolean`    | —           | Reverses the flex direction of the `actions-prepend` row.                                   |
+| `row`                     | `boolean`    | —           | Horizontal layout — header and body side by side (`ori-card_row`).                          |
+| `subtitle`                | `string`     | —           | Subtitle below the title; falls back to the `subtitle` slot.                                |
+| `text`                    | `string`     | —           | Body text; falls back to the `body` slot.                                                   |
+| `title`                   | `string`     | —           | Primary heading; falls back to the `title` slot.                                            |
+| `variant`                 | `Variant`    | `'fill'`    | Visual style: `fill` · `tonal` · `outline` · `text` · `plain`.                              |
 
 ## Events & attributes
 
