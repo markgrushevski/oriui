@@ -1,0 +1,30 @@
+/* ============================================================
+   oriUI elevation tokens — soft, cool-tinted shadows so surfaces
+   lift off the page. Theme-aware (light uses tinted ink; dark
+   leans on deeper shadow + a hairline highlight ring).
+   Layer: ori.tokens
+   ============================================================ */
+@layer ori.tokens {
+    :root {
+        --ori-shadow-sm: 0 1px 2px color-mix(in srgb, var(--ori-neutral-900) 8%, transparent);
+        --ori-shadow-md:
+            0 1px 2px color-mix(in srgb, var(--ori-neutral-900) 6%, transparent),
+            0 6px 16px -4px color-mix(in srgb, var(--ori-neutral-900) 12%, transparent);
+        --ori-shadow-lg:
+            0 2px 4px color-mix(in srgb, var(--ori-neutral-900) 6%, transparent),
+            0 14px 36px -8px color-mix(in srgb, var(--ori-neutral-900) 18%, transparent);
+        --ori-shadow-ring: 0 0 0 1px color-mix(in srgb, var(--ori-neutral-900) 8%, transparent);
+    }
+
+    :root.dark,
+    .ori-theme_dark {
+        --ori-shadow-sm: 0 1px 2px color-mix(in srgb, #000000 45%, transparent);
+        --ori-shadow-md:
+            0 1px 2px color-mix(in srgb, #000000 45%, transparent),
+            0 8px 24px -6px color-mix(in srgb, #000000 60%, transparent);
+        --ori-shadow-lg:
+            0 2px 4px color-mix(in srgb, #000000 45%, transparent),
+            0 16px 40px -8px color-mix(in srgb, #000000 70%, transparent);
+        --ori-shadow-ring: 0 0 0 1px color-mix(in srgb, #ffffff 9%, transparent);
+    }
+}

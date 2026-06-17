@@ -1,0 +1,46 @@
+/* ============================================================
+   Color utility classes — layer: ori.utilities
+   Each class sets --ori-color and --ori-color-on so that
+   variant and component rules can read a single resolved alias.
+   ============================================================ */
+@layer ori.utilities {
+    .ori-color.ori-color_primary {
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+    }
+
+    .ori-color.ori-color_secondary {
+        --ori-color: var(--ori-color-secondary);
+        --ori-color-on: var(--ori-color-on-secondary);
+    }
+
+    .ori-color.ori-color_surface {
+        --ori-color: var(--ori-color-surface);
+        --ori-color-on: var(--ori-color-on-surface);
+    }
+
+    .ori-color.ori-color_background {
+        --ori-color: var(--ori-color-background);
+        --ori-color-on: var(--ori-color-on-background);
+    }
+
+    .ori-color.ori-color_success {
+        --ori-color: var(--ori-color-success);
+        --ori-color-on: var(--ori-color-on-success);
+    }
+
+    .ori-color.ori-color_warn {
+        --ori-color: var(--ori-color-warn);
+        --ori-color-on: var(--ori-color-on-warn);
+    }
+
+    .ori-color.ori-color_danger {
+        --ori-color: var(--ori-color-danger);
+        --ori-color-on: var(--ori-color-on-danger);
+    }
+
+    .ori-color.ori-color_info {
+        --ori-color: var(--ori-color-info);
+        --ori-color-on: var(--ori-color-on-info);
+    }
+}
