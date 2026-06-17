@@ -8,3 +8,8 @@ export * from './input';
 export * from './checkbox';
 export * from './switch';
 export * from './radio';
+export * from './textarea';
+export * from './badge';
+export * from './tag';
+export * from './alert';
+export * from './progress';

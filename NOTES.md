@@ -26,8 +26,9 @@ practical gotchas go here.
 - A **new component in a new dir** plus a change to the global-registration plugin
   (`docs/app/plugins/oriui.ts`) may need a **dev-server restart** for MDC to resolve the new
   `:ori-*` tag — HMR usually picks it up, but not always.
-- MDC inline component **booleans**: write `:prop="true"` (v-bind), never bare `prop` or
-  `prop="true"` — the string form triggers Vue prop-type warnings.
+- MDC inline component **booleans and numbers**: write `:prop="true"` / `:rows="2"` / `:value="50"`
+  (v-bind), never bare `prop` or `prop="50"` — the string form triggers Vue prop-type warnings (a
+  numeric prop would receive the string `"50"`).
 - MDC inline **arrays/objects**: `:options='[{"label":"A","value":"a"}]'` (single-quoted JSON)
   parses correctly.
 - New oriUI components must be registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to
@@ -71,6 +72,15 @@ practical gotchas go here.
 
 - Component `<style>` is **unlayered** on purpose (it wins over the `@layer` utilities); modifiers use
   the house `.ori-x.ori-x_y` compound pattern (not `:where()`), consistent across the library.
+- **Don't set `--ori-color` (or another utility-owned alias) in a component's own unlayered `<style>`.**
+  It shadows the `ori-color_*` utility (which lives in `@layer ori.utilities`) on the **same element**,
+  so the `color` prop adds a class with **zero effect** — a silent no-op (it bit OriProgress). The token
+  layer already defaults `--ori-color: currentColor` at `:root`; let the utility repoint it, and if you
+  need a no-class fallback read it at the point of use (`var(--ori-color, currentcolor)`).
+- **A focus ring on a control that sits _on_ a `fill` variant surface** (e.g. a Tag/Alert close button)
+  must use `outline-color: currentcolor` — on `fill`, `currentcolor` is the on-color (contrasts the
+  fill), whereas `var(--ori-color)` **is** the fill background, so the ring vanishes. Standalone controls
+  (Button) ring with `--ori-color-primary` because their ring sits on the page, not on a fill surface.
 - Form controls: a **real hidden native input** (`opacity:0` over the visual element) drives a11y;
   style the visual via `:checked ~`, `:focus-visible ~`. The accent + ring read `var(--ori-color)`
   set by the `ori-color` class on the wrapper (inherits down).
