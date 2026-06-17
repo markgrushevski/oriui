@@ -4,6 +4,31 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Docs IA: Reka-style sections; framework split is per-component, not a nav branch
+
+Reworked the docs navigation to the Reka/Radix model (user-driven). The top level is four sections:
+**Overview** (intro, get-started, installation, a11y), **Guides** (styling, theming, customization,
+the CSS layer), **Components** (nested by category — Actions / Data Input / Data Display / Feedback →
+pages), and **Headless** (the behaviour layer, nested by sub-layer: **Core** = `@oriui/core`, the
+framework-agnostic contract + native engine; **Vue** = the composables; a Svelte group / Utilities
+slot in later). The nav tree (`NavTree` → collapsible `NavSection`, built on `useDisclosure`) is
+shared by the desktop sidebar and the mobile drawer.
+
+- **Frameworks are a per-component switcher, not a nav dimension.** A component page shows the same
+  example as **Vue** (the styled component) or **HTML** (the standalone `.ori-*` CSS layer) via the
+  Example tabs; a Svelte tab joins later. So "Vue vs Svelte vs CSS" lives _inside_ the page, and the
+  headless composables sit under Headless → Vue (their framework binding). Rejected a top-level
+  framework branch (premature — only Vue exists) and a global framework switcher (a no-op today).
+- **The home is a landing**, not a doc page: no sidebar, the nav sits behind the burger, and the hero
+  bleeds full-width (100vw). Responsive (≤ 860px): the header collapses to a burger → a drawer
+  carrying the full nav; horizontal overflow is clipped at the viewport with `overflow-x: clip` on
+  `.docs` (which, unlike `hidden`, keeps the sticky nav working).
+- **Component pages** use the chip `ClassTable` (a coloured type chip per row) at the top + dense
+  examples + Props / Events / Slots + a11y — the Button page is the exemplar.
+
+Why: it scales (sections + per-component framework tabs), matches what Vue devs expect (Reka / Radix),
+and stays honest about the layered architecture (styled / headless / CSS; Vue binding / agnostic core).
+
 ## Dropped silent no-op props (Avatar `shadow`, Card `icon`)
 
 The first orchestrated docs review surfaced props declared in the SFCs but never wired to the
