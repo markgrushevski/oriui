@@ -63,7 +63,7 @@
         "docs:preview": "npm run preview --workspace docs"
     },
     "dependencies": {
-        "@oriui/vue": "*"
+        "@oriui/vue": "1.0.0-alpha.0"
     },
     "peerDependencies": {
         "vue": "^3"
