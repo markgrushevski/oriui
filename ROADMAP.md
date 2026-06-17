@@ -50,8 +50,11 @@ a11y, tests, strong docs).
       switcher can gain an HTML/htmx tab); theme gallery + `nuxt-llms` (llms.txt).
 8. 🔄 **CI/CD + deploy** — **GitHub Actions** quality gate ✅ (`lint → types → test → build` on
    push/PR, Node 20.19 + 22; check-mode `lint:ci`). Vercel SSG preset pinned (`nuxi generate` →
-   `docs/.output/public`, root install). To do: connect the Vercel project, `changesets` + npm
-   publish (alpha `next` tag, needs `NPM_TOKEN`), status/coverage badges.
+   `docs/.output/public`, root install). Foundation merged to `main`; internal workspace deps
+   pinned for the `1.0.0-alpha.0` publish; the manual publish runbook lives in
+   [RELEASING.md](RELEASING.md). To do: create the `oriui` npm org + first `npm publish` (alpha
+   `next` tag), then automate with `changesets` + a CI publish job (`NPM_TOKEN`); connect the
+   Vercel project; status/coverage badges.
 
 ## Deferred / out of scope (for now)
 
