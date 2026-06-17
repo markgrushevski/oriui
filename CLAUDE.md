@@ -50,13 +50,14 @@ orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid para
 
 ## Commands
 
-- `npm run dev` — Vite dev server (playground)
-- `npm run build` — build to `dist/` (Vite → JS/CSS, then **vue-tsc** → `.d.ts`)
+- `npm run dev` — docs dev server (Nuxt, port 5173); alias of `docs:dev` (root `dev` runs the docs workspace)
+- `npm run build` — build the library to `dist/` (Vite → JS/CSS, then **vue-tsc** → `.d.ts`); `build:watch` watches
 - `npm run types` — type-check without emit (`vue-tsc --noEmit`)
 - `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite)
 - `npm run lint:all` — prettier + stylelint + eslint (with `--fix`); `lint:ci` is the check-mode gate
   (no `--fix`) the GitHub Actions CI runs alongside `types` / `test:types` / `test` / `build`
-- `npm run docs:dev` / `docs:build` — VitePress docs
+- `npm run docs:dev` / `docs:build` / `docs:preview` — Nuxt (Nuxt Content) docs: dev server, static
+  generate (`nuxi generate`), and preview of the generated output
 
 Type declarations come from **vue-tsc** (`tsconfig.build.json`), NOT vite-plugin-dts
 (v5 dropped `.vue` SFC support). The build fails on type errors.
@@ -75,7 +76,7 @@ src/
   types.ts            shared token/prop types (ActionSize, ThemeColor, Variant, ...)
   components/<name>/   ori-<name>.vue + index.ts barrel
   styles/             design tokens + base css (sizes, themes, fonts, ...) — being restructured
-docs/                 VitePress site (full rewrite planned in Phase 7)
+docs/                 Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
 ```
 
 Components import types from `../../types` and sibling components directly (e.g.

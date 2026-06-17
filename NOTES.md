@@ -45,6 +45,18 @@ practical gotchas go here.
   return 200 until the cache rebuilds) — a production `nuxi generate` scans the real files, so the
   stale routes are gone there. Verify routes by HTTP status (`curl -o /dev/null -w "%{http_code}"`),
   not a content grep for "404".
+- **Every content page must be in the nav** (`sections` in `default.vue`). A page that exists in
+  `content/` but isn't linked is orphaned: the prerender crawler discovers routes by following links,
+  so an un-linked page is **never emitted** by `nuxi generate` (it 404s in the static build) and a
+  reader browsing the sidebar never finds it. Wire new pages into the right section when you add them.
+- **A burst of file edits can corrupt the Nitro dev bundle** → `[nitro] ERROR ENOENT … .nuxt/dev/index.mjs`
+  and then **every** route 500s (even untouched ones). It's a stale-build glitch, **not** a content bug —
+  don't go hunting the page. Fix = restart the dev server (`preview_stop` + `preview_start`), which
+  rebuilds `.nuxt/dev`. Watch for it after writing several content/layout files in quick succession.
+- The docs dev server is **`npm run dev`** at the repo root (= `npm run dev --workspace docs`, a **Nuxt**
+  app on port 5173) — same as `docs:dev`. (CLAUDE.md still calls root `dev` a "Vite playground" and the
+  docs "VitePress" — both stale; the docs are Nuxt + Nuxt Content.) The preview `dev` launch config maps
+  to it, so `preview_start dev` restarts the docs server.
 
 ## Lint / formatting
 
@@ -66,6 +78,18 @@ practical gotchas go here.
   destructure (template-only props can stay undestructured). Gate any Teleport on a `mounted` ref —
   the library can't use Nuxt `<ClientOnly>`.
 - Read tokens via resolved aliases (`--ori-size-action`, `--ori-color`), never raw scale tokens.
+- **Overriding a token: _where_ it is declared decides where an override works.** Components read the
+  resolved alias (`--ori-color`, bound from `--ori-color-primary` by the color class), and the color
+  aliases are declared **and resolved at `:root`** (`--ori-color-primary: var(--ori-color-primary-light)`).
+  So: a **global** brand override sets the `*-light`/`*-dark` **source** at `:root` (the alias re-resolves
+  there and inherits everywhere). A **subtree / one-off** override must repoint the **resolved alias**
+  (`--ori-color-primary`, or `--ori-color`/`--ori-color-on`) on the wrapper/element — setting the
+  `*-light` source on a non-`:root` element does **nothing**, because the alias was already substituted up
+  at `:root` and is merely inherited below. Radius/font-size raw scales (`--ori-size-radius_*`,
+  `--ori-font-size_*`) live on the **utility base class** (`.ori-size-radius`, `.ori-font-size`), never at
+  `:root`, so they aren't `:root`-overridable at all — repoint them on that base class, or per-instance.
+  CSS `@layer` only breaks ties between declarations on the **same** element; it never makes an inherited
+  value beat a value a class sets directly on the element.
 
 ## Build / tests
 

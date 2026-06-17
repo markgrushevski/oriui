@@ -60,6 +60,13 @@ a11y, tests, strong docs).
   `@oriui/vue`; full split + pnpm/changesets deferred).
 - `oriui/headless` for **no-framework / htmx** via Zag's `@zag-js/vanilla` behind the contract
   (an `@oriui/vanilla` adapter) — complex behavior (focus-trap, roving-tabindex) without a framework.
+- **Native platform dialogs / Popover API — a separate feature track** (idea, do later). Lean on the
+  platform: `popover` + `popovertarget` (non-modal — menus, tooltips, dropdowns; light-dismiss, top-layer)
+  and `<dialog>` + `showModal()` / `::backdrop` (modal — built-in focus trap, `Esc`, top-layer), optionally
+  triggered by the new `command` / `commandfor` invokers. **Zero-JS** for the `oriui/css` / htmx layer — a
+  lighter path than `@zag-js/vanilla` for simple cases, or a native adapter behind the headless contract.
+  Caveats: baseline support (popover & `<dialog>` ~2024; invokers newer → progressive enhancement) and
+  top-layer / `::backdrop` styling.
 - Component catalog expansion (forms, overlays) — after the foundation.
 - **Ionic is deliberately NOT a target** (it's a competitor, not a backend; Capacitor is
   supported without it via the planned hybrid mode).
