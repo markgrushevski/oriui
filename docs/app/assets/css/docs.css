@@ -36,6 +36,11 @@ a {
 
 .docs {
     min-height: 100vh;
+
+    /* Clip horizontal overflow (e.g. the home hero backdrop's wide bleed) at the viewport edge so it
+       never produces a horizontal scrollbar. `clip` (unlike `hidden`) creates no scroll container, so
+       the sticky nav keeps working. */
+    overflow-x: clip;
 }
 
 /* Nav */
@@ -485,7 +490,123 @@ a {
     max-width: 340px;
 }
 
-@media (max-width: 720px) {
+/* ── Navigation tree (shared by the desktop sidebar + the mobile drawer) ── */
+.docs-navtree__section {
+    margin-bottom: 22px;
+}
+
+.docs-navtree__heading {
+    margin: 0 0 10px;
+
+    color: var(--ori-color-on-background);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.docs-navtree__section .docs-sidebar__group {
+    margin-bottom: 12px;
+}
+
+/* ── Mobile burger + drawer ── */
+.docs-nav__burger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+    margin-right: 2px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: none;
+    color: var(--ori-color-on-background);
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.docs-nav__burger:hover {
+    background: color-mix(in srgb, var(--ori-color-on-background) 8%, transparent);
+}
+
+.docs-drawer-overlay {
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+
+    background: color-mix(in srgb, #000000 45%, transparent);
+}
+
+.docs-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 51;
+    inset: 0 auto 0 0;
+
+    width: min(84vw, 320px);
+    padding: 16px 18px;
+
+    overflow-y: auto;
+
+    background: var(--ori-color-surface);
+    color: var(--ori-color-on-surface);
+
+    box-shadow: var(--ori-shadow-lg);
+}
+
+.docs-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.docs-drawer__close {
+    border: 0;
+    opacity: 0.7;
+
+    background: none;
+    color: inherit;
+
+    font-size: 26px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.docs-drawer__close:hover {
+    opacity: 1;
+}
+
+.docs-drawer__foot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 20px;
+    padding-top: 16px;
+
+    border-top: 1px solid color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
+
+    font-size: 14px;
+}
+
+/* ── Responsive: collapse the header to a burger + drawer, hide the sidebar ── */
+@media (max-width: 860px) {
+    .docs-nav__burger {
+        display: inline-flex;
+    }
+
+    .docs-nav__desktop {
+        display: none;
+    }
+
     .docs-sidebar {
         display: none;
     }
