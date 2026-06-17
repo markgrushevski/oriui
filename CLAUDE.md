@@ -16,7 +16,8 @@ Distinctive: zero-runtime theming via CSS custom properties, no Tailwind depende
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
 Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); key decisions and
 their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
-non-obvious implementation gotchas in [NOTES.md](NOTES.md).
+non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runbook in
+[RELEASING.md](RELEASING.md).
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
