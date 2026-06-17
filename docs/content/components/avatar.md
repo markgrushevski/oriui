@@ -7,15 +7,17 @@ title: Avatar
 A data-display component that shows an image, or initials derived from `text` when there is no
 image (or while it loads). Supports a title / subtitle column for list and profile UIs.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component.
 
 ## Classes
 
 An avatar is a block class plus paired token utilities — each pair is a base class
-(`ori-size-action`) and a scale value (`ori-size-action_lg`), so one class repoints one token.
-The Vue props below map 1:1 to these. There is no variant; an optional `color` tints the initials
-backdrop.
+(`ori-size-action`) and a scale value (`ori-size-action_lg`), so one class repoints one token. The
+Vue props in [Framework API](#framework-api) mirror these — font size and the titled layout are
+derived from `size` and `title` / `subtitle`. There is no variant; an optional `color` tints the
+initials backdrop.
 
 :class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space + ori-size-action-space_*","type":"Size","description":"adds padding around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
 
@@ -334,36 +336,10 @@ A user-list row and a comment header — the everyday compositions.
 
 ::
 
-## Props
-
-| Prop       | Type         | Default     | Description                                                                                                               |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | —           | Tints the initials backdrop: `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background`. |
-| `inline`   | `boolean`    | —           | Renders as `inline-flex` with a small margin for flowing inside text.                                                     |
-| `radius`   | `RadiusSize` | `'rounded'` | Corner radius (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                                    |
-| `reverse`  | `boolean`    | —           | Reverses the flex direction so the text column appears before the image.                                                  |
-| `size`     | `ActionSize` | `'lg'`      | Box size and initials scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                                   |
-| `spaced`   | `boolean`    | —           | Adds padding around the avatar via `ori-size-action-space`.                                                               |
-| `subtitle` | `string`     | —           | Secondary line in the text column; rendered whenever `title` or `subtitle` is set.                                        |
-| `text`     | `string`     | —           | Drives the initials (up to two letters from the first two words) and the image `alt`.                                     |
-| `title`    | `string`     | —           | Primary line in the text column; the text column appears when either `title` or `subtitle` is set.                        |
-
-## Events & attributes
-
-OriAvatar declares **no custom events**. It sets `inheritAttrs: false` and applies `v-bind="$attrs"`
-directly to the `<img>` element — so `src`, `alt`, `width`, `height`, `loading`, `decoding`, and
-any other image attribute or listener fall through to the image, not the wrapper `<div>`. Native
-event listeners (`@error`, `@load`, …) follow the same path.
-
-The `alt` attribute is overridden internally to the value of `text` (or `''` when `text` is not set)
-so there is a single source of truth for the accessible name.
-
-## Slots
-
-OriAvatar exposes **no slots**. All content (image, initials backdrop, title, subtitle) is driven by
-props and `$attrs`.
-
 ## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes.
 
 - The `<img>` `alt` is always set — to the `text` prop value, or `''` (empty, decorative) when
   `text` is omitted. Do not pass a separate `alt` via `$attrs`; it will be overridden.
@@ -377,3 +353,37 @@ props and `$attrs`.
 | -------------------- | ------------ | ---------------------------------------------------------------- |
 | `alt` (from `text`)  | `<img>`      | Set automatically; omit `alt` in `$attrs` — it will be replaced. |
 | `aria-hidden="true"` | `__backdrop` | Initials are decorative; screen readers read the image `alt`.    |
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
+
+| Prop       | Type         | Default     | Description                                                                                                               |
+| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor` | —           | Tints the initials backdrop: `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background`. |
+| `inline`   | `boolean`    | `false`     | Renders as `inline-flex` with a small margin for flowing inside text.                                                     |
+| `radius`   | `RadiusSize` | `'rounded'` | Corner radius (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                                    |
+| `reverse`  | `boolean`    | `false`     | Reverses the flex direction so the text column appears before the image.                                                  |
+| `size`     | `ActionSize` | `'lg'`      | Box size and initials scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                                   |
+| `spaced`   | `boolean`    | `false`     | Adds padding around the avatar via `ori-size-action-space`.                                                               |
+| `subtitle` | `string`     | —           | Secondary line in the text column; rendered whenever `title` or `subtitle` is set.                                        |
+| `text`     | `string`     | —           | Drives the initials (up to two letters from the first two words) and the image `alt`.                                     |
+| `title`    | `string`     | —           | Primary line in the text column; the text column appears when either `title` or `subtitle` is set.                        |
+
+### Events & attributes
+
+OriAvatar declares **no custom events**. It sets `inheritAttrs: false` and applies `v-bind="$attrs"`
+directly to the `<img>` element — so `src`, `alt`, `width`, `height`, `loading`, `decoding`, and
+any other image attribute or listener fall through to the image, not the wrapper `<div>`. Native
+event listeners (`@error`, `@load`, …) follow the same path.
+
+The `alt` attribute is overridden internally to the value of `text` (or `''` when `text` is not set)
+so there is a single source of truth for the accessible name.
+
+### Slots
+
+OriAvatar exposes **no slots**. All content (image, initials backdrop, title, subtitle) is driven by
+props and `$attrs`.

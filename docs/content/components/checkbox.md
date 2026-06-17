@@ -6,20 +6,21 @@ title: Checkbox
 
 A styled, accessible checkbox built on a **real `<input type="checkbox">`** — kept in the DOM
 (visually hidden over a custom box) so keyboard, focus, and native form submission work for free.
-`v-model` accepts a boolean for a single box or an array with the `value` prop for a native group.
 The accent color and `:focus-visible` ring are driven by the `ori-color` token; `invalid` sets
 `aria-invalid`; `disabled` is the native attribute.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component, where `v-model` accepts a boolean for a single box or an array (with `value`) for a native
+group.
 
 ## Classes
 
 A checkbox is a block class on the `<label>` wrapper plus paired token utilities — each pair is a
 base class (`ori-color`) and a scale value (`ori-color_primary`), so one class repoints one token.
-The Vue props below map 1:1 to these.
+The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the <label> wrapper."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native <input type=checkbox>"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the <input>, not classes"}]'}
+:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the <label> wrapper."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl · text (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes"}]'}
 
 ## Colors
 
@@ -33,15 +34,6 @@ Every semantic color role. The accent fill and focus ring track `ori-color`.
 :ori-checkbox{label="Danger" color="danger"}
 :ori-checkbox{label="Info" color="info"}
 
-#vue
-
-```vue
-<OriCheckbox v-model="checked" label="Primary" color="primary" />
-<OriCheckbox v-model="checked" label="Success" color="success" />
-<OriCheckbox v-model="checked" label="Danger" color="danger" />
-<OriCheckbox v-model="checked" label="Info" color="info" />
-```
-
 #html
 
 ```html
@@ -51,6 +43,15 @@ Every semantic color role. The accent fill and focus ring track `ori-color`.
     <span class="ori-checkbox__label">Primary</span>
 </label>
 <!-- swap the color pair: ori-color_primary → _success / _danger / _info / … -->
+```
+
+#vue
+
+```vue
+<OriCheckbox v-model="checked" label="Primary" color="primary" />
+<OriCheckbox v-model="checked" label="Success" color="success" />
+<OriCheckbox v-model="checked" label="Danger" color="danger" />
+<OriCheckbox v-model="checked" label="Info" color="info" />
 ```
 
 ::
@@ -66,14 +67,6 @@ the box dimensions use `em` units.
 :ori-checkbox{label="md" size="md"}
 :ori-checkbox{label="lg" size="lg"}
 :ori-checkbox{label="xl" size="xl"}
-
-#vue
-
-```vue
-<OriCheckbox v-model="checked" label="sm" size="sm" />
-<OriCheckbox v-model="checked" label="md" size="md" />
-<OriCheckbox v-model="checked" label="xl" size="xl" />
-```
 
 #html
 
@@ -91,6 +84,14 @@ the box dimensions use `em` units.
 </label>
 ```
 
+#vue
+
+```vue
+<OriCheckbox v-model="checked" label="sm" size="sm" />
+<OriCheckbox v-model="checked" label="md" size="md" />
+<OriCheckbox v-model="checked" label="xl" size="xl" />
+```
+
 ::
 
 ## States
@@ -102,19 +103,6 @@ the box dimensions use `em` units.
 :ori-checkbox{label="Disabled" :disabled="true"}
 :ori-checkbox{label="Invalid" :invalid="true"}
 :ori-checkbox{label="Required" :required="true"}
-
-#vue
-
-```vue
-<!-- disabled — native attribute, dims wrapper via ori-checkbox_disabled -->
-<OriCheckbox v-model="checked" label="Disabled" disabled />
-
-<!-- invalid — sets aria-invalid="true" on the <input> -->
-<OriCheckbox v-model="checked" label="Invalid" invalid />
-
-<!-- required — sets required on the <input> -->
-<OriCheckbox v-model="checked" label="Required" required />
-```
 
 #html
 
@@ -132,6 +120,19 @@ the box dimensions use `em` units.
 </label>
 ```
 
+#vue
+
+```vue
+<!-- disabled — native attribute, dims wrapper via ori-checkbox_disabled -->
+<OriCheckbox v-model="checked" label="Disabled" disabled />
+
+<!-- invalid — sets aria-invalid="true" on the <input> -->
+<OriCheckbox v-model="checked" label="Invalid" invalid />
+
+<!-- required — sets required on the <input> -->
+<OriCheckbox v-model="checked" label="Required" required />
+```
+
 ::
 
 ## Color × size
@@ -143,14 +144,6 @@ Color and size compose freely.
 :ori-checkbox{label="Success sm" color="success" size="sm"}
 :ori-checkbox{label="Info xl" color="info" size="xl"}
 
-#vue
-
-```vue
-<OriCheckbox v-model="checked" label="Danger lg" color="danger" size="lg" />
-<OriCheckbox v-model="checked" label="Success sm" color="success" size="sm" />
-<OriCheckbox v-model="checked" label="Info xl" color="info" size="xl" />
-```
-
 #html
 
 ```html
@@ -159,6 +152,14 @@ Color and size compose freely.
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Danger lg</span>
 </label>
+```
+
+#vue
+
+```vue
+<OriCheckbox v-model="checked" label="Danger lg" color="danger" size="lg" />
+<OriCheckbox v-model="checked" label="Success sm" color="success" size="sm" />
+<OriCheckbox v-model="checked" label="Info xl" color="info" size="xl" />
 ```
 
 ::
@@ -172,22 +173,6 @@ handles checked state — no extra logic needed.
 :ori-checkbox{label="Option A" value="a"}
 :ori-checkbox{label="Option B" value="b"}
 :ori-checkbox{label="Option C" value="c"}
-
-#vue
-
-```vue
-<script setup>
-import { ref } from 'vue';
-const selected = ref([]);
-</script>
-
-<template>
-    <OriCheckbox v-model="selected" label="Option A" value="a" />
-    <OriCheckbox v-model="selected" label="Option B" value="b" />
-    <OriCheckbox v-model="selected" label="Option C" value="c" />
-    <p>Selected: {{ selected }}</p>
-</template>
-```
 
 #html
 
@@ -205,6 +190,22 @@ const selected = ref([]);
 </label>
 ```
 
+#vue
+
+```vue
+<script setup>
+import { ref } from 'vue';
+const selected = ref([]);
+</script>
+
+<template>
+    <OriCheckbox v-model="selected" label="Option A" value="a" />
+    <OriCheckbox v-model="selected" label="Option B" value="b" />
+    <OriCheckbox v-model="selected" label="Option C" value="c" />
+    <p>Selected: {{ selected }}</p>
+</template>
+```
+
 ::
 
 ## Common patterns
@@ -214,6 +215,19 @@ submit.
 
 ::example
 :ori-checkbox{label="I agree to the terms and conditions" :required="true"}
+
+#html
+
+```html
+<form>
+    <label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="terms">
+        <input id="terms" type="checkbox" class="ori-checkbox__input" required />
+        <span class="ori-checkbox__box" aria-hidden="true"></span>
+        <span class="ori-checkbox__label">I agree to the terms and conditions</span>
+    </label>
+    <button type="submit">Continue</button>
+</form>
+```
 
 #vue
 
@@ -244,53 +258,12 @@ function submit() {
 </template>
 ```
 
-#html
-
-```html
-<form>
-    <label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="terms">
-        <input id="terms" type="checkbox" class="ori-checkbox__input" required />
-        <span class="ori-checkbox__box" aria-hidden="true"></span>
-        <span class="ori-checkbox__label">I agree to the terms and conditions</span>
-    </label>
-    <button type="submit">Continue</button>
-</form>
-```
-
 ::
 
-## Props
-
-| Prop       | Type               | Default     | Description                                                                                    |
-| ---------- | ------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor`       | `'primary'` | Accent color for the checked fill and focus ring.                                              |
-| `disabled` | `boolean`          | `false`     | Native `disabled` on the input; adds `ori-checkbox_disabled` (opacity) to the wrapper.         |
-| `id`       | `string`           | —           | Overrides the auto-generated `useId()` for the input/label pair.                               |
-| `invalid`  | `boolean`          | —           | Sets `aria-invalid="true"` on the input to signal a validation error.                          |
-| `label`    | `string`           | —           | Visible text rendered inside `ori-checkbox__label`. Omit when providing your own slot content. |
-| `required` | `boolean`          | —           | Sets the native `required` attribute on the input.                                             |
-| `size`     | `ActionSize`       | `'md'`      | Font (and therefore box) scale: `xs` · `sm` · `md` · `lg` · `xl` · `xxl` · `text`.             |
-| `value`    | `string \| number` | —           | Bound to the array model for a native checkbox group; omit for a single boolean `v-model`.     |
-
-## Events & attributes
-
-OriCheckbox sets `inheritAttrs: false` and forwards `$attrs` directly to the `<input>` element
-with `v-bind="$attrs"`. This means native listeners and HTML attributes bind to the real input, not
-the outer `<label>`:
-
-- `@change`, `@focus`, `@blur` — fire on the `<input>`
-- `name`, `form`, `autocomplete`, `aria-describedby` — forwarded to the `<input>`
-
-The two-way binding is handled by `defineModel` — use `v-model` for boolean (single) or array
-(group) state; the component emits `update:modelValue` internally.
-
-## Slots
-
-| Slot      | Description                                                                                                |
-| --------- | ---------------------------------------------------------------------------------------------------------- |
-| `default` | The component renders its label via the `label` prop, not a slot. There is no default slot on OriCheckbox. |
-
 ## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes and keyboard behaviour.
 
 - A real `<input type="checkbox">` drives all keyboard and form behavior; the visual `__box` is
   `aria-hidden="true"`.
@@ -308,3 +281,39 @@ The two-way binding is handled by `defineModel` — use `v-model` for boolean (s
 | ------- | ---------------------------------------- |
 | `Tab`   | Moves focus to / away from the checkbox. |
 | `Space` | Toggles the checked state.               |
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
+
+| Prop       | Type               | Default     | Description                                                                                    |
+| ---------- | ------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor`       | `'primary'` | Accent color for the checked fill and focus ring.                                              |
+| `disabled` | `boolean`          | `false`     | Native `disabled` on the input; adds `ori-checkbox_disabled` (opacity) to the wrapper.         |
+| `id`       | `string`           | —           | Overrides the auto-generated `useId()` for the input/label pair.                               |
+| `invalid`  | `boolean`          | —           | Sets `aria-invalid="true"` on the input to signal a validation error.                          |
+| `label`    | `string`           | —           | Visible text rendered inside `ori-checkbox__label`. Omit when providing your own slot content. |
+| `required` | `boolean`          | —           | Sets the native `required` attribute on the input.                                             |
+| `size`     | `ActionSize`       | `'md'`      | Font (and therefore box) scale: `xs` · `sm` · `md` · `lg` · `xl` · `xxl` · `text`.             |
+| `value`    | `string \| number` | —           | Bound to the array model for a native checkbox group; omit for a single boolean `v-model`.     |
+
+### Events & attributes
+
+OriCheckbox sets `inheritAttrs: false` and forwards `$attrs` directly to the `<input>` element
+with `v-bind="$attrs"`. This means native listeners and HTML attributes bind to the real input, not
+the outer `<label>`:
+
+- `@change`, `@focus`, `@blur` — fire on the `<input>`
+- `name`, `form`, `autocomplete`, `aria-describedby` — forwarded to the `<input>`
+
+The two-way binding is handled by `defineModel` — use `v-model` for boolean (single) or array
+(group) state; the component emits `update:modelValue` internally.
+
+### Slots
+
+| Slot      | Description                                                                                                |
+| --------- | ---------------------------------------------------------------------------------------------------------- |
+| `default` | The component renders its label via the `label` prop, not a slot. There is no default slot on OriCheckbox. |

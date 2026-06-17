@@ -10,13 +10,14 @@ assistive technology announces it as a switch. `v-model` is a boolean. The "on" 
 `:focus-visible` ring both come from the `ori-color` token; the track and thumb scale with
 `ori-font-size` so size is a single prop.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component.
 
 ## Classes
 
 A switch is a block class on the `<label>` wrapper plus two token utilities — color and font-size.
-The Vue props below map 1:1 to these.
+The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 :class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>&lt;label&gt;</code>."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>&lt;input type=checkbox role=switch&gt;</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"ori-switch_disabled","type":"State","description":"Added by the component when <code>disabled</code> is true; also sets the native <code>disabled</code> attribute on the input."}]'}
 
@@ -33,14 +34,6 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 :ori-switch{label="Danger" color="danger"}
 :ori-switch{label="Info" color="info"}
 
-#vue
-
-```vue
-<OriSwitch v-model="on" label="Primary" color="primary" />
-<OriSwitch v-model="on" label="Danger" color="danger" />
-<OriSwitch v-model="on" label="Info" color="info" />
-```
-
 #html
 
 ```html
@@ -50,6 +43,14 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
     <span class="ori-switch__label">Primary</span>
 </label>
 <!-- swap the color pair: ori-color_primary → _danger / _success / _warn / _info -->
+```
+
+#vue
+
+```vue
+<OriSwitch v-model="on" label="Primary" color="primary" />
+<OriSwitch v-model="on" label="Danger" color="danger" />
+<OriSwitch v-model="on" label="Info" color="info" />
 ```
 
 ::
@@ -64,13 +65,6 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 :ori-switch{label="md" size="md"}
 :ori-switch{label="lg" size="lg"}
 :ori-switch{label="xl" size="xl"}
-
-#vue
-
-```vue
-<OriSwitch v-model="on" label="sm" size="sm" />
-<OriSwitch v-model="on" label="xl" size="xl" />
-```
 
 #html
 
@@ -88,6 +82,13 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 </label>
 ```
 
+#vue
+
+```vue
+<OriSwitch v-model="on" label="sm" size="sm" />
+<OriSwitch v-model="on" label="xl" size="xl" />
+```
+
 ::
 
 ## States
@@ -99,14 +100,6 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 ::example
 :ori-switch{label="Disabled off" :disabled="true"}
 :ori-switch{label="Disabled on" :disabled="true" :modelValue="true"}
-
-#vue
-
-```vue
-<OriSwitch v-model="on" label="Disabled off" disabled />
-<!-- pass a true initial value to show the on state -->
-<OriSwitch :modelValue="true" label="Disabled on" disabled />
-```
 
 #html
 
@@ -123,6 +116,14 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 </label>
 ```
 
+#vue
+
+```vue
+<OriSwitch v-model="on" label="Disabled off" disabled />
+<!-- pass a true initial value to show the on state -->
+<OriSwitch :modelValue="true" label="Disabled on" disabled />
+```
+
 ::
 
 ## Invalid
@@ -132,12 +133,6 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 ::example
 :ori-switch{label="Required field" :invalid="true" color="danger"}
 
-#vue
-
-```vue
-<OriSwitch v-model="accepted" label="Required field" :invalid="!accepted" color="danger" required />
-```
-
 #html
 
 ```html
@@ -146,6 +141,12 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Required field</span>
 </label>
+```
+
+#vue
+
+```vue
+<OriSwitch v-model="accepted" label="Required field" :invalid="!accepted" color="danger" required />
 ```
 
 ::
@@ -158,12 +159,6 @@ Pass no `label` prop to render the track alone. Always pair a label-less switch 
 ::example
 :ori-switch{aria-label="Dark mode"}
 
-#vue
-
-```vue
-<OriSwitch v-model="darkMode" aria-label="Dark mode" />
-```
-
 #html
 
 ```html
@@ -171,6 +166,12 @@ Pass no `label` prop to render the track alone. Always pair a label-less switch 
     <input id="dm" type="checkbox" role="switch" class="ori-switch__input" aria-label="Dark mode" />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
 </label>
+```
+
+#vue
+
+```vue
+<OriSwitch v-model="darkMode" aria-label="Dark mode" />
 ```
 
 ::
@@ -183,16 +184,6 @@ A settings row — switch on the right aligned to a description — is the most 
 :ori-switch{label="Email notifications" color="primary" size="md"}
 :ori-switch{label="Dark mode" color="secondary" size="md"}
 :ori-switch{label="Auto-save" :disabled="true" size="md"}
-
-#vue
-
-```vue
-<div style="display: flex; flex-direction: column; gap: 0.75rem">
-    <OriSwitch v-model="emailNotifs" label="Email notifications" color="primary" />
-    <OriSwitch v-model="darkMode" label="Dark mode" color="secondary" />
-    <OriSwitch v-model="autoSave" label="Auto-save" disabled />
-</div>
-```
 
 #html
 
@@ -216,42 +207,22 @@ A settings row — switch on the right aligned to a description — is the most 
 </div>
 ```
 
-::
-
-## Props
-
-| Prop       | Type         | Default     | Description                                                                                        |
-| ---------- | ------------ | ----------- | -------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | `'primary'` | Semantic color for the "on" track fill and the focus ring.                                         |
-| `disabled` | `boolean`    | `false`     | Disables the control — sets native `disabled` and adds `ori-switch_disabled` on the wrapper.       |
-| `id`       | `string`     | —           | Overrides the auto-generated `useId()` id that links the `<label>` to the `<input>`.               |
-| `invalid`  | `boolean`    | —           | Sets `aria-invalid="true"` on the input; pair with a visible error message.                        |
-| `label`    | `string`     | —           | Visible text label rendered beside the track. Omit to render the track alone.                      |
-| `required` | `boolean`    | —           | Sets the native `required` attribute on the input.                                                 |
-| `size`     | `ActionSize` | `'md'`      | Controls both label text size and track/thumb geometry (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). |
-
-## Events & attributes
-
-OriSwitch uses `defineModel<boolean>()` for two-way binding — use `v-model` to read and write the
-checked state.
+#vue
 
 ```vue
-<OriSwitch v-model="enabled" label="Notifications" />
+<div style="display: flex; flex-direction: column; gap: 0.75rem">
+    <OriSwitch v-model="emailNotifs" label="Email notifications" color="primary" />
+    <OriSwitch v-model="darkMode" label="Dark mode" color="secondary" />
+    <OriSwitch v-model="autoSave" label="Auto-save" disabled />
+</div>
 ```
 
-Because `inheritAttrs: false` is set and `v-bind="$attrs"` is forwarded to the `<input>`, all
-native input attributes and listeners fall through to the real control:
-
-- `@change`, `@focus`, `@blur` land on the `<input>`.
-- `name`, `form`, `aria-describedby`, `aria-label`, `data-*` pass through transparently.
-
-## Slots
-
-| Slot | Description                                                                                                                           |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| —    | OriSwitch exposes no slots. Use the `label` prop for visible text, or place external elements and connect them via `aria-labelledby`. |
+::
 
 ## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes and keyboard behaviour.
 
 - Renders a real `<input type="checkbox" role="switch">` so keyboard interaction, form submission,
   and screen-reader announcements work without any JavaScript bridges.
@@ -269,3 +240,41 @@ native input attributes and listeners fall through to the real control:
 | ------- | -------------------------- |
 | `Space` | Toggles the switch on/off. |
 | `Tab`   | Moves focus to the switch. |
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
+
+| Prop       | Type         | Default     | Description                                                                                        |
+| ---------- | ------------ | ----------- | -------------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor` | `'primary'` | Semantic color for the "on" track fill and the focus ring.                                         |
+| `disabled` | `boolean`    | `false`     | Disables the control — sets native `disabled` and adds `ori-switch_disabled` on the wrapper.       |
+| `id`       | `string`     | —           | Overrides the auto-generated `useId()` id that links the `<label>` to the `<input>`.               |
+| `invalid`  | `boolean`    | —           | Sets `aria-invalid="true"` on the input; pair with a visible error message.                        |
+| `label`    | `string`     | —           | Visible text label rendered beside the track. Omit to render the track alone.                      |
+| `required` | `boolean`    | —           | Sets the native `required` attribute on the input.                                                 |
+| `size`     | `ActionSize` | `'md'`      | Controls both label text size and track/thumb geometry (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). |
+
+### Events & attributes
+
+OriSwitch uses `defineModel<boolean>()` for two-way binding — bind with `v-model` to read the
+checked state and emit `update:modelValue` when it toggles.
+
+```vue
+<OriSwitch v-model="enabled" label="Notifications" />
+```
+
+Because `inheritAttrs: false` is set and `v-bind="$attrs"` is forwarded to the `<input>`, all
+native input attributes and listeners fall through to the real control:
+
+- `@change`, `@focus`, `@blur` land on the `<input>`.
+- `name`, `form`, `aria-describedby`, `aria-label`, `data-*` pass through transparently.
+
+### Slots
+
+| Slot | Description                                                                                                                           |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| —    | OriSwitch exposes no slots. Use the `label` prop for visible text, or place external elements and connect them via `aria-labelledby`. |

@@ -8,13 +8,15 @@ A styled, accessible button. Dynamic state is expressed through real attributes 
 a true `disabled` (or `aria-disabled` for link buttons), `loading` sets `aria-busy`, and it ships a
 visible `:focus-visible` ring.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component.
 
 ## Classes
 
 A button is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
-scale value (`ori-color_primary`), so one class repoints one token. The Vue props below map 1:1 to these.
+scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
+[Framework API](#framework-api) map 1:1 to these.
 
 :class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
@@ -255,31 +257,6 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 
 ::
 
-## Polymorphic (`as`)
-
-Render any tag or component. As a non-`<button>`, `disabled` becomes `aria-disabled` + `tabindex="-1"`
-instead of the boolean attribute.
-
-::example
-:ori-button{text="Link button" as="a" href="#button" variant="outline"}
-
-#vue
-
-```vue
-<!-- a real link… -->
-<OriButton as="a" href="/docs" text="Link button" variant="outline" />
-<!-- …or a router link -->
-<OriButton :as="RouterLink" to="/docs" text="Go to docs" />
-```
-
-#html
-
-```html
-<a href="/docs" class="ori-button … ori-variant ori-variant_outline …">Link button</a>
-```
-
-::
-
 ## Common patterns
 
 A confirm / cancel pair and an icon toolbar — the everyday compositions.
@@ -308,7 +285,28 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 
 ::
 
-## Props
+## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes and keyboard behaviour.
+
+- Renders a real `<button type="button">` by default; `as="a"` (or a router link) switches the tag
+  and uses `aria-disabled` + `tabindex="-1"` instead of the boolean `disabled`.
+- `loading` sets `aria-busy="true"`; the spinner is `aria-hidden`. An icon-only button needs an
+  `aria-label`.
+- Visible `:focus-visible` outline; state lives in attributes, not classes.
+
+| Key     | Action                              |
+| ------- | ----------------------------------- |
+| `Enter` | Activates the button.               |
+| `Space` | Activates the button (native only). |
+
+## Framework API
+
+The props, events, slots, and polymorphism of the **Vue** component. The standalone CSS layer has no
+component API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
 
 | Prop           | Type                                                  | Default     | Description                                                                    |
 | -------------- | ----------------------------------------------------- | ----------- | ------------------------------------------------------------------------------ |
@@ -325,27 +323,39 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 | `fluid`        | `boolean`                                             | `false`     | Full-width (block) button.                                                     |
 | `as`           | `string \| Component`                                 | `'button'`  | Element or component to render (e.g. `'a'`, a router link).                    |
 
-## Events & attributes
+### Events & attributes
 
 OriButton declares **no custom events**. It doesn't set `inheritAttrs: false`, so native listeners
 (`@click`, `@focus`, …) and attributes (`type`, `aria-label`, `name`, `form`, …) fall through to the
 rendered element — the tag given by `as`.
 
-## Slots
+### Slots
 
 | Slot      | Description                                                                                      |
 | --------- | ------------------------------------------------------------------------------------------------ |
 | `default` | Replaces the built-in content (icon + text). Supply your own markup; you own its layout/spacing. |
 
-## Accessibility
+### Polymorphic (`as`)
 
-- Renders a real `<button type="button">` by default; `as="a"` (or a router link) switches the tag
-  and uses `aria-disabled` + `tabindex="-1"` instead of the boolean `disabled`.
-- `loading` sets `aria-busy="true"`; the spinner is `aria-hidden`. An icon-only button needs an
-  `aria-label`.
-- Visible `:focus-visible` outline; state lives in attributes, not classes.
+Render any tag or component. As a non-`<button>`, `disabled` becomes `aria-disabled` + `tabindex="-1"`
+instead of the boolean attribute.
 
-| Key     | Action                              |
-| ------- | ----------------------------------- |
-| `Enter` | Activates the button.               |
-| `Space` | Activates the button (native only). |
+::example
+:ori-button{text="Link button" as="a" href="#button" variant="outline"}
+
+#vue
+
+```vue
+<!-- a real link… -->
+<OriButton as="a" href="/docs" text="Link button" variant="outline" />
+<!-- …or a router link -->
+<OriButton :as="RouterLink" to="/docs" text="Go to docs" />
+```
+
+#html
+
+```html
+<a href="/docs" class="ori-button … ori-variant ori-variant_outline …">Link button</a>
+```
+
+::
