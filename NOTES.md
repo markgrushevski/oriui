@@ -39,6 +39,12 @@ practical gotchas go here.
   raw string instead; a component that assumes an array then 500s the whole page. Keep description
   text quote-free (`type=checkbox`, not `type="checkbox"`). `ClassTable` now also degrades to an
   empty table instead of crashing on a bad value — but fix the content so the table actually renders.
+- **Layout / new-component / moved-content changes need a dev-server restart.** Editing the layout
+  (`default.vue`) or adding a component under `app/components/` is often not hot-reloaded. And moving or
+  renaming content files leaves the **old** routes resolving from Nuxt Content's dev cache (they still
+  return 200 until the cache rebuilds) — a production `nuxi generate` scans the real files, so the
+  stale routes are gone there. Verify routes by HTTP status (`curl -o /dev/null -w "%{http_code}"`),
+  not a content grep for "404".
 
 ## Lint / formatting
 

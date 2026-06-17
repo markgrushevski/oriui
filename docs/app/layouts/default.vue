@@ -10,19 +10,21 @@ const isHome = computed(() => route.path === '/');
 
 // Top-level header links → the three sections.
 const nav = [
-    { label: 'Guide', to: '/guide/get-started' },
+    { label: 'Overview', to: '/overview/get-started' },
+    { label: 'Guides', to: '/guides/css' },
     { label: 'Components', to: '/components/button' },
-    { label: 'Composables', to: '/composables/use-dialog' }
+    { label: 'Headless', to: '/headless/use-dialog' }
 ];
 
 // The navigation tree (desktop sidebar + mobile drawer share it via <NavTree>).
 const sections = [
     {
-        title: 'Guide',
-        links: [
-            { label: 'Get started', to: '/guide/get-started' },
-            { label: 'Using CSS', to: '/guide/css' }
-        ]
+        title: 'Overview',
+        links: [{ label: 'Get started', to: '/overview/get-started' }]
+    },
+    {
+        title: 'Guides',
+        links: [{ label: 'Using CSS', to: '/guides/css' }]
     },
     {
         title: 'Components',
@@ -58,10 +60,10 @@ const sections = [
         ]
     },
     {
-        title: 'Composables',
+        title: 'Headless',
         links: [
-            { label: 'useDisclosure', to: '/composables/use-disclosure' },
-            { label: 'useDialog', to: '/composables/use-dialog' }
+            { label: 'useDisclosure', to: '/headless/use-disclosure' },
+            { label: 'useDialog', to: '/headless/use-dialog' }
         ]
     }
 ];
