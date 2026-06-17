@@ -34,6 +34,11 @@ practical gotchas go here.
   the sidebar in `docs/app/layouts/default.vue`.
 - Component doc pages follow the **Button page template** (Examples → Props → Events → Slots → CSS
   classes → Accessibility; interactive components add Anatomy + Headless + keyboard table).
+- **Bound MDC attributes (`:rows`, `:options`) must not contain quotes or apostrophes inside string
+  values** — no `&quot;`, no `\"`, no raw `"`, no `'`. MDC fails to parse such a value and passes the
+  raw string instead; a component that assumes an array then 500s the whole page. Keep description
+  text quote-free (`type=checkbox`, not `type="checkbox"`). `ClassTable` now also degrades to an
+  empty table instead of crashing on a bad value — but fix the content so the table actually renders.
 
 ## Lint / formatting
 
@@ -64,6 +69,16 @@ practical gotchas go here.
   `vue-tsc` can resolve the package `.d.ts`.
 - Behavioral components (OriDialog) are tested against a **fake adapter** (`tests/helpers/fake-dialog.ts`),
   not Zag — the lib's test graph stays engine-free.
+
+## Orchestration / role agents
+
+- Custom agents in `.claude/agents/*.md` load into the Agent/Workflow registry **at session start** —
+  ones created mid-session are NOT available until Claude Code reloads (the registry shows only the
+  built-ins: general-purpose, Explore, Plan, …). For a workflow in the same session, **omit
+  `agentType`** and put the role instructions in the `agent()` prompt, setting the tier via
+  `opts.model` (e.g. `model: 'sonnet'`). The committed agent files work in later sessions.
+- The orchestrator (main session) integrates: role agents write only their own files; the
+  orchestrator runs the gates, verifies live, and records findings here / in DECISIONS.md.
 
 ## Git / Windows
 
