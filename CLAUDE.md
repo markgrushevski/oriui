@@ -17,7 +17,7 @@ Distinctive: zero-runtime theming via CSS custom properties, no Tailwind depende
 Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); key decisions and
 their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
 non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runbook in
-[RELEASING.md](RELEASING.md).
+[RELEASING.md](RELEASING.md); the branch / commit / release workflow in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
