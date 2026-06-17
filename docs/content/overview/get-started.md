@@ -32,3 +32,6 @@ import 'oriui/css';
 
 That is all — components are themeable through design tokens, with light/dark and swappable
 skins out of the box. See them live on the [component pages](/components/button).
+
+Need the CSS-only layer, the headless composables, or per-target setup? See
+[Installation](/overview/installation).
