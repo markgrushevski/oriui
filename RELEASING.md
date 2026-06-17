@@ -70,6 +70,16 @@ Order matters so the whole graph exists in the registry by the time anyone insta
 - **Drop `--tag next`** to publish as `latest` if you want `npm install oriui` to work
   immediately — at the cost of shipping an alpha as the default.
 
+### 4. Tag the release
+
+A git tag maps the published version to an exact commit, so every `oriui@x` is checkout-able. Tag
+the release commit (the lockstep version bump) once the publish succeeds, and push the tag:
+
+```bash
+git tag -a v1.0.0-alpha.0 -m "v1.0.0-alpha.0"
+git push origin v1.0.0-alpha.0
+```
+
 ## Verify
 
 ```bash
