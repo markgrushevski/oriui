@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const { theme, init, toggleTheme } = useOriTheme();
 const { init: initFramework } = useOriFramework();
+
+// The home page is a landing: no sidebar, nav behind the burger, full-bleed hero.
+const route = useRoute();
+const isHome = computed(() => route.path === '/');
 
 // Top-level header links → the three sections.
 const nav = [
@@ -71,7 +75,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="docs">
+    <div class="docs" :class="{ 'docs--home': isHome }">
         <header class="docs-nav">
             <button
                 class="docs-nav__burger"
