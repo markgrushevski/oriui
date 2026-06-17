@@ -1,15 +1,33 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 // Docs-only: a DaisyUI-style class reference table with a coloured "type" chip per row.
 // Used in markdown via MDC: :class-table{:rows='[{"class":"ori-button","type":"Block","description":"…"}]'}
+// MDC hands us `rows` as a parsed array — but if the attribute value contains a character it can't
+// parse (a stray quote/apostrophe in a description), it passes the raw string instead. Normalise and
+// guard so a malformed table degrades to empty rather than 500-ing the whole page.
 interface ClassRow {
     class: string;
     type: string;
     description: string;
 }
 
-defineProps<{ rows?: ClassRow[] }>();
+const props = defineProps<{ rows?: ClassRow[] | string }>();
 
-const chipKey = (type: string) => type.toLowerCase().replace(/[^a-z]+/g, '-');
+const items = computed<ClassRow[]>(() => {
+    if (Array.isArray(props.rows)) return props.rows;
+    if (typeof props.rows === 'string') {
+        try {
+            const parsed = JSON.parse(props.rows);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+    return [];
+});
+
+const chipKey = (type?: string) => (type ?? '').toLowerCase().replace(/[^a-z]+/g, '-');
 </script>
 
 <template>
@@ -23,7 +41,7 @@ const chipKey = (type: string) => type.toLowerCase().replace(/[^a-z]+/g, '-');
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, i) in rows" :key="i">
+                <tr v-for="(row, i) in items" :key="i">
                     <td>
                         <code>{{ row.class }}</code>
                     </td>
