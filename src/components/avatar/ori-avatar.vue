@@ -12,7 +12,6 @@ const {
     color?: ThemeColor;
     inline?: boolean;
     radius?: RadiusSize;
-    shadow?: boolean;
     size?: ActionSize;
     spaced?: boolean;
     subtitle?: string;
