@@ -1,0 +1,39 @@
+@layer ori.utilities {
+    .ori-shadow {
+        box-shadow:
+            0 2px 4px 0 rgb(0 0 0 / 0.2),
+            0 3px 10px 0 rgb(0 0 0 / 0.19);
+    }
+
+    .ori-disabled {
+        opacity: 0.2 !important;
+        cursor: default !important;
+        pointer-events: none !important;
+    }
+
+    .ori-loading {
+        cursor: default !important;
+        pointer-events: none !important;
+    }
+
+    /* Safe-area insets for hybrid / PWA (notch, home indicator) */
+    .ori-safe-area {
+        padding-top: env(safe-area-inset-top);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+    }
+
+    .ori-safe-area_top {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .ori-safe-area_bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .ori-safe-area_inline {
+        padding-right: env(safe-area-inset-right);
+        padding-left: env(safe-area-inset-left);
+    }
+}

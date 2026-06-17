@@ -1,6 +1,10 @@
 .idea
 .vscode
+# Ignore local Claude session data, but version the shareable orchestration setup.
+.claude/*
+!.claude/agents/
 cache
+coverage
 dist
 node_modules
 types

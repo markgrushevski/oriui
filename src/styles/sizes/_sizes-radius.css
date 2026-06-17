@@ -1,0 +1,43 @@
+@layer ori.utilities {
+    .ori-size-radius {
+        --ori-size-radius-step: calc(var(--ori-size-radius_md) / 4);
+
+        --ori-size-radius_zero: 0;
+        --ori-size-radius_xs: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 3);
+        --ori-size-radius_sm: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 2);
+        --ori-size-radius_md: 8px;
+        --ori-size-radius_lg: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 2);
+        --ori-size-radius_xl: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 4);
+        --ori-size-radius_rounded: 9999px;
+
+        --ori-size-radius: var(--ori-size-radius_md);
+    }
+
+    .ori-size-radius.ori-size-radius_zero {
+        --ori-size-radius: var(--ori-size-radius_zero);
+    }
+
+    .ori-size-radius.ori-size-radius_xs {
+        --ori-size-radius: var(--ori-size-radius_xs);
+    }
+
+    .ori-size-radius.ori-size-radius_sm {
+        --ori-size-radius: var(--ori-size-radius_sm);
+    }
+
+    .ori-size-radius.ori-size-radius_md {
+        --ori-size-radius: var(--ori-size-radius_md);
+    }
+
+    .ori-size-radius.ori-size-radius_lg {
+        --ori-size-radius: var(--ori-size-radius_lg);
+    }
+
+    .ori-size-radius.ori-size-radius_xl {
+        --ori-size-radius: var(--ori-size-radius_xl);
+    }
+
+    .ori-size-radius.ori-size-radius_rounded {
+        --ori-size-radius: var(--ori-size-radius_rounded);
+    }
+}

@@ -3,11 +3,11 @@
 ### Installation
 
 ```sh
-npm i vueinjar
+npm i oriui
 ```
 
 ### Import components and types
 
 ```js
-import { ... } from "vueinjar"
+import { ... } from "oriui"
 ```

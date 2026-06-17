@@ -1,0 +1,150 @@
+/* ============================================================
+   oriUI preset skins — a gallery of token overrides applied via
+   data-ori-skin on <html>. Each block overrides the
+   --ori-color-<role>-<light|dark> source tokens; the light/dark
+   machinery in _themes-color-tokens.css resolves on top, and the
+   shared status hues (success/warn/danger/info) stay untouched.
+   Every pairing targets WCAG AA for body text. Page-level only
+   (the active alias resolves at :root — see DECISIONS.md).
+   Layer: ori.tokens
+   ============================================================ */
+@layer ori.tokens {
+    /* Sumi (墨, ink) — graphite ink on warm washi paper. The 織り interpretation;
+       graphite stays distinct from the red danger status. Strict WCAG AA. */
+    :root[data-ori-skin='sumi'] {
+        --ori-color-primary-light: #2b2d42;
+        --ori-color-on-primary-light: #f4f1de;
+        --ori-color-primary-dark: #f4f1de;
+        --ori-color-on-primary-dark: #2b2d42;
+
+        --ori-color-secondary-light: #ddb892;
+        --ori-color-on-secondary-light: #2b2d42;
+        --ori-color-secondary-dark: #7e5e44;
+        --ori-color-on-secondary-dark: #f4f1de;
+
+        --ori-color-surface-light: #f4f1de;
+        --ori-color-on-surface-light: #2b2d42;
+        --ori-color-surface-dark: #2b2d42;
+        --ori-color-on-surface-dark: #f4f1de;
+
+        --ori-color-background-light: #fffdf6;
+        --ori-color-on-background-light: #2b2d42;
+        --ori-color-background-dark: #1f2030;
+        --ori-color-on-background-dark: #f4f1de;
+    }
+
+    /* Indigo — calm confident indigo on cool grey (oriUI's previous default). */
+    :root[data-ori-skin='indigo'] {
+        --ori-color-primary-light: #4f46e5;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #818cf8;
+        --ori-color-on-primary-dark: #0a0e16;
+
+        --ori-color-secondary-light: var(--ori-neutral-200);
+        --ori-color-on-secondary-light: var(--ori-neutral-900);
+        --ori-color-secondary-dark: var(--ori-neutral-700);
+        --ori-color-on-secondary-dark: var(--ori-neutral-50);
+
+        --ori-color-surface-light: #ffffff;
+        --ori-color-on-surface-light: var(--ori-neutral-900);
+        --ori-color-surface-dark: #161b26;
+        --ori-color-on-surface-dark: var(--ori-neutral-50);
+
+        --ori-color-background-light: #f5f6f8;
+        --ori-color-on-background-light: var(--ori-neutral-900);
+        --ori-color-background-dark: #0a0e16;
+        --ori-color-on-background-dark: var(--ori-neutral-50);
+    }
+
+    /* Tech — cool cyan on slate. SaaS / developer-tool register. */
+    :root[data-ori-skin='tech'] {
+        --ori-color-primary-light: #0e7490;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #22d3ee;
+        --ori-color-on-primary-dark: #06141a;
+
+        --ori-color-secondary-light: #cffafe;
+        --ori-color-on-secondary-light: #0e3a44;
+        --ori-color-secondary-dark: #155e75;
+        --ori-color-on-secondary-dark: #ecfeff;
+
+        --ori-color-surface-light: #ffffff;
+        --ori-color-on-surface-light: #0c2b33;
+        --ori-color-surface-dark: #0f2630;
+        --ori-color-on-surface-dark: #e0f7fb;
+
+        --ori-color-background-light: #eef6f8;
+        --ori-color-on-background-light: #0c2b33;
+        --ori-color-background-dark: #061419;
+        --ori-color-on-background-dark: #e0f7fb;
+    }
+
+    /* Health — calm emerald on mint. Medical / wellness register. */
+    :root[data-ori-skin='health'] {
+        --ori-color-primary-light: #047857;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #34d399;
+        --ori-color-on-primary-dark: #052017;
+
+        --ori-color-secondary-light: #d1fae5;
+        --ori-color-on-secondary-light: #064e3b;
+        --ori-color-secondary-dark: #065f46;
+        --ori-color-on-secondary-dark: #ecfdf5;
+
+        --ori-color-surface-light: #ffffff;
+        --ori-color-on-surface-light: #0a2e22;
+        --ori-color-surface-dark: #0e2620;
+        --ori-color-on-surface-dark: #dcfcea;
+
+        --ori-color-background-light: #eef8f2;
+        --ori-color-on-background-light: #0a2e22;
+        --ori-color-background-dark: #04140e;
+        --ori-color-on-background-dark: #dcfcea;
+    }
+
+    /* Luxury — deep gold on warm paper / charcoal. Editorial / premium. */
+    :root[data-ori-skin='luxury'] {
+        --ori-color-primary-light: #8a6d09;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #e8c873;
+        --ori-color-on-primary-dark: #1a1505;
+
+        --ori-color-secondary-light: #efe6cf;
+        --ori-color-on-secondary-light: #3a3115;
+        --ori-color-secondary-dark: #4a3f23;
+        --ori-color-on-secondary-dark: #f5ecd6;
+
+        --ori-color-surface-light: #fffdf7;
+        --ori-color-on-surface-light: #2a2410;
+        --ori-color-surface-dark: #211c12;
+        --ori-color-on-surface-dark: #f5ecd6;
+
+        --ori-color-background-light: #f6f1e6;
+        --ori-color-on-background-light: #2a2410;
+        --ori-color-background-dark: #14110a;
+        --ori-color-on-background-dark: #f5ecd6;
+    }
+
+    /* Cyber — neon fuchsia on near-black. Bold / nightlife register. */
+    :root[data-ori-skin='cyber'] {
+        --ori-color-primary-light: #a21caf;
+        --ori-color-on-primary-light: #ffffff;
+        --ori-color-primary-dark: #e879f9;
+        --ori-color-on-primary-dark: #1a0620;
+
+        --ori-color-secondary-light: #f5d0fe;
+        --ori-color-on-secondary-light: #4a044e;
+        --ori-color-secondary-dark: #6b21a8;
+        --ori-color-on-secondary-dark: #faf5ff;
+
+        --ori-color-surface-light: #ffffff;
+        --ori-color-on-surface-light: #2a0a30;
+        --ori-color-surface-dark: #190f24;
+        --ori-color-on-surface-dark: #f3e8ff;
+
+        --ori-color-background-light: #faf2fc;
+        --ori-color-on-background-light: #2a0a30;
+        --ori-color-background-dark: #0d0612;
+        --ori-color-on-background-dark: #f3e8ff;
+    }
+}
