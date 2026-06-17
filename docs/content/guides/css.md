@@ -77,18 +77,11 @@ per request. With **htmx**, fragments you swap in are already themed — CSS tra
 
 ## Where each layer fits
 
-| Target                 | `oriui` (Vue) | `oriui/css` (classes) |     `oriui/headless`     |
-| ---------------------- | :-----------: | :-------------------: | :----------------------: |
-| Vue / Nuxt             |    ✅ best    |          ✅           |            ✅            |
-| Svelte / SvelteKit     |       —       |          ✅           |        ⚠️ planned        |
-| htmx / server-rendered |       —       |       ✅ ideal        | ⚠️ Zag-vanilla (planned) |
-| Astro / 11ty (static)  |  island only  |       ✅ ideal        |            —             |
-| Plain HTML / CDN       |       —       |          ✅           |            —             |
-| Capacitor / Electron   |      ✅       |          ✅           |            ✅            |
+The **CSS layer works everywhere** — that's the whole point. Vue and the headless layer need a JS
+framework; the classes don't. Only complex behavior (focus traps, menus, comboboxes) needs the
+headless layer, which is Vue today; a vanilla adapter (via Zag) is planned for the no-framework
+targets. For the full cross-layer breakdown (Vue / Svelte / htmx / Astro / plain HTML / Capacitor),
+see the [applicability matrix](/overview/introduction#where-each-layer-fits) in the Introduction.
 
-The **CSS layer works everywhere** — that's the whole point. Only complex behavior (focus traps,
-menus, comboboxes) needs the headless layer, which is Vue today; a vanilla adapter (via Zag) is
-planned for the no-framework targets.
-
-Per-component class references live on each component page — flip any example to the **Svelte** tab;
+Per-component class references live on each component page — flip any example to the **HTML** tab;
 that standalone markup is exactly what you'd use in htmx, Astro, or plain HTML.
