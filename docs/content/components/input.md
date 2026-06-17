@@ -10,14 +10,16 @@ the rendered hint or error. The label is wired to the field with `for`/`id` (aut
 `useId` when you don't pass one), and arbitrary native attributes (`name`, `autocomplete`,
 `inputmode`, …) fall through to the underlying `<input>`.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component.
 
 ## Classes
 
 A field is a block wrapper plus paired token utilities — each pair is a base class (`ori-color`) and
 a scale value (`ori-color_primary`), so one class repoints one token. The `ori-color` accent drives
-the focus ring; the idle border is a neutral, theme-aware blend.
+the focus ring; the idle border is a neutral, theme-aware blend. The Vue props in
+[Framework API](#framework-api) map 1:1 to these.
 
 :class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper `<div>`)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (field height)"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
@@ -313,7 +315,33 @@ A real-world sign-in form — label, type, hint, required, and error compose fre
 
 ::
 
-## Props
+## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes and ARIA wiring.
+
+- `label` is associated with the field via `for`/`id`; the id is auto-generated (`useId`) when you
+  don't pass one, so the association holds even without an explicit `id` prop.
+- `hint` and `error` are wired through `aria-describedby`, referencing only the element that is
+  actually rendered (`error` supersedes `hint`). Pass extra ids with `describedby` to reference
+  additional descriptions (e.g. a shared form note).
+- `error` sets `aria-invalid="true"` and announces via `role="alert"`; `invalid` flips
+  `aria-invalid` on its own for external validation flows.
+- Uses the real `disabled` attribute and native `required`; the focus ring is always visible and
+  switches to the `danger` color when invalid.
+- All native attributes (`name`, `autocomplete`, `inputmode`, `maxlength`, …) fall through to the
+  underlying `<input>` — OriInput stays out of the way.
+
+| Key   | Action                                |
+| ----- | ------------------------------------- |
+| `Tab` | Moves focus to / away from the field. |
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
 
 | Prop          | Type                  | Default     | Description                                                                                               |
 | ------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
@@ -333,9 +361,10 @@ A real-world sign-in form — label, type, hint, required, and error compose fre
 | `type`        | `string`              | `'text'`    | Native input type (`text`, `email`, `password`, `search`, `tel`, `url`, `number`, …).                     |
 | `variant`     | `'fill' \| 'outline'` | `'outline'` | Visual style: `outline` (border) or `fill` (tinted background).                                           |
 
-## Events & attributes
+### Events & attributes
 
-`v-model` binds to a `string` via `defineModel<string>()` — use it like any controlled input:
+`v-model` binds to a `string` via `defineModel<string>()` — it reads the `modelValue` prop and emits
+`update:modelValue` on input, so you use it like any controlled field:
 
 ```vue
 <OriInput v-model="myValue" label="Name" />
@@ -348,28 +377,10 @@ attributes and listeners pass through directly to the field element — not the 
   `spellcheck`, `readonly`, …
 - Listeners: `@input`, `@change`, `@focus`, `@blur`, `@keydown`, …
 
-## Slots
+### Slots
 
 OriInput exposes no named slots.
 
 | Slot   | Description           |
 | ------ | --------------------- |
 | (none) | No slots are defined. |
-
-## Accessibility
-
-- `label` is associated with the field via `for`/`id`; the id is auto-generated (`useId`) when you
-  don't pass one, so the association holds even without an explicit `id` prop.
-- `hint` and `error` are wired through `aria-describedby`, referencing only the element that is
-  actually rendered (`error` supersedes `hint`). Pass extra ids with `describedby` to reference
-  additional descriptions (e.g. a shared form note).
-- `error` sets `aria-invalid="true"` and announces via `role="alert"`; `invalid` flips
-  `aria-invalid` on its own for external validation flows.
-- Uses the real `disabled` attribute and native `required`; the focus ring is always visible and
-  switches to the `danger` color when invalid.
-- All native attributes (`name`, `autocomplete`, `inputmode`, `maxlength`, …) fall through to the
-  underlying `<input>` — OriInput stays out of the way.
-
-| Key   | Action                                |
-| ----- | ------------------------------------- |
-| `Tab` | Moves focus to / away from the field. |

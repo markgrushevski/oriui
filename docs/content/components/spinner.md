@@ -8,14 +8,16 @@ An accessible loading indicator — renders `role="status"` with an `aria-label`
 so assistive technology announces the busy state without any extra work. Use it standalone for a
 page-level or section-level loader, or embed it inline inside a button or label.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
+component.
 
 ## Classes
 
 A spinner composes a block class plus paired token utilities — each pair is a base class (`ori-color`)
-and a scale value (`ori-color_primary`), so one class repoints one token. The Vue props below map 1:1
-to these. There is no variant or radius — a spinner only takes a size and an optional color.
+and a scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
+[Framework API](#framework-api) map 1:1 to these. There is no variant or radius — a spinner only takes
+a size and an optional color.
 
 :class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
 
@@ -194,7 +196,26 @@ A full-page loader and a button-level spinner — the everyday compositions.
 
 ::
 
-## Props
+## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes.
+
+- Renders a `<div role="status">` — a polite live region that announces its `aria-label` to
+  screen readers when it appears.
+- The default `aria-label` is `"Loading"`. Use the `label` prop to provide a more specific
+  message (`"Saving your changes"`, `"Fetching results"`, …).
+- When the spinner is decorative — e.g. inside an `aria-busy` button that already carries the
+  announcement — pass `aria-hidden="true"` as a fall-through attribute so it is invisible to
+  assistive technology.
+- No keyboard interaction is required; the spinner is not focusable.
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
 
 | Prop     | Type         | Default     | Description                                                                   |
 | -------- | ------------ | ----------- | ----------------------------------------------------------------------------- |
@@ -207,7 +228,7 @@ A full-page loader and a button-level spinner — the everyday compositions.
 
 `ActionSize`: `'text' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'`
 
-## Events & attributes
+### Events & attributes
 
 OriSpinner declares **no custom events** and does not set `inheritAttrs: false`, so any extra
 attributes you pass (e.g. `class`, `style`, `data-*`) fall through to the root `<div>`. The
@@ -219,22 +240,7 @@ button, for example), set `aria-hidden="true"` on the spinner — because `aria-
 explicitly bound in the template it does fall through to the root element, so the live region
 will be hidden from assistive technology.
 
-## Slots
+### Slots
 
 OriSpinner has **no slots**. Its visual output is a pure CSS ring driven entirely by class and
 attribute props.
-
-| Slot | Description |
-| ---- | ----------- |
-| —    | None.       |
-
-## Accessibility
-
-- Renders a `<div role="status">` — a polite live region that announces its `aria-label` to
-  screen readers when it appears.
-- The default `aria-label` is `"Loading"`. Use the `label` prop to provide a more specific
-  message (`"Saving your changes"`, `"Fetching results"`, …).
-- When the spinner is decorative — e.g. inside an `aria-busy` button that already carries the
-  announcement — pass `aria-hidden="true"` as a fall-through attribute so it is invisible to
-  assistive technology.
-- No keyboard interaction is required; the spinner is not focusable.

@@ -8,13 +8,15 @@ A surface container for grouping related content — a header (prepend slot · t
 append slot), a body, and optional action rows. It is the most _composed_ styled component, yet the
 standalone markup is just nested `.ori-card__*` elements, so it works without Vue.
 
-Every example is live; flip its source between **Vue** (the styled component) and **HTML** (the
-standalone `oriui/css` classes — the same markup for htmx, Astro, Svelte, or plain HTML).
+Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+nested `.ori-card__*` classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to
+**Vue** for the styled component.
 
 ## Classes
 
 A card is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
-scale value (`ori-color_surface`), so one class repoints one token. The Vue props below map 1:1 to these.
+scale value (`ori-color_surface`), so one class repoints one token. The Vue props in
+[Framework API](#framework-api) map 1:1 to these.
 
 :class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · <b>lg</b> · xl · rounded"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
 
@@ -425,7 +427,29 @@ the button order (e.g. destructive action on the right).
 
 ::
 
-## Props
+## Accessibility
+
+The accessibility contract holds across every layer — the standalone classes and the Vue component
+render the same attributes.
+
+- `disabled` maps to `aria-disabled="true"` + `pointer-events: none` — the card is dimmed but
+  remains in the DOM and in the tab order (suitable for progressive-disclosure UIs).
+- `loading` maps to `aria-busy="true"` — assistive technology announces that the region is
+  updating. Combine with a visible spinner inside the `body` slot when appropriate.
+- Decorative icons (`prependIcon`, `appendIcon`) are rendered via `<OriIcon>` which sets
+  `aria-hidden="true"` automatically.
+- Card does not manage focus itself. If the card triggers a navigation or dialog, add the
+  appropriate role (`role="button"`, `tabindex="0"`) and keyboard handler to the root element via
+  attribute fall-through.
+- The body uses the `on-surface` token paired with the card's surface color, keeping text contrast
+  WCAG AA on every skin.
+
+## Framework API
+
+The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
+API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+
+### Props
 
 | Prop                      | Type         | Default     | Description                                                                                 |
 | ------------------------- | ------------ | ----------- | ------------------------------------------------------------------------------------------- |
@@ -447,12 +471,12 @@ the button order (e.g. destructive action on the right).
 | `title`                   | `string`     | —           | Primary heading; falls back to the `title` slot.                                            |
 | `variant`                 | `Variant`    | `'fill'`    | Visual style: `fill` · `tonal` · `outline` · `text` · `plain`.                              |
 
-## Events & attributes
+### Events & attributes
 
 OriCard declares **no custom events** and does not set `inheritAttrs: false`, so native attributes
 (`id`, `class`, `style`, `data-*`, `aria-*`, event listeners, etc.) fall through to the root `<div>`.
 
-## Slots
+### Slots
 
 | Slot              | Falls back to                   | Description                                                                       |
 | ----------------- | ------------------------------- | --------------------------------------------------------------------------------- |
@@ -464,17 +488,3 @@ OriCard declares **no custom events** and does not set `inheritAttrs: false`, so
 | `header-append`   | `appendAvatar` / `appendIcon`   | Trailing area of the header row (avatar, icon, or custom control).                |
 | `body`            | `text` prop                     | Main content area below the header.                                               |
 | `actions-append`  | _(nothing — slot must be used)_ | Action row rendered after the body. `reverseAppendedActions` flips its order.     |
-
-## Accessibility
-
-- `disabled` maps to `aria-disabled="true"` + `pointer-events: none` — the card is dimmed but
-  remains in the DOM and in the tab order (suitable for progressive-disclosure UIs).
-- `loading` maps to `aria-busy="true"` — assistive technology announces that the region is
-  updating. Combine with a visible spinner inside the `body` slot when appropriate.
-- Decorative icons (`prependIcon`, `appendIcon`) are rendered via `<OriIcon>` which sets
-  `aria-hidden="true"` automatically.
-- Card does not manage focus itself. If the card triggers a navigation or dialog, add the
-  appropriate role (`role="button"`, `tabindex="0"`) and keyboard handler to the root element via
-  attribute fall-through.
-- The body uses the `on-surface` token paired with the card's surface color, keeping text contrast
-  WCAG AA on every skin.
