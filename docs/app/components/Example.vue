@@ -8,10 +8,12 @@ import type { Framework } from '../composables/useOriFramework';
 const { framework, setFramework } = useOriFramework();
 const slots = useSlots();
 
+// HTML first: the framework-agnostic markup is the default; Vue/Svelte are opt-in. When the global
+// framework preference isn't available on an example, active falls back to the first provided slot.
 const ALL: { key: Framework; label: string }[] = [
+    { key: 'html', label: 'HTML' },
     { key: 'vue', label: 'Vue' },
-    { key: 'svelte', label: 'Svelte' },
-    { key: 'html', label: 'HTML' }
+    { key: 'svelte', label: 'Svelte' }
 ];
 
 const available = computed(() => ALL.filter((f) => slots[f.key]));
