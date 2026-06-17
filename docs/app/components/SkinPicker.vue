@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useOriTheme, SKINS, type SkinId } from '../composables/useOriTheme';
+import { useOriTheme, SKINS, type SkinId, type Theme } from '../composables/useOriTheme';
 
-// A no-JS-by-default skin picker: a native <details> dropdown listing every skin with a live
-// colour-swatch preview. This is the docs' showcase of the token/skin architecture — switching is
-// a single data-ori-skin attribute, zero runtime. Outside-click close is the only scripted bit.
-const { skin, setSkin } = useOriTheme();
+// A combined theme picker: every skin in both light and dark (e.g. "Ori Light", "Ori Dark"). Picking
+// one sets the skin (data-ori-skin) and the mode (html.dark) together — zero runtime, two attribute
+// writes. This is the docs' showcase of the token/skin architecture. Outside-click close is the only
+// scripted bit; the dropdown is a native <details>, so it works without JS.
+const { theme, skin, setTheme, setSkin } = useOriTheme();
 const root = ref<HTMLDetailsElement>();
+
+const MODES: Theme[] = ['light', 'dark'];
+const modeLabel = (m: Theme) => (m === 'dark' ? 'Dark' : 'Light');
+
+const options = computed(() =>
+    SKINS.flatMap((s) =>
+        MODES.map((m) => ({ key: `${s.id}-${m}`, id: s.id, mode: m, label: s.label, swatches: s.swatches }))
+    )
+);
 
 const current = computed(() => SKINS.find((s) => s.id === skin.value) ?? SKINS[0]);
 
-function pick(id: SkinId) {
+function pick(id: SkinId, mode: Theme) {
     setSkin(id);
+    setTheme(mode);
     if (root.value) root.value.open = false;
 }
 
@@ -31,26 +42,26 @@ function onToggle() {
             <span class="skin-picker__swatches" aria-hidden="true">
                 <span v-for="(c, i) in current.swatches" :key="i" class="skin-picker__dot" :style="{ background: c }" />
             </span>
-            <span class="skin-picker__label">{{ current.label }}</span>
+            <span class="skin-picker__label">{{ current.label }} {{ modeLabel(theme) }}</span>
             <span class="skin-picker__chevron" aria-hidden="true">▾</span>
         </summary>
 
-        <div class="skin-picker__menu" role="menu" aria-label="Skin">
+        <div class="skin-picker__menu" role="menu" aria-label="Theme">
             <button
-                v-for="s in SKINS"
-                :key="s.id"
+                v-for="o in options"
+                :key="o.key"
                 type="button"
                 role="menuitemradio"
-                :aria-checked="skin === s.id"
+                :aria-checked="skin === o.id && theme === o.mode"
                 class="skin-picker__item"
-                :data-active="skin === s.id || undefined"
-                @click="pick(s.id)"
+                :data-active="(skin === o.id && theme === o.mode) || undefined"
+                @click="pick(o.id, o.mode)"
             >
                 <span class="skin-picker__swatches" aria-hidden="true">
-                    <span v-for="(c, i) in s.swatches" :key="i" class="skin-picker__dot" :style="{ background: c }" />
+                    <span v-for="(c, i) in o.swatches" :key="i" class="skin-picker__dot" :style="{ background: c }" />
                 </span>
-                <span class="skin-picker__label">{{ s.label }}</span>
-                <span v-if="skin === s.id" class="skin-picker__check" aria-hidden="true">✓</span>
+                <span class="skin-picker__label">{{ o.label }} {{ modeLabel(o.mode) }}</span>
+                <span v-if="skin === o.id && theme === o.mode" class="skin-picker__check" aria-hidden="true">✓</span>
             </button>
         </div>
     </details>
@@ -113,7 +124,10 @@ function onToggle() {
     z-index: 30;
 
     min-width: 190px;
+    max-height: min(70vh, 420px);
     padding: 6px;
+
+    overflow-y: auto;
 
     border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
     border-radius: 12px;

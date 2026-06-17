@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 
-const { theme, init, toggleTheme } = useOriTheme();
+const { init } = useOriTheme();
 const { init: initFramework } = useOriFramework();
 
 // The home page is a landing: no sidebar, nav behind the burger, full-bleed hero.
@@ -10,21 +10,31 @@ const isHome = computed(() => route.path === '/');
 
 // Top-level header links → the three sections.
 const nav = [
-    { label: 'Overview', to: '/overview/get-started' },
-    { label: 'Guides', to: '/guides/css' },
+    { label: 'Overview', to: '/overview/introduction' },
+    { label: 'Guides', to: '/guides/design-tokens' },
     { label: 'Components', to: '/components/button' },
-    { label: 'Headless', to: '/headless/use-dialog' }
+    { label: 'Headless', to: '/headless/core' }
 ];
 
 // The navigation tree (desktop sidebar + mobile drawer share it via <NavTree>).
 const sections = [
     {
         title: 'Overview',
-        links: [{ label: 'Get started', to: '/overview/get-started' }]
+        links: [
+            { label: 'Introduction', to: '/overview/introduction' },
+            { label: 'Get started', to: '/overview/get-started' },
+            { label: 'Installation', to: '/overview/installation' },
+            { label: 'Accessibility', to: '/overview/accessibility' }
+        ]
     },
     {
         title: 'Guides',
-        links: [{ label: 'Using CSS', to: '/guides/css' }]
+        links: [
+            { label: 'Design tokens', to: '/guides/design-tokens' },
+            { label: 'Theming', to: '/guides/theming' },
+            { label: 'Customization', to: '/guides/customization' },
+            { label: 'Using the CSS layer', to: '/guides/css' }
+        ]
     },
     {
         title: 'Components',
@@ -108,29 +118,36 @@ onMounted(() => {
             <span class="docs-nav__search docs-nav__desktop"><CommandPalette /></span>
 
             <ClientOnly>
-                <OriButton
-                    size="sm"
-                    variant="outline"
-                    color="primary"
-                    :text="theme === 'dark' ? '☾ Dark' : '☀ Light'"
-                    @click="toggleTheme"
-                />
-                <span class="docs-nav__skin docs-nav__desktop"><SkinPicker /></span>
+                <span class="docs-nav__skin"><SkinPicker /></span>
             </ClientOnly>
 
-            <a
-                class="docs-nav__gh docs-nav__desktop"
-                href="https://github.com/markgrushevski/oriui"
-                target="_blank"
-                rel="noopener"
+            <button
+                class="docs-nav__lang"
+                type="button"
+                aria-label="Change language"
+                title="Language — coming soon"
+                disabled
             >
-                GitHub
-            </a>
+                <svg
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    aria-hidden="true"
+                >
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M3 12h18" />
+                    <path d="M12 3c2.6 2.9 2.6 15.1 0 18M12 3c-2.6 2.9-2.6 15.1 0 18" />
+                </svg>
+            </button>
         </header>
 
         <div class="docs-body">
             <aside class="docs-sidebar">
                 <NavTree :sections="sections" />
+                <NavSocial />
             </aside>
 
             <main class="docs-main">
@@ -149,11 +166,7 @@ onMounted(() => {
                     </div>
 
                     <NavTree :sections="sections" @navigate="drawerOpen = false" />
-
-                    <div class="docs-drawer__foot">
-                        <ClientOnly><SkinPicker /></ClientOnly>
-                        <a href="https://github.com/markgrushevski/oriui" target="_blank" rel="noopener">GitHub</a>
-                    </div>
+                    <NavSocial />
                 </aside>
             </div>
         </Teleport>
