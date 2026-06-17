@@ -10,7 +10,7 @@ the sidebar groups on this very site. It owns the open state, the ARIA wiring, a
 behaviour is swappable through the `OriHeadless` adapter contract.
 
 This is the **Vue** binding of the headless layer. The framework-agnostic pieces are the
-[CSS layer](/guide/css) and `@oriui/core`.
+[CSS layer](/guides/css) and `@oriui/core`.
 
 ## Import
 
