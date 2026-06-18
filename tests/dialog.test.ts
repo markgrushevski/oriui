@@ -9,7 +9,7 @@ import { expectNoA11yViolations } from './helpers/axe';
 type Props = Record<string, unknown>;
 type Slots = Record<string, unknown>;
 
-function mountDialog(props: Props = {}, slots: Slots = {}) {
+function mountDialog(props: Props = {}, slots: Slots = {}, plugins: unknown[] = []) {
     return mount(OriDialog, {
         props,
         slots: {
@@ -17,38 +17,42 @@ function mountDialog(props: Props = {}, slots: Slots = {}) {
                 h('button', { ...scope.props, 'data-testid': 'trigger' }, 'Open'),
             ...slots
         },
-        global: { plugins: [[OriHeadless, { dialog: fakeDialog }]] },
+        global: { plugins: plugins as never },
         attachTo: document.body
     });
 }
 
-// OriDialog teleports its overlay to <body>; clear it between tests to keep them isolated.
+// OriDialog renders a real <dialog>; clear the body between tests to keep them isolated.
 afterEach(() => {
     document.body.innerHTML = '';
 });
 
-describe('OriDialog (headless contract)', () => {
-    it('renders only the trigger while closed', async () => {
+const dialogEl = () => document.querySelector('dialog.ori-dialog') as HTMLDialogElement | null;
+
+describe('OriDialog (native <dialog> engine)', () => {
+    it('renders the trigger and a closed <dialog> by default', async () => {
         const wrapper = mountDialog({ title: 'Confirm' });
         await nextTick();
 
         expect(wrapper.find('[data-testid="trigger"]').exists()).toBe(true);
-        expect(document.querySelector('.ori-dialog__content')).toBeNull();
+        expect(dialogEl()).not.toBeNull();
+        expect(dialogEl()?.open).toBe(false);
     });
 
     it('opens on trigger click with accessible dialog markup', async () => {
         const wrapper = mountDialog({ title: 'Confirm' });
         await nextTick();
         await wrapper.find('[data-testid="trigger"]').trigger('click');
+        await nextTick();
 
-        const content = document.querySelector('.ori-dialog__content');
-        expect(content).not.toBeNull();
-        expect(content?.getAttribute('role')).toBe('dialog');
-        expect(content?.getAttribute('aria-modal')).toBe('true');
+        const dialog = dialogEl();
+        expect(dialog?.open).toBe(true);
+        expect(dialog?.getAttribute('role')).toBe('dialog');
+        expect(dialog?.getAttribute('aria-modal')).toBe('true');
 
         // The title is wired as the dialog's accessible name via aria-labelledby.
         const title = document.querySelector('.ori-dialog__title');
-        expect(title?.id).toBe(content?.getAttribute('aria-labelledby'));
+        expect(title?.id).toBe(dialog?.getAttribute('aria-labelledby'));
         expect(title?.textContent).toContain('Confirm');
     });
 
@@ -56,30 +60,45 @@ describe('OriDialog (headless contract)', () => {
         mountDialog({ title: 'Confirm', defaultOpen: true }, { default: () => 'Delete this item?' });
         await nextTick();
 
+        expect(dialogEl()?.open).toBe(true);
         expect(document.querySelector('.ori-dialog__body')?.textContent).toContain('Delete this item?');
     });
 
     it('closes via the close trigger', async () => {
         mountDialog({ title: 'Confirm', defaultOpen: true });
         await nextTick();
-        expect(document.querySelector('.ori-dialog__content')).not.toBeNull();
+        expect(dialogEl()?.open).toBe(true);
 
         (document.querySelector('.ori-dialog__close') as HTMLButtonElement).click();
         await nextTick();
 
-        expect(document.querySelector('.ori-dialog__content')).toBeNull();
+        expect(dialogEl()?.open).toBe(false);
     });
 
-    it('fails loud when no dialog adapter is provided', () => {
-        // The contract ships no native default for dialogs — a missing adapter must throw with guidance.
-        expect(() => mount(OriDialog, { props: { title: 'x' } })).toThrowError(/dialog headless adapter/i);
+    it('works with no adapter wired — native is the default engine', async () => {
+        // The dialog no longer needs an injected adapter: useDialog() falls back to the native engine.
+        mountDialog({ title: 'x', defaultOpen: true });
+        await nextTick();
+
+        expect(dialogEl()).not.toBeNull();
+        expect(dialogEl()?.open).toBe(true);
+    });
+
+    it('honors a custom dialog adapter swapped in via OriHeadless', async () => {
+        mountDialog({ defaultOpen: true }, {}, [[OriHeadless, { dialog: fakeDialog }]]);
+        await nextTick();
+
+        // The fake adapter uses a fixed base id, so this proves the swapped adapter (not the native
+        // default, which uses useId()) produced the prop bags — the contract is still swappable.
+        expect(dialogEl()?.getAttribute('aria-labelledby')).toBe('test-dialog-title');
+        expect(dialogEl()?.open).toBe(true);
     });
 
     it('has no axe violations while open', async () => {
         mountDialog({ title: 'Confirm', defaultOpen: true }, { default: () => 'Body copy.' });
         await nextTick();
 
-        const content = document.querySelector('.ori-dialog__content') as HTMLElement;
-        await expectNoA11yViolations(content);
+        const dialog = dialogEl() as HTMLElement;
+        await expectNoA11yViolations(dialog);
     });
 });

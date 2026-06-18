@@ -31,14 +31,19 @@ export interface UseDialogOptions {
     onOpenChange?: (open: boolean) => void;
 }
 
-/** A modal/dialog control — the hard-behavior case (focus trap, scroll lock) we delegate to Zag. */
+/**
+ * A modal/dialog control built around the native `<dialog>` element: the component renders a real
+ * `<dialog>` and drives `showModal()` / `close()` from `open`, so the platform supplies the focus
+ * trap, `Esc`, `::backdrop`, top-layer and `inert`-on-rest. The adapter owns only the open state and
+ * the ARIA prop bags — `dialogProps` carries the `<dialog>`'s own attributes plus the `close` /
+ * `cancel` / backdrop-click handlers that keep `open` in sync.
+ */
 export interface DialogControl {
     open: ComputedRef<boolean>;
     setOpen(open: boolean): void;
+    toggle(): void;
     triggerProps: ComputedRef<Record<string, unknown>>;
-    backdropProps: ComputedRef<Record<string, unknown>>;
-    positionerProps: ComputedRef<Record<string, unknown>>;
-    contentProps: ComputedRef<Record<string, unknown>>;
+    dialogProps: ComputedRef<Record<string, unknown>>;
     titleProps: ComputedRef<Record<string, unknown>>;
     descriptionProps: ComputedRef<Record<string, unknown>>;
     closeTriggerProps: ComputedRef<Record<string, unknown>>;

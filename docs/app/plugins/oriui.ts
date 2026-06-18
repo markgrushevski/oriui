@@ -13,7 +13,7 @@ import {
     OriTag,
     OriAlert,
     OriProgress
-} from 'oriui';
+} from '@oriui/ui';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
 export default defineNuxtPlugin((nuxtApp) => {

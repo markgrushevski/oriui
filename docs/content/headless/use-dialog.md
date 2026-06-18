@@ -4,14 +4,15 @@ title: useDialog
 
 # useDialog
 
-A headless **modal dialog** primitive — focus trap, scroll lock, `Escape` to close, focus return, and
-`aria-modal` semantics. It owns the open state, the keyboard contract, and the ARIA wiring as ready-to-bind
-prop bags; **you own the markup and styles**.
+A headless **modal dialog** primitive built on the native `<dialog>` element — focus trap, scroll lock,
+`Escape` to close, focus return, and `aria-modal` semantics all come from the platform via
+`showModal()`. It owns the open state and the ARIA wiring as ready-to-bind prop bags; **you own the
+markup and styles** (you render the `<dialog>` and drive `showModal()` / `close()` from `open`).
 
 This is the **Vue** binding; the engine-agnostic contract lives in [`@oriui/core`](/headless/core), and the
-styled [`OriDialog`](/components/dialog) is built on it. Unlike [`useDisclosure`](/headless/use-disclosure),
-a dialog has **no native default** — focus trap, scroll lock, and focus return are exactly the hard
-behaviour oriUI delegates to an adapter (e.g. Zag). With no adapter wired, `useDialog` **fails loud**.
+styled [`OriDialog`](/components/dialog) is built on it. Like [`useDisclosure`](/headless/use-disclosure),
+a dialog now has a **zero-dependency native default** — the browser's `<dialog>` supplies the focus trap,
+`::backdrop`, top-layer and focus-return that used to require a heavyweight engine. No adapter is required.
 
 ## Import
 
@@ -19,116 +20,107 @@ behaviour oriUI delegates to an adapter (e.g. Zag). With no adapter wired, `useD
 import { useDialog } from '@oriui/vue';
 ```
 
-A dialog adapter must be registered first — see [Adapter](#adapter) (a dialog has no native default).
+No adapter needs to be registered — `useDialog` resolves the native engine by default. Swapping a custom
+engine is optional; see [Adapter](#adapter).
 
 ## Options
 
 Pass an options object (or a getter returning one, to stay reactive):
 
-| Option                   | Type                      | Default | Description                            |
-| ------------------------ | ------------------------- | ------- | -------------------------------------- |
-| `defaultOpen`            | `boolean`                 | `false` | Initial open state (uncontrolled).     |
-| `modal`                  | `boolean`                 | `true`  | Trap focus and block the page behind.  |
-| `closeOnEscape`          | `boolean`                 | `true`  | `Escape` closes the dialog.            |
-| `closeOnInteractOutside` | `boolean`                 | `true`  | Click / touch outside closes it.       |
-| `onOpenChange`           | `(open: boolean) => void` | —       | Fires whenever the open state changes. |
-| `id`                     | `string`                  | auto    | Base id for the part ARIA wiring.      |
-
-`useDialog` sets no defaults of its own — it forwards options straight to the adapter, so the values
-above are the conventional adapter (Zag) defaults.
+| Option                   | Type                      | Default | Description                               |
+| ------------------------ | ------------------------- | ------- | ----------------------------------------- |
+| `defaultOpen`            | `boolean`                 | `false` | Initial open state (uncontrolled).        |
+| `modal`                  | `boolean`                 | `true`  | `showModal()` (trap + inert) vs `show()`. |
+| `closeOnEscape`          | `boolean`                 | `true`  | `Escape` closes the dialog.               |
+| `closeOnInteractOutside` | `boolean`                 | `true`  | Click on the `::backdrop` closes it.      |
+| `onOpenChange`           | `(open: boolean) => void` | —       | Fires whenever the open state changes.    |
+| `id`                     | `string`                  | auto    | Base id for the part ARIA wiring.         |
 
 ## Returns
 
-A `DialogControl` — the open state plus the prop bags you bind to each structural part. Every `*Props`
-value is a `ComputedRef`; bind it with `v-bind`.
+A `DialogControl` — the open state plus the prop bags you bind to each part. Every `*Props` value is a
+`ComputedRef`; bind it with `v-bind`.
 
-| Property            | Type                      | Description                                            |
-| ------------------- | ------------------------- | ------------------------------------------------------ |
-| `open`              | `ComputedRef<boolean>`    | Current open state.                                    |
-| `setOpen(open)`     | `(open: boolean) => void` | Open / close imperatively.                             |
-| `triggerProps`      | `ComputedRef<object>`     | The control that opens the dialog.                     |
-| `backdropProps`     | `ComputedRef<object>`     | The fixed overlay behind the panel.                    |
-| `positionerProps`   | `ComputedRef<object>`     | The centring wrapper that holds the panel.             |
-| `contentProps`      | `ComputedRef<object>`     | The dialog panel (`role`, `aria-modal`, labelling).    |
-| `titleProps`        | `ComputedRef<object>`     | Wires the accessible name (`aria-labelledby`).         |
-| `descriptionProps`  | `ComputedRef<object>`     | Wires the accessible description (`aria-describedby`). |
-| `closeTriggerProps` | `ComputedRef<object>`     | The close control.                                     |
+| Property            | Type                      | Description                                                                                                                             |
+| ------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`              | `ComputedRef<boolean>`    | Current open state.                                                                                                                     |
+| `setOpen(open)`     | `(open: boolean) => void` | Open / close imperatively.                                                                                                              |
+| `toggle()`          | `() => void`              | Flip the open state.                                                                                                                    |
+| `triggerProps`      | `ComputedRef<object>`     | The control that opens the dialog.                                                                                                      |
+| `dialogProps`       | `ComputedRef<object>`     | The `<dialog>` element: `role`, `aria-modal`, labelling, and the `close` / `cancel` / backdrop-click handlers that keep `open` in sync. |
+| `titleProps`        | `ComputedRef<object>`     | Wires the accessible name (`aria-labelledby`).                                                                                          |
+| `descriptionProps`  | `ComputedRef<object>`     | Wires the accessible description (`aria-describedby`).                                                                                  |
+| `closeTriggerProps` | `ComputedRef<object>`     | The close control.                                                                                                                      |
 
 ## Usage
 
+Render a real `<dialog>`, bind `dialogProps`, and drive `showModal()` / `close()` from `open`:
+
 ```vue
 <script setup lang="ts">
+import { useTemplateRef, watchPostEffect } from 'vue';
 import { useDialog } from '@oriui/vue';
 
-const {
-    open,
-    triggerProps,
-    backdropProps,
-    positionerProps,
-    contentProps,
-    titleProps,
-    descriptionProps,
-    closeTriggerProps
-} = useDialog(() => ({ modal: true }));
+const dlg = useDialog(() => ({ modal: true }));
+
+const dialogEl = useTemplateRef<HTMLDialogElement>('dialog');
+watchPostEffect(() => {
+    const el = dialogEl.value;
+    if (!el) return;
+    if (dlg.open.value && !el.open) el.showModal();
+    else if (!dlg.open.value && el.open) el.close();
+});
 </script>
 
 <template>
-    <button v-bind="triggerProps">Open</button>
+    <button v-bind="dlg.triggerProps.value">Open</button>
 
-    <Teleport v-if="open" to="body">
-        <div v-bind="backdropProps"></div>
-        <div v-bind="positionerProps">
-            <div v-bind="contentProps">
-                <h2 v-bind="titleProps">Title</h2>
-                <p v-bind="descriptionProps">Body copy.</p>
-                <button v-bind="closeTriggerProps">Close</button>
-            </div>
-        </div>
-    </Teleport>
+    <dialog ref="dialog" v-bind="dlg.dialogProps.value">
+        <h2 v-bind="dlg.titleProps.value">Title</h2>
+        <p v-bind="dlg.descriptionProps.value">Body copy.</p>
+        <button v-bind="dlg.closeTriggerProps.value">Close</button>
+    </dialog>
 </template>
 ```
 
-In an SSR app, gate the `<Teleport>` on a mounted ref the way the styled
-[`OriDialog`](/components/dialog) does, so the server-rendered markup stays stable.
+No `<Teleport>` and no mounted-ref gating are needed: a modal `<dialog>` renders in the browser's top
+layer regardless of where it sits in the DOM, and a closed `<dialog>` is hidden, so the SSR markup stays
+stable. The styled [`OriDialog`](/components/dialog) wraps exactly this pattern.
 
 ## Adapter
 
-`useDialog` has **no native fallback**. A dialog's focus trap, scroll lock, and focus return are exactly
-the behaviours that are easy to get subtly wrong, so oriUI delegates them to a battle-tested engine (Zag)
-behind the [contract](/headless/core) rather than hand-rolling them. Register an adapter once at app entry:
+`useDialog` defaults to the native `<dialog>` engine — the focus trap, scroll lock, `Esc`, `::backdrop`
+and focus-return are the platform's job now, so no dependency is required. The `OriHeadless` contract is
+still there as a **hedge**: register a custom engine per primitive only if a project needs one (for
+example a Zag-backed adapter for a genuinely hard widget), without touching your markup.
 
 ```ts
 // main.ts
 import { createApp } from 'vue';
 import { OriHeadless } from '@oriui/vue';
-import { zagDialog } from './headless/zag-dialog'; // your adapter (Zag-backed)
+import { myDialog } from './headless/my-dialog'; // optional custom adapter
 
 const app = createApp(App);
-app.use(OriHeadless, { dialog: zagDialog });
+app.use(OriHeadless, { dialog: myDialog });
 app.mount('#app');
 ```
 
-`useDialog` resolves that adapter (or one from `provideHeadless` inside a subtree). With none wired it
-**fails loud** rather than shipping a half-correct focus trap:
-
-```text
-[oriui] OriDialog needs a dialog headless adapter. Install @zag-js/dialog + @zag-js/vue
-and provide it, e.g. app.use(OriHeadless, { dialog: zagDialog }).
-```
-
-Swap engines freely — the adapter produces the same `DialogControl` shape, so your markup never changes.
+`useDialog` resolves that adapter (or one from `provideHeadless` inside a subtree), falling back to the
+native engine when none is wired. Any adapter produces the same `DialogControl` shape, so your markup
+never changes.
 
 ## Accessibility
 
-The prop bags carry the full WAI-ARIA dialog contract; bind them and the wiring is correct by construction.
+The native `<dialog>` carries the WAI-ARIA dialog contract; the prop bags complete the wiring.
 
-- `contentProps` set `role="dialog"`, `aria-modal` (per the `modal` option), and `aria-labelledby` /
-  `aria-describedby` pointing at the elements you bind `titleProps` / `descriptionProps` to.
-- `triggerProps` carry the `aria-*` and `id` attributes the open control needs.
+- `dialogProps` set `role="dialog"`, `aria-modal` (per the `modal` option), `aria-labelledby` pointing at
+  the element you bind `titleProps` to, and the `close` / `cancel` handlers that keep `open` in sync when
+  the browser closes the dialog (Esc, backdrop click).
+- `triggerProps` carry the `aria-*` attributes the open control needs.
 - `closeTriggerProps` carry the close control's wiring; give it an accessible name (e.g.
   `aria-label="Close"`).
-- The adapter owns the live behaviour — focus trap, scroll lock, and returning focus to the trigger on
-  close — so a static panel is markup only until `useDialog` drives it.
+- The live behaviour — focus trap, scroll lock, returning focus to the trigger on close — comes from
+  `showModal()`. A non-modal `show()` (`modal: false`) does not trap focus or block the page.
 
 | Key         | Action                                                                     |
 | ----------- | -------------------------------------------------------------------------- |
@@ -139,6 +131,6 @@ The prop bags carry the full WAI-ARIA dialog contract; bind them and the wiring 
 ## See also
 
 - [@oriui/core](/headless/core) — the framework-agnostic contract and the native engine.
-- [useDisclosure](/headless/use-disclosure) — the sibling show / hide primitive (with a native default).
+- [useDisclosure](/headless/use-disclosure) — the sibling show / hide primitive (also native by default).
 - [OriDialog](/components/dialog) — the styled component built on this primitive.
 - [CSS layer](/guides/css) — the standalone `.ori-*` classes for the dialog parts.

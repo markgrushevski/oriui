@@ -8,7 +8,7 @@ A styled, accessible notification banner. Renders `role="alert"` so assistive te
 announces it immediately when it appears — no extra wiring required. It supports an optional
 icon, a title, body text, an actions row, and a dismiss button.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

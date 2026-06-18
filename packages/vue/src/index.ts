@@ -5,8 +5,8 @@ export { useDialog } from './use-dialog';
 // Adapter selection
 export { provideHeadless, OriHeadless } from './plugin';
 
-// Built-in native adapter (default) + the low-level bridge for writing your own
-export { nativeDisclosure } from './native';
+// Built-in native adapters (defaults) + the low-level bridge for writing your own
+export { nativeDisclosure, nativeDialog } from './native';
 export { useService } from './use-machine';
 export { normalizeProps, type VuePropTypes } from './normalize-props';
 

@@ -1,21 +1,22 @@
 # Releasing oriUI
 
-How to cut and publish an oriUI release to npm. oriUI is a small monorepo — three
+How to cut and publish an oriUI release to npm. oriUI is a small monorepo — four
 publishable packages plus the docs workspace. This is the **manual runbook** for the
 alpha line; CI-driven releases (`changesets`) are tracked in [ROADMAP.md](ROADMAP.md)
 Phase 8.
 
 ## Packages & layout
 
-| Package       | Path            | Public name   | Depends on    |
-| ------------- | --------------- | ------------- | ------------- |
-| Styled + CSS  | `.` (root)      | `oriui`       | `@oriui/vue`  |
-| Vue headless  | `packages/vue`  | `@oriui/vue`  | `@oriui/core` |
-| Core contract | `packages/core` | `@oriui/core` | —             |
+| Package       | Path            | Public name   | Depends on                 |
+| ------------- | --------------- | ------------- | -------------------------- |
+| Styled        | `.` (root)      | `@oriui/ui`   | `@oriui/css`, `@oriui/vue` |
+| CSS layer     | `packages/css`  | `@oriui/css`  | —                          |
+| Vue headless  | `packages/vue`  | `@oriui/vue`  | `@oriui/core`              |
+| Core contract | `packages/core` | `@oriui/core` | —                          |
 
 Internal dependencies are **pinned to the exact version** (not `*`): a `*` range does
-not match a prerelease, so `oriui@1.0.0-alpha.0` declaring `"@oriui/vue": "*"` would be
-uninstallable. Keep all three versions in lockstep.
+not match a prerelease, so `@oriui/ui@1.0.0-alpha.0` declaring `"@oriui/vue": "*"` would be
+uninstallable. Keep all four versions in lockstep.
 
 ## One-time setup
 
@@ -29,10 +30,11 @@ uninstallable. Keep all three versions in lockstep.
 
 ### 1. Bump versions in lockstep
 
-Set the same new version across all three packages **and** the pinned internal deps:
+Set the same new version across all four packages **and** the pinned internal deps:
 
-- `package.json` — `version` + `dependencies."@oriui/vue"`
+- `package.json` — `version` + `dependencies."@oriui/css"` + `dependencies."@oriui/vue"`
 - `packages/vue/package.json` — `version` + `dependencies."@oriui/core"`
+- `packages/css/package.json` — `version`
 - `packages/core/package.json` — `version`
 
 Then sync the lockfile and commit:
@@ -54,25 +56,26 @@ by default, which would otherwise demand a paid plan):
 
 ```bash
 npm run build
+npm publish -w @oriui/css  --access public --tag next --otp=XXXXXX
 npm publish -w @oriui/core --access public --tag next --otp=XXXXXX
 npm publish -w @oriui/vue  --access public --tag next --otp=XXXXXX
 npm publish                --access public --tag next --otp=XXXXXX
 ```
 
 Order matters so the whole graph exists in the registry by the time anyone installs:
-`@oriui/core` → `@oriui/vue` → `oriui`.
+`@oriui/css` + `@oriui/core` → `@oriui/vue` → `@oriui/ui`.
 
 #### Dist-tag: `next` vs `latest`
 
 - `--tag next` (used for prereleases) — the alpha does **not** become the default
-  install. Users opt in with `npm install oriui@next`. Plain `npm install oriui` will
+  install. Users opt in with `npm install @oriui/ui@next`. Plain `npm install @oriui/ui` will
   fail until a stable `latest` exists; this is the intended semver hygiene.
-- **Drop `--tag next`** to publish as `latest` if you want `npm install oriui` to work
+- **Drop `--tag next`** to publish as `latest` if you want `npm install @oriui/ui` to work
   immediately — at the cost of shipping an alpha as the default.
 
 ### 4. Tag the release
 
-A git tag maps the published version to an exact commit, so every `oriui@x` is checkout-able. Tag
+A git tag maps the published version to an exact commit, so every `@oriui/ui@x` is checkout-able. Tag
 the release commit (the lockstep version bump) once the publish succeeds, and push the tag:
 
 ```bash
@@ -83,11 +86,12 @@ git push origin v1.0.0-alpha.0
 ## Verify
 
 ```bash
-npm view oriui
+npm view @oriui/ui
+npm view @oriui/css
 npm view @oriui/vue
 npm view @oriui/core
 # fresh-install smoke test in a scratch dir:
-#   npm i oriui@next
+#   npm i @oriui/ui@next
 ```
 
 ## Troubleshooting

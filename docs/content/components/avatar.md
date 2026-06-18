@@ -7,7 +7,7 @@ title: Avatar
 A data-display component that shows an image, or initials derived from `text` when there is no
 image (or while it loads). Supports a title / subtitle column for list and profile UIs.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 
