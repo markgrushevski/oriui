@@ -1,20 +1,16 @@
 import { inject, type MaybeRefOrGetter } from 'vue';
 import { ORI_HEADLESS, type DialogControl, type UseDialogOptions } from './contract';
+import { nativeDialog } from './native';
 
 /**
- * Resolve the dialog behavior. Unlike disclosure, there is NO zero-dep native default — a dialog's
- * focus trap / scroll lock / focus return is exactly the hard behavior we delegate to Zag. So an
- * adapter must be provided (OriHeadless / provideHeadless); otherwise we fail loud with guidance.
+ * Resolve the active Dialog behavior. Components call this and stay engine-agnostic: it returns
+ * whichever adapter the app provided (custom / Zag) via the OriHeadless plugin, falling back to the
+ * native `<dialog>`-backed adapter when none is configured. The native default gives the focus trap,
+ * `Esc`, `::backdrop`, top-layer and focus-return for free (`showModal()`), so a dialog needs no
+ * extra dependency — Zag is an optional per-widget swap, not a requirement.
  */
 export function useDialog(options?: MaybeRefOrGetter<UseDialogOptions>): DialogControl {
-    const adapter = inject(ORI_HEADLESS, null)?.dialog;
-
-    if (!adapter) {
-        throw new Error(
-            '[oriui] OriDialog needs a dialog headless adapter. Install @zag-js/dialog + @zag-js/vue and ' +
-                'provide it, e.g. app.use(OriHeadless, { dialog: zagDialog }).'
-        );
-    }
-
+    const adapters = inject(ORI_HEADLESS, null);
+    const adapter = adapters?.dialog ?? nativeDialog;
     return adapter(options);
 }

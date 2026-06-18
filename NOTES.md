@@ -77,6 +77,16 @@ practical gotchas go here.
 - `useId()` (Vue 3.5) for SSR-safe ids; pass props referenced in `<script>` through the reactive
   destructure (template-only props can stay undestructured). Gate any Teleport on a `mounted` ref —
   the library can't use Nuxt `<ClientOnly>`.
+- **Dialog runs on the native `<dialog>` element, not a JS engine.** `useDialog` defaults to
+  `nativeDialog` (no adapter needed). The adapter owns only `open` + the ARIA prop bags; the **consuming
+  component** owns the `<dialog>` ref and drives `showModal()`/`close()` from `open` in a
+  `watchPostEffect` (`flush:'post'` also covers `defaultOpen` on mount). Keep both imperatives
+  idempotent — `showModal()` throws if already open, `close()` is a no-op when closed (guard with
+  `el.open`). `dialogProps.onClose` mirrors a browser-driven close (Esc, backdrop) back into reactive
+  `open`; backdrop light-dismiss is `onClick` checking `currentTarget === target` (the `::backdrop`
+  click lands on the `<dialog>` itself — no element ref needed). No `<Teleport>`/mounted-gate: a modal
+  `<dialog>` is in the top layer and a closed one is hidden, so SSR markup is stable. happy-dom ≥20
+  implements `showModal`/`close`/`open`/`close`-event, so this is fully unit-testable.
 - Read tokens via resolved aliases (`--ori-size-action`, `--ori-color`), never raw scale tokens.
 - **Overriding a token: _where_ it is declared decides where an override works.** Components read the
   resolved alias (`--ori-color`, bound from `--ori-color-primary` by the color class), and the color
@@ -97,8 +107,9 @@ practical gotchas go here.
   so the suite needs no `build:packages` first.
 - The lib build keeps `@oriui/*` **external**; root `build` runs `build:packages` (tsdown) first so
   `vue-tsc` can resolve the package `.d.ts`.
-- Behavioral components (OriDialog) are tested against a **fake adapter** (`tests/helpers/fake-dialog.ts`),
-  not Zag — the lib's test graph stays engine-free.
+- OriDialog tests run on the **native `<dialog>` default** (no adapter), plus one test that swaps in a
+  **fake adapter** (`tests/helpers/fake-dialog.ts`, fixed id) to prove the `OriHeadless` contract still
+  swaps — the lib's test graph stays engine-free (no Zag).
 
 ## Orchestration / role agents
 

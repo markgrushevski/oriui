@@ -30,9 +30,10 @@ a11y, tests, strong docs).
 2. ✅ **Rebrand vueinjar → oriUI** — `ori-*` / `Ori*`, `src/` layout, types extracted, 1.0.0-alpha.0.
 3. ✅ **Foundation** — token contract (`@layer`, neutral ramp + semantic on-color), neutral + ori
    skins (light/dark), mobile-first touch sizes + safe-area, standalone `@oriui/css` subpath.
-4. 🔄 **Headless layer** — swappable behavior **contract** (`OriHeadless` plugin): **native** zero-dep
-   adapter for simple primitives (Disclosure ✅), **Zag** for complex (Dialog ✅), or bring-your-own.
-   (Superseded "own ↔ Reka" — see DECISIONS.md.) Next: promote `OriDialog` into the `@oriui/ui` package.
+4. ✅ **Headless layer** — swappable behavior **contract** (`OriHeadless` plugin): **native** zero-dep
+   adapters for both the simple primitives (Disclosure ✅) and the dialog (native `<dialog>` ✅), or
+   bring-your-own. (Superseded "own ↔ Reka" and "Zag for complex" — see DECISIONS.md.) `OriDialog` ships
+   in `@oriui/ui`.
 5. 🔄 **Styled components** — a11y pass on the 5 done (state-via-attributes, focus-visible); next:
    `glass` variant + catalog expansion (forms, overlays) on the headless contract.
 6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (93 tests, ~95% line cov on
