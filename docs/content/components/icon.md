@@ -222,7 +222,7 @@ to 100% × 100% and filled with `currentcolor`.
 
 ::
 
-## Real-world recipe
+## Common patterns
 
 An icon placed beside a status badge — size matches the action row, color follows the semantic role.
 

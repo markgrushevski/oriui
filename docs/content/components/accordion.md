@@ -223,7 +223,7 @@ triggers. Disabled items render `aria-disabled="true"` and `tabindex="-1"` on th
 
 ::
 
-## Real-world recipe — FAQ section
+## Common patterns
 
 Colors, radius, and rich slot content together — a common FAQ or settings pattern.
 

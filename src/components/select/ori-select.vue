@@ -60,7 +60,7 @@ const fieldId = computed(() => id ?? uid);
             :disabled="disabled"
             :aria-invalid="invalid ? 'true' : undefined"
         >
-            <option v-if="placeholder" value="" disabled :selected="model === undefined">{{ placeholder }}</option>
+            <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
             <slot>
                 <option v-for="opt in options" :key="opt.value" :value="opt.value" :disabled="opt.disabled">
                     {{ opt.label }}

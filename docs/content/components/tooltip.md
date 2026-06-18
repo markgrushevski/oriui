@@ -18,7 +18,7 @@ component.
 A tooltip is a wrapper block plus a bubble element. There are no variant or size utilities — the
 bubble adapts to its content, and placement is a single modifier class.
 
-:class-table{:rows='[{"class":"ori-tooltip","type":"Block","description":"Wrapper: inline-flex, position:relative. Defines local tokens (--ori-tooltip-bg, --ori-tooltip-color, --ori-tooltip-gap, --ori-tooltip-arrow). Carries ori-color + ori-color_* on the wrapper only when the color prop is set."},{"class":"ori-tooltip__trigger","type":"Part","description":"Inline-flex wrapper around the trigger slot; carries aria-describedby referencing the bubble id."},{"class":"ori-tooltip__bubble","type":"Part","description":"The tooltip surface, role=tooltip. Always in the DOM but visibility:hidden + opacity:0 + pointer-events:none until shown. Background var(--ori-tooltip-bg), shadow var(--ori-shadow-md), radius var(--ori-size-radius_sm). Arrow via ::after."},{"class":"ori-tooltip__bubble_top","type":"Placement","description":"Positions the bubble above the trigger (default), arrow pointing down."},{"class":"ori-tooltip__bubble_bottom","type":"Placement","description":"Positions the bubble below the trigger, arrow pointing up."},{"class":"ori-tooltip__bubble_left","type":"Placement","description":"Positions the bubble to the inline-start of the trigger, arrow pointing right."},{"class":"ori-tooltip__bubble_right","type":"Placement","description":"Positions the bubble to the inline-end of the trigger, arrow pointing left."},{"class":"ori-color ori-color_*","type":"Color","description":"Applied on the wrapper when color is set; repoints --ori-color / --ori-color-on for the bubble fill + contrast text. Omit for the default neutral inverse chip (dark in light mode)."}]'}
+:class-table{:rows='[{"class":"ori-tooltip","type":"Block","description":"Wrapper: inline-flex, position:relative. Defines local tokens (--ori-tooltip-bg, --ori-tooltip-color, --ori-tooltip-gap, --ori-tooltip-arrow). Carries ori-color + ori-color_* on the wrapper only when the color prop is set."},{"class":"ori-tooltip__trigger","type":"Part","description":"Inline-flex wrapper around the trigger slot; carries aria-describedby referencing the bubble id."},{"class":"ori-tooltip__bubble","type":"Part","description":"The tooltip surface, role=tooltip. Always in the DOM but visibility:hidden + opacity:0 + pointer-events:none until shown. Background var(--ori-tooltip-bg), shadow var(--ori-shadow-md), radius var(--ori-tooltip-radius). Arrow via ::after."},{"class":"ori-tooltip__bubble_top","type":"Placement","description":"Positions the bubble above the trigger (default), arrow pointing down."},{"class":"ori-tooltip__bubble_bottom","type":"Placement","description":"Positions the bubble below the trigger, arrow pointing up."},{"class":"ori-tooltip__bubble_left","type":"Placement","description":"Positions the bubble to the inline-start of the trigger, arrow pointing right."},{"class":"ori-tooltip__bubble_right","type":"Placement","description":"Positions the bubble to the inline-end of the trigger, arrow pointing left."},{"class":"ori-color ori-color_*","type":"Color","description":"Applied on the wrapper when color is set; repoints --ori-color / --ori-color-on for the bubble fill + contrast text. Omit for the default neutral inverse chip (dark in light mode)."}]'}
 
 ## Placements
 
@@ -182,7 +182,7 @@ keyboard focus.
 
 ::
 
-## Real-world recipe — toolbar with tooltips
+## Common patterns
 
 Three icon buttons in a toolbar, each with a labeled tooltip — a typical editor or action-bar
 pattern.
@@ -241,11 +241,15 @@ out of scope for this component:
 The accessibility contract holds across every layer — the standalone classes and the Vue component
 render the same attributes.
 
-- The bubble has `role="tooltip"` and a `useId()`-generated id; the trigger wrapper
-  (`.ori-tooltip__trigger`) carries `aria-describedby` pointing at it, so the tooltip text is
-  announced by screen readers when the focusable control inside gains focus.
-- The bubble stays in the DOM permanently (not `v-if`) so the `aria-describedby` reference is never
-  dangling — a pointed-at id that does not exist in the DOM is ignored by assistive technology.
+- The bubble has `role="tooltip"` and a `useId()`-generated id, exposed on the **default slot scope**
+  as `bubbleId`. The bubble stays in the DOM permanently (not `v-if`) so the reference is never
+  dangling — a pointed-at id that does not exist is ignored by assistive technology.
+- **To announce the tooltip to screen readers, put `aria-describedby="<bubbleId>"` on your own focusable
+  control.** `aria-describedby` is announced when the element _bearing_ it is focused, and the
+  `.ori-tooltip__trigger` wrapper is a non-focusable `<span>` — so the wrapper's own `aria-describedby`
+  does not produce the announcement on its own (it only guarantees the id resolves). The component can't
+  augment arbitrary slot content without JS, so this wiring is the consumer's to add (see the trade-off
+  below). Icon-only controls should still carry their own `aria-label`.
 - The trigger's native `:focus-visible` ring is not overridden — the real control inside keeps its
   own focus indicator.
 - The decorative arrow is a `::after` pseudo-element — invisible to assistive technology, no
@@ -253,11 +257,13 @@ render the same attributes.
 - Color is applied only on the wrapper, not on the bubble directly, so the `ori-color_*` utility
   is never shadowed (a NOTES.md gotcha confirmed for OriProgress and OriTooltip alike).
 
-> **Design / a11y trade-off:** `aria-describedby` sits on the `.ori-tooltip__trigger` wrapper span
-> (not the inner control), because the slot content is arbitrary and cannot be augmented without JS.
-> This is the standard CSS-only tooltip association and is announced on `:focus-within`. A consumer
-> wanting the attribute directly on the inner control can pass their own `aria-describedby` to that
-> element.
+> **Design / a11y trade-off:** a pure-CSS tooltip can't inject `aria-describedby` onto arbitrary slot
+> content without JS, so the component puts it on the `.ori-tooltip__trigger` wrapper (which only
+> guarantees the bubble id resolves) and exposes `bubbleId` on the slot scope. For the description to
+> actually be **announced**, the consumer binds `:aria-describedby="bubbleId"` on their own focusable
+> control — `aria-describedby` announces on focus of the element bearing it, and the wrapper isn't
+> focusable. `:focus-within` governs the bubble's CSS visibility, not the ARIA announcement; the two are
+> independent.
 
 | Key         | Action                                                        |
 | ----------- | ------------------------------------------------------------- |

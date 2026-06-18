@@ -38,8 +38,13 @@ const uid = useId();
 const tabId = (index: number) => `${uid}-tab-${index}`;
 const panelId = (index: number) => `${uid}-panel-${index}`;
 
-// Button refs for roving focus management — arrow keys move focus to the newly selected tab.
-const tabRefs = ref<HTMLButtonElement[]>([]);
+// The tablist element; arrow keys resolve the target tab by live DOM order from here, rather than a
+// v-for ref array (Vue does not guarantee a v-for ref array matches the source order, and it isn't
+// reset between renders — both would misfocus after a runtime reorder/removal).
+const tablistRef = ref<HTMLElement>();
+const focusTab = (index: number) => {
+    tablistRef.value?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[index]?.focus();
+};
 
 const firstEnabledValue = computed(() => tabs.find((tab) => !tab.disabled)?.value);
 const selectedValue = computed(() => model.value ?? firstEnabledValue.value);
@@ -75,7 +80,7 @@ const moveTo = (from: number, direction: 1 | -1) => {
         const tab = tabs[index];
         if (tab && !tab.disabled) {
             select(tab);
-            tabRefs.value[index]?.focus();
+            focusTab(index);
             return;
         }
     }
@@ -90,7 +95,7 @@ const moveToEdge = (edge: 'first' | 'last') => {
         const tab = tabs[index];
         if (tab && !tab.disabled) {
             select(tab);
-            tabRefs.value[index]?.focus();
+            focusTab(index);
             return;
         }
     }
@@ -123,12 +128,11 @@ const onKeydown = (event: KeyboardEvent, index: number) => {
 
 <template>
     <div :class="['ori-tabs', 'ori-color', `ori-color_${color}`, { 'ori-tabs_vertical': orientation === 'vertical' }]">
-        <div class="ori-tabs__list" role="tablist" :aria-orientation="orientation">
+        <div ref="tablistRef" class="ori-tabs__list" role="tablist" :aria-orientation="orientation">
             <button
                 v-for="(tab, index) in tabs"
                 :id="tabId(index)"
                 :key="tab.value"
-                ref="tabRefs"
                 class="ori-tabs__tab"
                 type="button"
                 role="tab"
@@ -145,12 +149,12 @@ const onKeydown = (event: KeyboardEvent, index: number) => {
 
         <div
             v-for="(tab, index) in tabs"
-            v-show="tab.value === selectedValue"
             :id="panelId(index)"
             :key="tab.value"
             class="ori-tabs__panel"
             role="tabpanel"
             :aria-labelledby="tabId(index)"
+            :hidden="tab.value !== selectedValue"
             tabindex="0"
         >
             <slot :name="String(tab.value)" :tab="tab">
@@ -247,7 +251,7 @@ const onKeydown = (event: KeyboardEvent, index: number) => {
 }
 
 .ori-tabs__tab:disabled {
-    opacity: 0.5;
+    opacity: 0.45;
 
     cursor: not-allowed;
 }

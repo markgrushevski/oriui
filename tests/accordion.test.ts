@@ -122,10 +122,13 @@ describe('OriAccordion', () => {
         expect(wrapper.classes()).toContain('ori-size-radius_md');
     });
 
-    it('omits radius classes when the radius prop is absent', () => {
+    it('applies the default md radius classes when the radius prop is absent', () => {
         const wrapper = mount(OriAccordion, { props: { items: ITEMS } });
 
-        expect(wrapper.classes()).not.toContain('ori-size-radius');
+        // radius defaults to 'md' so the container always has a resolved --ori-size-radius (a bare
+        // var(--ori-size-radius) with no class would compute to 0 — square corners).
+        expect(wrapper.classes()).toContain('ori-size-radius');
+        expect(wrapper.classes()).toContain('ori-size-radius_md');
     });
 
     // ----- scoped default slot -----

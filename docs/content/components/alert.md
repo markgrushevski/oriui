@@ -4,9 +4,10 @@ title: Alert
 
 # Alert
 
-A styled, accessible notification banner. Renders `role="alert"` so assistive technology
-announces it immediately when it appears — no extra wiring required. It supports an optional
-icon, a title, body text, an actions row, and a dismiss button.
+A styled, accessible notification banner. Its live-region politeness is derived from the color —
+urgent `danger` / `warn` render `role="alert"` (assertive), everything else `role="status"` (polite) —
+so a non-urgent banner isn't announced assertively (override with the `live` prop). It supports an
+optional icon, a title, body text, an actions row, and a dismiss button.
 
 Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
@@ -18,7 +19,7 @@ An alert is a block class plus paired token utilities — each pair is a base cl
 a scale value (`ori-color_info`), so one class repoints one token. The Vue props in
 [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. Renders role=alert."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
+:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warn) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
 
 ## Variants
 
@@ -322,8 +323,12 @@ A form submission result and a persistent banner with actions — the everyday c
 />
 
 <!-- alert with an actions slot -->
-<OriAlert title="New terms of service" color="warn" variant="tonal">
-    <template #text>We have updated our terms. Please review before continuing.</template>
+<OriAlert
+    title="New terms of service"
+    text="We have updated our terms. Please review before continuing."
+    color="warn"
+    variant="tonal"
+>
     <template #actions>
         <OriButton text="Review" size="sm" variant="tonal" color="warn" />
         <OriButton text="Dismiss" size="sm" variant="text" color="warn" />
@@ -372,18 +377,21 @@ A form submission result and a persistent banner with actions — the everyday c
 The accessibility contract holds across every layer — the standalone classes and the Vue component
 render the same attributes.
 
-- Renders a `<div role="alert">` — an ARIA live region with an implicit `aria-live="assertive"` and
-  `aria-atomic="true"`. The browser announces the full content to screen readers immediately when the
-  element is inserted into the DOM.
+- The **live-region politeness is derived from the color** so non-urgent content isn't announced
+  assertively: urgent colors (`danger` / `warn`) render `role="alert"` (`aria-live="assertive"` —
+  interrupts the screen reader), and everything else (the `info` default, `success`, …) renders
+  `role="status"` (`aria-live="polite"` — announced at the next pause). Override with the `live` prop
+  (`assertive` / `polite` / `off`); `off` removes the live region entirely (for content that is part of
+  the static page and shouldn't be announced as it appears).
 - Icons inside the alert are decorative (`aria-hidden="true"` on the `ori-icon`); the alert text itself
   is the accessible announcement.
 - The dismiss button has an `aria-label` (default `"Dismiss"`, configurable via `closeLabel`) so its
   purpose is clear without visible text.
 - The dismiss button has a visible `:focus-visible` ring. No other keyboard interaction is required;
   the alert itself is not focusable.
-- Do not inject `role="alert"` elements that are hidden and then reveal them — some screen readers
-  announce only content present at insertion time. Insert or show the element with content already in
-  place.
+- For a **live** announcement, insert (or reveal) the element with its content already in place — some
+  screen readers announce only content present when the region appears. For content that is part of the
+  page on load, prefer `live="off"` (or a non-urgent color) so it isn't announced as the page renders.
 
 | Key     | Action                                          |
 | ------- | ----------------------------------------------- |
@@ -398,17 +406,18 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 
 ### Props
 
-| Prop         | Type                                                  | Default     | Description                                                                                 |
-| ------------ | ----------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------- |
-| `closable`   | `boolean`                                             | `false`     | Renders a dismiss button; emit `close` to remove the alert.                                 |
-| `closeLabel` | `string`                                              | `'Dismiss'` | `aria-label` on the dismiss button.                                                         |
-| `color`      | `ThemeColor`                                          | `'info'`    | Semantic role: primary · secondary · success · warn · danger · info · surface · background. |
-| `icon`       | `string`                                              | —           | SVG path for the leading icon. Use the `icon` slot for custom markup.                       |
-| `radius`     | `RadiusSize`                                          | `'md'`      | Corner radius (`zero` · xs · sm · md · lg · xl · `rounded`).                                |
-| `size`       | `ActionSize`                                          | `'md'`      | Body font scale (`xs`–`xxl`).                                                               |
-| `text`       | `string`                                              | —           | Body text. Use the `default` slot for richer markup.                                        |
-| `title`      | `string`                                              | —           | Bold heading above the body. Use the `title` slot for richer markup.                        |
-| `variant`    | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'tonal'`   | Visual style.                                                                               |
+| Prop         | Type                                                  | Default     | Description                                                                                                                                                     |
+| ------------ | ----------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `closable`   | `boolean`                                             | `false`     | Renders a dismiss button; emit `close` to remove the alert.                                                                                                     |
+| `closeLabel` | `string`                                              | `'Dismiss'` | `aria-label` on the dismiss button.                                                                                                                             |
+| `color`      | `ThemeColor`                                          | `'info'`    | Semantic role: primary · secondary · success · warn · danger · info · surface · background.                                                                     |
+| `icon`       | `string`                                              | —           | SVG path for the leading icon. Use the `icon` slot for custom markup.                                                                                           |
+| `live`       | `'assertive' \| 'polite' \| 'off'`                    | _derived_   | Live-region politeness. Defaults to `assertive` (`role="alert"`) for `danger` / `warn` and `polite` (`role="status"`) otherwise; `off` removes the live region. |
+| `radius`     | `RadiusSize`                                          | `'md'`      | Corner radius (`zero` · xs · sm · md · lg · xl · `rounded`).                                                                                                    |
+| `size`       | `ActionSize`                                          | `'md'`      | Body font scale (`xs`–`xxl`).                                                                                                                                   |
+| `text`       | `string`                                              | —           | Body text. Use the `default` slot for richer markup.                                                                                                            |
+| `title`      | `string`                                              | —           | Bold heading above the body. Use the `title` slot for richer markup.                                                                                            |
+| `variant`    | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'tonal'`   | Visual style.                                                                                                                                                   |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
 
@@ -423,7 +432,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | `close` | —       | Emitted when the dismiss button is clicked. Use it to hide or remove the alert. |
 
 OriAlert does not set `inheritAttrs: false`, so extra attributes (`class`, `style`, `data-*`, …)
-fall through to the root `<div role="alert">`.
+fall through to the root `<div>` (whose `role` is `alert` / `status` / none per the `live` rule above).
 
 ### Slots
 

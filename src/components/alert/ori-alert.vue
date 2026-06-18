@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types';
 import { OriIcon } from '../icon';
 
 const {
     closeLabel = 'Dismiss',
     color = 'info',
+    live,
     radius = 'md',
     size = 'md',
     variant = 'tonal'
@@ -13,6 +15,12 @@ const {
     closeLabel?: string;
     color?: ThemeColor;
     icon?: string;
+    /**
+     * Live-region politeness. Defaults to `assertive` (role="alert") for urgent colors (danger / warn)
+     * and `polite` (role="status") otherwise — so a static info/success banner is not announced
+     * assertively on load. `off` opts out of the live region entirely.
+     */
+    live?: 'assertive' | 'polite' | 'off';
     radius?: RadiusSize;
     size?: ActionSize;
     text?: string;
@@ -23,6 +31,16 @@ const {
 const emit = defineEmits<{
     close: [];
 }>();
+
+// role=alert is assertive (interrupts the screen reader) — correct only for urgent messages. Derive the
+// politeness from the color unless the caller sets `live` explicitly: danger/warn → assertive (alert),
+// everything else → polite (status). `off` → no live region.
+const politeness = computed(() => live ?? (color === 'danger' || color === 'warn' ? 'assertive' : 'polite'));
+const ariaRole = computed(() => {
+    if (politeness.value === 'assertive') return 'alert';
+    if (politeness.value === 'polite') return 'status';
+    return undefined;
+});
 
 const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6Z';
 </script>
@@ -38,7 +56,7 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
                 [`ori-color ori-color_${color}`]: color
             }
         ]"
-        role="alert"
+        :role="ariaRole"
     >
         <div v-if="icon || $slots['icon']" class="ori-alert__icon">
             <slot name="icon">
@@ -134,9 +152,15 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
     cursor: pointer;
 }
 
+/* Neutral on-surface ring contrasts the pale tonal/outline surfaces (a same-hue currentcolor ring can
+   fall below 3:1 there); on a `fill` alert the on-color is correct against the solid fill. */
 .ori-alert .ori-alert__close:focus-visible {
-    outline: 2px solid currentcolor;
+    outline: 2px solid var(--ori-color-on-surface);
     outline-offset: 2px;
+}
+
+.ori-alert.ori-variant_fill .ori-alert__close:focus-visible {
+    outline-color: currentcolor;
 }
 
 @media (hover: hover) {

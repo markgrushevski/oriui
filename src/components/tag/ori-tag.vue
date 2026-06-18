@@ -128,8 +128,11 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
     font-size: 0.75em;
 }
 
+/* Focus ring: on a `fill` chip the ring is the on-color (contrasts the solid fill); on tonal/outline/
+   text the chip surface is a pale tint of the hue, so a same-hue (currentcolor) ring can fall below the
+   3:1 non-text minimum — use the neutral on-surface color there, which contrasts in both light and dark. */
 .ori-tag__close:focus-visible {
-    outline: 2px solid currentcolor;
+    outline: 2px solid var(--ori-color-on-surface);
     outline-offset: 1px;
 }
 
@@ -139,7 +142,13 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
 
 @media (hover: hover) {
     .ori-tag__close:not(:disabled):hover {
-        background-color: color-mix(in srgb, currentcolor, transparent 80%);
+        background-color: color-mix(in srgb, currentcolor, transparent 88%);
     }
+}
+
+/* On a fill chip the on-color ring contrasts the solid fill (the neutral default above is for the pale
+   tonal/outline surfaces). Placed last to keep specificity ascending. */
+.ori-tag.ori-variant_fill .ori-tag__close:focus-visible {
+    outline-color: currentcolor;
 }
 </style>

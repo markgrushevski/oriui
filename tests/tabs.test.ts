@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-// NOTE: OriTabs is not yet wired into the src/components/index.ts barrel on this branch.
-// Importing directly from the component until the barrel export is added.
 import { OriTabs } from '../src';
 import { expectNoA11yViolations } from './helpers/axe';
 
@@ -336,15 +334,32 @@ describe('OriTabs', () => {
         expect(wrapper.find('.fallback').exists()).toBe(true);
     });
 
-    it('only the active panel is visible (v-show)', async () => {
+    it('only the active panel is shown — inactive panels carry the hidden attribute', async () => {
         const wrapper = mount(OriTabs, { props: { tabs: TABS, modelValue: 'billing' } });
         await wrapper.vm.$nextTick();
 
         const panels = wrapper.findAll('.ori-tabs__panel');
-        // panel[1] (billing) should be shown, the rest hidden
-        expect((panels[0].element as HTMLElement).style.display).toBe('none');
-        expect((panels[1].element as HTMLElement).style.display).toBe('');
-        expect((panels[2].element as HTMLElement).style.display).toBe('none');
+        // panel[1] (billing) is shown; the rest are hidden via the `hidden` attribute (APG-correct,
+        // robust against display overrides — not just CSS display:none).
+        expect(panels[0].attributes('hidden')).toBeDefined();
+        expect(panels[1].attributes('hidden')).toBeUndefined();
+        expect(panels[2].attributes('hidden')).toBeDefined();
+    });
+
+    it('roving focus: ArrowRight moves DOM focus to the newly-selected tab', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'account' },
+            attachTo: document.body
+        });
+        await wrapper.vm.$nextTick();
+
+        const tabButtons = wrapper.findAll('.ori-tabs__tab');
+        (tabButtons[0].element as HTMLButtonElement).focus();
+        await tabButtons[0].trigger('keydown', { key: 'ArrowRight' });
+
+        // automatic activation moves focus along with selection
+        expect(document.activeElement).toBe(tabButtons[1].element);
+        wrapper.unmount();
     });
 
     it('numeric tab values work: aria-selected, panel visibility, and emit', async () => {

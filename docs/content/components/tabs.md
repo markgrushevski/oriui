@@ -273,7 +273,7 @@ When `v-model` is omitted, the component auto-selects the first non-disabled tab
 
 ::
 
-## Real-world recipe — settings page
+## Common patterns
 
 Vertical orientation, a non-default color, and named panel slots — a common settings sidebar pattern.
 
