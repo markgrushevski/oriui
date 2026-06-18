@@ -52,6 +52,7 @@ const sections = [
                     { label: 'Checkbox', to: '/components/checkbox' },
                     { label: 'Input', to: '/components/input' },
                     { label: 'Radio', to: '/components/radio' },
+                    { label: 'Select', to: '/components/select' },
                     { label: 'Switch', to: '/components/switch' },
                     { label: 'Textarea', to: '/components/textarea' }
                 ]
@@ -59,6 +60,7 @@ const sections = [
             {
                 title: 'Data display',
                 links: [
+                    { label: 'Accordion', to: '/components/accordion' },
                     { label: 'Avatar', to: '/components/avatar' },
                     { label: 'Badge', to: '/components/badge' },
                     { label: 'Card', to: '/components/card' },
@@ -71,8 +73,13 @@ const sections = [
                 links: [
                     { label: 'Alert', to: '/components/alert' },
                     { label: 'Progress', to: '/components/progress' },
-                    { label: 'Spinner', to: '/components/spinner' }
+                    { label: 'Spinner', to: '/components/spinner' },
+                    { label: 'Tooltip', to: '/components/tooltip' }
                 ]
+            },
+            {
+                title: 'Navigation',
+                links: [{ label: 'Tabs', to: '/components/tabs' }]
             }
         ]
     },

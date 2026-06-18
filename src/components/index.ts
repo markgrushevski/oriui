@@ -13,3 +13,7 @@ export * from './badge';
 export * from './tag';
 export * from './alert';
 export * from './progress';
+export * from './select';
+export * from './tooltip';
+export * from './accordion';
+export * from './tabs';
