@@ -19,6 +19,9 @@ releases** (a release is a separate, tagged event — see below).
   foundation epic; day-to-day work should be much smaller.)
 - Integrate with a **`--no-ff` merge** so `main`'s first-parent history records each branch as a
   single merge commit — then delete the branch. Prefer a merge commit over a fast-forward.
+- **A trivial single commit** (a typo, a config tweak, a one-line fix) can go **straight to `main`** —
+  no branch, no merge bubble. The `--no-ff` rule governs how _branches_ integrate, not whether every
+  change needs a branch. Reserve branches for multi-commit features or work you want isolated.
 
 ```bash
 git switch -c feat/my-thing main
