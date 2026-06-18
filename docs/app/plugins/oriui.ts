@@ -12,7 +12,11 @@ import {
     OriBadge,
     OriTag,
     OriAlert,
-    OriProgress
+    OriProgress,
+    OriSelect,
+    OriTooltip,
+    OriAccordion,
+    OriTabs
 } from '@oriui/ui';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
@@ -31,7 +35,11 @@ export default defineNuxtPlugin((nuxtApp) => {
         OriBadge,
         OriTag,
         OriAlert,
-        OriProgress
+        OriProgress,
+        OriSelect,
+        OriTooltip,
+        OriAccordion,
+        OriTabs
     };
 
     for (const [name, component] of Object.entries(components)) {

@@ -31,8 +31,13 @@ practical gotchas go here.
   numeric prop would receive the string `"50"`).
 - MDC inline **arrays/objects**: `:options='[{"label":"A","value":"a"}]'` (single-quoted JSON)
   parses correctly.
-- New oriUI components must be registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to
-  the sidebar in `docs/app/layouts/default.vue`.
+- New oriUI components must be re-exported from the **root barrel** `src/components/index.ts` (the
+  public `@oriui/ui` surface — tests import from `../src`, and the docs plugin imports from `@oriui/ui`),
+  registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to the sidebar in
+  `docs/app/layouts/default.vue`. Forgetting the barrel makes `import { OriX } from '../src'` resolve
+  to `undefined` (test-utils then throws "Invalid value used as weak map key"). When fanning components
+  out to parallel agents, the **orchestrator** owns these three shared files (agents touch only their
+  own component dir) to avoid parallel-edit conflicts.
 - Component doc pages follow the **Button page template** (Examples → Props → Events → Slots → CSS
   classes → Accessibility; interactive components add Anatomy + Headless + keyboard table).
 - **Bound MDC attributes (`:rows`, `:options`) must not contain quotes or apostrophes inside string
@@ -40,6 +45,14 @@ practical gotchas go here.
   raw string instead; a component that assumes an array then 500s the whole page. Keep description
   text quote-free (`type=checkbox`, not `type="checkbox"`). `ClassTable` now also degrades to an
   empty table instead of crashing on a bad value — but fix the content so the table actually renders.
+- **Prettier mangles BEM `__` (and `_*` globs) inside a `:class-table` `:rows='…'` JSON string** on
+  some pages — it parses the MDC attribute value as markdown and converts a `__x__` run to `**x**`
+  (and `_*` to `*\*`), so `ClassTable` (which renders `class` via `{{ }}`, raw text) then literally
+  shows `ori-accordion**item`. It's a flaky emphasis-flanking edge case: identical-looking tables
+  (e.g. `dialog.md`) survive, others (`accordion.md`) don't, and tweaking tokens won't reliably fix
+  it. The robust fix is a **`<!-- prettier-ignore -->` line immediately before the `:class-table`**
+  — prettier then leaves the line alone and the `__` names stay intact (verified idempotent +
+  lint-clean). Use it whenever a class-table's rendered `<code>` cells show `**`.
 - **Layout / new-component / moved-content changes need a dev-server restart.** Editing the layout
   (`default.vue`) or adding a component under `app/components/` is often not hot-reloaded. And moving or
   renaming content files leaves the **old** routes resolving from Nuxt Content's dev cache (they still
@@ -65,6 +78,13 @@ practical gotchas go here.
   Don't hand-fight CSS property order — `stylelint --fix` applies the SMACSS order, then Prettier
   formats whitespace. Locally, run `stylelint --fix` then `prettier --write` (prettier last).
 - `currentcolor` must be **lowercase** (stylelint `value-keyword-case`).
+- stylelint `selector-not-notation` enforces the **complex** form: chained `:not(:disabled):not([aria-selected])`
+  fails — combine into one `:not(:disabled, [aria-selected])`.
+- stylelint's SMACSS property order splits **SVG presentation props** (`stroke` / `fill` / `stroke-width`
+  / `stroke-linecap` / `stroke-linejoin`) across its border/background groups, so after `--fix` they may
+  read out of visual order (e.g. `stroke-linejoin` after `color`). Valid + lint-clean — don't hand-reorder.
+- happy-dom reflects a boolean attribute like `required` as the **empty string `''`**, not `'true'` —
+  assert presence with `toBeDefined()` / `.toBe('')`, not `.toBe('true')`.
 - CI gate is `npm run lint:ci` (check-mode prettier/stylelint/eslint — no `--fix`).
 - `.prettierignore` excludes build output (`.output`, `.nuxt`, `coverage`, `dist`).
 
