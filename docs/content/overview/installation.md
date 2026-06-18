@@ -74,24 +74,23 @@ npm install @oriui/vue
 import { useDisclosure } from '@oriui/vue';
 ```
 
-`useDisclosure` works out of the box on a zero-dependency native engine. The harder primitives —
-`useDialog`, with its focus trap and scroll lock — have **no native default** and require an adapter.
-Register one (Zag-backed) once at app entry:
+Both `useDisclosure` and `useDialog` work out of the box on zero-dependency native engines — no
+adapter, no extra install. `useDialog` runs on the native `<dialog>` element, so the focus trap,
+`Esc`, `::backdrop`, top-layer and focus-return come from the platform via `showModal()`.
+
+The swap is **optional**: register a custom engine per primitive only if you need it — for example a
+Zag-backed adapter for a genuinely hard widget — without touching your markup:
 
 ```ts
 // main.ts
 import { OriHeadless } from '@oriui/vue';
-import { zagDialog } from './headless/zag-dialog'; // your adapter
+import { myDialog } from './headless/my-dialog'; // optional custom adapter
 
-app.use(OriHeadless, { dialog: zagDialog });
-```
-
-```bash
-npm install @zag-js/dialog @zag-js/vue
+app.use(OriHeadless, { dialog: myDialog });
 ```
 
 See [@oriui/core](/headless/core) for the contract and [useDialog](/headless/use-dialog) for the full
-adapter setup.
+control surface.
 
 ## Next
 

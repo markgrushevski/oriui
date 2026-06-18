@@ -1,82 +1,89 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { useTemplateRef, watchPostEffect } from 'vue';
 import { useDialog } from '@oriui/vue';
 
 // OriDialog — the library's first behavioral styled component: styled markup + tokens over the
-// engine-agnostic useDialog() contract. The focus trap, scroll lock, Escape, click-outside and
-// aria-modal all come from whichever adapter the app wires via OriHeadless (e.g. Zag). useDialog
-// has no native default, so it fails loud if no adapter is provided — a dialog is exactly the kind
-// of complex widget oriUI delegates rather than hand-rolls.
+// engine-agnostic useDialog() contract, rendered on the native <dialog> element. The focus trap,
+// scroll lock, Escape, ::backdrop and focus-return all come from showModal() — no JS state machine
+// and no adapter to wire (useDialog defaults to the native engine). The OriHeadless contract still
+// lets an app swap a custom dialog adapter; the markup never changes.
 const {
+    closeOnEscape = true,
+    closeOnInteractOutside = true,
     defaultOpen = false,
     modal = true,
     title
 } = defineProps<{
+    closeOnEscape?: boolean;
+    closeOnInteractOutside?: boolean;
     defaultOpen?: boolean;
     modal?: boolean;
     title?: string;
 }>();
 
-const dlg = useDialog(() => ({ defaultOpen, modal }));
+const dlg = useDialog(() => ({ closeOnEscape, closeOnInteractOutside, defaultOpen, modal }));
 
-// Render the overlay only on the client (the library targets Vue, not Nuxt — no <ClientOnly>);
-// gating the Teleport on a mounted ref keeps SSR markup stable and avoids hydration mismatches.
-const mounted = ref(false);
-onMounted(() => (mounted.value = true));
+// Drive the platform <dialog> from reactive open state. `flush: 'post'` runs after the element is in
+// the DOM, so it also covers `defaultOpen` on first mount. Guards keep showModal()/close() idempotent
+// (showModal throws if already open; close is a no-op when closed).
+const dialogEl = useTemplateRef<HTMLDialogElement>('dialog');
+watchPostEffect(() => {
+    const el = dialogEl.value;
+    if (!el) return;
+    if (dlg.open.value && !el.open) {
+        if (modal) el.showModal();
+        else el.show();
+    } else if (!dlg.open.value && el.open) {
+        el.close();
+    }
+});
 </script>
 
 <template>
     <slot name="trigger" :props="dlg.triggerProps.value" :open="dlg.open.value"></slot>
 
-    <Teleport v-if="mounted && dlg.open.value" to="body">
-        <div v-bind="dlg.backdropProps.value" class="ori-dialog__backdrop"></div>
-        <div v-bind="dlg.positionerProps.value" class="ori-dialog__positioner">
-            <div v-bind="dlg.contentProps.value" class="ori-dialog__content">
-                <header class="ori-dialog__header">
-                    <h2 v-bind="dlg.titleProps.value" class="ori-dialog__title">
-                        <slot name="title">{{ title }}</slot>
-                    </h2>
-                    <button v-bind="dlg.closeTriggerProps.value" class="ori-dialog__close" aria-label="Close">×</button>
-                </header>
-                <div class="ori-dialog__body">
-                    <slot></slot>
-                </div>
+    <dialog ref="dialog" v-bind="dlg.dialogProps.value" class="ori-dialog">
+        <div class="ori-dialog__content">
+            <header class="ori-dialog__header">
+                <h2 v-bind="dlg.titleProps.value" class="ori-dialog__title">
+                    <slot name="title">{{ title }}</slot>
+                </h2>
+                <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-dialog__close" aria-label="Close">
+                    ×
+                </button>
+            </header>
+            <div class="ori-dialog__body">
+                <slot></slot>
             </div>
         </div>
-    </Teleport>
+    </dialog>
 </template>
 
 <style>
-.ori-dialog__backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-
-    background: color-mix(in srgb, #000000 50%, transparent);
-}
-
-.ori-dialog__positioner {
-    display: flex;
-    position: fixed;
-    z-index: 51;
-    align-items: center;
-    justify-content: center;
-
-    padding: 16px;
-    inset: 0;
-}
-
-.ori-dialog__content {
+.ori-dialog {
     width: 100%;
     max-width: 460px;
-    padding: 24px;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
 
+    overflow: auto;
+
+    border: 0;
     border-radius: 14px;
 
     background: var(--ori-color-surface);
 
     box-shadow: var(--ori-shadow-lg);
     color: var(--ori-color-on-surface);
+}
+
+.ori-dialog::backdrop {
+    background: color-mix(in srgb, #000000 50%, transparent);
+}
+
+.ori-dialog__content {
+    padding: 24px;
 }
 
 .ori-dialog__header {
