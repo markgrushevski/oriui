@@ -7,7 +7,7 @@ title: Theming
 A theme is a **mode** (light or dark) layered over a **skin** (a named palette). Both are pure
 attribute toggles on `<html>` — flipping either repoints the active `--ori-color-*` aliases through
 CSS custom properties, so everything reskins at once with **no JavaScript, no recompute, no flash**.
-This is the same zero-runtime story across every layer: a Vue app, the standalone `oriui/css`
+This is the same zero-runtime story across every layer: a Vue app, the standalone `@oriui/ui/css`
 classes, htmx fragments, or hand-written HTML all theme identically.
 
 This guide covers **switching whole palettes and modes** and **authoring a new named skin**. The

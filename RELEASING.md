@@ -9,12 +9,12 @@ Phase 8.
 
 | Package       | Path            | Public name   | Depends on    |
 | ------------- | --------------- | ------------- | ------------- |
-| Styled + CSS  | `.` (root)      | `oriui`       | `@oriui/vue`  |
+| Styled + CSS  | `.` (root)      | `@oriui/ui`   | `@oriui/vue`  |
 | Vue headless  | `packages/vue`  | `@oriui/vue`  | `@oriui/core` |
 | Core contract | `packages/core` | `@oriui/core` | —             |
 
 Internal dependencies are **pinned to the exact version** (not `*`): a `*` range does
-not match a prerelease, so `oriui@1.0.0-alpha.0` declaring `"@oriui/vue": "*"` would be
+not match a prerelease, so `@oriui/ui@1.0.0-alpha.0` declaring `"@oriui/vue": "*"` would be
 uninstallable. Keep all three versions in lockstep.
 
 ## One-time setup
@@ -60,19 +60,19 @@ npm publish                --access public --tag next --otp=XXXXXX
 ```
 
 Order matters so the whole graph exists in the registry by the time anyone installs:
-`@oriui/core` → `@oriui/vue` → `oriui`.
+`@oriui/core` → `@oriui/vue` → `@oriui/ui`.
 
 #### Dist-tag: `next` vs `latest`
 
 - `--tag next` (used for prereleases) — the alpha does **not** become the default
-  install. Users opt in with `npm install oriui@next`. Plain `npm install oriui` will
+  install. Users opt in with `npm install @oriui/ui@next`. Plain `npm install @oriui/ui` will
   fail until a stable `latest` exists; this is the intended semver hygiene.
-- **Drop `--tag next`** to publish as `latest` if you want `npm install oriui` to work
+- **Drop `--tag next`** to publish as `latest` if you want `npm install @oriui/ui` to work
   immediately — at the cost of shipping an alpha as the default.
 
 ### 4. Tag the release
 
-A git tag maps the published version to an exact commit, so every `oriui@x` is checkout-able. Tag
+A git tag maps the published version to an exact commit, so every `@oriui/ui@x` is checkout-able. Tag
 the release commit (the lockstep version bump) once the publish succeeds, and push the tag:
 
 ```bash
@@ -83,11 +83,11 @@ git push origin v1.0.0-alpha.0
 ## Verify
 
 ```bash
-npm view oriui
+npm view @oriui/ui
 npm view @oriui/vue
 npm view @oriui/core
 # fresh-install smoke test in a scratch dir:
-#   npm i oriui@next
+#   npm i @oriui/ui@next
 ```
 
 ## Troubleshooting

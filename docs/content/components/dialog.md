@@ -10,7 +10,7 @@ dismissal, and the full WAI-ARIA keyboard contract all come from the headless la
 dialog adapter the app wires via `OriHeadless`. The styled `OriDialog` supplies only the markup and
 tokens.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the part
+Every example is live and shows the standalone **HTML / `@oriui/ui/css`** markup by default — the part
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component. Note that the HTML tabs are **structure only — not functional on their own**: a static
 panel has no focus trap, scroll lock, or dismissal until you drive it with JavaScript (the headless

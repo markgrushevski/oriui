@@ -13,19 +13,19 @@ contract, so you can add another later without reworking what you built.
 - **Vue 3.5+** for the styled and headless layers (the components use reactive props destructure).
 - The **CSS layer needs none of the above** — it is a plain stylesheet and classes.
 
-## Styled components — `oriui`
+## Styled components — `@oriui/ui`
 
 The full experience: ready Vue components, themed through tokens.
 
 ```bash
-npm install oriui
+npm install @oriui/ui
 ```
 
 Import a component where you use it, and the stylesheet **once** at your app entry:
 
 ```vue
 <script setup lang="ts">
-import { OriButton } from 'oriui';
+import { OriButton } from '@oriui/ui';
 </script>
 
 <template>
@@ -35,13 +35,13 @@ import { OriButton } from 'oriui';
 
 ```ts
 // main.ts — once, anywhere in your entry
-import 'oriui/css';
+import '@oriui/ui/css';
 ```
 
 That single import ships the tokens, the base styles, and every component's classes. Theme and skin
 are then just attributes on `<html>` — see [Theming](/guides/theming).
 
-## The CSS layer — `oriui/css`
+## The CSS layer — `@oriui/ui/css`
 
 No framework, no build step: ship the stylesheet and write `.ori-*` classes. This is how oriUI works
 with **htmx, Astro, or plain HTML**.
@@ -49,13 +49,13 @@ with **htmx, Astro, or plain HTML**.
 From a bundler:
 
 ```ts
-import 'oriui/css';
+import '@oriui/ui/css';
 ```
 
 Or straight from a CDN, no install at all:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/oriui/dist/styles/styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/@oriui/ui/dist/styles/styles.css" />
 ```
 
 The full class reference and copy-pasteable markup live in [Using the CSS layer](/guides/css) and on
@@ -63,7 +63,7 @@ each component page — flip any example to its **HTML** tab.
 
 ## The headless layer — `@oriui/vue`
 
-Behavior without markup: composables for open state, keyboard, focus, and ARIA. Installing `oriui`
+Behavior without markup: composables for open state, keyboard, focus, and ARIA. Installing `@oriui/ui`
 already pulls this in transitively, but you can install it on its own:
 
 ```bash

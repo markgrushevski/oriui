@@ -8,9 +8,9 @@ Guidance for Claude Code / contributors working in this repository.
 _prototype fast, scale without rewriting_. Three independently-consumable layers
 woven around shared design tokens:
 
-- `oriui` (styled) — ready components: `<OriButton variant="tonal" />`
-- `oriui/headless` (behavior) — composables for focus/keyboard/ARIA _(planned)_
-- `oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue _(planned)_
+- `@oriui/ui` (styled) — ready components: `<OriButton variant="tonal" />`
+- `@oriui/vue` (behavior) — composables for focus/keyboard/ARIA _(planned)_
+- `@oriui/ui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue _(planned)_
 
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional

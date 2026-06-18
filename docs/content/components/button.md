@@ -8,7 +8,7 @@ A styled, accessible button. Dynamic state is expressed through real attributes 
 a true `disabled` (or `aria-disabled` for link buttons), `loading` sets `aria-busy`, and it ships a
 visible `:focus-visible` ring.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/ui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 
