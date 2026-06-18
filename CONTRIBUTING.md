@@ -45,8 +45,9 @@ to `main` and every PR: `lint:ci → types → test → build` across Node 20.19
 oriUI follows **SemVer**. The line is currently **`1.0.0-alpha.0`** — alpha, so the public API
 may shift before `1.0`.
 
-The three published packages move in **lockstep**: `@oriui/ui`, `@oriui/vue`, and `@oriui/core`
-always share one version, and their internal dependencies are pinned to that exact version (a
+The four published packages move in **lockstep**: `@oriui/ui`, `@oriui/css`, `@oriui/vue`, and
+`@oriui/core` always share one version, and their internal dependencies are pinned to that exact
+version (a
 `*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
 under the **`next`** npm dist-tag, so a plain `npm install @oriui/ui` does not pick up an alpha.
 
@@ -55,7 +56,7 @@ under the **`next`** npm dist-tag, so a plain `npm install @oriui/ui` does not p
 A **release is a deliberate event, separate from merging to `main`.** Merging puts code on the
 trunk; a release maps a chosen `main` commit to a published npm version and a git tag:
 
-1. **Bump** all three package versions (and the pinned internal deps) in lockstep, sync the
+1. **Bump** all four package versions (and the pinned internal deps) in lockstep, sync the
    lockfile (`npm install --package-lock-only`), and commit on `main`.
 2. **Green check** — `npm run lint:ci && npm run types && npm run test && npm run build`.
 3. **Publish** to npm — the dependency-ordered runbook in [RELEASING.md](RELEASING.md).
