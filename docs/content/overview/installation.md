@@ -35,13 +35,13 @@ import { OriButton } from '@oriui/ui';
 
 ```ts
 // main.ts — once, anywhere in your entry
-import '@oriui/ui/css';
+import '@oriui/css';
 ```
 
 That single import ships the tokens, the base styles, and every component's classes. Theme and skin
 are then just attributes on `<html>` — see [Theming](/guides/theming).
 
-## The CSS layer — `@oriui/ui/css`
+## The CSS layer — `@oriui/css`
 
 No framework, no build step: ship the stylesheet and write `.ori-*` classes. This is how oriUI works
 with **htmx, Astro, or plain HTML**.
@@ -49,13 +49,13 @@ with **htmx, Astro, or plain HTML**.
 From a bundler:
 
 ```ts
-import '@oriui/ui/css';
+import '@oriui/css';
 ```
 
 Or straight from a CDN, no install at all:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@oriui/ui/dist/styles/styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/@oriui/css/dist/styles.css" />
 ```
 
 The full class reference and copy-pasteable markup live in [Using the CSS layer](/guides/css) and on
