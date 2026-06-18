@@ -4,6 +4,29 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Scope: a portfolio showcase + the author's own Vue design system (not a market competitor)
+
+oriUI's two goals are a **senior-level GitHub portfolio** piece and the author's **own design system**
+for personal Vue projects (justpaint, mtp-shop) — **not** competing with Ark UI / Panda / Reka on market
+reach, framework breadth, or catalog size. Comparing a solo alpha to those mature, team-built libraries
+is the wrong frame: the portfolio value is visibly senior-level architecture + judgment, and the
+personal value is a design system the author understands and can bend to their own needs. Consequences:
+
+- **No multi-framework race.** Styled components stay **Vue-only**; `@oriui/css` + `@oriui/core` are the
+  framework-agnostic hedge already in place (React/Svelte styled wrappers come only on real adoption —
+  YAGNI, not speculative layers built blind).
+- **No catalog-breadth race.** Build only the components the author's projects actually need, not Ark's 40. Requirements come from building a real screen of a personal project, not imagined gaps.
+- **Zag deferred (likely dropped).** Presentational components need no behaviour engine; the one
+  behavioural component, `OriDialog`, can move to the native `<dialog>` + `showModal()` platform path
+  (focus-trap, `Esc`, `::backdrop`, focus-return, `inert` — Baseline ~2023), which removes the only Zag
+  touchpoint and makes the dialog work with no adapter to wire. The **swappable contract stays** as the
+  hedge: re-add Zag **per-widget** only if a genuinely hard widget (combobox, datepicker, listbox,
+  typeahead-menu) shows up in a real project — no rewrite needed. This refines the earlier "`useDialog`
+  has no native default / requires Zag" entry: native `<dialog>` covers the dialog hard-parts, so Zag is
+  not required for it.
+- **Next step = a real screen** of justpaint / mtp-shop on oriUI: it proves usefulness, surfaces real
+  requirements, and is the portfolio's "a real app built on my library" story.
+
 ## CSS layer extracted to a standalone `@oriui/css` package
 
 The CSS layer (tokens + base + `.ori-*` utilities) now ships as its own **zero-dependency** package,
