@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url';
 
-const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+const resolve = (path) => fileURLToPath(new URL(path, import.meta.url));
 
 // oriUI is consumed exactly as `from '@oriui/ui'`, aliased to the workspace source for live HMR
 // (a real package dep arrives with the @oriui/* monorepo split). The whole docs shell uses
