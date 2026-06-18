@@ -4,6 +4,20 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## CSS layer extracted to a standalone `@oriui/css` package
+
+The CSS layer (tokens + base + `.ori-*` utilities) now ships as its own **zero-dependency** package,
+`@oriui/css` (`packages/css/`), instead of an `@oriui/ui/css` subpath. **Why:** the subpath forced a
+CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/ui`, which drags in `@oriui/vue` +
+`@oriui/core` and a `vue` peer-dependency warning — directly contradicting the "CSS layer is Vue-free,
+first-class" positioning. `@oriui/css` has no deps and no peer, so `import '@oriui/css'` (or a CDN
+`<link>`) is clean. `@oriui/ui` now **depends on** `@oriui/css` (its components read those tokens) and
+no longer ships its own `./css`; styled Vue consumers `import '@oriui/css'` for the stylesheet. The
+styles source moved `src/styles/` → `packages/css/src/`, bundled to one file via `postcss-import`
+(+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui). Deferred:
+minify the bundle (cssnano) and move component block styles into the CSS layer (today they still live
+in each SFC's unlayered `<style>`).
+
 ## Root package renamed `oriui` → `@oriui/ui` (npm name-similarity block)
 
 npm's typosquatting filter **rejects the unscoped name `oriui`** as "too similar to existing package
@@ -12,7 +26,7 @@ Unscoped variants that normalize to the same token (e.g. `ori-ui`) are blocked t
 bypass the filter**, which is why `@oriui/core` and `@oriui/vue` published fine. So the flagship styled
 package ships as **`@oriui/ui`** under the existing `oriui` npm org, giving a clean trio: `@oriui/core`
 (agnostic contract) · `@oriui/vue` (headless Vue) · `@oriui/ui` (styled). Consumers
-`import { OriButton } from '@oriui/ui'` and `import '@oriui/ui/css'`. The **oriUI brand** (project name,
+`import { OriButton } from '@oriui/ui'` and `import '@oriui/css'`. The **oriUI brand** (project name,
 npm org, docs title) is unchanged — only the install/import specifier moved. The docs Nuxt alias, the
 MDC plugin registration, and every install/import example were updated to match.
 
