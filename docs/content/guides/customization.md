@@ -229,7 +229,7 @@ components, no rewrite.
 Import oriUI once (the stylesheet, or the Vue package which includes it):
 
 ```ts
-import 'oriui/css'; // or: import 'oriui' for the Vue components
+import '@oriui/ui/css'; // or: import '@oriui/ui' for the Vue components
 ```
 
 Then add this to your stylesheet. The primary goes in a `:root` block (color is `:root`-declared, so it

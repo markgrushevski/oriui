@@ -42,10 +42,10 @@ to `main` and every PR: `lint:ci → types → test → build` across Node 20.19
 oriUI follows **SemVer**. The line is currently **`1.0.0-alpha.0`** — alpha, so the public API
 may shift before `1.0`.
 
-The three published packages move in **lockstep**: `oriui`, `@oriui/vue`, and `@oriui/core`
+The three published packages move in **lockstep**: `@oriui/ui`, `@oriui/vue`, and `@oriui/core`
 always share one version, and their internal dependencies are pinned to that exact version (a
 `*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
-under the **`next`** npm dist-tag, so a plain `npm install oriui` does not pick up an alpha.
+under the **`next`** npm dist-tag, so a plain `npm install @oriui/ui` does not pick up an alpha.
 
 ## Releases & tags
 
@@ -63,6 +63,6 @@ trunk; a release maps a chosen `main` commit to a published npm version and a gi
     git push origin v1.0.0-alpha.0
     ```
 
-The tag is what ties a published version to an exact commit, so every `oriui@x` is checkout-able.
+The tag is what ties a published version to an exact commit, so every `@oriui/ui@x` is checkout-able.
 Automating this — `changesets` + a CI publish job (`NPM_TOKEN`) — is a Phase 8 to-do; see
 [ROADMAP.md](ROADMAP.md).

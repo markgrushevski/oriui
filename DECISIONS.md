@@ -4,6 +4,18 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Root package renamed `oriui` → `@oriui/ui` (npm name-similarity block)
+
+npm's typosquatting filter **rejects the unscoped name `oriui`** as "too similar to existing package
+`cliui`" (a popular yargs dependency) — a hard 403 on the first publish, not appealable in practice.
+Unscoped variants that normalize to the same token (e.g. `ori-ui`) are blocked too; **scoped names
+bypass the filter**, which is why `@oriui/core` and `@oriui/vue` published fine. So the flagship styled
+package ships as **`@oriui/ui`** under the existing `oriui` npm org, giving a clean trio: `@oriui/core`
+(agnostic contract) · `@oriui/vue` (headless Vue) · `@oriui/ui` (styled). Consumers
+`import { OriButton } from '@oriui/ui'` and `import '@oriui/ui/css'`. The **oriUI brand** (project name,
+npm org, docs title) is unchanged — only the install/import specifier moved. The docs Nuxt alias, the
+MDC plugin registration, and every install/import example were updated to match.
+
 ## Trunk-based `main`; a release is a separate tagged event
 
 `main` is an always-green **trunk**, not a release-only branch: coherent, green work merges in

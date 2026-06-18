@@ -8,7 +8,7 @@ A surface container for grouping related content — a header (prepend slot · t
 append slot), a body, and optional action rows. It is the most _composed_ styled component, yet the
 standalone markup is just nested `.ori-card__*` elements, so it works without Vue.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/ui/css`** markup by default — the same
 nested `.ori-card__*` classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to
 **Vue** for the styled component.
 

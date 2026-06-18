@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Live Dialog demo for the docs (MDC renders it as `:dialog-demo`). Wraps the prototype OriDialog
 // with a button trigger + sample content so a single inline tag drops into a markdown ::example.
-import { OriButton, OriDialog } from 'oriui';
+import { OriButton, OriDialog } from '@oriui/ui';
 </script>
 
 <template>

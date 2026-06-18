@@ -3,11 +3,11 @@
 ### Installation
 
 ```sh
-npm i oriui
+npm i @oriui/ui
 ```
 
 ### Import components and types
 
 ```js
-import { ... } from "oriui"
+import { ... } from "@oriui/ui"
 ```

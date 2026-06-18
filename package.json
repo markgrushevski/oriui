@@ -1,5 +1,5 @@
 {
-    "name": "oriui",
+    "name": "@oriui/ui",
     "description": "Layered Vue 3 UI library: styled components + headless behavior + standalone CSS design system (織り)",
     "license": "MIT",
     "version": "1.0.0-alpha.0",

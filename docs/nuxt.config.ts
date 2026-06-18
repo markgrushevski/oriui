@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
-// oriUI is consumed exactly as `from 'oriui'`, aliased to the workspace source for live HMR
+// oriUI is consumed exactly as `from '@oriui/ui'`, aliased to the workspace source for live HMR
 // (a real package dep arrives with the @oriui/* monorepo split). The whole docs shell uses
 // --ori-color-* tokens, so the nav theme/skin toggles reskin the entire site.
 export default defineNuxtConfig({
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     nitro: { preset: 'static' },
 
     alias: {
-        oriui: resolve('../src/index.ts'),
+        '@oriui/ui': resolve('../src/index.ts'),
         '@oriui/core': resolve('../packages/core/src/index.ts'),
         '@oriui/vue': resolve('../packages/vue/src/index.ts')
     },
