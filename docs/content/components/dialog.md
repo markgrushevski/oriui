@@ -4,24 +4,24 @@ title: Dialog
 
 # Dialog
 
-A modal dialog — the library's first genuinely **interactive** component. Unlike the styled-only
-components, a dialog _needs behaviour_: focus trap, scroll lock, `Esc`-to-close, click-outside
-dismissal, and the full WAI-ARIA keyboard contract all come from the headless layer — whichever
-dialog adapter the app wires via `OriHeadless`. The styled `OriDialog` supplies only the markup and
-tokens.
+A modal dialog — the library's first genuinely **interactive** component, built on the native
+`<dialog>` element. Unlike the styled-only components, a dialog _needs behaviour_: focus trap, scroll
+lock, `Esc`-to-close, click-outside dismissal, and the full WAI-ARIA keyboard contract. All of it comes
+from the platform via `showModal()` — no state-machine dependency and no adapter to wire. The styled
+`OriDialog` supplies only the markup and tokens.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the part
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the part
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component. Note that the HTML tabs are **structure only — not functional on their own**: a static
-panel has no focus trap, scroll lock, or dismissal until you drive it with JavaScript (the headless
-adapter, or your own).
+`<dialog>` has no focus trap, scroll lock, or dismissal until `showModal()` drives it (the styled
+component, or your own script).
 
 ## Classes
 
-A dialog is a set of part classes — there is no single block class that drives variant tokens. Each
-part class maps to a structural element produced by the component.
+A dialog is a set of part classes hung on a native `<dialog>` element — there is no single block class
+that drives variant tokens. Each part class maps to a structural element produced by the component.
 
-:class-table{:rows='[{"class":"ori-dialog__backdrop","type":"Part","description":"Fixed overlay behind the content panel."},{"class":"ori-dialog__positioner","type":"Layout","description":"Flex centring wrapper; holds the content panel inside the viewport."},{"class":"ori-dialog__content","type":"Block","description":"The visible panel: max-width 460 px, rounded, surface-coloured."},{"class":"ori-dialog__header","type":"Part","description":"Flex row — title on the left, close button on the right."},{"class":"ori-dialog__title","type":"Part","description":"<code>h2</code> heading; its <code>id</code> is wired to <code>aria-labelledby</code> by the adapter."},{"class":"ori-dialog__close","type":"Part","description":"Bare close button (<code>aria-label=Close</code>); styled via opacity."},{"class":"ori-dialog__body","type":"Part","description":"Body copy region below the header."}]'}
+:class-table{:rows='[{"class":"ori-dialog","type":"Block","description":"The native <code>&lt;dialog&gt;</code> panel: max-width 460 px, rounded, surface-coloured. Its <code>::backdrop</code> pseudo-element is the dimmed overlay."},{"class":"ori-dialog__content","type":"Layout","description":"Padding wrapper inside the dialog that holds the header and body."},{"class":"ori-dialog__header","type":"Part","description":"Flex row — title on the left, close button on the right."},{"class":"ori-dialog__title","type":"Part","description":"<code>h2</code> heading; its <code>id</code> is wired to <code>aria-labelledby</code> on the dialog."},{"class":"ori-dialog__close","type":"Part","description":"Bare close button (<code>aria-label=Close</code>); styled via opacity."},{"class":"ori-dialog__body","type":"Part","description":"Body copy region below the header."}]'}
 
 ## Anatomy
 
@@ -29,18 +29,16 @@ The component renders its parts in this order:
 
 ```
 #trigger slot (caller-supplied open control)
-  └─ Teleport → <body>
-       ├─ .ori-dialog__backdrop        (fixed overlay)
-       └─ .ori-dialog__positioner      (flex centring wrapper)
-            └─ .ori-dialog__content    (the visible panel)
-                 ├─ .ori-dialog__header
-                 │    ├─ .ori-dialog__title  (h2; #title slot or `title` prop)
-                 │    └─ .ori-dialog__close  (× button, aria-label="Close")
-                 └─ .ori-dialog__body        (default slot — body copy)
+  └─ <dialog class="ori-dialog">         (native element; ::backdrop is the overlay)
+       └─ .ori-dialog__content           (padding wrapper)
+            ├─ .ori-dialog__header
+            │    ├─ .ori-dialog__title    (h2; #title slot or `title` prop)
+            │    └─ .ori-dialog__close    (× button, aria-label="Close")
+            └─ .ori-dialog__body          (default slot — body copy)
 ```
 
-The entire overlay is rendered into `<body>` via `<Teleport>`, gated on a `mounted` ref so SSR
-markup stays stable.
+The `<dialog>` is rendered inline; `showModal()` promotes it to the browser's top layer, so it escapes
+any stacking context without `<Teleport>`. A closed `<dialog>` is hidden, so SSR markup stays stable.
 
 ## Basic
 
@@ -64,12 +62,9 @@ trigger. Page scroll is locked while it is open.
 #html
 
 ```html
-<!-- Structure only — not functional on its own. -->
-<!-- Backdrop -->
-<div class="ori-dialog__backdrop"></div>
-<!-- Positioner -->
-<div class="ori-dialog__positioner">
-    <div role="dialog" aria-modal="true" aria-labelledby="dlg-title" class="ori-dialog__content">
+<!-- Structure only — drive it with dialog.showModal() to get the trap / ::backdrop. -->
+<dialog class="ori-dialog" aria-labelledby="dlg-title">
+    <div class="ori-dialog__content">
         <header class="ori-dialog__header">
             <h2 id="dlg-title" class="ori-dialog__title">Hello, oriUI</h2>
             <button class="ori-dialog__close" aria-label="Close">×</button>
@@ -78,15 +73,15 @@ trigger. Page scroll is locked while it is open.
             <p>This modal traps focus, closes on Escape, and locks page scroll.</p>
         </div>
     </div>
-</div>
+</dialog>
 ```
 
 ::
 
 ## Non-modal
 
-Set `modal` to `false` for a non-modal dialog (no scroll lock, no click-outside dismiss). The
-adapter is still responsible for `aria-modal="false"` and any positioning.
+Set `modal` to `false` for a non-modal dialog (opened with `show()` instead of `showModal()` — no scroll
+lock, no focus trap, no `::backdrop`, no click-outside dismiss).
 
 ::example
 :dialog-demo
@@ -105,18 +100,18 @@ adapter is still responsible for `aria-modal="false"` and any positioning.
 #html
 
 ```html
-<!-- Structure only — not functional on its own. -->
-<div role="dialog" aria-modal="false" aria-labelledby="dlg-title" class="ori-dialog__content">
-    <!-- header + body -->
-</div>
+<!-- Structure only — open with dialog.show() for non-modal. -->
+<dialog class="ori-dialog" aria-modal="false" aria-labelledby="dlg-title">
+    <!-- content -->
+</dialog>
 ```
 
 ::
 
 ## Initially open
 
-Pass `defaultOpen` to render the dialog open on first mount — useful for confirmation prompts that
-appear on page load.
+Pass `defaultOpen` to open the dialog on first mount — useful for confirmation prompts that appear on
+page load.
 
 ::example
 :dialog-demo
@@ -135,11 +130,10 @@ appear on page load.
 #html
 
 ```html
-<!-- Structure only — not functional on its own. -->
-<!-- The adapter opens the dialog on mount via its own state. -->
-<div role="dialog" aria-modal="true" aria-labelledby="dlg-title" class="ori-dialog__content">
-    <!-- header + body -->
-</div>
+<!-- Structure only — call dialog.showModal() on mount to open it. -->
+<dialog class="ori-dialog" aria-labelledby="dlg-title" open>
+    <!-- content -->
+</dialog>
 ```
 
 ::
@@ -201,19 +195,23 @@ A confirm / cancel pair inside a dialog, wired to an async action.
 
 ```html
 <!-- Structure only — not functional on its own. -->
-<div role="dialog" aria-modal="true" aria-labelledby="dlg-title" class="ori-dialog__content">
-    <header class="ori-dialog__header">
-        <h2 id="dlg-title" class="ori-dialog__title">Delete account?</h2>
-        <button class="ori-dialog__close" aria-label="Close">×</button>
-    </header>
-    <div class="ori-dialog__body">
-        <p>This will permanently delete your account and all its data.</p>
-        <div style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:1rem">
-            <button class="ori-button … ori-variant ori-variant_text …">Cancel</button>
-            <button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_danger …">Yes, delete</button>
+<dialog class="ori-dialog" aria-labelledby="dlg-title">
+    <div class="ori-dialog__content">
+        <header class="ori-dialog__header">
+            <h2 id="dlg-title" class="ori-dialog__title">Delete account?</h2>
+            <button class="ori-dialog__close" aria-label="Close">×</button>
+        </header>
+        <div class="ori-dialog__body">
+            <p>This will permanently delete your account and all its data.</p>
+            <div style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:1rem">
+                <button class="ori-button … ori-variant ori-variant_text …">Cancel</button>
+                <button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_danger …">
+                    Yes, delete
+                </button>
+            </div>
         </div>
     </div>
-</div>
+</dialog>
 ```
 
 ::
@@ -222,21 +220,21 @@ A confirm / cancel pair inside a dialog, wired to an async action.
 
 The accessibility contract holds across both layers — the classes and the Vue component render the
 same attributes. The interactive behaviour, however, must be driven by JavaScript: a static HTML
-panel is markup only until an adapter wires the focus trap and dismissal.
+`<dialog>` is markup only until `showModal()` opens it.
 
-- Content is `role="dialog"`, `aria-modal="true"`, and labelled by the title element via
-  `aria-labelledby` — wired by the adapter.
+- The `<dialog>` is `role="dialog"`, `aria-modal="true"` (modal mode), and labelled by the title
+  element via `aria-labelledby`.
 - The close button has `aria-label="Close"`.
-- The `#trigger` slot's `props` object includes all required `aria-*` and `id` attributes for the
-  trigger element; bind them with `v-bind="props"`.
-- The entire overlay is rendered into `<body>` via `<Teleport>`, gated on a `mounted` ref so SSR
-  hydration is stable and the panel escapes any stacking context.
+- The `#trigger` slot's `props` object includes the `aria-*` attributes for the trigger element; bind
+  them with `v-bind="props"`.
+- `showModal()` provides the live behaviour — focus trap, scroll lock, `::backdrop`, and returning focus
+  to the trigger on close — straight from the platform.
 
-| Key         | Action                                                                        |
-| ----------- | ----------------------------------------------------------------------------- |
-| `Escape`    | Closes the dialog and returns focus to the trigger (provided by the adapter). |
-| `Tab`       | Cycles focus among interactive elements inside the dialog (focus trap).       |
-| `Shift+Tab` | Cycles focus backwards inside the dialog.                                     |
+| Key         | Action                                                                  |
+| ----------- | ----------------------------------------------------------------------- |
+| `Escape`    | Closes the dialog and returns focus to the trigger (native `<dialog>`). |
+| `Tab`       | Cycles focus among interactive elements inside the dialog (focus trap). |
+| `Shift+Tab` | Cycles focus backwards inside the dialog.                               |
 
 ## Framework API
 
@@ -246,17 +244,19 @@ no component API — its surface is the [classes](#classes) above, and the behav
 
 ### Props
 
-| Prop          | Type      | Default | Description                                                                           |
-| ------------- | --------- | ------- | ------------------------------------------------------------------------------------- |
-| `defaultOpen` | `boolean` | `false` | Whether the dialog is open on first mount.                                            |
-| `modal`       | `boolean` | `true`  | Modal mode: enables scroll lock, backdrop, and click-outside dismiss via the adapter. |
-| `title`       | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.                          |
+| Prop                     | Type      | Default | Description                                                                |
+| ------------------------ | --------- | ------- | -------------------------------------------------------------------------- |
+| `closeOnEscape`          | `boolean` | `true`  | Whether `Esc` closes the dialog.                                           |
+| `closeOnInteractOutside` | `boolean` | `true`  | Whether a click on the `::backdrop` closes the dialog.                     |
+| `defaultOpen`            | `boolean` | `false` | Whether the dialog is open on first mount.                                 |
+| `modal`                  | `boolean` | `true`  | Modal mode: `showModal()` (trap + scroll lock + `::backdrop`) vs `show()`. |
+| `title`                  | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.               |
 
 ### Events & attributes
 
-`OriDialog` declares **no custom emits**. Open/close state is owned by the adapter (wired through
-`useDialog()`). The `#trigger` slot exposes `props` and `open` — bind `v-bind="props"` on the
-trigger element; `open` reflects the current open state if you need it in the template.
+`OriDialog` declares **no custom emits**. Open/close state is owned by `useDialog()`. The `#trigger`
+slot exposes `props` and `open` — bind `v-bind="props"` on the trigger element; `open` reflects the
+current open state if you need it in the template.
 
 Attributes placed directly on `<OriDialog>` fall through to the root element in the template,
 which is the `#trigger` slot's wrapper — for most usages you will not need to add attributes to the
@@ -272,24 +272,22 @@ component itself.
 
 ### Headless & adapter
 
-`OriDialog` calls [`useDialog()`](/headless/use-dialog) from `@oriui/vue`. That composable reads the
-dialog adapter the app registers via `OriHeadless`. The adapter owns focus trap, scroll lock, `Esc`
-handling, and all ARIA wiring — the component supplies only the markup.
+`OriDialog` calls [`useDialog()`](/headless/use-dialog) from `@oriui/vue`, which defaults to the native
+`<dialog>` engine — the focus trap, scroll lock, `Esc` handling, `::backdrop` and focus-return are the
+platform's job, so **no adapter and no extra dependency are required**.
 
-**Register the adapter once at app entry:**
+The `OriHeadless` contract is still available as a hedge: register a custom engine (e.g. a Zag-backed
+adapter for a genuinely hard widget) only if a project needs one — the markup never changes.
 
 ```ts
-// main.ts
+// main.ts — optional; the native engine is used when nothing is registered.
 import { createApp } from 'vue';
 import { OriHeadless } from '@oriui/vue';
-import { zagDialog } from './headless/zag-dialog'; // your adapter
+import { myDialog } from './headless/my-dialog'; // optional custom adapter
 
 const app = createApp(App);
-app.use(OriHeadless, { dialog: zagDialog });
+app.use(OriHeadless, { dialog: myDialog });
 app.mount('#app');
 ```
 
-`useDialog` has **no native fallback** — it throws with a descriptive error if no adapter is
-provided. That is deliberate: a dialog is exactly the class of widget oriUI delegates rather than
-hand-rolls, so it fails loud instead of shipping a half-correct focus trap. See
-[useDialog](/headless/use-dialog) for the full control contract.
+See [useDialog](/headless/use-dialog) for the full control contract.

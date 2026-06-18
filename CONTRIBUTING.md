@@ -19,6 +19,11 @@ releases** (a release is a separate, tagged event — see below).
   foundation epic; day-to-day work should be much smaller.)
 - Integrate with a **`--no-ff` merge** so `main`'s first-parent history records each branch as a
   single merge commit — then delete the branch. Prefer a merge commit over a fast-forward.
+- **The deciding factor is commit count, not size.** Anything that lands as **one commit** — even a
+  big self-contained feature (a new package, a broad rename) — goes **straight to `main`**: commit there
+  once the gates are green (no branch, no merge bubble). Create a branch + `--no-ff` merge **only when
+  the work is several commits** to group under one merge, or it genuinely needs PR review / CI isolation
+  before landing.
 
 ```bash
 git switch -c feat/my-thing main
@@ -42,17 +47,18 @@ to `main` and every PR: `lint:ci → types → test → build` across Node 20.19
 oriUI follows **SemVer**. The line is currently **`1.0.0-alpha.0`** — alpha, so the public API
 may shift before `1.0`.
 
-The three published packages move in **lockstep**: `oriui`, `@oriui/vue`, and `@oriui/core`
-always share one version, and their internal dependencies are pinned to that exact version (a
+The four published packages move in **lockstep**: `@oriui/ui`, `@oriui/css`, `@oriui/vue`, and
+`@oriui/core` always share one version, and their internal dependencies are pinned to that exact
+version (a
 `*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
-under the **`next`** npm dist-tag, so a plain `npm install oriui` does not pick up an alpha.
+under the **`next`** npm dist-tag, so a plain `npm install @oriui/ui` does not pick up an alpha.
 
 ## Releases & tags
 
 A **release is a deliberate event, separate from merging to `main`.** Merging puts code on the
 trunk; a release maps a chosen `main` commit to a published npm version and a git tag:
 
-1. **Bump** all three package versions (and the pinned internal deps) in lockstep, sync the
+1. **Bump** all four package versions (and the pinned internal deps) in lockstep, sync the
    lockfile (`npm install --package-lock-only`), and commit on `main`.
 2. **Green check** — `npm run lint:ci && npm run types && npm run test && npm run build`.
 3. **Publish** to npm — the dependency-ordered runbook in [RELEASING.md](RELEASING.md).
@@ -63,6 +69,6 @@ trunk; a release maps a chosen `main` commit to a published npm version and a gi
     git push origin v1.0.0-alpha.0
     ```
 
-The tag is what ties a published version to an exact commit, so every `oriui@x` is checkout-able.
+The tag is what ties a published version to an exact commit, so every `@oriui/ui@x` is checkout-able.
 Automating this — `changesets` + a CI publish job (`NPM_TOKEN`) — is a Phase 8 to-do; see
 [ROADMAP.md](ROADMAP.md).

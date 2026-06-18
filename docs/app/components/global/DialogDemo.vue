@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Live Dialog demo for the docs (MDC renders it as `:dialog-demo`). Wraps the prototype OriDialog
 // with a button trigger + sample content so a single inline tag drops into a markdown ::example.
-import { OriButton, OriDialog } from 'oriui';
+import { OriButton, OriDialog } from '@oriui/ui';
 </script>
 
 <template>
@@ -10,9 +10,10 @@ import { OriButton, OriDialog } from 'oriui';
             <OriButton v-bind="props" text="Open dialog" color="primary" />
         </template>
         <p>
-            This modal's behaviour comes from <strong>Zag</strong> through oriUI's swappable headless contract — focus
-            is trapped, <kbd>Esc</kbd> closes it, the page behind is scroll-locked, and it's announced as
-            <code>aria-modal</code>. The same markup runs on a different engine by changing one line at the app root.
+            This modal runs on the native <code>&lt;dialog&gt;</code> element through oriUI's headless contract — focus
+            is trapped, <kbd>Esc</kbd> closes it, the page behind is inert, and it's announced as
+            <code>aria-modal</code>, all from the platform with no extra dependency. The swappable contract still lets
+            an app drop in a different engine by changing one line at the app root.
         </p>
     </OriDialog>
 </template>

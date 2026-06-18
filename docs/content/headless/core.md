@@ -71,18 +71,19 @@ Behaviour is chosen per primitive — provided once at the app root, never threa
 
 - **Disclosure** — a native, zero-dependency engine ships from `@oriui/core` as the default. Nothing
   to wire; it just works.
-- **Dialog** — the hard-behaviour case (focus trap, scroll lock, focus return, `aria-modal`). There
-  is **no** native default; it is **delegated to an adapter** (e.g. Zag) so it fails loud if none is
-  wired. See [useDialog](/headless/use-dialog).
+- **Dialog** — runs on the native `<dialog>` element (`showModal()`), so the focus trap, scroll lock,
+  focus return, `::backdrop` and `aria-modal` come from the platform. It is the **default**, with no
+  adapter or dependency required. See [useDialog](/headless/use-dialog).
 
-The Vue binding resolves adapters through the `OriHeadless` plugin (from `@oriui/vue`), so swapping an
-engine never changes a component's template:
+Both default to a zero-dependency engine. The `OriHeadless` plugin (from `@oriui/vue`) is the hedge for
+swapping an engine per primitive — e.g. a custom or Zag-backed adapter for a genuinely hard widget —
+without changing a component's template:
 
 ```ts
 import { OriHeadless } from '@oriui/vue';
 
-// no adapter -> native disclosure; dialog requires one
-app.use(OriHeadless, { dialog: zagDialog });
+// Both primitives default to native; register an adapter only to override one.
+app.use(OriHeadless, { dialog: myDialog });
 ```
 
 ## Frameworks
@@ -95,6 +96,6 @@ The same core powers each binding, so a primitive behaves the same everywhere.
 ## See also
 
 - [useDisclosure](/headless/use-disclosure) — the Vue binding of the native disclosure engine.
-- [useDialog](/headless/use-dialog) — the Vue binding for the adapter-delegated dialog primitive.
+- [useDialog](/headless/use-dialog) — the Vue binding for the native `<dialog>` primitive.
 - [Dialog](/components/dialog) — the styled component that consumes the dialog contract.
 - [CSS layer](/guides/css) — the other framework-agnostic layer: standalone `.ori-*` classes + tokens.

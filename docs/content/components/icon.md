@@ -8,7 +8,7 @@ A styled, accessible SVG icon. Decorative by default — renders with `aria-hidd
 role. Pass a `label` to expose it to assistive technology as an image: the icon switches to
 `role="img"` + `aria-label` automatically.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

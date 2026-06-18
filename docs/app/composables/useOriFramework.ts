@@ -6,7 +6,7 @@ const KNOWN: Framework[] = ['vue', 'svelte', 'html'];
 // framework-agnostic, so an Example can offer Vue (styled component), Svelte, and/or HTML
 // (the standalone .ori-* classes — also the htmx / Astro / plain-HTML usage). Persisted.
 export function useOriFramework() {
-    // Default to the framework-agnostic HTML / `oriui/css` markup — the styled-component code is one
+    // Default to the framework-agnostic HTML / `@oriui/css` markup — the styled-component code is one
     // toggle away. The choice is persisted (see setFramework), so it survives across pages and reloads.
     const framework = useState<Framework>('ori-framework', () => 'html');
 

@@ -9,7 +9,7 @@ A "choose one" compound control. A `role="radiogroup"` container names the set v
 browser enforces single-select and native form submission — visually hidden behind a styled circle.
 Pass the options as an array; per-option `disabled` is supported.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component, where `v-model` holds the selected `value`.
 

@@ -4,6 +4,80 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## `OriDialog` defaults to the native `<dialog>`; Zag dropped from the default path
+
+`useDialog` / `OriDialog` now run on the platform `<dialog>` element (`showModal()`), with **no
+adapter required** — the same native-default pattern `useDisclosure` already uses. The element supplies
+the focus-trap, `Esc`-to-close, `::backdrop`, top-layer rendering, `inert`-on-rest and focus-return that
+were the entire reason a dialog was previously delegated to Zag (Baseline ~2023, incl. the modern
+Telegram WebView). The component owns the `<dialog>` markup and a `watchPostEffect` that calls
+`showModal()`/`close()` from reactive `open` state; the adapter supplies only state + ARIA prop bags, so
+the `OriHeadless` swap mechanism is **retained** — a custom dialog adapter still slots in, and Zag can be
+re-added **per-widget** for a genuinely hard widget (combobox / datepicker / listbox / typeahead-menu) if
+one ever appears in a real project.
+
+**Why now, and on what evidence:** an exhaustive inventory of the two real consumer apps (justpaint —
+already on oriUI; mtp-tg — a Telegram Mini-App marketplace) classified **every** interactive/overlay
+surface, and three adversarial reviewers each hunted for a Zag-only widget. Verdict: **none exists**. The
+three canonical Zag justifications — async combobox/typeahead, datepicker, virtualized/multi-select
+listbox — are absent from both. The "hardest" surfaces were ordinary modals (`ContactFormModal`,
+`OrderConfirmModal`, justpaint's menu drawer) that hand-roll an overlay and are **missing**
+focus-trap/`Esc`/`inert`/focus-return — so a native `<dialog>` is not parity but a strict a11y **upgrade**;
+the order-history accordion is already native `<details>`, the theme switch already a native checkbox, and
+in Telegram-WebView mode mtp-tg deliberately prefers the host's native `MainButton`/popup over its own DOM
+controls — native-first at the platform tier. The one honest gap: CSS anchor-positioning's collision flip
+(`position-try`) is not yet Baseline in the Telegram WebView, so a future edge-anchored flyout/menu would
+want a small positioning helper (floating-ui-style) — still **not** Zag. This supersedes the old
+"`useDialog` has no native default / fails loud without Zag" design. Removed the prototype `zagDialog`
+adapter and the `@zag-js/*` docs dependencies; `@oriui/core` + the agnostic contract remain the hedge.
+
+## Scope: a portfolio showcase + the author's own Vue design system (not a market competitor)
+
+oriUI's two goals are a **senior-level GitHub portfolio** piece and the author's **own design system**
+for personal Vue projects (justpaint, mtp-shop) — **not** competing with Ark UI / Panda / Reka on market
+reach, framework breadth, or catalog size. Comparing a solo alpha to those mature, team-built libraries
+is the wrong frame: the portfolio value is visibly senior-level architecture + judgment, and the
+personal value is a design system the author understands and can bend to their own needs. Consequences:
+
+- **No multi-framework race.** Styled components stay **Vue-only**; `@oriui/css` + `@oriui/core` are the
+  framework-agnostic hedge already in place (React/Svelte styled wrappers come only on real adoption —
+  YAGNI, not speculative layers built blind).
+- **No catalog-breadth race.** Build only the components the author's projects actually need, not Ark's 40. Requirements come from building a real screen of a personal project, not imagined gaps.
+- **Zag dropped from the default path** (done — see the dialog ADR above). Presentational components need
+  no behaviour engine; `OriDialog` now runs on the native `<dialog>` + `showModal()` platform path
+  (focus-trap, `Esc`, `::backdrop`, focus-return, `inert` — Baseline ~2023) with no adapter to wire,
+  confirmed by an inventory of both real consumer apps. The **swappable contract stays** as the hedge:
+  re-add Zag **per-widget** only if a genuinely hard widget (combobox, datepicker, listbox,
+  typeahead-menu) shows up in a real project — no rewrite needed.
+- **Next step = a real screen** of justpaint / mtp-shop on oriUI: it proves usefulness, surfaces real
+  requirements, and is the portfolio's "a real app built on my library" story.
+
+## CSS layer extracted to a standalone `@oriui/css` package
+
+The CSS layer (tokens + base + `.ori-*` utilities) now ships as its own **zero-dependency** package,
+`@oriui/css` (`packages/css/`), instead of an `@oriui/ui/css` subpath. **Why:** the subpath forced a
+CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/ui`, which drags in `@oriui/vue` +
+`@oriui/core` and a `vue` peer-dependency warning — directly contradicting the "CSS layer is Vue-free,
+first-class" positioning. `@oriui/css` has no deps and no peer, so `import '@oriui/css'` (or a CDN
+`<link>`) is clean. `@oriui/ui` now **depends on** `@oriui/css` (its components read those tokens) and
+no longer ships its own `./css`; styled Vue consumers `import '@oriui/css'` for the stylesheet. The
+styles source moved `src/styles/` → `packages/css/src/`, bundled to one file via `postcss-import`
+(+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui). Deferred:
+minify the bundle (cssnano) and move component block styles into the CSS layer (today they still live
+in each SFC's unlayered `<style>`).
+
+## Root package renamed `oriui` → `@oriui/ui` (npm name-similarity block)
+
+npm's typosquatting filter **rejects the unscoped name `oriui`** as "too similar to existing package
+`cliui`" (a popular yargs dependency) — a hard 403 on the first publish, not appealable in practice.
+Unscoped variants that normalize to the same token (e.g. `ori-ui`) are blocked too; **scoped names
+bypass the filter**, which is why `@oriui/core` and `@oriui/vue` published fine. So the flagship styled
+package ships as **`@oriui/ui`** under the existing `oriui` npm org, giving a clean trio: `@oriui/core`
+(agnostic contract) · `@oriui/vue` (headless Vue) · `@oriui/ui` (styled). Consumers
+`import { OriButton } from '@oriui/ui'` and `import '@oriui/css'`. The **oriUI brand** (project name,
+npm org, docs title) is unchanged — only the install/import specifier moved. The docs Nuxt alias, the
+MDC plugin registration, and every install/import example were updated to match.
+
 ## Trunk-based `main`; a release is a separate tagged event
 
 `main` is an always-green **trunk**, not a release-only branch: coherent, green work merges in

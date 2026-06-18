@@ -8,7 +8,7 @@ A compact label for categorising, filtering, or annotating content — status ch
 badges, and removable filter pills. State is expressed through real attributes: `aria-disabled`
 disables the tag and its close button without removing it from the DOM.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

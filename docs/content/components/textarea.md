@@ -10,7 +10,7 @@ that points at the rendered hint or error. The label is wired to the field with 
 (auto-generated via `useId` when you don't pass one). Unlike a single-line input the field has no
 fixed height — it grows from a `rows`-based min-height and stays user-resizable.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

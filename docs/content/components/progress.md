@@ -9,7 +9,7 @@ known `value` out of a `max`) and an indeterminate mode (animated sweep) for tas
 measurable progress. State is expressed through ARIA attributes — `aria-valuenow` is omitted when
 indeterminate, giving screen readers the correct cue automatically.
 
-Every example is live and shows the standalone **HTML / `oriui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

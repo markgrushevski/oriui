@@ -32,7 +32,7 @@ function contrast(a: string, b: string): number {
 }
 
 // ---- Load + parse the token CSS ----
-const themesDir = resolve(process.cwd(), 'src/styles/themes');
+const themesDir = resolve(process.cwd(), 'packages/css/src/themes');
 const baseCss = readFileSync(resolve(themesDir, '_themes-color-tokens.css'), 'utf8');
 const skinsCss = readFileSync(resolve(themesDir, '_themes-skins.css'), 'utf8');
 

@@ -8,9 +8,9 @@ Guidance for Claude Code / contributors working in this repository.
 _prototype fast, scale without rewriting_. Three independently-consumable layers
 woven around shared design tokens:
 
-- `oriui` (styled) — ready components: `<OriButton variant="tonal" />`
-- `oriui/headless` (behavior) — composables for focus/keyboard/ARIA _(planned)_
-- `oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue _(planned)_
+- `@oriui/ui` (styled) — ready components: `<OriButton variant="tonal" />`
+- `@oriui/vue` (behavior) — composables for focus/keyboard/ARIA
+- `@oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue
 
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
@@ -72,11 +72,14 @@ skin CSS and asserts every role/on-role pair meets WCAG AA). `test:types` uses `
 ## Structure
 
 ```
-src/
-  index.ts            entry: imports global css, re-exports types + components
+src/                  @oriui/ui — styled components (the root publishable package)
+  index.ts            entry: re-exports types + components
   types.ts            shared token/prop types (ActionSize, ThemeColor, Variant, ...)
   components/<name>/   ori-<name>.vue + index.ts barrel
-  styles/             design tokens + base css (sizes, themes, fonts, ...) — being restructured
+packages/
+  css/                @oriui/css — standalone design tokens + .ori-* utilities (the CSS layer)
+  core/               @oriui/core — framework-agnostic headless contract + native engine
+  vue/                @oriui/vue — Vue headless bindings (composables)
 docs/                 Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
 ```
 
