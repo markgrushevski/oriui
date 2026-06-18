@@ -4,7 +4,7 @@ title: Using the CSS layer
 
 # Using the CSS layer
 
-oriUI is three independent layers woven around one set of design tokens. The **`@oriui/ui/css`** layer is
+oriUI is three independent layers woven around one set of design tokens. The **`@oriui/css`** layer is
 just standalone `.ori-*` classes plus the token theming — **no Vue, no build step, no Tailwind**. You
 ship the stylesheet and write classes. This is how oriUI works with **htmx, Astro, or plain HTML** —
 the DaisyUI niche, minus Tailwind.
@@ -17,13 +17,13 @@ see the exact markup.
 From a bundler, import the stylesheet once:
 
 ```ts
-import '@oriui/ui/css';
+import '@oriui/css';
 ```
 
 Or drop it in with no build step at all:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@oriui/ui/dist/styles/styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/@oriui/css/dist/styles.css" />
 ```
 
 ## How the classes compose

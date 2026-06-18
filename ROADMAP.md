@@ -14,9 +14,9 @@ Layers (each independently consumable via subpath exports):
 
 - `@oriui/ui` — styled components (behavior + style composed)
 - `@oriui/vue` — behavior contract; swappable adapter (native / Zag / your own)
-- `@oriui/ui/css` — standalone CSS classes + tokens (Tailwind-free, DaisyUI-like)
+- `@oriui/css` — standalone CSS classes + tokens (Tailwind-free, DaisyUI-like)
 
-The `@oriui/ui/css` layer needs **no JS framework** — server-rendered **htmx**, Astro, and plain HTML
+The `@oriui/css` layer needs **no JS framework** — server-rendered **htmx**, Astro, and plain HTML
 are first-class scenarios (just classes + zero-runtime token theming).
 
 Design system = **token contract + skins** (default neutral, signature "ori" / 織り,
@@ -29,7 +29,7 @@ a11y, tests, strong docs).
 1. ✅ **Modernize toolchain** — Vite 8, TS 6, vue-tsc 3, ESLint 10, stylelint 17; vue-tsc dts emit.
 2. ✅ **Rebrand vueinjar → oriUI** — `ori-*` / `Ori*`, `src/` layout, types extracted, 1.0.0-alpha.0.
 3. ✅ **Foundation** — token contract (`@layer`, neutral ramp + semantic on-color), neutral + ori
-   skins (light/dark), mobile-first touch sizes + safe-area, standalone `@oriui/ui/css` subpath.
+   skins (light/dark), mobile-first touch sizes + safe-area, standalone `@oriui/css` subpath.
 4. 🔄 **Headless layer** — swappable behavior **contract** (`OriHeadless` plugin): **native** zero-dep
    adapter for simple primitives (Disclosure ✅), **Zag** for complex (Dialog ✅), or bring-your-own.
    (Superseded "own ↔ Reka" — see DECISIONS.md.) Next: promote `OriDialog` into the `@oriui/ui` package.
@@ -66,7 +66,7 @@ a11y, tests, strong docs).
 - **Native platform dialogs / Popover API — a separate feature track** (idea, do later). Lean on the
   platform: `popover` + `popovertarget` (non-modal — menus, tooltips, dropdowns; light-dismiss, top-layer)
   and `<dialog>` + `showModal()` / `::backdrop` (modal — built-in focus trap, `Esc`, top-layer), optionally
-  triggered by the new `command` / `commandfor` invokers. **Zero-JS** for the `@oriui/ui/css` / htmx layer — a
+  triggered by the new `command` / `commandfor` invokers. **Zero-JS** for the `@oriui/css` / htmx layer — a
   lighter path than `@zag-js/vanilla` for simple cases, or a native adapter behind the headless contract.
   Caveats: baseline support (popover & `<dialog>` ~2024; invokers newer → progressive enhancement) and
   top-layer / `::backdrop` styling.

@@ -27,7 +27,7 @@ import { OriButton } from '@oriui/ui';
 Import the stylesheet once, for example in your entry file:
 
 ```ts
-import '@oriui/ui/css';
+import '@oriui/css';
 ```
 
 That is all — components are themeable through design tokens, with light/dark and swappable

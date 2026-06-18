@@ -23,7 +23,7 @@ export default defineNuxtConfig({
         '@oriui/vue': resolve('../packages/vue/src/index.ts')
     },
 
-    css: [resolve('../src/styles/styles.css'), resolve('./app/assets/css/docs.css')],
+    css: [resolve('../packages/css/src/styles.css'), resolve('./app/assets/css/docs.css')],
 
     vite: {
         resolve: {

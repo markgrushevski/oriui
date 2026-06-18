@@ -10,7 +10,7 @@ assistive technology announces it as a switch. `v-model` is a boolean. The "on" 
 `:focus-visible` ring both come from the `ori-color` token; the track and thumb scale with
 `ori-font-size` so size is a single prop.
 
-Every example is live and shows the standalone **HTML / `@oriui/ui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 

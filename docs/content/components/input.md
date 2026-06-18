@@ -10,7 +10,7 @@ the rendered hint or error. The label is wired to the field with `for`/`id` (aut
 `useId` when you don't pass one), and arbitrary native attributes (`name`, `autocomplete`,
 `inputmode`, …) fall through to the underlying `<input>`.
 
-Every example is live and shows the standalone **HTML / `@oriui/ui/css`** markup by default — the same
+Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
 classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
 component.
 
