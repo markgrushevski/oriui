@@ -96,7 +96,7 @@ const {
 }
 
 .ori-button:focus-visible {
-    outline: 2px solid var(--ori-color-primary);
+    outline: 2px solid var(--ori-color);
     outline-offset: 2px;
 }
 

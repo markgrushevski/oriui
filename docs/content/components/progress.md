@@ -93,7 +93,7 @@ sweeps continuously and `aria-valuenow` is not set.
 
 ## Colors
 
-Every semantic role. Omit `color` to inherit `currentcolor` from the parent.
+Every semantic role. `color` defaults to `primary`; set it to any role to recolor the indicator.
 
 ::example
 :ori-progress{:value="60" color="primary"}
@@ -324,15 +324,15 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop            | Type                   | Default     | Description                                                                                       |
-| --------------- | ---------------------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| `color`         | `ThemeColor`           | —           | Semantic color role. Omit to inherit `currentcolor` from the parent.                              |
-| `indeterminate` | `boolean`              | `false`     | Enables the animated sweep; omits `aria-valuenow` from the rendered element.                      |
-| `label`         | `string`               | `'Loading'` | `aria-label` read by assistive technology. Use a descriptive message per-bar.                     |
-| `max`           | `number`               | `100`       | Upper bound. `value` is clamped to this range before the percentage is computed.                  |
-| `radius`        | `RadiusSize`           | `'rounded'` | Corner radius of the track and indicator (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`). |
-| `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`      | Track height: `sm` = 4 px, `md` = 8 px, `lg` = 12 px.                                             |
-| `value`         | `number`               | `0`         | Current progress value, clamped to `[0, max]`. Ignored when `indeterminate` is `true`.            |
+| Prop            | Type                   | Default     | Description                                                                                                                                   |
+| --------------- | ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`         | `ThemeColor`           | `'primary'` | Semantic color role for the indicator. (The standalone `.ori-progress` class inherits `currentcolor` when no `ori-color` utility is applied.) |
+| `indeterminate` | `boolean`              | `false`     | Enables the animated sweep; omits `aria-valuenow` from the rendered element.                                                                  |
+| `label`         | `string`               | `'Loading'` | `aria-label` read by assistive technology. Use a descriptive message per-bar.                                                                 |
+| `max`           | `number`               | `100`       | Upper bound. `value` is clamped to this range before the percentage is computed.                                                              |
+| `radius`        | `RadiusSize`           | `'rounded'` | Corner radius of the track and indicator (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                             |
+| `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`      | Track height: `sm` = 4 px, `md` = 8 px, `lg` = 12 px.                                                                                         |
+| `value`         | `number`               | `0`         | Current progress value, clamped to `[0, max]`. Ignored when `indeterminate` is `true`.                                                        |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
 

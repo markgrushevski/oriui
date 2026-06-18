@@ -114,8 +114,10 @@ watchPostEffect(() => {
     cursor: pointer;
 }
 
-.ori-dialog__close:hover {
-    opacity: 1;
+@media (hover: hover) {
+    .ori-dialog__close:hover {
+        opacity: 1;
+    }
 }
 
 .ori-dialog__body {

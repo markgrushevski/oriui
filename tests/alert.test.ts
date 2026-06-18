@@ -4,7 +4,7 @@ import { OriAlert } from '../src/components/alert';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriAlert', () => {
-    it('renders default token classes and role="alert"', () => {
+    it('renders default token classes and a polite role="status" for the info default', () => {
         const wrapper = mount(OriAlert);
         const c = wrapper.classes();
 
@@ -13,7 +13,21 @@ describe('OriAlert', () => {
         expect(c).toContain('ori-color_info');
         expect(c).toContain('ori-size-radius_md');
         expect(c).toContain('ori-font-size_md');
-        expect(wrapper.attributes('role')).toBe('alert');
+        // info is non-urgent → polite live region (status), not assertive alert.
+        expect(wrapper.attributes('role')).toBe('status');
+    });
+
+    it('derives an assertive role="alert" for urgent colors (danger / warn)', () => {
+        expect(mount(OriAlert, { props: { color: 'danger' } }).attributes('role')).toBe('alert');
+        expect(mount(OriAlert, { props: { color: 'warn' } }).attributes('role')).toBe('alert');
+        expect(mount(OriAlert, { props: { color: 'success' } }).attributes('role')).toBe('status');
+    });
+
+    it('lets `live` override the derived politeness', () => {
+        // force assertive on a non-urgent color, polite on an urgent one, and opt out entirely
+        expect(mount(OriAlert, { props: { color: 'info', live: 'assertive' } }).attributes('role')).toBe('alert');
+        expect(mount(OriAlert, { props: { color: 'danger', live: 'polite' } }).attributes('role')).toBe('status');
+        expect(mount(OriAlert, { props: { live: 'off' } }).attributes('role')).toBeUndefined();
     });
 
     it('renders title via prop', () => {

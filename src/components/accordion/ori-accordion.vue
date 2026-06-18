@@ -19,7 +19,7 @@ const {
     color = 'primary',
     items,
     multiple = false,
-    radius
+    radius = 'md'
 } = defineProps<{
     color?: ThemeColor;
     items: AccordionItem[];
@@ -31,6 +31,13 @@ const {
 // browser enforces single-open. `undefined` in multiple mode means each <details> toggles on its own.
 const uid = useId();
 const groupName = computed(() => (multiple ? undefined : uid));
+
+// A native <summary> has no real `disabled` state — aria-disabled + tabindex=-1 are advisory and don't
+// stop Enter/Space/click from toggling its <details>. Block the toggle ourselves so a disabled item is
+// genuinely inert for keyboard + AT, not just dimmed (the a11y-correct source of truth).
+function blockDisabled(event: Event, disabled?: boolean): void {
+    if (disabled) event.preventDefault();
+}
 </script>
 
 <template>
@@ -49,6 +56,9 @@ const groupName = computed(() => (multiple ? undefined : uid));
                 class="ori-accordion__trigger"
                 :aria-disabled="item.disabled ? 'true' : undefined"
                 :tabindex="item.disabled ? -1 : undefined"
+                @click="blockDisabled($event, item.disabled)"
+                @keydown.enter="blockDisabled($event, item.disabled)"
+                @keydown.space="blockDisabled($event, item.disabled)"
             >
                 <span class="ori-accordion__title">{{ item.title }}</span>
                 <svg

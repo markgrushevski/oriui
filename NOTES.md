@@ -97,16 +97,35 @@ practical gotchas go here.
   so the `color` prop adds a class with **zero effect** — a silent no-op (it bit OriProgress). The token
   layer already defaults `--ori-color: currentColor` at `:root`; let the utility repoint it, and if you
   need a no-class fallback read it at the point of use (`var(--ori-color, currentcolor)`).
-- **A focus ring on a control that sits _on_ a `fill` variant surface** (e.g. a Tag/Alert close button)
-  must use `outline-color: currentcolor` — on `fill`, `currentcolor` is the on-color (contrasts the
-  fill), whereas `var(--ori-color)` **is** the fill background, so the ring vanishes. Standalone controls
-  (Button) ring with `--ori-color-primary` because their ring sits on the page, not on a fill surface.
+- **Focus-ring color depends on what surface the ring sits on.** Free-standing controls (Button,
+  Checkbox, Switch, Radio, the form fields) ring with **`var(--ori-color)`** — it tracks the `color`
+  prop and sits on the page, which contrasts. (Don't hardcode `--ori-color-primary`: it ignores the
+  prop — was a real OriButton bug.) A close button **on a tinted chip/banner** (Tag/Alert) is the hard
+  case: a same-hue `currentcolor` ring can fall below the 3:1 non-text minimum on the pale tonal/outline
+  surface (warn ≈ 1.7:1), so ring with the neutral **`--ori-color-on-surface`** (contrasts light + dark),
+  and override to `currentcolor` only on the **`fill`** variant (there the on-color contrasts the solid
+  fill, and `var(--ori-color)` would BE the fill background → invisible ring). Place the `fill` override
+  last so stylelint `no-descending-specificity` stays happy.
+- **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
+  box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
+  container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is
+  free-standing → outset). Keep this split; don't "normalize" the inset rings.
 - Form controls: a **real hidden native input** (`opacity:0` over the visual element) drives a11y;
   style the visual via `:checked ~`, `:focus-visible ~`. The accent + ring read `var(--ori-color)`
   set by the `ori-color` class on the wrapper (inherits down).
 - `useId()` (Vue 3.5) for SSR-safe ids; pass props referenced in `<script>` through the reactive
   destructure (template-only props can stay undestructured). Gate any Teleport on a `mounted` ref —
   the library can't use Nuxt `<ClientOnly>`.
+- **A pure-CSS tooltip can't make `aria-describedby` announce on its own.** `aria-describedby` is read
+  when the element _bearing_ it is focused; OriTooltip puts it on the non-focusable `.ori-tooltip__trigger`
+  wrapper (which only guarantees the id resolves) and exposes `bubbleId` on the **default slot scope** so
+  the consumer binds `:aria-describedby="bubbleId"` on their _own_ focusable control. `:focus-within`
+  drives the bubble's CSS visibility, not the ARIA announcement — they're independent. Augmenting
+  arbitrary slot content would need JS (out of the CSS-only scope).
+- **A native `<summary>`/`<select>`/`<details>` has no real `disabled` state** — `aria-disabled` +
+  `tabindex="-1"` are advisory and don't stop Enter/Space/click from activating. OriAccordion blocks a
+  disabled item for real by `event.preventDefault()` on the summary's `click` + `keydown.enter`/`.space`
+  (pointer-events:none only covers the mouse). Don't present `aria-disabled` alone as "disabled".
 - **Dialog runs on the native `<dialog>` element, not a JS engine.** `useDialog` defaults to
   `nativeDialog` (no adapter needed). The adapter owns only `open` + the ARIA prop bags; the **consuming
   component** owns the `<dialog>` ref and drives `showModal()`/`close()` from `open` in a

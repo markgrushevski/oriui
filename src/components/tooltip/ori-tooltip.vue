@@ -36,7 +36,10 @@ const bubbleId = useId();
 <template>
     <span :class="['ori-tooltip', color && `ori-color ori-color_${color}`]">
         <span class="ori-tooltip__trigger" :aria-describedby="bubbleId">
-            <slot />
+            <!-- bubbleId is exposed so the consumer can put aria-describedby on their OWN focusable
+                 control — aria-describedby only announces when the element bearing it is focused, and
+                 this wrapper span isn't focusable. -->
+            <slot :bubble-id="bubbleId" />
         </span>
 
         <span :id="bubbleId" :class="['ori-tooltip__bubble', `ori-tooltip__bubble_${placement}`]" role="tooltip">
@@ -53,6 +56,10 @@ const bubbleId = useId();
     --ori-tooltip-color: var(--ori-color-on, var(--ori-neutral-50));
     --ori-tooltip-gap: 0.5em;
     --ori-tooltip-arrow: 0.375em;
+
+    /* Small fixed corner; the bubble doesn't take the size/radius utilities, so define a local token
+       (not a raw scale token, which would be out of scope here and fall back to a magic literal). */
+    --ori-tooltip-radius: 0.25rem;
 
     display: inline-flex;
     position: relative;
@@ -77,7 +84,7 @@ const bubbleId = useId();
         opacity 0.15s ease-out,
         visibility 0.15s ease-out;
 
-    border-radius: var(--ori-size-radius_sm, 4px);
+    border-radius: var(--ori-tooltip-radius);
 
     opacity: 0;
     background-color: var(--ori-tooltip-bg);

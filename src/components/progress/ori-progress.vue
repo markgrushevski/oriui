@@ -76,7 +76,9 @@ const percent = computed(() => (max > 0 ? (clamped.value / max) * 100 : 0));
 
     border-radius: var(--ori-size-radius);
 
-    background-color: color-mix(in srgb, var(--ori-color) 16%, transparent);
+    /* Neutral track (from the inherited text color), not a tint of --ori-color: the filled-vs-unfilled
+       boundary must clear 3:1 for any role — a same-hue tint fails for pale roles (e.g. warn). */
+    background-color: color-mix(in srgb, currentcolor 14%, transparent);
 }
 
 .ori-progress__indicator {
