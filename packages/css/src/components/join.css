@@ -1,0 +1,43 @@
+@layer ori.components {
+    /* Collapse adjacent radii + borders so children (buttons, inputs, …) read as one unit. */
+    .ori-join {
+        display: inline-flex;
+        align-items: stretch;
+    }
+
+    .ori-join.ori-join_vertical {
+        flex-direction: column;
+    }
+
+    /* Horizontal: square the inner edges, pull children together to merge the shared border. */
+    .ori-join:not(.ori-join_vertical) > :not(:first-child) {
+        margin-inline-start: -1px;
+
+        border-start-start-radius: 0;
+        border-end-start-radius: 0;
+    }
+
+    .ori-join:not(.ori-join_vertical) > :not(:last-child) {
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+    }
+
+    /* Vertical. */
+    .ori-join.ori-join_vertical > :not(:first-child) {
+        margin-block-start: -1px;
+
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
+    }
+
+    .ori-join.ori-join_vertical > :not(:last-child) {
+        border-end-start-radius: 0;
+        border-end-end-radius: 0;
+    }
+
+    /* Lift the active child so its full outline shows over the collapsed border. */
+    .ori-join > :hover,
+    .ori-join > :focus-within {
+        z-index: 1;
+    }
+}

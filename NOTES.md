@@ -31,6 +31,10 @@ practical gotchas go here.
 - **Backward compatible:** a component or doc still emitting `ori-color ori-color_primary` (base+value)
   keeps working — the single-class value matches, the base is an inert extra. So the axis-utility files
   could be converted ahead of the per-component template migration without a flag day.
+- **gap is now single-class too.** `_sizes-gap.css` was the last axis on the old paired pattern
+  (`.ori-size-gap` base + `.ori-size-gap.ori-size-gap_*` compound, and it lacked `_xxl`); it is now
+  `.ori-size-gap_*` single-class (zero · xs · sm · md · lg · xl), mirroring `.ori-size-radius_*`. The
+  scale tokens stay in `:root` (`ori.tokens`). `OriStack`'s `gap` prop emits one `ori-size-gap_<size>`.
 
 ## Verification / preview MCP
 
@@ -95,6 +99,13 @@ practical gotchas go here.
   app on port 5173) — same as `docs:dev`. (CLAUDE.md still calls root `dev` a "Vite playground" and the
   docs "VitePress" — both stale; the docs are Nuxt + Nuxt Content.) The preview `dev` launch config maps
   to it, so `preview_start dev` restarts the docs server.
+- **Live demos for slotted components** (Stack / Cluster / Join / Divider-with-label) use the MDC
+  **block** form inside `::example` — `::ori-join{aria-label="…"}` with inline `:ori-button{…}` lines,
+  closed with `::` (mirror `stack.md`); this renders the children live. Do **not** wrap inline MDC
+  components in **raw `<div>` HTML** — the inline `:ori-*` inside a raw HTML block are not parsed and
+  render nothing (a vertical-divider demo wrapped that way produced zero dividers). A vertical
+  `:ori-divider{:vertical="true"}` needs a flex-row parent (`::ori-stack{:cluster="true"}`) with height:
+  it stretches via `align-self: stretch`, falling back to its 1em `min-height` when the row wraps.
 
 ## Lint / formatting
 
@@ -122,6 +133,15 @@ practical gotchas go here.
   tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
   compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`
   wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
+- **`OriJoin`'s corner-collapse wins by SPECIFICITY, not layer order — load-bearing.** Unlike the rest
+  of the single-class system (utilities win by layer order), `.ori-join` zeroes inner-child corners via
+  higher-specificity longhand selectors — `.ori-join:not(.ori-join_vertical) > :not(:first-child)` is
+  (0,3,0) in the **same** `ori.components` layer as the children, beating `.ori-button`'s `border-radius`
+  (0,1,0) and surviving a child's `.ori-size-radius_*` utility (which only changes the token value, not
+  specificity). If you `:where()`-flatten the Join selectors for house-style consistency, the collapse
+  silently stops (drops to (0,1,0), ties the child, loses to a `.ori-size-radius_*` child). Keep them
+  un-`:where()`-ed. Divider is the mirror case — its subtle default DOES rely on layer order (it sets
+  `--ori-color` in `ori.components`; `.ori-color_*` in `ori.utilities` overrides it).
 - **Layered components lose to an UNLAYERED element reset.** Because component styles are now in
   `@layer ori.components`, any **unlayered** global rule (an `a {}` / `button {}` / `input {}` reset)
   beats them regardless of specificity — unlayered author styles outrank every layer. This bit the docs
@@ -206,6 +226,11 @@ practical gotchas go here.
 - OriDialog tests run on the **native `<dialog>` default** (no adapter), plus one test that swaps in a
   **fake adapter** (`tests/helpers/fake-dialog.ts`, fixed id) to prove the `OriHeadless` contract still
   swaps — the lib's test graph stays engine-free (no Zag).
+- **axe + container roles:** a `role="group"` / `role="toolbar"` / `role="region"` with no accessible
+  name trips axe — mount such components (OriJoin) **with an `aria-label`** (it falls through via
+  `inheritAttrs`) in the axe test. **Separators:** `aria-orientation` is **omitted** for the horizontal
+  default (the ARIA implicit value) and set only for vertical — assert `toBeUndefined()`, never
+  `toBe('horizontal')` (Vue renders an `undefined` binding as no attribute).
 
 ## Orchestration / role agents
 

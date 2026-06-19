@@ -1,0 +1,62 @@
+@layer ori.components {
+    .ori-divider {
+        /* Subtle line by default; `.ori-color_*` (ori.utilities, wins by layer order) repoints
+           --ori-color to a full role color. Deliberately sets the utility-owned alias here for an
+           overridable subtle default — the intended exception to the NOTES.md anti-pattern, since
+           the :root default (currentcolor) is too strong for a divider. */
+        --ori-color: color-mix(in srgb, currentcolor 25%, transparent);
+
+        display: flex;
+        align-items: center;
+        gap: var(--ori-size-gap);
+
+        margin-block: var(--ori-size-gap);
+
+        color: inherit;
+    }
+
+    .ori-divider::before,
+    .ori-divider::after {
+        content: '';
+        flex: 1 1 0;
+
+        height: 0;
+
+        border-top: 1px solid var(--ori-color);
+    }
+
+    /* No label → one continuous line: drop the inter-gap and the trailing pseudo. */
+    .ori-divider:not(.ori-divider_text) {
+        gap: 0;
+    }
+
+    .ori-divider:not(.ori-divider_text)::after {
+        display: none;
+    }
+
+    .ori-divider .ori-divider__label {
+        flex-shrink: 0;
+
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+
+    /* Vertical: a column rule that stretches to the parent's cross axis. */
+    .ori-divider.ori-divider_vertical {
+        flex-direction: column;
+        align-self: stretch;
+
+        min-height: 1em;
+        margin-block: 0;
+        margin-inline: var(--ori-size-gap);
+    }
+
+    .ori-divider.ori-divider_vertical::before,
+    .ori-divider.ori-divider_vertical::after {
+        width: 0;
+        height: auto;
+
+        border-top: 0;
+        border-left: 1px solid var(--ori-color);
+    }
+}
