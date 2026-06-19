@@ -23,6 +23,7 @@ const sections = [
         links: [
             { label: 'Introduction', to: '/overview/introduction' },
             { label: 'Get started', to: '/overview/get-started' },
+            { label: 'Cheat sheet', to: '/overview/cheat-sheet' },
             { label: 'Installation', to: '/overview/installation' },
             { label: 'Accessibility', to: '/overview/accessibility' }
         ]

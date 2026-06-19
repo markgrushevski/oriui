@@ -37,6 +37,7 @@ export default defineNuxtConfig({
                     { title: 'Introduction', href: '/overview/introduction' },
                     { title: 'Installation', href: '/overview/installation' },
                     { title: 'Get started', href: '/overview/get-started' },
+                    { title: 'Cheat sheet', href: '/overview/cheat-sheet' },
                     { title: 'Accessibility', href: '/overview/accessibility' }
                 ]
             },
