@@ -68,7 +68,7 @@ controls — native-first at the platform tier. The one honest gap: CSS anchor-p
 (`position-try`) is not yet Baseline in the Telegram WebView, so a future edge-anchored flyout/menu would
 want a small positioning helper (floating-ui-style) — still **not** Zag. This supersedes the old
 "`useDialog` has no native default / fails loud without Zag" design. Removed the prototype `zagDialog`
-adapter and the `@zag-js/*` docs dependencies; `@oriui/core` + the agnostic contract remain the hedge.
+adapter and the `@zag-js/*` docs dependencies; `@oriui/headless` + the agnostic contract remain the hedge.
 
 ## Scope: a portfolio showcase + the author's own Vue design system (not a market competitor)
 
@@ -78,7 +78,7 @@ reach, framework breadth, or catalog size. Comparing a solo alpha to those matur
 is the wrong frame: the portfolio value is visibly senior-level architecture + judgment, and the
 personal value is a design system the author understands and can bend to their own needs. Consequences:
 
-- **No multi-framework race.** Styled components stay **Vue-only**; `@oriui/css` + `@oriui/core` are the
+- **No multi-framework race.** Styled components stay **Vue-only**; `@oriui/css` + `@oriui/headless` are the
   framework-agnostic hedge already in place (React/Svelte styled wrappers come only on real adoption —
   YAGNI, not speculative layers built blind).
 - **No catalog-breadth race.** Build only the components the author's projects actually need, not Ark's 40. Requirements come from building a real screen of a personal project, not imagined gaps.
@@ -94,11 +94,11 @@ personal value is a design system the author understands and can bend to their o
 ## CSS layer extracted to a standalone `@oriui/css` package
 
 The CSS layer (tokens + base + `.ori-*` utilities) now ships as its own **zero-dependency** package,
-`@oriui/css` (`packages/css/`), instead of an `@oriui/ui/css` subpath. **Why:** the subpath forced a
-CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/ui`, which drags in `@oriui/vue` +
-`@oriui/core` and a `vue` peer-dependency warning — directly contradicting the "CSS layer is Vue-free,
+`@oriui/css` (`packages/css/`), instead of an `@oriui/vue/css` subpath. **Why:** the subpath forced a
+CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/vue`, which drags in `@oriui/headless` +
+`@oriui/headless` and a `vue` peer-dependency warning — directly contradicting the "CSS layer is Vue-free,
 first-class" positioning. `@oriui/css` has no deps and no peer, so `import '@oriui/css'` (or a CDN
-`<link>`) is clean. `@oriui/ui` now **depends on** `@oriui/css` (its components read those tokens) and
+`<link>`) is clean. `@oriui/vue` now **depends on** `@oriui/css` (its components read those tokens) and
 no longer ships its own `./css`; styled Vue consumers `import '@oriui/css'` for the stylesheet. The
 styles source moved `src/styles/` → `packages/css/src/`, bundled to one file via `postcss-import`
 (+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui).
@@ -106,21 +106,21 @@ styles source moved `src/styles/` → `packages/css/src/`, bundled to one file v
 **Completed since:** the bundle is now **minified with cssnano** (~40 → 16.6 kB without component
 styles; ~40 kB with them), and the **component block styles were moved into `@oriui/css`** — each
 component's CSS now lives in `packages/css/src/components/<name>.css` under `@layer ori.components`, the
-SFCs carry no `<style>` block, and `@oriui/ui` emits no per-component CSS chunks. So the standalone CSS
+SFCs carry no `<style>` block, and `@oriui/vue` emits no per-component CSS chunks. So the standalone CSS
 layer now renders the actual `.ori-*` components (not just tokens), making htmx / Astro / plain-HTML a
 real target; styled-component consumers `import '@oriui/css'` once for everything. Cascade note: moving
 the previously-**unlayered** SFC styles into `ori.components` means the `ori.utilities` layer (declared
 last) now wins over component rules — fine, since utilities only set tokens the components read.
 
-## Root package renamed `oriui` → `@oriui/ui` (npm name-similarity block)
+## Root package renamed `oriui` → `@oriui/vue` (npm name-similarity block)
 
 npm's typosquatting filter **rejects the unscoped name `oriui`** as "too similar to existing package
 `cliui`" (a popular yargs dependency) — a hard 403 on the first publish, not appealable in practice.
 Unscoped variants that normalize to the same token (e.g. `ori-ui`) are blocked too; **scoped names
-bypass the filter**, which is why `@oriui/core` and `@oriui/vue` published fine. So the flagship styled
-package ships as **`@oriui/ui`** under the existing `oriui` npm org, giving a clean trio: `@oriui/core`
-(agnostic contract) · `@oriui/vue` (headless Vue) · `@oriui/ui` (styled). Consumers
-`import { OriButton } from '@oriui/ui'` and `import '@oriui/css'`. The **oriUI brand** (project name,
+bypass the filter**, which is why `@oriui/headless` and `@oriui/headless` published fine. So the flagship styled
+package ships as **`@oriui/vue`** under the existing `oriui` npm org, giving a clean trio: `@oriui/headless`
+(agnostic contract) · `@oriui/headless` (headless Vue) · `@oriui/vue` (styled). Consumers
+`import { OriButton } from '@oriui/vue'` and `import '@oriui/css'`. The **oriUI brand** (project name,
 npm org, docs title) is unchanged — only the install/import specifier moved. The docs Nuxt alias, the
 MDC plugin registration, and every install/import example were updated to match.
 
@@ -146,7 +146,7 @@ The full branch / commit / release workflow lives in [CONTRIBUTING.md](CONTRIBUT
 Reworked the docs navigation to the Reka/Radix model (user-driven). The top level is four sections:
 **Overview** (intro, get-started, installation, a11y), **Guides** (styling, theming, customization,
 the CSS layer), **Components** (nested by category — Actions / Data Input / Data Display / Feedback →
-pages), and **Headless** (the behaviour layer, nested by sub-layer: **Core** = `@oriui/core`, the
+pages), and **Headless** (the behaviour layer, nested by sub-layer: **Core** = `@oriui/headless`, the
 framework-agnostic contract + native engine; **Vue** = the composables; a Svelte group / Utilities
 slot in later). The nav tree (`NavTree` → collapsible `NavSection`, built on `useDisclosure`) is
 shared by the desktop sidebar and the mobile drawer.
@@ -214,22 +214,22 @@ lib build's externals/preserveModules out of the test run and aliases `@oriui/*`
   most of the signal at a fraction of the flakiness; visual-regression E2E is a later add (Phase 8
   CI), not a blocker for the first test pass.
 
-## OriDialog promoted into the `oriui` package: styled = headless + css (depends on @oriui/vue)
+## OriDialog promoted into the `oriui` package: styled = headless + css (depends on @oriui/headless)
 
 The first behavioral styled component now lives in the library (moved out of the docs prototype).
-`oriui` gains a runtime **dependency on `@oriui/vue`** — `OriDialog` consumes `useDialog()`, so the
+`oriui` gains a runtime **dependency on `@oriui/headless`** — `OriDialog` consumes `useDialog()`, so the
 layering is literally "styled = headless + css". Mechanics:
 
-- `@oriui/vue` (+ `@oriui/core`) are **external** in the Vite lib build (not bundled); the import is
+- `@oriui/headless` (+ `@oriui/headless`) are **external** in the Vite lib build (not bundled); the import is
   preserved and resolved from the consumer's deps. The root `build` script runs `build:packages`
   first so `vue-tsc` can resolve the package `.d.ts` (fresh-clone / CI safe). Verified: the built
-  `ori-dialog.js` keeps `import … from '@oriui/vue'` and the types flow through the barrel.
+  `ori-dialog.js` keeps `import … from '@oriui/headless'` and the types flow through the barrel.
 - The library can't use Nuxt's `<ClientOnly>`, so the Teleport is gated on a `mounted` ref —
   SSR-stable in any Vue/Nuxt host. Styles are tokenized (`--ori-color-surface`, `--ori-shadow-lg`).
 - `useDialog` still has **no native default** — the consumer wires a dialog adapter via `OriHeadless`
   (e.g. Zag), per the native-simple / Zag-complex split. The docs `DialogDemo` now imports
   `OriDialog` from `oriui` and the prototype is deleted; build + live behavior both verified.
-- `@oriui/vue` is a regular `dependency` (not peer) for DX — the contract core is tiny and the
+- `@oriui/headless` is a regular `dependency` (not peer) for DX — the contract core is tiny and the
   behavioral components need it. The 5 presentational components don't import it, so a Button-only
   consumer tree-shakes it out.
 
@@ -352,10 +352,10 @@ standalone CSS layer, and a11y-checked on-color tokens.** So:
 - **Behavior = Zag** (recommended default adapter). Components depend on a thin **contract**
   (`DisclosureAdapter` returning normalized prop-getters), not on a concrete engine.
 - **Swappable** via provide/inject (`OriHeadless` plugin / `provideHeadless`): an app runs our
-  components on Zag, on our **native** `@oriui/core` adapter, or on a user-supplied one — same
+  components on Zag, on our **native** `@oriui/headless` adapter, or on a user-supplied one — same
   markup. If runtime swap ever proves messy, the fallback is the simpler "enable Zag or use no
   headless" toggle (user-approved).
-- **The native `@oriui/core` Disclosure is kept** as the reference/default adapter and the "one
+- **The native `@oriui/headless` Disclosure is kept** as the reference/default adapter and the "one
   primitive built to understand the internals" — not expanded into a full catalog. We will not
   hand-roll Toggle/Tabs/etc.; those come from Zag behind the contract.
 - Zag adapter is prototyped in the docs app first (consumer side); promote to an `@oriui/zag`
@@ -403,10 +403,10 @@ Multi-framework needs **separate npm packages**: `dependencies`/`peerDependencie
 once per package, so a single `oriui` with `./headless/vue` + `./headless/svelte` subpaths would
 force a Svelte consumer to carry `vue` as a peer (and vice-versa). Ark UI proves the split —
 `@ark-ui/vue` (peer vue) and `@ark-ui/svelte` (peer svelte) are separate; a Svelte app installs
-zero Vue. So: `@oriui/core` (vanilla TS) ← `@oriui/vue` (peer vue), later `@oriui/svelte` (peer
+zero Vue. So: `@oriui/headless` (vanilla TS) ← `@oriui/headless` (peer vue), later `@oriui/svelte` (peer
 svelte); styled stays `oriui`; `@oriui/css` split deferred.
 
-- **Build:** per-package — `tsdown` (headless `@oriui/core` + `@oriui/vue`, ESM + dts; migrated off
+- **Build:** per-package — `tsdown` (headless `@oriui/headless` + `@oriui/headless`, ESM + dts; migrated off
   `tsup`, now maintenance-mode), Vite-lib + `vue-tsc` (styled `oriui`, SFCs + CSS),
   `svelte-package` (svelte, later); validate exports with `publint` + `@arethetypeswrong/cli`.
 - **Tooling:** keep **npm workspaces** for now (pnpm's phantom-dep strictness pays off at Svelte

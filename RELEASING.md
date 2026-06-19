@@ -1,127 +1,71 @@
 # Releasing oriUI
 
-How to cut and publish an oriUI release to npm. oriUI is a small monorepo — four
-publishable packages plus the docs workspace. This is the **manual runbook** for the
-alpha line; CI-driven releases (`changesets`) are tracked in [ROADMAP.md](ROADMAP.md)
-Phase 8.
+How releases work — oriUI is a small monorepo of **three publishable packages** plus the docs
+workspace, released with **changesets** in alpha prerelease mode.
 
-> **Status — already live.** The `oriui` npm org and the first alpha are published: all four
-> packages at `1.0.0-alpha.0` (both `next` + `latest`), first published 2026-06-18. The
-> _One-time setup_ below is already done — for a new release jump to [Cut a release](#cut-a-release)
-> and **bump the version first** (published versions are immutable).
+| Package           | Path                | What it is                                        |
+| ----------------- | ------------------- | ------------------------------------------------- |
+| `@oriui/vue`      | `packages/vue`      | Styled Vue components (depends on css + headless) |
+| `@oriui/headless` | `packages/headless` | Engine (`.`) + Vue adapter (`./vue`)              |
+| `@oriui/css`      | `packages/css`      | Standalone CSS tokens + utilities                 |
 
-## Packages & layout
-
-| Package       | Path            | Public name   | Depends on                 |
-| ------------- | --------------- | ------------- | -------------------------- |
-| Styled        | `.` (root)      | `@oriui/ui`   | `@oriui/css`, `@oriui/vue` |
-| CSS layer     | `packages/css`  | `@oriui/css`  | —                          |
-| Vue headless  | `packages/vue`  | `@oriui/vue`  | `@oriui/core`              |
-| Core contract | `packages/core` | `@oriui/core` | —                          |
-
-Internal dependencies are **pinned to the exact version** (not `*`): a `*` range does
-not match a prerelease, so `@oriui/ui@1.0.0-alpha.0` declaring `"@oriui/vue": "*"` would be
-uninstallable. Keep all four versions in lockstep.
+The three are a **fixed** lockstep group (`.changeset/config.json`) — they always bump together. The
+repo is in **alpha pre mode** (`.changeset/pre.json`), so versions stay `1.0.0-alpha.N` and publish to
+the `next` dist-tag.
 
 ## One-time setup
 
-1. **npm organization** — the `@oriui` scope needs an org named `oriui` on npm
-   (npmjs.com → _Add Organization_ → **Free**, unlimited public packages). You must be
-   a member with publish rights.
-2. **Login** — `npm login`. The account has **2FA-for-writes**, so every publish needs
-   a one-time password (OTP).
+1. **npm org** `oriui` with publish rights (exists).
+2. **`NPM_TOKEN` secret** — an npm **automation** access token (npmjs → _Access Tokens_ →
+   Granular/Automation; bypasses 2FA), added to the GitHub repo secrets so CI publishes without an OTP.
 
 ## Cut a release
 
-### 1. Bump versions in lockstep
+1. **Add a changeset per change** (on the feature branch, before merging):
 
-Use the helper — it rewrites the version **and** the pinned internal `@oriui/*` deps across all four
-`package.json` files at once (a `*` range can't match a prerelease, so internal deps stay pinned exact):
+    ```bash
+    npx changeset      # or: npm run changeset — pick the bump type, write the changelog line
+    ```
 
-```bash
-node scripts/bump.mjs 1.0.0-alpha.2   # or: npm run bump 1.0.0-alpha.2
-npm install --package-lock-only       # sync the lockfile
-git commit -am "chore(release): v1.0.0-alpha.2"
-```
+    With the fixed group, naming any one package bumps all three. Commit the generated `.changeset/*.md`
+    with your PR.
 
-It replaces the current version string everywhere it appears: each package's own `version` plus the
-pinned internal deps (`@oriui/css`, `@oriui/vue` in the root; `@oriui/core` in `packages/vue`).
+2. **Merge to `main`.** On push, the **Release** workflow (`changesets/action`) opens or updates a
+   **"Version Packages"** PR that aggregates the pending changesets — bumping the versions + the pinned
+   internal deps and updating `CHANGELOG.md`.
 
-### 2. Green check
+3. **Merge the "Version Packages" PR.** That push runs `npm run release`
+   (`npm run build && changeset publish --tag next`), publishing the bumped packages to npm in
+   dependency order via `NPM_TOKEN`, and tagging the release. No OTP.
 
-```bash
-npm run lint:ci && npm run types && npm run test && npm run build
-```
+Once a release is stable, move it to the default tag: `npm dist-tag add @oriui/vue@<v> latest` (and the
+same for `@oriui/headless` + `@oriui/css`), or run `changeset pre exit` and cut a non-prerelease.
 
-### 3. Publish in dependency order
-
-**Preferred — CI, no OTP.** Push the bump commit, then run the **Release** workflow (GitHub →
-Actions → _Release_ → _Run workflow_ → pick the dist-tag). It runs the quality gate, builds, and
-publishes all four packages in order using the `NPM_TOKEN` automation secret. One-time setup: create an
-npm **automation** access token (npmjs → _Access Tokens_ → Granular/Automation — it bypasses 2FA) and
-add it as the repo secret `NPM_TOKEN`.
-
-**Manual fallback — OTP.** `--access public` now lives in each package's `publishConfig`, so it can be
-omitted; each publish still needs a **fresh OTP**:
+### Local equivalents (manual fallback)
 
 ```bash
-npm run build
-npm publish -w @oriui/css  --tag next --otp=XXXXXX
-npm publish -w @oriui/core --tag next --otp=XXXXXX
-npm publish -w @oriui/vue  --tag next --otp=XXXXXX
-npm publish                --tag next --otp=XXXXXX
-```
-
-Order matters so the whole graph exists in the registry by the time anyone installs:
-`@oriui/css` + `@oriui/core` → `@oriui/vue` → `@oriui/ui`.
-
-#### Dist-tag: `next` vs `latest`
-
-- `--tag next` (used for prereleases) — the alpha does **not** become the default
-  install. Users opt in with `npm install @oriui/ui@next`. Plain `npm install @oriui/ui` will
-  fail until a stable `latest` exists; this is the intended semver hygiene.
-- **Drop `--tag next`** to publish as `latest` if you want `npm install @oriui/ui` to work
-  immediately — at the cost of shipping an alpha as the default.
-
-### 4. Tag the release
-
-A git tag maps the published version to an exact commit, so every `@oriui/ui@x` is checkout-able. Tag
-the release commit (the lockstep version bump) once the publish succeeds, and push the tag:
-
-```bash
-git tag -a v1.0.0-alpha.0 -m "v1.0.0-alpha.0"
-git push origin v1.0.0-alpha.0
+npm run version    # changeset version + lockfile sync  (the "Version Packages" step)
+npm run release    # build + changeset publish --tag next  (needs npm login / OTP locally)
 ```
 
 ## Verify
 
 ```bash
-npm view @oriui/ui
-npm view @oriui/css
 npm view @oriui/vue
-npm view @oriui/core
-# fresh-install smoke test in a scratch dir:
-#   npm i @oriui/ui@next
+npm view @oriui/headless
+npm view @oriui/css
+#  npm i @oriui/vue@next     (fresh-install smoke test)
 ```
 
-## Troubleshooting
+## Notes
 
-- **`402 Payment Required` / `404` on a scoped publish** — missing `--access public`,
-  or the `oriui` org/scope doesn't exist or you lack publish rights.
-- **`EOTP` / "one-time password is incorrect"** — the OTP expired; rerun with a fresh
-  code.
-- **A consumer's install can't resolve `@oriui/vue`** — an internal dep is still `*` or
-  points at an unpublished version. Pin it and publish a **new** version.
-- **"You cannot publish over the previously published versions"** — bump the version;
-  published versions are immutable (and unpublish is restricted after 72h).
-
-## Automation status
-
-✅ **CI publish** — the `Release` workflow (`.github/workflows/release.yml`) builds and publishes via
-the `NPM_TOKEN` automation secret, no OTP (step 3 above). The lockstep version bump is scripted
-(`scripts/bump.mjs`), and `--access public` lives in each package's `publishConfig`.
-
-🔄 **`changesets`** (auto version + changelog + PR-based releases) stays deferred: it can only version
-packages that are **workspace members**, but the publishable `@oriui/ui` is the repo **root**. Adopting
-it needs the full monorepo split (root → `packages/ui`), which [ROADMAP.md](ROADMAP.md) parks under
-_Deferred_. The bump-script + CI-publish flow covers releases until then.
+- **The rename is breaking.** `@oriui/vue` used to be the headless package; it now ships the
+  components, and the headless lives in `@oriui/headless` (`./vue` for the composables). The old
+  `@oriui/ui`, `@oriui/core`, and old `@oriui/vue` names are retired — `npm deprecate` them with a
+  pointer to the new names when the first renamed alpha publishes.
+- Published versions are **immutable** (and unpublish is restricted after 72h) — bump, don't republish.
+- A scoped first publish needs `--access public`; that lives in each package's `publishConfig`, and
+  `.changeset/config.json` sets `access: public`.
+- **Troubleshooting** — `402`/`404` on publish = missing `--access public` or no publish rights;
+  `EOTP` = the OTP expired (CI avoids this via `NPM_TOKEN`); "cannot publish over previously published
+  versions" = bump the version.
