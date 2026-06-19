@@ -12,10 +12,12 @@ describe('OriInput', () => {
         expect(wrap).toContain('ori-color_primary');
         expect(wrap).toContain('ori-font-size_md');
         expect(wrap).toContain('ori-input_outline');
+        // size rides on the wrapper as the `ori-input_<size>` modifier (sugar over the action-size
+        // token the field inherits); radius stays on the field.
+        expect(wrap).toContain('ori-input_md');
 
         const field = wrapper.find('input');
         expect(field.exists()).toBe(true);
-        expect(field.classes()).toContain('ori-size-action_md');
         expect(field.classes()).toContain('ori-size-radius_md');
         expect(field.attributes('type')).toBe('text');
     });
@@ -100,8 +102,8 @@ describe('OriInput', () => {
 
         expect(wrapper.classes()).toContain('ori-font-size_lg');
         expect(wrapper.classes()).toContain('ori-input_fill');
+        expect(wrapper.classes()).toContain('ori-input_lg');
         expect(wrapper.classes()).toContain('ori-color_danger');
-        expect(wrapper.find('input').classes()).toContain('ori-size-action_lg');
         expect(wrapper.find('input').classes()).toContain('ori-size-radius_sm');
     });
 

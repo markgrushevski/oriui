@@ -25,31 +25,35 @@
 }
 
 @layer ori.utilities {
-    .ori-size-action.ori-size-action_text {
+    /* Size utilities are SINGLE-CLASS: `.ori-size-action_md` repoints the alias on its own — no
+       paired `.ori-size-action` base needed (forgetting it used to be a silent no-op). They sit in
+       `ori.utilities` (declared last), so they beat a block's baked-in default (e.g.
+       `.ori-input { --ori-size-action: … }`) by LAYER ORDER, not specificity. */
+    .ori-size-action_text {
         --ori-size-action: var(--ori-size-action_text);
     }
 
-    .ori-size-action.ori-size-action_xs {
+    .ori-size-action_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-size-action.ori-size-action_sm {
+    .ori-size-action_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-size-action.ori-size-action_md {
+    .ori-size-action_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-size-action.ori-size-action_lg {
+    .ori-size-action_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-size-action.ori-size-action_xl {
+    .ori-size-action_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-size-action.ori-size-action_xxl {
+    .ori-size-action_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 
