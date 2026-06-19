@@ -28,6 +28,8 @@
 
         font-size: var(--ori-font-size);
         line-height: 1;
+        /* A button is never underlined — even rendered as a link (`as=NuxtLink` → <a>). */
+        text-decoration: none;
 
         cursor: pointer;
         user-select: none;
