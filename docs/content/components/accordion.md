@@ -17,11 +17,11 @@ component.
 
 ## Classes
 
-The accordion is a block class plus paired token utilities. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+The accordion is a block class plus single-class token utilities — one class repoints one token, no
+base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
+:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
 
 ## Anatomy
 
@@ -64,7 +64,7 @@ the shared `name` attribute, no JavaScript required.
 
 ```html
 <!-- Single-open: give every <details> the same name. -->
-<div class="ori-accordion ori-color ori-color_primary">
+<div class="ori-accordion ori-color_primary">
     <details class="ori-accordion__item" name="faq">
         <summary class="ori-accordion__trigger">
             <span class="ori-accordion__title">What is oriUI?</span>
@@ -111,7 +111,7 @@ independently.
 
 ```html
 <!-- Multiple: omit the shared name so items open independently. -->
-<div class="ori-accordion ori-color ori-color_primary">
+<div class="ori-accordion ori-color_primary">
     <details class="ori-accordion__item">
         <summary class="ori-accordion__trigger">
             <span class="ori-accordion__title">Step 1 — Install</span>
@@ -151,16 +151,16 @@ Every semantic role. The accent color is applied to the open item's title and th
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _secondary / _success / _danger / _info -->
-<div class="ori-accordion ori-color ori-color_success">…</div>
+<!-- swap the color class: ori-color_primary → _secondary / _success / _danger / _info -->
+<div class="ori-accordion ori-color_success">…</div>
 ```
 
 ::
 
 ## Radius
 
-Corner rounding via the `radius` prop. When omitted, the container falls back to the alias default
-(typically `0` on most skins).
+Corner rounding via the `radius` prop. When omitted, the container uses the baked default `md` (the
+`.ori-accordion` block bakes `--ori-size-radius: md`, so a bare block is never square).
 
 ::example
 :ori-accordion{radius="zero" :items='[{"value":"a","title":"zero — no rounding"}]'}
@@ -180,8 +180,8 @@ Corner rounding via the `radius` prop. When omitted, the container falls back to
 #html
 
 ```html
-<!-- attach the radius pair: ori-size-radius ori-size-radius_md -->
-<div class="ori-accordion ori-color ori-color_primary ori-size-radius ori-size-radius_md">…</div>
+<!-- attach the radius class: ori-size-radius_md -->
+<div class="ori-accordion ori-color_primary ori-size-radius_md">…</div>
 ```
 
 ::
@@ -260,7 +260,7 @@ Colors, radius, and rich slot content together — a common FAQ or settings patt
 #html
 
 ```html
-<div class="ori-accordion ori-color ori-color_secondary ori-size-radius ori-size-radius_md">
+<div class="ori-accordion ori-color_secondary ori-size-radius_md">
     <details class="ori-accordion__item" name="faq">
         <summary class="ori-accordion__trigger">
             <span class="ori-accordion__title">Is oriUI free to use?</span>
@@ -313,7 +313,7 @@ planned.)
 | `color`    | `ThemeColor`                                                            | `'primary'` | Accent color for the open item's title and the rotating chevron. Repoints `--ori-color` via the `ori-color_<color>` utility class on the wrapper.                                                   |
 | `items`    | `Array<{ value: string \| number; title: string; disabled?: boolean }>` | —           | **Required.** The disclosure items. `value` is used as the `:key`; `title` is the summary text; `disabled` sets `aria-disabled="true"` + `tabindex="-1"` and blocks pointer events on that trigger. |
 | `multiple` | `boolean`                                                               | `false`     | `false` = exclusive single-open (shared `name`, browser closes siblings). `true` = each item opens/closes independently (no shared `name`).                                                         |
-| `radius`   | `RadiusSize`                                                            | —           | Optional corner radius for the accordion container. Attaches `ori-size-radius ori-size-radius_<radius>` when set; falls back to the alias default when omitted.                                     |
+| `radius`   | `RadiusSize`                                                            | `'md'`      | Optional corner radius for the accordion container. Attaches `ori-size-radius_<radius>` when set; the bare block bakes in `md` as its default.                                                      |
 
 ### Events & attributes
 

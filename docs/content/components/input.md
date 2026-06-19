@@ -16,12 +16,12 @@ component.
 
 ## Classes
 
-A field is a block wrapper plus paired token utilities — each pair is a base class (`ori-color`) and
-a scale value (`ori-color_primary`), so one class repoints one token. The `ori-color` accent drives
-the focus ring; the idle border is a neutral, theme-aware blend. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A field is a block wrapper with single-class token utilities — one class repoints one token; no
+separate base class is needed. The `ori-color_*` accent drives the focus ring; the idle border is a
+neutral, theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper `<div>`)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-input_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height (friendly modifier). Low-level <code>ori-size-action_*</code> on the field also works"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-input_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height (size sugar on the wrapper)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 ## Variants
 
@@ -42,13 +42,9 @@ border).
 #html
 
 ```html
-<div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_md ori-input_outline">
+<div class="ori-input ori-color_primary ori-font-size_md ori-input_outline">
     <label class="ori-input__label" for="f1">Outline</label>
-    <input
-        id="f1"
-        placeholder="Type here"
-        class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-    />
+    <input id="f1" placeholder="Type here" class="ori-input__field ori-size-radius_md" />
 </div>
 
 <!-- swap the variant: ori-input_outline → ori-input_fill -->
@@ -58,7 +54,7 @@ border).
 
 ## Colors
 
-The `ori-color` pair controls the focus ring (and the danger color inherits for error text).
+The `ori-color_*` class controls the focus ring (and the danger color inherits for error text).
 
 ::example
 :ori-input{label="primary" placeholder="primary" color="primary"}
@@ -76,9 +72,9 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 #html
 
 ```html
-<div class="ori-input ori-color ori-color_danger ori-font-size ori-font-size_md ori-input_outline">
+<div class="ori-input ori-color_danger ori-font-size_md ori-input_outline">
     <label class="ori-input__label" for="f2">danger</label>
-    <input id="f2" class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md" />
+    <input id="f2" class="ori-input__field ori-size-radius_md" />
 </div>
 ```
 
@@ -86,8 +82,8 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 
 ## Sizes
 
-`xs` → `xxl`. The size drives both the field height (`ori-size-action`) and the text scale
-(`ori-font-size`).
+`xs` → `xxl`. The size drives both the field height (`ori-input_*` size sugar on the wrapper) and
+the text scale (`ori-font-size_*`).
 
 ::example
 :ori-input{label="xs" size="xs" placeholder="Extra small"}
@@ -106,14 +102,13 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 #html
 
 ```html
-<!-- size sugar on the wrapper (`ori-input_xl`); the field inherits the height. ori-font-size scales the text -->
-<div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_xl ori-input_outline ori-input_xl">
+<!-- size sugar on the wrapper (ori-input_xl); the field inherits the height via --ori-size-action -->
+<div class="ori-input ori-color_primary ori-font-size_xl ori-input_outline ori-input_xl">
     <label class="ori-input__label" for="f3">xl</label>
-    <input id="f3" class="ori-input__field ori-size-radius ori-size-radius_md" />
+    <input id="f3" class="ori-input__field ori-size-radius_md" />
 </div>
 
-<!-- low-level equivalent: put `ori-size-action_xl` on the field instead of `ori-input_xl` on the wrapper -->
-<!-- and the bare `ori-input` wrapper is already a valid `md` field — no size class needed for the default -->
+<!-- a bare ori-input wrapper is already a valid md field — no size class needed for the default -->
 ```
 
 ::
@@ -139,7 +134,7 @@ From `zero` (square) through the default `md` to `rounded` (pill-shaped field).
 #html
 
 ```html
-<input class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_zero" />
+<input class="ori-input__field ori-size-radius_zero" />
 ```
 
 ::
@@ -161,7 +156,7 @@ adds the real HTML attribute and a visual asterisk (hidden from assistive tech).
 #html
 
 ```html
-<div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_md ori-input_outline">
+<div class="ori-input ori-color_primary ori-font-size_md ori-input_outline">
     <label class="ori-input__label" for="email">
         Email<span class="ori-input__required" aria-hidden="true">*</span>
     </label>
@@ -171,7 +166,7 @@ adds the real HTML attribute and a visual asterisk (hidden from assistive tech).
         required
         placeholder="you@example.com"
         aria-describedby="email-hint"
-        class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+        class="ori-input__field ori-size-radius_md"
     />
     <p id="email-hint" class="ori-input__hint">We never share it.</p>
 </div>
@@ -287,7 +282,7 @@ A real-world sign-in form — label, type, hint, required, and error compose fre
 
 ```html
 <form style="display: flex; flex-direction: column; gap: 1rem; max-width: 24rem">
-    <div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_md ori-input_outline">
+    <div class="ori-input ori-color_primary ori-font-size_md ori-input_outline">
         <label class="ori-input__label" for="si-email">
             Email<span class="ori-input__required" aria-hidden="true">*</span>
         </label>
@@ -296,10 +291,10 @@ A real-world sign-in form — label, type, hint, required, and error compose fre
             type="email"
             required
             placeholder="you@example.com"
-            class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+            class="ori-input__field ori-size-radius_md"
         />
     </div>
-    <div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_md ori-input_outline">
+    <div class="ori-input ori-color_primary ori-font-size_md ori-input_outline">
         <label class="ori-input__label" for="si-pw">
             Password<span class="ori-input__required" aria-hidden="true">*</span>
         </label>
@@ -309,7 +304,7 @@ A real-world sign-in form — label, type, hint, required, and error compose fre
             required
             placeholder="Min 8 characters"
             aria-describedby="si-pw-hint"
-            class="ori-input__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+            class="ori-input__field ori-size-radius_md"
         />
         <p id="si-pw-hint" class="ori-input__hint">Use a mix of letters, numbers and symbols.</p>
     </div>

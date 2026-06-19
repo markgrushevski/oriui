@@ -15,10 +15,11 @@ component.
 
 ## Classes
 
-A progress bar is a block class plus paired token utilities. The Vue props in
+A progress bar is a block class plus single-class token utilities. The Vue props in
 [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-progress","type":"Block","description":"Required base class. Renders full-width."},{"class":"ori-progress_sm · ori-progress_md · ori-progress_lg","type":"Size","description":"Track height: 4 px (sm) · <b>8 px (md)</b> · 12 px (lg)"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — inherits currentcolor when omitted"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-progress__track","type":"Part","description":"Inner track element (tinted background)."},{"class":"ori-progress__indicator","type":"Part","description":"Fill element; width driven by inline style or data-indeterminate animation."},{"class":"data-indeterminate","type":"State","description":"Present on the indicator when no value is known; triggers the sweep animation."}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-progress","type":"Block","description":"Required base class. Renders full-width. Defaults baked in: color primary, radius rounded, height 8 px."},{"class":"ori-progress_sm · ori-progress_md · ori-progress_lg","type":"Size","description":"Track height: 4 px (sm) · 8 px (md, default) · 12 px (lg). ori-progress_* (size sugar)."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — one class repoints the color token; no base class needed."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded (default) — one class repoints the radius token; no base class needed."},{"class":"ori-progress__track","type":"Part","description":"Inner track element (tinted background)."},{"class":"ori-progress__indicator","type":"Part","description":"Fill element; width driven by inline style or data-indeterminate animation."},{"class":"data-indeterminate","type":"State","description":"Present on the indicator when no value is known; triggers the sweep animation."}]'}
 
 ## Determinate
 
@@ -44,7 +45,7 @@ Pass a `value` (0–`max`). The fill width and `aria-valuenow` update together.
 ```html
 <!-- width is set via inline style on the indicator -->
 <div
-    class="ori-progress ori-progress_md ori-color ori-color_primary"
+    class="ori-progress ori-color_primary"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -77,7 +78,7 @@ sweeps continuously and `aria-valuenow` is not set.
 
 ```html
 <div
-    class="ori-progress ori-progress_md ori-color ori-color_primary"
+    class="ori-progress ori-color_primary"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -117,9 +118,9 @@ Every semantic role. `color` defaults to `primary`; set it to any role to recolo
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
 <div
-    class="ori-progress ori-progress_md ori-color ori-color_danger"
+    class="ori-progress ori-color_danger"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -156,7 +157,7 @@ Three track heights — `sm` (4 px), `md` (8 px, default), and `lg` (12 px).
 ```html
 <!-- swap the size modifier: ori-progress_sm / ori-progress_md / ori-progress_lg -->
 <div
-    class="ori-progress ori-progress_lg ori-color ori-color_primary"
+    class="ori-progress ori-progress_lg ori-color_primary"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -192,9 +193,9 @@ From `zero` (square) to `rounded` (pill, default).
 #html
 
 ```html
-<!-- swap the radius pair: ori-size-radius_zero → _sm / _md / _rounded -->
+<!-- swap the radius class: ori-size-radius_zero → _sm / _md / _rounded -->
 <div
-    class="ori-progress ori-progress_lg ori-size-radius ori-size-radius_zero ori-color ori-color_primary"
+    class="ori-progress ori-progress_lg ori-size-radius_zero ori-color_primary"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -227,7 +228,7 @@ component calculates the fill percentage.
 
 ```html
 <div
-    class="ori-progress ori-progress_md ori-color ori-color_success"
+    class="ori-progress ori-color_success"
     role="progressbar"
     aria-label="Step 3 of 10"
     aria-valuemin="0"
@@ -273,7 +274,7 @@ An upload bar with a label and a multi-step wizard indicator.
 <div style="display: flex; flex-direction: column; gap: 0.25rem">
     <span style="font-size: 0.875rem">Uploading… 68 %</span>
     <div
-        class="ori-progress ori-progress_sm ori-color ori-color_primary"
+        class="ori-progress ori-progress_sm ori-color_primary"
         role="progressbar"
         aria-label="Uploading file"
         aria-valuemin="0"
@@ -287,7 +288,7 @@ An upload bar with a label and a multi-step wizard indicator.
 </div>
 
 <div
-    class="ori-progress ori-progress_md ori-color ori-color_secondary"
+    class="ori-progress ori-color_secondary"
     role="progressbar"
     aria-label="Step 2 of 5"
     aria-valuemin="0"
@@ -324,15 +325,15 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop            | Type                   | Default     | Description                                                                                                                                   |
-| --------------- | ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`         | `ThemeColor`           | `'primary'` | Semantic color role for the indicator. (The standalone `.ori-progress` class inherits `currentcolor` when no `ori-color` utility is applied.) |
-| `indeterminate` | `boolean`              | `false`     | Enables the animated sweep; omits `aria-valuenow` from the rendered element.                                                                  |
-| `label`         | `string`               | `'Loading'` | `aria-label` read by assistive technology. Use a descriptive message per-bar.                                                                 |
-| `max`           | `number`               | `100`       | Upper bound. `value` is clamped to this range before the percentage is computed.                                                              |
-| `radius`        | `RadiusSize`           | `'rounded'` | Corner radius of the track and indicator (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                             |
-| `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`      | Track height: `sm` = 4 px, `md` = 8 px, `lg` = 12 px.                                                                                         |
-| `value`         | `number`               | `0`         | Current progress value, clamped to `[0, max]`. Ignored when `indeterminate` is `true`.                                                        |
+| Prop            | Type                   | Default     | Description                                                                                                                                     |
+| --------------- | ---------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`         | `ThemeColor`           | `'primary'` | Semantic color role for the indicator. (The standalone `.ori-progress` class inherits `currentcolor` when no `ori-color_*` utility is applied.) |
+| `indeterminate` | `boolean`              | `false`     | Enables the animated sweep; omits `aria-valuenow` from the rendered element.                                                                    |
+| `label`         | `string`               | `'Loading'` | `aria-label` read by assistive technology. Use a descriptive message per-bar.                                                                   |
+| `max`           | `number`               | `100`       | Upper bound. `value` is clamped to this range before the percentage is computed.                                                                |
+| `radius`        | `RadiusSize`           | `'rounded'` | Corner radius of the track and indicator (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                               |
+| `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`      | Track height: `sm` = 4 px, `md` = 8 px, `lg` = 12 px.                                                                                           |
+| `value`         | `number`               | `0`         | Current progress value, clamped to `[0, max]`. Ignored when `indeterminate` is `true`.                                                          |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
 

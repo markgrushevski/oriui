@@ -15,10 +15,11 @@ component, where `v-model` holds the selected `value`.
 
 ## Classes
 
-The group is a block class plus paired token utilities. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+The group is a block class plus single-class token utilities — one class repoints one token, no base
+class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-radio-group","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales all option labels."},{"class":"ori-radio-group_inline","type":"Layout","description":"Lays options out in a row (flex-wrap) instead of a column."},{"class":"ori-radio-group__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-radio-group__options","type":"Part","description":"Options wrapper; flex column (or row when _inline)."},{"class":"ori-radio","type":"Part","description":"Wrapping <label> for each option. Add ori-radio_disabled when disabled."},{"class":"ori-radio__input · ori-radio__circle · ori-radio__label","type":"Part","description":"Hidden native input / styled circle indicator / visible label text."},{"class":"disabled · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-radio-group","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales all option labels."},{"class":"ori-radio-group_inline","type":"Layout","description":"Lays options out in a row (flex-wrap) instead of a column."},{"class":"ori-radio-group__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-radio-group__options","type":"Part","description":"Options wrapper; flex column (or row when _inline)."},{"class":"ori-radio","type":"Part","description":"Wrapping <label> for each option. Add ori-radio_disabled when disabled."},{"class":"ori-radio__input · ori-radio__circle · ori-radio__label","type":"Part","description":"Hidden native input / styled circle indicator / visible label text."},{"class":"disabled · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
 
 ## Anatomy
 
@@ -54,11 +55,7 @@ div.ori-radio-group  [role="radiogroup", aria-labelledby]
 #html
 
 ```html
-<div
-    class="ori-radio-group ori-color ori-color_primary ori-font-size ori-font-size_md"
-    role="radiogroup"
-    aria-labelledby="plan-label"
->
+<div class="ori-radio-group ori-color_primary ori-font-size_md" role="radiogroup" aria-labelledby="plan-label">
     <div id="plan-label" class="ori-radio-group__label">Choose a plan</div>
     <div class="ori-radio-group__options">
         <label class="ori-radio">
@@ -93,8 +90,8 @@ Every semantic role. The accent color is shared by the checked circle and the fo
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _success / _danger / _warn / _info -->
-<div class="ori-radio-group ori-color ori-color_success ori-font-size ori-font-size_md" role="radiogroup">…</div>
+<!-- swap the color: ori-color_primary → _success / _danger / _warn / _info -->
+<div class="ori-radio-group ori-color_success ori-font-size_md" role="radiogroup">…</div>
 ```
 
 ::
@@ -121,8 +118,8 @@ via `em` units.
 #html
 
 ```html
-<!-- swap the size pair: ori-font-size_md → _xs / _sm / _lg / _xl / _xxl -->
-<div class="ori-radio-group ori-color ori-color_primary ori-font-size ori-font-size_lg" role="radiogroup">…</div>
+<!-- swap the size: ori-font-size_md → _xs / _sm / _lg / _xl / _xxl -->
+<div class="ori-radio-group ori-color_primary ori-font-size_lg" role="radiogroup">…</div>
 ```
 
 ::
@@ -145,7 +142,7 @@ via `em` units.
 ```html
 <!-- add ori-radio-group_inline to the container -->
 <div
-    class="ori-radio-group ori-radio-group_inline ori-color ori-color_primary ori-font-size ori-font-size_md"
+    class="ori-radio-group ori-radio-group_inline ori-color_primary ori-font-size_md"
     role="radiogroup"
     aria-labelledby="notify-label"
 >
@@ -176,7 +173,7 @@ Pass `disabled` to lock all options at once.
 #html
 
 ```html
-<div class="ori-radio-group ori-color ori-color_primary ori-font-size ori-font-size_md" role="radiogroup">
+<div class="ori-radio-group ori-color_primary ori-font-size_md" role="radiogroup">
     <div class="ori-radio-group__label">Plan (locked)</div>
     <div class="ori-radio-group__options">
         <!-- each label gets ori-radio_disabled; each input gets the disabled attribute -->
@@ -242,7 +239,7 @@ Set `disabled: true` on individual items in the `options` array to lock only tho
 
 ```html
 <div
-    class="ori-radio-group ori-color ori-color_primary ori-font-size ori-font-size_md"
+    class="ori-radio-group ori-color_primary ori-font-size_md"
     role="radiogroup"
     aria-labelledby="contact-label"
     aria-required="true"
@@ -287,7 +284,7 @@ Color, size, inline layout, and per-option disabled in a compact panel.
 
 ```html
 <div
-    class="ori-radio-group ori-radio-group_inline ori-color ori-color_secondary ori-font-size ori-font-size_sm"
+    class="ori-radio-group ori-radio-group_inline ori-color_secondary ori-font-size_sm"
     role="radiogroup"
     aria-labelledby="theme-label"
 >

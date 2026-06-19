@@ -13,16 +13,17 @@ component.
 
 ## Classes
 
-A badge is a block class plus paired token utilities — each pair is a base class (`ori-variant`) and
-a scale value (`ori-variant_fill`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these. Two layout modifiers (`ori-badge_dot`,
-`ori-badge_floating`) and the wrapper class (`ori-badge-anchor`) complete the floating pattern.
+A badge is a block class plus single-class token utilities — one class repoints one token; no base
+class is needed. The Vue props in [Framework API](#framework-api) map 1:1 to these. Two layout
+modifiers (`ori-badge_dot`, `ori-badge_floating`) and the wrapper class (`ori-badge-anchor`)
+complete the floating pattern.
 
-:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: fill variant, primary color, rounded radius."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
 
 ## Variants
 
-Five visual styles, driven by the `ori-variant` token pair.
+Five visual styles, driven by the `ori-variant_*` single-class token.
 
 ::example
 :ori-badge{content="Fill" variant="fill"}
@@ -44,21 +45,16 @@ Five visual styles, driven by the `ori-variant` token pair.
 #html
 
 ```html
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_primary ori-size-radius ori-size-radius_rounded"
-    >Fill</span
->
-<!-- swap the variant pair: ori-variant_fill → _tonal / _outline / _text / _plain -->
-<span
-    class="ori-badge ori-variant ori-variant_tonal ori-color ori-color_primary ori-size-radius ori-size-radius_rounded"
-    >Tonal</span
->
+<span class="ori-badge">Fill</span>
+<!-- swap the variant: ori-variant_tonal / _outline / _text / _plain -->
+<span class="ori-badge ori-variant_tonal">Tonal</span>
 ```
 
 ::
 
 ## Colors
 
-All semantic roles. The badge inherits the shared `ori-color` token, so variant × color compose freely.
+All semantic roles. The badge inherits the shared `ori-color_*` token, so variant × color compose freely.
 
 ::example
 :ori-badge{content="primary" color="primary"}
@@ -80,9 +76,7 @@ All semantic roles. The badge inherits the shared `ori-color` token, so variant 
 #html
 
 ```html
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-    >danger</span
->
+<span class="ori-badge ori-color_danger">danger</span>
 ```
 
 ::
@@ -105,14 +99,8 @@ Variant × color compose freely — e.g. a tonal success badge or an outline dan
 #html
 
 ```html
-<span
-    class="ori-badge ori-variant ori-variant_tonal ori-color ori-color_success ori-size-radius ori-size-radius_rounded"
-    >Approved</span
->
-<span
-    class="ori-badge ori-variant ori-variant_outline ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-    >Error</span
->
+<span class="ori-badge ori-variant_tonal ori-color_success">Approved</span>
+<span class="ori-badge ori-variant_outline ori-color_danger">Error</span>
 ```
 
 ::
@@ -138,12 +126,7 @@ From `zero` (square) to the default `rounded` (pill).
 #html
 
 ```html
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_primary ori-size-radius ori-size-radius_zero"
-    >zero</span
->
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_primary ori-size-radius ori-size-radius_rounded"
-    >rounded</span
->
+<span class="ori-badge ori-size-radius_zero">zero</span> <span class="ori-badge">rounded</span>
 ```
 
 ::
@@ -171,13 +154,9 @@ as `{max}+`.
 #html
 
 ```html
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_primary ori-size-radius ori-size-radius_rounded"
-    >5</span
->
+<span class="ori-badge">5</span>
 <!-- cap manually in your template when not using Vue -->
-<span class="ori-badge ori-variant ori-variant_fill ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-    >99+</span
->
+<span class="ori-badge ori-color_danger">99+</span>
 ```
 
 ::
@@ -205,10 +184,7 @@ as `{max}+`.
 
 ```html
 <!-- dot is always aria-hidden unless a label is provided -->
-<span
-    class="ori-badge ori-badge_dot ori-variant ori-variant_fill ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-    aria-hidden="true"
-></span>
+<span class="ori-badge ori-badge_dot ori-color_danger" aria-hidden="true"></span>
 ```
 
 ::
@@ -228,7 +204,7 @@ nothing to position against and is ignored). In HTML, wrap the anchor in `ori-ba
 ```vue
 <!-- floating over a button -->
 <OriBadge :content="3" floating color="danger">
-    <button class="ori-button ori-variant ori-variant_tonal ori-color ori-color_primary ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded">
+    <button class="ori-button ori-variant_tonal ori-color_primary ori-size-radius_rounded">
         Inbox
     </button>
 </OriBadge>
@@ -244,16 +220,8 @@ nothing to position against and is ignored). In HTML, wrap the anchor in `ori-ba
 ```html
 <!-- wrap anchor content in ori-badge-anchor, add ori-badge_floating to the badge -->
 <span class="ori-badge-anchor">
-    <button
-        class="ori-button ori-variant ori-variant_tonal ori-color ori-color_primary ori-size-action ori-size-action_md ori-size-radius ori-size-radius_rounded"
-    >
-        Inbox
-    </button>
-    <span
-        class="ori-badge ori-badge_floating ori-variant ori-variant_fill ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-        aria-label="3 unread"
-        >3</span
-    >
+    <button class="ori-button ori-variant_tonal ori-color_primary ori-size-radius_rounded">Inbox</button>
+    <span class="ori-badge ori-badge_floating ori-color_danger" aria-label="3 unread">3</span>
 </span>
 ```
 
@@ -299,29 +267,19 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
 <!-- notification bell -->
 <span class="ori-badge-anchor">
     <button class="ori-button …" aria-label="Notifications"><!-- bell icon --></button>
-    <span
-        class="ori-badge ori-badge_floating ori-variant ori-variant_fill ori-color ori-color_danger ori-size-radius ori-size-radius_rounded"
-        aria-label="12 unread notifications"
-        >12</span
-    >
+    <span class="ori-badge ori-badge_floating ori-color_danger" aria-label="12 unread notifications">12</span>
 </span>
 
 <!-- status dot on avatar -->
 <span class="ori-badge-anchor">
     <div class="ori-avatar …"><!-- avatar --></div>
-    <span
-        class="ori-badge ori-badge_dot ori-badge_floating ori-variant ori-variant_fill ori-color ori-color_success ori-size-radius ori-size-radius_rounded"
-        aria-label="Online"
-    ></span>
+    <span class="ori-badge ori-badge_dot ori-badge_floating ori-color_success" aria-label="Online"></span>
 </span>
 
 <!-- inline tab counter -->
 <span style="display: inline-flex; align-items: center; gap: 0.5rem">
     Messages
-    <span
-        class="ori-badge ori-variant ori-variant_tonal ori-color ori-color_primary ori-size-radius ori-size-radius_rounded"
-        >5</span
-    >
+    <span class="ori-badge ori-variant_tonal">5</span>
 </span>
 ```
 

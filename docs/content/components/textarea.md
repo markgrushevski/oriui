@@ -16,12 +16,12 @@ component.
 
 ## Classes
 
-A textarea is a block wrapper plus paired token utilities — each pair is a base class (`ori-color`)
-and a scale value (`ori-color_primary`), so one class repoints one token. The `ori-color` accent
-drives the focus ring; the idle border is a neutral, theme-aware blend. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A textarea is a block wrapper plus single-class token utilities — one class repoints one token, no
+base class needed. The `ori-color_*` accent drives the focus ring; the idle border is a neutral,
+theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height via --ori-size-action)"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 ## Variants
 
@@ -42,24 +42,24 @@ border).
 #html
 
 ```html
-<div class="ori-textarea ori-color ori-color_primary ori-font-size ori-font-size_md ori-textarea_outline">
+<!-- default: bare ori-textarea is already outline + primary + md -->
+<div class="ori-textarea ori-textarea_outline">
     <label class="ori-textarea__label" for="t1">Outline</label>
-    <textarea
-        id="t1"
-        rows="3"
-        placeholder="Type here..."
-        class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-    ></textarea>
+    <textarea id="t1" rows="3" placeholder="Type here..." class="ori-textarea__field"></textarea>
 </div>
 
 <!-- swap the variant: ori-textarea_outline → ori-textarea_fill -->
+<div class="ori-textarea ori-textarea_fill">
+    <label class="ori-textarea__label" for="t1b">Fill</label>
+    <textarea id="t1b" rows="3" placeholder="Type here..." class="ori-textarea__field"></textarea>
+</div>
 ```
 
 ::
 
 ## Colors
 
-The `ori-color` pair controls the focus ring (and the danger color inherits for error text).
+The `ori-color_*` class controls the focus ring (and the danger color inherits for error text).
 
 ::example
 :ori-textarea{label="primary" placeholder="primary" color="primary"}
@@ -77,13 +77,9 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 #html
 
 ```html
-<div class="ori-textarea ori-color ori-color_danger ori-font-size ori-font-size_md ori-textarea_outline">
+<div class="ori-textarea ori-color_danger">
     <label class="ori-textarea__label" for="t2">danger</label>
-    <textarea
-        id="t2"
-        rows="3"
-        class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-    ></textarea>
+    <textarea id="t2" rows="3" class="ori-textarea__field"></textarea>
 </div>
 ```
 
@@ -91,8 +87,8 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 
 ## Sizes
 
-`xs` → `xxl`. The size drives both the field min-height (`ori-size-action`) and the text scale
-(`ori-font-size`).
+`xs` → `xxl`. The size drives both the field min-height (via `ori-textarea_*` size sugar on the
+wrapper) and the text scale (`ori-font-size_*`).
 
 ::example
 :ori-textarea{label="xs" size="xs" placeholder="Extra small"}
@@ -111,14 +107,10 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 #html
 
 ```html
-<!-- ori-size-action drives the min-height; ori-font-size scales the text -->
-<div class="ori-textarea ori-color ori-color_primary ori-font-size ori-font-size_xl ori-textarea_outline">
+<!-- ori-textarea_xl sets min-height on the wrapper; ori-font-size_xl scales the text -->
+<div class="ori-textarea ori-textarea_xl ori-font-size_xl">
     <label class="ori-textarea__label" for="t3">xl</label>
-    <textarea
-        id="t3"
-        rows="3"
-        class="ori-textarea__field ori-size-action ori-size-action_xl ori-size-radius ori-size-radius_md"
-    ></textarea>
+    <textarea id="t3" rows="3" class="ori-textarea__field"></textarea>
 </div>
 ```
 
@@ -145,9 +137,7 @@ From `zero` (square) through the default `md` to `rounded` (heavily rounded corn
 #html
 
 ```html
-<textarea
-    class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_zero"
-></textarea>
+<textarea class="ori-textarea__field ori-size-radius_zero"></textarea>
 ```
 
 ::
@@ -194,7 +184,7 @@ adds the real HTML attribute and a visual asterisk (hidden from assistive tech).
 #html
 
 ```html
-<div class="ori-textarea ori-color ori-color_primary ori-font-size ori-font-size_md ori-textarea_outline">
+<div class="ori-textarea">
     <label class="ori-textarea__label" for="bio">
         Bio<span class="ori-textarea__required" aria-hidden="true">*</span>
     </label>
@@ -204,7 +194,7 @@ adds the real HTML attribute and a visual asterisk (hidden from assistive tech).
         required
         placeholder="Tell us about yourself..."
         aria-describedby="bio-hint"
-        class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+        class="ori-textarea__field"
     ></textarea>
     <p id="bio-hint" class="ori-textarea__hint">Markdown is supported.</p>
 </div>
@@ -297,9 +287,7 @@ A real-world support form — label, required, hint, error, and fluid compose fr
 
 ```html
 <form style="display: flex; flex-direction: column; gap: 1rem; max-width: 32rem">
-    <div
-        class="ori-textarea ori-textarea_fluid ori-color ori-color_primary ori-font-size ori-font-size_md ori-textarea_outline"
-    >
+    <div class="ori-textarea ori-textarea_fluid">
         <label class="ori-textarea__label" for="sub">
             Subject<span class="ori-textarea__required" aria-hidden="true">*</span>
         </label>
@@ -308,12 +296,10 @@ A real-world support form — label, required, hint, error, and fluid compose fr
             rows="3"
             required
             placeholder="Briefly describe the issue"
-            class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+            class="ori-textarea__field"
         ></textarea>
     </div>
-    <div
-        class="ori-textarea ori-textarea_fluid ori-color ori-color_primary ori-font-size ori-font-size_md ori-textarea_outline"
-    >
+    <div class="ori-textarea ori-textarea_fluid">
         <label class="ori-textarea__label" for="msg">
             Message<span class="ori-textarea__required" aria-hidden="true">*</span>
         </label>
@@ -323,7 +309,7 @@ A real-world support form — label, required, hint, error, and fluid compose fr
             required
             placeholder="Provide as much detail as you can..."
             aria-describedby="msg-hint"
-            class="ori-textarea__field ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
+            class="ori-textarea__field"
         ></textarea>
         <p id="msg-hint" class="ori-textarea__hint">Attachments can be added on the next step.</p>
     </div>
