@@ -2,7 +2,7 @@
 // One top-level nav section (Guide / Components / Composables …), collapsible via the headless
 // Disclosure primitive. A section either lists links directly, or holds nested category groups
 // (each its own collapsible SidebarGroup) → links.
-import { useDisclosure } from '@oriui/vue';
+import { useDisclosure } from '@oriui/headless/vue';
 
 interface NavLink {
     label: string;

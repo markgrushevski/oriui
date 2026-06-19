@@ -9,13 +9,13 @@ the collapsible sidebar groups on this very site. It owns the open state, the WA
 toggle handler; **you own the markup and the styles**.
 
 This is the **Vue** binding of the headless layer; the framework-agnostic contract lives in
-[@oriui/core](/headless/core). Behaviour is swappable per primitive through the `OriHeadless` adapter,
+[@oriui/headless](/headless/core). Behaviour is swappable per primitive through the `OriHeadless` adapter,
 and a zero-dependency native engine ships as the default — so it works with no setup.
 
 ## Import
 
 ```ts
-import { useDisclosure } from '@oriui/vue';
+import { useDisclosure } from '@oriui/headless/vue';
 ```
 
 ## Options
@@ -49,7 +49,7 @@ look:
 
 ```vue
 <script setup lang="ts">
-import { useDisclosure } from '@oriui/vue';
+import { useDisclosure } from '@oriui/headless/vue';
 
 const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen: false }));
 </script>
@@ -63,11 +63,11 @@ const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen:
 ## Adapter
 
 The behaviour resolves through the `OriHeadless` contract. With nothing wired, `useDisclosure` falls
-back to the **native** `@oriui/core` engine — zero dependencies, no setup. To swap in a different
+back to the **native** `@oriui/headless` engine — zero dependencies, no setup. To swap in a different
 engine (Zag, or your own), provide a `disclosure` adapter once at the app root:
 
 ```ts
-import { OriHeadless } from '@oriui/vue';
+import { OriHeadless } from '@oriui/headless/vue';
 import { myDisclosureAdapter } from './headless/my-disclosure';
 
 app.use(OriHeadless, { disclosure: myDisclosureAdapter });
@@ -100,6 +100,6 @@ them:
 
 ## See also
 
-- [@oriui/core](/headless/core) — the framework-agnostic contract and the native engine behind this binding.
+- [@oriui/headless](/headless/core) — the framework-agnostic contract and the native engine behind this binding.
 - [useDialog](/headless/use-dialog) — the modal counterpart; the hard-behaviour case delegated to an adapter.
 - [CSS layer](/guides/css) — standalone `.ori-*` classes for styling the markup you bind these props to.

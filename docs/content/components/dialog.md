@@ -270,7 +270,7 @@ component itself.
 
 ### Headless & adapter
 
-`OriDialog` calls [`useDialog()`](/headless/use-dialog) from `@oriui/vue`, which defaults to the native
+`OriDialog` calls [`useDialog()`](/headless/use-dialog) from `@oriui/headless/vue`, which defaults to the native
 `<dialog>` engine — the focus trap, scroll lock, `Esc` handling, `::backdrop` and focus-return are the
 platform's job, so **no adapter and no extra dependency are required**.
 
@@ -280,7 +280,7 @@ adapter for a genuinely hard widget) only if a project needs one — the markup 
 ```ts
 // main.ts — optional; the native engine is used when nothing is registered.
 import { createApp } from 'vue';
-import { OriHeadless } from '@oriui/vue';
+import { OriHeadless } from '@oriui/headless/vue';
 import { myDialog } from './headless/my-dialog'; // optional custom adapter
 
 const app = createApp(App);

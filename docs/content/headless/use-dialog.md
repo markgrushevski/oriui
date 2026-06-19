@@ -9,7 +9,7 @@ A headless **modal dialog** primitive built on the native `<dialog>` element —
 `showModal()`. It owns the open state and the ARIA wiring as ready-to-bind prop bags; **you own the
 markup and styles** (you render the `<dialog>` and drive `showModal()` / `close()` from `open`).
 
-This is the **Vue** binding; the engine-agnostic contract lives in [`@oriui/core`](/headless/core), and the
+This is the **Vue** binding; the engine-agnostic contract lives in [`@oriui/headless`](/headless/core), and the
 styled [`OriDialog`](/components/dialog) is built on it. Like [`useDisclosure`](/headless/use-disclosure),
 a dialog now has a **zero-dependency native default** — the browser's `<dialog>` supplies the focus trap,
 `::backdrop`, top-layer and focus-return that used to require a heavyweight engine. No adapter is required.
@@ -17,7 +17,7 @@ a dialog now has a **zero-dependency native default** — the browser's `<dialog
 ## Import
 
 ```ts
-import { useDialog } from '@oriui/vue';
+import { useDialog } from '@oriui/headless/vue';
 ```
 
 No adapter needs to be registered — `useDialog` resolves the native engine by default. Swapping a custom
@@ -59,7 +59,7 @@ Render a real `<dialog>`, bind `dialogProps`, and drive `showModal()` / `close()
 ```vue
 <script setup lang="ts">
 import { useTemplateRef, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/vue';
+import { useDialog } from '@oriui/headless/vue';
 
 const dlg = useDialog(() => ({ modal: true }));
 
@@ -97,7 +97,7 @@ example a Zag-backed adapter for a genuinely hard widget), without touching your
 ```ts
 // main.ts
 import { createApp } from 'vue';
-import { OriHeadless } from '@oriui/vue';
+import { OriHeadless } from '@oriui/headless/vue';
 import { myDialog } from './headless/my-dialog'; // optional custom adapter
 
 const app = createApp(App);
@@ -130,7 +130,7 @@ The native `<dialog>` carries the WAI-ARIA dialog contract; the prop bags comple
 
 ## See also
 
-- [@oriui/core](/headless/core) — the framework-agnostic contract and the native engine.
+- [@oriui/headless](/headless/core) — the framework-agnostic contract and the native engine.
 - [useDisclosure](/headless/use-disclosure) — the sibling show / hide primitive (also native by default).
 - [OriDialog](/components/dialog) — the styled component built on this primitive.
 - [CSS layer](/guides/css) — the standalone `.ori-*` classes for the dialog parts.

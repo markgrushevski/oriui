@@ -38,7 +38,7 @@ development.
   mouse click.
 - Hover styling is wrapped in `@media (hover: hover)`, so there is **no sticky hover** on touch.
 - The headless layer owns the hard keyboard behavior — `useDialog`'s focus trap, `Escape` to close,
-  and focus return to the trigger. See [@oriui/core](/headless/core).
+  and focus return to the trigger. See [@oriui/headless](/headless/core).
 
 ## Touch targets
 

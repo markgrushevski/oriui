@@ -3,7 +3,7 @@
 // useDialog() contract directly (a second, richer consumer than OriDialog) — so the focus trap,
 // scroll lock, Escape, and aria-modal all come from the native <dialog> the contract defaults to.
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/vue';
+import { useDialog } from '@oriui/headless/vue';
 
 interface Doc {
     path: string;
