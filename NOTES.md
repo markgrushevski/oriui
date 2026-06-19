@@ -196,6 +196,11 @@ stylelint to`src/**/*.{vue,css}`, so the component block styles under `packages/
 - `useId()` (Vue 3.5) for SSR-safe ids; pass props referenced in `<script>` through the reactive
   destructure (template-only props can stay undestructured). Gate any Teleport on a `mounted` ref —
   the library can't use Nuxt `<ClientOnly>`.
+- **A native form control wrapped in a `<div>` needs `defineOptions({ inheritAttrs: false })` +
+  `v-bind="$attrs"` on the inner control** — otherwise `aria-label` / `aria-describedby` / `name` / `id`
+  land on the **wrapper**, not the control, so a label-less field has no accessible name (axe `label`
+  violation, no escape hatch) and `name` doesn't submit. Input / Checkbox / Switch / Select / Textarea /
+  Slider all do this — the native `role`/value live on the inner element, so the name must too.
 - **A pure-CSS tooltip can't make `aria-describedby` announce on its own.** `aria-describedby` is read
   when the element _bearing_ it is focused; OriTooltip puts it on the non-focusable `.ori-tooltip__trigger`
   wrapper (which only guarantees the id resolves) and exposes `bubbleId` on the **default slot scope** so

@@ -24,7 +24,8 @@ import {
     OriSkeleton,
     OriKbd,
     OriToast,
-    OriToaster
+    OriToaster,
+    OriSlider
 } from '@oriui/ui';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
@@ -55,7 +56,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         OriSkeleton,
         OriKbd,
         OriToast,
-        OriToaster
+        OriToaster,
+        OriSlider
     };
 
     for (const [name, component] of Object.entries(components)) {

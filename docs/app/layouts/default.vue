@@ -54,6 +54,7 @@ const sections = [
                     { label: 'Input', to: '/components/input' },
                     { label: 'Radio', to: '/components/radio' },
                     { label: 'Select', to: '/components/select' },
+                    { label: 'Slider', to: '/components/slider' },
                     { label: 'Switch', to: '/components/switch' },
                     { label: 'Textarea', to: '/components/textarea' }
                 ]
