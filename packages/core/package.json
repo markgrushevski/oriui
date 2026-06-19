@@ -1,6 +1,6 @@
 {
     "name": "@oriui/core",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "description": "Framework-agnostic headless core for oriUI — tiny state machines + prop-getters",
     "license": "MIT",
     "type": "module",
