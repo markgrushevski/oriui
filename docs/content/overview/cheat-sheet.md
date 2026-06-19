@@ -85,6 +85,7 @@ the page for the complete set.
 | [Link](/components/link)           | `<OriLink>`       | `as` `color` `external` `hover` `href` (inline prose link; underline-on-hover)                    |
 | [Skeleton](/components/skeleton)   | `<OriSkeleton>`   | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                 |
 | [Kbd](/components/kbd)             | `<OriKbd>`        | `as` `text` (default slot = key) — keyboard-key chip                                              |
+| [Toast](/components/toast)         | `<OriToaster>`    | imperative `useToast()` push API + `<OriToaster position>` — transient notifications              |
 
 ## Theming & tokens
 

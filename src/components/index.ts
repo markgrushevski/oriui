@@ -23,3 +23,4 @@ export * from './join';
 export * from './link';
 export * from './skeleton';
 export * from './kbd';
+export * from './toast';
