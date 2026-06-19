@@ -29,7 +29,10 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-a {
+/* Prose / nav links take the brand color. Exclude oriUI components rendered as links (e.g. an
+   OriButton with `as=NuxtLink`): their block styles live in `@layer ori.components`, so this
+   unlayered `a` rule would otherwise override their own color (a button-as-link is not a "link"). */
+a:not(.ori-button) {
     color: var(--ori-color-primary);
     text-decoration: none;
 }
