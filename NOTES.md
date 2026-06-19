@@ -120,11 +120,10 @@ practical gotchas go here.
 - `.lintstagedrc.json` runs **stylelint → eslint → prettier (last)** so Prettier is authoritative.
   Don't hand-fight CSS property order — `stylelint --fix` applies the SMACSS order, then Prettier
   formats whitespace. Locally, run `stylelint --fix` then `prettier --write` (prettier last).
-- **`packages/css/**`is OUTSIDE the stylelint gate.** Both`lint:ci`and`.lintstagedrc.json`scope
-stylelint to`src/**/*.{vue,css}`, so the component block styles under `packages/css/src/components/*.css`— the actual`@oriui/css` product — are linted by **nobody\*\* (only Prettier touches them, and it doesn't
-  enforce SMACSS order). A new component CSS can ship with out-of-order properties while CI stays green.
-  Until the glob is widened, run `npx stylelint --fix packages/css/src/components/<name>.css` by hand for
-  each new component CSS file.
+- The stylelint gate now covers the CSS layer. `lint:ci`, `lint:stylelint`, and `.lintstagedrc.json`
+  all lint `packages/css/src/**/*.css` (the published `@oriui/css` product) alongside `src/**`, so a
+  component block style that breaks SMACSS order (or any stylelint rule) fails CI like any `src/` file.
+  (Was `src/**`-only until widened — `toast.css` shipped with 6 unflagged order errors before the fix.)
 - `currentcolor` must be **lowercase** (stylelint `value-keyword-case`).
 - stylelint `selector-not-notation` enforces the **complex** form: chained `:not(:disabled):not([aria-selected])`
   fails — combine into one `:not(:disabled, [aria-selected])`.

@@ -7,6 +7,8 @@
 
         min-height: 1em;
 
+        animation: ori-skeleton-sweep 1.5s ease-in-out infinite;
+
         border-radius: var(--ori-size-radius);
 
         background-color: color-mix(in srgb, currentcolor 12%, transparent);
@@ -18,8 +20,6 @@
         );
         background-repeat: no-repeat;
         background-size: 200% 100%;
-
-        animation: ori-skeleton-sweep 1.5s ease-in-out infinite;
     }
 
     @keyframes ori-skeleton-sweep {

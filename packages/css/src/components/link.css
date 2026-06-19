@@ -1,18 +1,17 @@
 @layer ori.components {
     .ori-link {
+        transition:
+            opacity 0.15s ease-out,
+            color 0.15s ease-out;
         /* Reads the color alias (currentcolor by default at :root); `.ori-color_*` repoints it to a
            role color. Underlined by default — the affordance survives without color. */
         color: var(--ori-color);
 
         text-decoration-line: underline;
-        text-decoration-thickness: from-font;
-        text-underline-offset: 0.2em;
 
         cursor: pointer;
-
-        transition:
-            opacity 0.15s ease-out,
-            color 0.15s ease-out;
+        text-decoration-thickness: from-font;
+        text-underline-offset: 0.2em;
     }
 
     @media (hover: hover) {
