@@ -221,6 +221,10 @@ practical gotchas go here.
 
 - Tests live in `tests/` (out of `src`); `vitest.config.ts` aliases `@oriui/*` to package **source**,
   so the suite needs no `build:packages` first.
+- **Test color lists must use real `ThemeColor` roles** — the role is `warn` (not `warning`) and there
+  is **no `neutral`** role (it's only the internal `--ori-neutral-*` ramp). An invalid member fails
+  `test:types` (not assignable to `ThemeColor`) and asserts a dead class the CSS doesn't back. Mirror
+  the docs' color row: `primary · secondary · success · warn · danger · info` (+ `surface` / `background`).
 - The lib build keeps `@oriui/*` **external**; root `build` runs `build:packages` (tsdown) first so
   `vue-tsc` can resolve the package `.d.ts`.
 - OriDialog tests run on the **native `<dialog>` default** (no adapter), plus one test that swaps in a

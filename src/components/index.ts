@@ -20,3 +20,6 @@ export * from './tabs';
 export * from './divider';
 export * from './stack';
 export * from './join';
+export * from './link';
+export * from './skeleton';
+export * from './kbd';

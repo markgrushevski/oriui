@@ -66,6 +66,7 @@ const sections = [
                     { label: 'Badge', to: '/components/badge' },
                     { label: 'Card', to: '/components/card' },
                     { label: 'Icon', to: '/components/icon' },
+                    { label: 'Kbd', to: '/components/kbd' },
                     { label: 'Tag', to: '/components/tag' }
                 ]
             },
@@ -82,13 +83,17 @@ const sections = [
                 links: [
                     { label: 'Alert', to: '/components/alert' },
                     { label: 'Progress', to: '/components/progress' },
+                    { label: 'Skeleton', to: '/components/skeleton' },
                     { label: 'Spinner', to: '/components/spinner' },
                     { label: 'Tooltip', to: '/components/tooltip' }
                 ]
             },
             {
                 title: 'Navigation',
-                links: [{ label: 'Tabs', to: '/components/tabs' }]
+                links: [
+                    { label: 'Link', to: '/components/link' },
+                    { label: 'Tabs', to: '/components/tabs' }
+                ]
             }
         ]
     },
