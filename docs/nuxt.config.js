@@ -6,7 +6,7 @@ const resolve = (path) => fileURLToPath(new URL(path, import.meta.url));
 // (a real package dep arrives with the @oriui/* monorepo split). The whole docs shell uses
 // --ori-color-* tokens, so the nav theme/skin toggles reskin the entire site.
 export default defineNuxtConfig({
-    modules: ['@nuxt/content'],
+    modules: ['@nuxt/content', 'nuxt-llms'],
     devtools: { enabled: false },
     devServer: { port: 5173 },
 
@@ -16,6 +16,76 @@ export default defineNuxtConfig({
     // "No Output Directory named 'public' found". Pin the plain `static` preset so `nuxi generate`
     // always writes to docs/.output/public, where vercel.json serves it from.
     nitro: { preset: 'static' },
+
+    // Machine-readable docs for AI consumers: /llms.txt (a curated index) and /llms-full.txt (every
+    // page concatenated, populated by the server/plugins/llms-full hook). `domain` is used for the
+    // absolute links in llms.txt — update it to the real deploy URL when the docs are hosted.
+    llms: {
+        domain: 'https://oriui.vercel.app',
+        title: 'oriUI',
+        description:
+            'A layered Vue 3 UI library: styled components (@oriui/ui), headless composables (@oriui/vue), and a standalone, framework-free CSS layer (@oriui/css) woven around shared design tokens. Single-class token utilities, zero-runtime theming.',
+        full: {
+            title: 'oriUI — full documentation',
+            description: 'Every oriUI documentation page concatenated, for single-fetch consumption.'
+        },
+        sections: [
+            {
+                title: 'Overview',
+                description: 'What oriUI is, how to install it, get started, and the accessibility contract.',
+                links: [
+                    { title: 'Introduction', href: '/overview/introduction' },
+                    { title: 'Installation', href: '/overview/installation' },
+                    { title: 'Get started', href: '/overview/get-started' },
+                    { title: 'Accessibility', href: '/overview/accessibility' }
+                ]
+            },
+            {
+                title: 'Guides',
+                description: 'The standalone CSS layer, design tokens, theming, and customization.',
+                links: [
+                    { title: 'Using the CSS layer', href: '/guides/css' },
+                    { title: 'Design tokens', href: '/guides/design-tokens' },
+                    { title: 'Theming', href: '/guides/theming' },
+                    { title: 'Customization', href: '/guides/customization' }
+                ]
+            },
+            {
+                title: 'Components',
+                description: 'The 19 styled components — each page has the class table, props, slots, and a11y.',
+                links: [
+                    { title: 'Accordion', href: '/components/accordion' },
+                    { title: 'Alert', href: '/components/alert' },
+                    { title: 'Avatar', href: '/components/avatar' },
+                    { title: 'Badge', href: '/components/badge' },
+                    { title: 'Button', href: '/components/button' },
+                    { title: 'Card', href: '/components/card' },
+                    { title: 'Checkbox', href: '/components/checkbox' },
+                    { title: 'Dialog', href: '/components/dialog' },
+                    { title: 'Icon', href: '/components/icon' },
+                    { title: 'Input', href: '/components/input' },
+                    { title: 'Progress', href: '/components/progress' },
+                    { title: 'Radio', href: '/components/radio' },
+                    { title: 'Select', href: '/components/select' },
+                    { title: 'Spinner', href: '/components/spinner' },
+                    { title: 'Switch', href: '/components/switch' },
+                    { title: 'Tabs', href: '/components/tabs' },
+                    { title: 'Tag', href: '/components/tag' },
+                    { title: 'Textarea', href: '/components/textarea' },
+                    { title: 'Tooltip', href: '/components/tooltip' }
+                ]
+            },
+            {
+                title: 'Headless',
+                description: 'The framework-agnostic behavior contract and the Vue composables.',
+                links: [
+                    { title: 'Core (@oriui/core)', href: '/headless/core' },
+                    { title: 'useDisclosure', href: '/headless/use-disclosure' },
+                    { title: 'useDialog', href: '/headless/use-dialog' }
+                ]
+            }
+        ]
+    },
 
     alias: {
         '@oriui/ui': resolve('../src/index.ts'),
