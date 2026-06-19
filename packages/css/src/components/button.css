@@ -1,7 +1,5 @@
 @layer ori.components {
     .ori-button {
-        --ori-font-size-step_inc: 4px;
-
         display: inline-flex;
         flex-direction: row;
         flex-shrink: 0;

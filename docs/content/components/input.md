@@ -21,7 +21,7 @@ a scale value (`ori-color_primary`), so one class repoints one token. The `ori-c
 the focus ring; the idle border is a neutral, theme-aware blend. The Vue props in
 [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper `<div>`)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (field height)"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper `<div>`)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-input_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height (friendly modifier). Low-level <code>ori-size-action_*</code> on the field also works"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 ## Variants
 
@@ -106,11 +106,14 @@ The `ori-color` pair controls the focus ring (and the danger color inherits for 
 #html
 
 ```html
-<!-- ori-size-action drives the field height; ori-font-size scales the text -->
-<div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_xl ori-input_outline">
+<!-- size sugar on the wrapper (`ori-input_xl`); the field inherits the height. ori-font-size scales the text -->
+<div class="ori-input ori-color ori-color_primary ori-font-size ori-font-size_xl ori-input_outline ori-input_xl">
     <label class="ori-input__label" for="f3">xl</label>
-    <input id="f3" class="ori-input__field ori-size-action ori-size-action_xl ori-size-radius ori-size-radius_md" />
+    <input id="f3" class="ori-input__field ori-size-radius ori-size-radius_md" />
 </div>
+
+<!-- low-level equivalent: put `ori-size-action_xl` on the field instead of `ori-input_xl` on the wrapper -->
+<!-- and the bare `ori-input` wrapper is already a valid `md` field — no size class needed for the default -->
 ```
 
 ::

@@ -1,5 +1,5 @@
-@layer ori.utilities {
-    .ori-size-radius {
+@layer ori.tokens {
+    :root {
         --ori-size-radius-step: calc(var(--ori-size-radius_md) / 4);
 
         --ori-size-radius_zero: 0;
@@ -12,32 +12,37 @@
 
         --ori-size-radius: var(--ori-size-radius_md);
     }
+}
 
-    .ori-size-radius.ori-size-radius_zero {
+@layer ori.utilities {
+    /* Single-class: `.ori-size-radius_lg` repoints the alias on its own — the scale lives in :root
+       (ori.tokens), so no `.ori-size-radius` base is needed. They sit in ori.utilities (declared
+       last), so they beat a block's baked-in default by layer order. */
+    .ori-size-radius_zero {
         --ori-size-radius: var(--ori-size-radius_zero);
     }
 
-    .ori-size-radius.ori-size-radius_xs {
+    .ori-size-radius_xs {
         --ori-size-radius: var(--ori-size-radius_xs);
     }
 
-    .ori-size-radius.ori-size-radius_sm {
+    .ori-size-radius_sm {
         --ori-size-radius: var(--ori-size-radius_sm);
     }
 
-    .ori-size-radius.ori-size-radius_md {
+    .ori-size-radius_md {
         --ori-size-radius: var(--ori-size-radius_md);
     }
 
-    .ori-size-radius.ori-size-radius_lg {
+    .ori-size-radius_lg {
         --ori-size-radius: var(--ori-size-radius_lg);
     }
 
-    .ori-size-radius.ori-size-radius_xl {
+    .ori-size-radius_xl {
         --ori-size-radius: var(--ori-size-radius_xl);
     }
 
-    .ori-size-radius.ori-size-radius_rounded {
+    .ori-size-radius_rounded {
         --ori-size-radius: var(--ori-size-radius_rounded);
     }
 }

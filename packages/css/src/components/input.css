@@ -2,6 +2,16 @@
     .ori-input {
         --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
         --ori-input-bg: transparent;
+        /* Baked default for the action-size axis: the bare `.ori-input` is already a valid `md` field.
+           A size modifier (`.ori-input_lg`) or the low-level `.ori-size-action_lg` utility repoints it;
+           the field inherits the alias. */
+        --ori-size-action: var(--ori-size-action_md);
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
+           layer) overrides by layer order. The variant maps this pair onto the focus ring / error. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
+        --ori-font-size: var(--ori-font-size_md);
 
         display: inline-flex;
         flex-direction: column;
@@ -16,6 +26,33 @@
     .ori-input.ori-input_fill {
         --ori-input-border: transparent;
         --ori-input-bg: color-mix(in srgb, currentcolor 6%, transparent);
+    }
+
+    /* Size sugar (action-size axis / field height) — the daisyUI-familiar `.ori-input_lg` shape.
+       Compound with the block so it beats the baked `md` default by specificity; the field inherits
+       the repointed alias. Mirrors the low-level `.ori-size-action_*` utility one-for-one. */
+    .ori-input.ori-input_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-input.ori-input_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-input.ori-input_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-input.ori-input_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-input.ori-input_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-input.ori-input_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
     }
 
     .ori-input__label {
