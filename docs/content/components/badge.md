@@ -215,13 +215,13 @@ as `{max}+`.
 
 ## Floating
 
-The badge floats over wrapped content. In Vue, pass children into the default slot and add the
-`floating` prop. In HTML, wrap the anchor in `ori-badge-anchor` and add `ori-badge_floating` to the
-badge itself.
+The badge floats over **wrapped content** — `floating` needs the badge to wrap an anchor. In Vue, pass
+the anchor into the **default slot** and add the `floating` prop (without a default slot `floating` has
+nothing to position against and is ignored). In HTML, wrap the anchor in `ori-badge-anchor` and add
+`ori-badge_floating` to the badge itself.
 
 ::example
-:ori-badge{:content="3" :floating="true" color="danger"}
-:ori-badge{:dot="true" :floating="true" color="danger"}
+:badge-demo
 
 #vue
 
@@ -264,9 +264,8 @@ badge itself.
 A notification bell, an avatar with a status pip, and a tab bar with unread counts.
 
 ::example
-:ori-badge{:content="12" :floating="true" color="danger"}
-:ori-badge{:content="New" variant="tonal" color="info"}
-:ori-badge{:dot="true" :floating="true" color="success"}
+:badge-demo
+:ori-badge{content="New" variant="tonal" color="info"}
 
 #vue
 
