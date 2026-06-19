@@ -68,7 +68,7 @@ practical gotchas go here.
 - MDC inline **arrays/objects**: `:options='[{"label":"A","value":"a"}]'` (single-quoted JSON)
   parses correctly.
 - New oriUI components must be re-exported from the **root barrel** `src/components/index.ts` (the
-  public `@oriui/ui` surface — tests import from `../src`, and the docs plugin imports from `@oriui/ui`),
+  public `@oriui/vue` surface — tests import from `../src`, and the docs plugin imports from `@oriui/vue`),
   registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to the sidebar in
   `docs/app/layouts/default.vue`. Forgetting the barrel makes `import { OriX } from '../src'` resolve
   to `undefined` (test-utils then throws "Invalid value used as weak map key"). When fanning components
@@ -140,7 +140,7 @@ practical gotchas go here.
 - **Component block styles live in `@oriui/css` under `@layer ori.components`** — one file per component
   in `packages/css/src/components/<name>.css`, NOT in the SFC (the SFCs have **no `<style>` block**). So
   a styled-component consumer must `import '@oriui/css'` once (it ships tokens + components + utilities),
-  and there are no per-component CSS chunks in `@oriui/ui`'s `dist`. The `ori.utilities` layer is declared
+  and there are no per-component CSS chunks in `@oriui/vue`'s `dist`. The `ori.utilities` layer is declared
   **last**, so utilities (`.ori-color_*`, `.ori-shadow`, …) win over a component's own rules — they set
   tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
   compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`

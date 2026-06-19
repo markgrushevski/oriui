@@ -23,7 +23,7 @@ Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slid
 - ⭐ **Slider / Range** — single + range thumb; token-sized track. Pure-CSS thumb is doable; keyboard
   step needs a little JS.
 - ⭐ **Combobox / Autocomplete** — filterable listbox; needs the headless layer (roving, listbox
-  ARIA, type-ahead). The first control that really exercises `@oriui/vue`.
+  ARIA, type-ahead). The first control that really exercises `@oriui/headless`.
 - ◽ **NumberField / Stepper** — numeric input with +/− and clamping.
 - ◽ **Segmented / ToggleGroup** — single/multi-select button row (pairs with **Join**).
 - ◽ **FileInput / Dropzone** — styled file picker.
