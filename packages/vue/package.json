@@ -1,10 +1,26 @@
 {
     "name": "@oriui/vue",
-    "version": "1.0.0-alpha.1",
-    "description": "Vue 3 adapter for the oriUI headless layer — composables over @oriui/core",
+    "description": "Styled Vue 3 components for oriUI — ready <Ori*> components composed from the headless behavior (@oriui/headless) + standalone CSS (@oriui/css) layers (織り)",
     "license": "MIT",
+    "version": "1.0.0-alpha.1",
     "type": "module",
-    "sideEffects": false,
+    "engines": {
+        "node": ">=20.19.0"
+    },
+    "author": {
+        "name": "Leonid",
+        "email": "markgrushevski@gmail.com",
+        "url": "https://github.com/markgrushevski"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/markgrushevski/oriui.git",
+        "directory": "packages/vue"
+    },
+    "bugs": {
+        "url": "https://github.com/markgrushevski/oriui/issues"
+    },
+    "homepage": "https://oriui.vercel.app",
     "files": [
         "dist"
     ],
@@ -17,19 +33,22 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
             "default": "./dist/index.js"
         },
         "./package.json": "./package.json"
     },
+    "sideEffects": [
+        "**/*.css"
+    ],
     "scripts": {
-        "build": "tsdown",
-        "types": "tsc --noEmit"
-    },
-    "peerDependencies": {
-        "vue": "^3.5"
+        "build": "vite build && vue-tsc -p tsconfig.build.json",
+        "types": "vue-tsc --noEmit"
     },
     "dependencies": {
-        "@oriui/core": "1.0.0-alpha.1"
+        "@oriui/css": "1.0.0-alpha.1",
+        "@oriui/headless": "1.0.0-alpha.1"
+    },
+    "peerDependencies": {
+        "vue": "^3"
     }
 }

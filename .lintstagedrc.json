@@ -1,6 +1,6 @@
 {
-    "src/**/*.{vue,css}": ["stylelint --fix"],
+    "packages/vue/src/**/*.{vue,css}": ["stylelint --fix"],
     "packages/css/src/**/*.css": ["stylelint --fix"],
-    "src/**/*.{vue,js,ts}": ["eslint --fix"],
+    "packages/*/src/**/*.{vue,js,ts}": ["eslint --fix"],
     "**/*.{vue,js,ts,json,md,html,css}": ["prettier --write"]
 }

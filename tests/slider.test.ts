@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriSlider } from '../src/components/slider';
+import { OriSlider } from '../packages/vue/src/components/slider';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriSlider', () => {

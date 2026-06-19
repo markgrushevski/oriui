@@ -7,7 +7,7 @@ import configPrettier from 'eslint-config-prettier';
 export default tseslint.config(
     { ignores: ['dist', 'types', 'cache', 'node_modules', '.idea', '.vscode'] },
     {
-        files: ['src/**/*.{ts,vue}'],
+        files: ['packages/*/src/**/*.{ts,vue}'],
         languageOptions: {
             globals: globals.browser,
             parserOptions: { ecmaVersion: 'latest' }

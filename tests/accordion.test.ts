@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriAccordion } from '../src';
+import { OriAccordion } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 const ITEMS = [

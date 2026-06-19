@@ -17,7 +17,7 @@ export interface DisclosureControl {
 }
 
 /**
- * A headless behavior implementation. Swap freely: our native `@oriui/core` one, a Zag-backed
+ * A headless behavior implementation. Swap freely: our native `../core` one, a Zag-backed
  * one, or a user-supplied one — the component markup never changes.
  */
 export type DisclosureAdapter = (options?: MaybeRefOrGetter<UseDisclosureOptions>) => DisclosureControl;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTemplateRef, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/vue';
+import { useDialog } from '@oriui/headless/vue';
 
 // OriDialog — the library's first behavioral styled component: styled markup + tokens over the
 // engine-agnostic useDialog() contract, rendered on the native <dialog> element. The focus trap,

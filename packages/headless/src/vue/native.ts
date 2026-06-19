@@ -1,11 +1,11 @@
 import { computed, ref, toValue, useId, type MaybeRefOrGetter } from 'vue';
-import { disclosure } from '@oriui/core';
+import { disclosure } from '../core';
 import { normalizeProps } from './normalize-props';
 import { useService } from './use-machine';
 import type { DialogControl, DisclosureControl, UseDialogOptions, UseDisclosureOptions } from './contract';
 
 /**
- * Native oriUI Disclosure adapter — built on the in-house `@oriui/core` machine. The default behind
+ * Native oriUI Disclosure adapter — built on the in-house `../core` machine. The default behind
  * `useDisclosure`; the contract still lets an app swap in a custom (e.g. Zag-backed) adapter.
  */
 export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions> = () => ({})): DisclosureControl => {

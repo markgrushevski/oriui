@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriCard } from '../src';
+import { OriCard } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriCard', () => {

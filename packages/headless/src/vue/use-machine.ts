@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted, shallowRef, type ShallowRef } from 'vue';
-import type { Service } from '@oriui/core';
+import type { Service } from '../core';
 
 /**
  * Bridge a core Service's `subscribe()` to Vue reactivity. Returns a version ref that bumps on
