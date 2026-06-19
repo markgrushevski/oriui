@@ -1,0 +1,127 @@
+@layer ori.components {
+    .ori-slider {
+        /* Accent default; `.ori-color_*` (ori.utilities) repoints it. The fill uses --ori-color, the
+           groove a faint currentcolor mix; --ori-slider-pct (set inline from the value) drives the
+           WebKit fill (Firefox uses ::-moz-range-progress). */
+        --ori-color: var(--ori-color-primary);
+        --ori-slider-track: color-mix(in srgb, currentcolor 18%, transparent);
+        --ori-slider-pct: 0%;
+
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--ori-size-gap) / 2);
+
+        width: 100%;
+    }
+
+    .ori-slider .ori-slider__label {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--ori-size-gap);
+
+        font-size: 0.9375rem;
+    }
+
+    .ori-slider .ori-slider__value {
+        opacity: 0.7;
+
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ori-slider .ori-slider__input {
+        width: 100%;
+        height: 1.25rem;
+        margin: 0;
+
+        background: transparent;
+
+        cursor: pointer;
+
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    /* ---- track (separate rules per engine — a browser drops a rule with an unknown pseudo) ---- */
+    .ori-slider .ori-slider__input::-webkit-slider-runnable-track {
+        height: 0.375rem;
+
+        border-radius: 999px;
+
+        background: linear-gradient(
+            to right,
+            var(--ori-color) var(--ori-slider-pct),
+            var(--ori-slider-track) var(--ori-slider-pct)
+        );
+    }
+
+    .ori-slider .ori-slider__input::-moz-range-track {
+        height: 0.375rem;
+
+        border-radius: 999px;
+
+        background: var(--ori-slider-track);
+    }
+
+    .ori-slider .ori-slider__input::-moz-range-progress {
+        height: 0.375rem;
+
+        border-radius: 999px;
+
+        background: var(--ori-color);
+    }
+
+    /* ---- thumb ---- */
+    .ori-slider .ori-slider__input::-webkit-slider-thumb {
+        width: 1rem;
+        height: 1rem;
+        margin-top: -0.3125rem;
+
+        border: 2px solid var(--ori-color-surface);
+        border-radius: 50%;
+
+        background: var(--ori-color);
+
+        box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .ori-slider .ori-slider__input::-moz-range-thumb {
+        width: 1rem;
+        height: 1rem;
+
+        border: 2px solid var(--ori-color-surface);
+        border-radius: 50%;
+
+        background: var(--ori-color);
+
+        box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+    }
+
+    /* ---- focus (ring on the thumb, per engine) ---- */
+    .ori-slider .ori-slider__input:focus-visible {
+        outline: none;
+    }
+
+    .ori-slider .ori-slider__input:focus-visible::-webkit-slider-thumb {
+        box-shadow:
+            0 1px 3px rgb(0 0 0 / 0.3),
+            0 0 0 3px color-mix(in srgb, var(--ori-color) 35%, transparent);
+    }
+
+    .ori-slider .ori-slider__input:focus-visible::-moz-range-thumb {
+        box-shadow:
+            0 1px 3px rgb(0 0 0 / 0.3),
+            0 0 0 3px color-mix(in srgb, var(--ori-color) 35%, transparent);
+    }
+
+    /* ---- disabled ---- */
+    .ori-slider[data-disabled] {
+        opacity: 0.5;
+    }
+
+    .ori-slider[data-disabled] .ori-slider__input {
+        cursor: not-allowed;
+    }
+}

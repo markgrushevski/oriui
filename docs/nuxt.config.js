@@ -53,7 +53,7 @@ export default defineNuxtConfig({
             },
             {
                 title: 'Components',
-                description: 'The 26 styled components — each page has the class table, props, slots, and a11y.',
+                description: 'The 27 styled components — each page has the class table, props, slots, and a11y.',
                 links: [
                     { title: 'Accordion', href: '/components/accordion' },
                     { title: 'Alert', href: '/components/alert' },
@@ -73,6 +73,7 @@ export default defineNuxtConfig({
                     { title: 'Radio', href: '/components/radio' },
                     { title: 'Select', href: '/components/select' },
                     { title: 'Skeleton', href: '/components/skeleton' },
+                    { title: 'Slider', href: '/components/slider' },
                     { title: 'Spinner', href: '/components/spinner' },
                     { title: 'Stack', href: '/components/stack' },
                     { title: 'Switch', href: '/components/switch' },

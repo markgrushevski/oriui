@@ -86,6 +86,7 @@ the page for the complete set.
 | [Skeleton](/components/skeleton)   | `<OriSkeleton>`   | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                 |
 | [Kbd](/components/kbd)             | `<OriKbd>`        | `as` `text` (default slot = key) — keyboard-key chip                                              |
 | [Toast](/components/toast)         | `<OriToaster>`    | imperative `useToast()` push API + `<OriToaster position>` — transient notifications              |
+| [Slider](/components/slider)       | `<OriSlider>`     | `color` `disabled` `label` `min` `max` `step` `showValue` (`v-model` number; native range)        |
 
 ## Theming & tokens
 
