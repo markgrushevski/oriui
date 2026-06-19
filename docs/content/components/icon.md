@@ -14,12 +14,13 @@ component.
 
 ## Classes
 
-An icon is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
-scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these. There is no variant or radius — an icon takes a
-size, an optional color, and optional layout modifiers.
+An icon is a block class plus single-class token utilities — one class repoints one token; no
+separate base class is needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
+There is no variant or radius — an icon takes a size, an optional color, and optional layout
+modifiers.
 
-:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class."},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-size-action-space + ori-size-action-space_*","type":"Layout","description":"adds margin equal to the action-space scale; requires the ori-size-action pair"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (text) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-icon_spaced","type":"Layout","description":"adds margin equal to the action-space scale for the active size; pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
 
 ## Sizes
 
@@ -41,17 +42,17 @@ paragraph's `font-size` with no explicit size prop:
 #html
 
 ```html
-<!-- ori-size-action drives the icon box; aria-hidden because decorative -->
-<i class="ori-icon ori-size-action ori-size-action_xs" aria-hidden="true">
+<!-- ori-icon_xs / _md / _xxl drive the icon box; aria-hidden because decorative -->
+<i class="ori-icon ori-icon_xs" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
-<i class="ori-icon ori-size-action ori-size-action_md" aria-hidden="true">
+<i class="ori-icon ori-icon_md" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
-<i class="ori-icon ori-size-action ori-size-action_xxl" aria-hidden="true">
+<i class="ori-icon ori-icon_xxl" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
-<!-- no size class: inherits font size (text default) -->
+<!-- no size modifier: inherits font size (text default) -->
 <i class="ori-icon ori-icon_inline" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
@@ -84,11 +85,11 @@ Every semantic role. `surface` / `background` are also available. Omit `color` t
 #html
 
 ```html
-<!-- add the ori-color pair: ori-color ori-color_<role> -->
-<i class="ori-icon ori-size-action ori-size-action_lg ori-color ori-color_primary" aria-hidden="true">
+<!-- ori-color_<role> repoints the color token in one class -->
+<i class="ori-icon ori-icon_lg ori-color_primary" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
-<i class="ori-icon ori-size-action ori-size-action_lg ori-color ori-color_danger" aria-hidden="true">
+<i class="ori-icon ori-icon_lg ori-color_danger" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
 ```
@@ -117,7 +118,7 @@ inside a sentence or a label without a wrapper element.
 ```html
 <p>
     Read the
-    <i class="ori-icon ori-icon_inline ori-size-action ori-size-action_md" aria-hidden="true">
+    <i class="ori-icon ori-icon_inline ori-icon_md" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M13,9H11V7H13…" /></svg>
     </i>
     note carefully.
@@ -138,8 +139,8 @@ inside a sentence or a label without a wrapper element.
 
 ## Spaced
 
-`spaced` adds a margin around the icon equal to the `ori-size-action-space` scale for the active
-size — useful when the icon floats in open space rather than inside a button or label.
+`spaced` adds a margin around the icon equal to the action-space scale for the active size — useful
+when the icon floats in open space rather than inside a button or label.
 
 ::example
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" :spaced="true" size="lg" color="primary"}
@@ -147,10 +148,7 @@ size — useful when the icon floats in open space rather than inside a button o
 #html
 
 ```html
-<i
-    class="ori-icon ori-size-action ori-size-action_lg ori-size-action-space ori-size-action-space_lg ori-color ori-color_primary"
-    aria-hidden="true"
->
+<i class="ori-icon ori-icon_lg ori-icon_spaced ori-color_primary" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
 ```
@@ -175,7 +173,7 @@ automatically and removes `aria-hidden`.
 
 ```html
 <!-- note: no aria-hidden; role="img" + aria-label carry the name -->
-<i class="ori-icon ori-size-action ori-size-action_lg" role="img" aria-label="Warning">
+<i class="ori-icon ori-icon_lg" role="img" aria-label="Warning">
     <svg viewBox="0 0 24 24"><path d="M12,2A10,10…" /></svg>
 </i>
 ```
@@ -200,7 +198,7 @@ to 100% × 100% and filled with `currentcolor`.
 #html
 
 ```html
-<i class="ori-icon ori-size-action ori-size-action_lg ori-color ori-color_primary" aria-hidden="true">
+<i class="ori-icon ori-icon_lg ori-color_primary" aria-hidden="true">
     <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" />
         <path d="M12 8v4l3 3" stroke="white" stroke-width="2" fill="none" />
@@ -235,7 +233,7 @@ An icon placed beside a status badge — size matches the action row, color foll
 
 ```html
 <div style="display: flex; align-items: center; gap: 0.5rem">
-    <i class="ori-icon ori-size-action ori-size-action_md ori-color ori-color_success" aria-hidden="true">
+    <i class="ori-icon ori-icon_md ori-color_success" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5…" /></svg>
     </i>
     <span>Deployed</span>
@@ -290,14 +288,14 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop     | Type         | Default  | Description                                                                                            |
-| -------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------ |
-| `color`  | `ThemeColor` | —        | Semantic color role. Omit to inherit `currentcolor` from the parent.                                   |
-| `icon`   | `string`     | —        | SVG `<path d>` string. Renders inside a `24 × 24` viewBox. Omit to use the default slot instead.       |
-| `inline` | `boolean`    | `false`  | Switches to `inline-flex` with an `em`-based margin for use inside text flow.                          |
-| `label`  | `string`     | —        | Accessible name. When set, adds `role="img"` and `aria-label`; removes `aria-hidden`.                  |
-| `size`   | `ActionSize` | `'text'` | Icon box size (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). `text` inherits the current font size.       |
-| `spaced` | `boolean`    | `false`  | Adds `ori-size-action-space` margin scaled to the active `size`. Has no effect when `size` is not set. |
+| Prop     | Type         | Default  | Description                                                                                      |
+| -------- | ------------ | -------- | ------------------------------------------------------------------------------------------------ |
+| `color`  | `ThemeColor` | —        | Semantic color role. Omit to inherit `currentcolor` from the parent.                             |
+| `icon`   | `string`     | —        | SVG `<path d>` string. Renders inside a `24 × 24` viewBox. Omit to use the default slot instead. |
+| `inline` | `boolean`    | `false`  | Switches to `inline-flex` with an `em`-based margin for use inside text flow.                    |
+| `label`  | `string`     | —        | Accessible name. When set, adds `role="img"` and `aria-label`; removes `aria-hidden`.            |
+| `size`   | `ActionSize` | `'text'` | Icon box size (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). `text` inherits the current font size. |
+| `spaced` | `boolean`    | `false`  | Adds action-space margin scaled to the active `size`. Has no effect when `size` is not set.      |
 
 ### Events & attributes
 

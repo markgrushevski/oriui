@@ -16,10 +16,11 @@ component.
 
 ## Classes
 
-A switch is a block class on the `<label>` wrapper plus two token utilities — color and font-size.
-The Vue props in [Framework API](#framework-api) map 1:1 to these.
+A switch is a block class on the `<label>` wrapper plus two single-class token utilities — one class
+per axis, no base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>&lt;label&gt;</code>."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>&lt;input type=checkbox role=switch&gt;</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"ori-switch_disabled","type":"State","description":"Added by the component when <code>disabled</code> is true; also sets the native <code>disabled</code> attribute on the input."}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>&lt;label&gt;</code>."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>&lt;input type=checkbox role=switch&gt;</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"ori-switch_disabled","type":"State","description":"Added by the component when <code>disabled</code> is true; also sets the native <code>disabled</code> attribute on the input."}]'}
 
 ## Colors
 
@@ -37,12 +38,12 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 #html
 
 ```html
-<label class="ori-switch ori-color ori-color_primary ori-font-size ori-font-size_md" for="s1">
+<label class="ori-switch ori-color_primary ori-font-size_md" for="s1">
     <input id="s1" type="checkbox" role="switch" class="ori-switch__input" />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Primary</span>
 </label>
-<!-- swap the color pair: ori-color_primary → _danger / _success / _warn / _info -->
+<!-- swap the color class: ori-color_primary → ori-color_danger / ori-color_success / ori-color_warn / ori-color_info -->
 ```
 
 #vue
@@ -57,7 +58,7 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 
 ## Sizes
 
-`xs` → `xxl`. A single `ori-font-size` class scales both the label text and the track/thumb geometry.
+`xs` → `xxl`. A single `ori-font-size_*` class scales both the label text and the track/thumb geometry.
 
 ::example
 :ori-switch{label="xs" size="xs"}
@@ -69,13 +70,13 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 #html
 
 ```html
-<!-- track and thumb scale off ori-font-size -->
-<label class="ori-switch ori-color ori-color_primary ori-font-size ori-font-size_sm" for="sm">
+<!-- track and thumb scale off ori-font-size_* -->
+<label class="ori-switch ori-color_primary ori-font-size_sm" for="sm">
     <input id="sm" type="checkbox" role="switch" class="ori-switch__input" />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">sm</span>
 </label>
-<label class="ori-switch ori-color ori-color_primary ori-font-size ori-font-size_xl" for="xl">
+<label class="ori-switch ori-color_primary ori-font-size_xl" for="xl">
     <input id="xl" type="checkbox" role="switch" class="ori-switch__input" />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">xl</span>
@@ -104,12 +105,12 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 #html
 
 ```html
-<label class="ori-switch ori-switch_disabled ori-color ori-color_primary ori-font-size ori-font-size_md" for="d1">
+<label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="d1">
     <input id="d1" type="checkbox" role="switch" class="ori-switch__input" disabled />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Disabled off</span>
 </label>
-<label class="ori-switch ori-switch_disabled ori-color ori-color_primary ori-font-size ori-font-size_md" for="d2">
+<label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="d2">
     <input id="d2" type="checkbox" role="switch" class="ori-switch__input" disabled checked />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Disabled on</span>
@@ -136,7 +137,7 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 #html
 
 ```html
-<label class="ori-switch ori-color ori-color_danger ori-font-size ori-font-size_md" for="inv">
+<label class="ori-switch ori-color_danger ori-font-size_md" for="inv">
     <input id="inv" type="checkbox" role="switch" class="ori-switch__input" aria-invalid="true" required />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Required field</span>
@@ -162,7 +163,7 @@ Pass no `label` prop to render the track alone. Always pair a label-less switch 
 #html
 
 ```html
-<label class="ori-switch ori-color ori-color_primary ori-font-size ori-font-size_md" for="dm">
+<label class="ori-switch ori-color_primary ori-font-size_md" for="dm">
     <input id="dm" type="checkbox" role="switch" class="ori-switch__input" aria-label="Dark mode" />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
 </label>
@@ -189,17 +190,17 @@ A settings row — switch on the right aligned to a description — is the most 
 
 ```html
 <div style="display: flex; flex-direction: column; gap: 0.75rem">
-    <label class="ori-switch ori-color ori-color_primary ori-font-size ori-font-size_md" for="p1">
+    <label class="ori-switch ori-color_primary ori-font-size_md" for="p1">
         <input id="p1" type="checkbox" role="switch" class="ori-switch__input" />
         <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
         <span class="ori-switch__label">Email notifications</span>
     </label>
-    <label class="ori-switch ori-color ori-color_secondary ori-font-size ori-font-size_md" for="p2">
+    <label class="ori-switch ori-color_secondary ori-font-size_md" for="p2">
         <input id="p2" type="checkbox" role="switch" class="ori-switch__input" />
         <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
         <span class="ori-switch__label">Dark mode</span>
     </label>
-    <label class="ori-switch ori-switch_disabled ori-color ori-color_primary ori-font-size ori-font-size_md" for="p3">
+    <label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="p3">
         <input id="p3" type="checkbox" role="switch" class="ori-switch__input" disabled />
         <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
         <span class="ori-switch__label">Auto-save</span>

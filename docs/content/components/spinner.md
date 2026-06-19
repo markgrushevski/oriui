@@ -14,12 +14,12 @@ component.
 
 ## Classes
 
-A spinner composes a block class plus paired token utilities — each pair is a base class (`ori-color`)
-and a scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these. There is no variant or radius — a spinner only takes
-a size and an optional color.
+A spinner is a single block class. Each axis is one class that repoints one token — no base class
+needed. The Vue props in [Framework API](#framework-api) map 1:1 to these. There is no variant or
+radius — a spinner only takes a size and an optional color.
 
-:class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-spinner_* (size)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default; bare ori-spinner without a size modifier inherits its size from the surrounding font"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
 
 ## Sizes
 
@@ -47,17 +47,9 @@ a size and an optional color.
 #html
 
 ```html
-<!-- ori-size-action sizes the ring; omit both classes to inherit from text -->
-<div
-    class="ori-spinner ori-size-action ori-size-action_sm ori-color ori-color_primary"
-    role="status"
-    aria-label="Loading"
-></div>
-<div
-    class="ori-spinner ori-size-action ori-size-action_xl ori-color ori-color_primary"
-    role="status"
-    aria-label="Loading"
-></div>
+<!-- ori-spinner_<size> sets the ring diameter; omit the size modifier to inherit from text -->
+<div class="ori-spinner ori-spinner_sm ori-color_primary" role="status" aria-label="Loading"></div>
+<div class="ori-spinner ori-spinner_xl ori-color_primary" role="status" aria-label="Loading"></div>
 ```
 
 ::
@@ -88,12 +80,8 @@ Every semantic role. Omit `color` entirely to inherit `currentcolor` from the pa
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
-<div
-    class="ori-spinner ori-size-action ori-size-action_lg ori-color ori-color_danger"
-    role="status"
-    aria-label="Loading"
-></div>
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<div class="ori-spinner ori-spinner_lg ori-color_danger" role="status" aria-label="Loading"></div>
 ```
 
 ::
@@ -115,11 +103,7 @@ sits beside a label without breaking layout.
 #html
 
 ```html
-<div
-    class="ori-spinner ori-spinner_inline ori-size-action ori-size-action_sm ori-color ori-color_primary"
-    role="status"
-    aria-label="Loading"
-></div>
+<div class="ori-spinner ori-spinner_inline ori-spinner_sm ori-color_primary" role="status" aria-label="Loading"></div>
 ```
 
 ::
@@ -140,11 +124,7 @@ Override the default `"Loading"` with a more descriptive message for the current
 #html
 
 ```html
-<div
-    class="ori-spinner ori-size-action ori-size-action_md ori-color ori-color_primary"
-    role="status"
-    aria-label="Saving your changes"
-></div>
+<div class="ori-spinner ori-spinner_md ori-color_primary" role="status" aria-label="Saving your changes"></div>
 ```
 
 ::
@@ -176,20 +156,12 @@ A full-page loader and a button-level spinner — the everyday compositions.
 ```html
 <!-- page-level -->
 <div style="display: flex; justify-content: center; padding: 2rem">
-    <div
-        class="ori-spinner ori-size-action ori-size-action_xl ori-color ori-color_primary"
-        role="status"
-        aria-label="Loading page"
-    ></div>
+    <div class="ori-spinner ori-spinner_xl ori-color_primary" role="status" aria-label="Loading page"></div>
 </div>
 
 <!-- inside a loading button: spinner is decorative, parent carries the announcement -->
 <button class="ori-button …" aria-busy="true">
-    <div
-        class="ori-spinner ori-spinner_inline ori-size-action ori-size-action_sm"
-        role="status"
-        aria-hidden="true"
-    ></div>
+    <div class="ori-spinner ori-spinner_inline ori-spinner_sm" role="status" aria-hidden="true"></div>
     <span class="ori-button__text">Saving</span>
 </button>
 ```
