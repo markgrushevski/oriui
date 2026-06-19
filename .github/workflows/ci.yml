@@ -38,8 +38,16 @@ jobs:
                   npm run types
                   npm run test:types
 
-            - name: Test (vitest + axe)
-              run: npm run test
+            - name: Test (vitest + axe + coverage)
+              run: npm run test:cov
+
+            - name: Upload coverage to Codecov
+              if: matrix.node == '22'
+              uses: codecov/codecov-action@v5
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: ./coverage/lcov.info
+                  fail_ci_if_error: false
 
             - name: Build (headless packages -> lib -> .d.ts)
               run: npm run build

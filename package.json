@@ -19,9 +19,13 @@
     "bugs": {
         "url": "https://github.com/markgrushevski/oriui/issues"
     },
+    "homepage": "https://oriui.vercel.app",
     "files": [
         "dist"
     ],
+    "publishConfig": {
+        "access": "public"
+    },
     "workspaces": [
         "docs",
         "packages/*"
@@ -57,6 +61,7 @@
         "lint:ci": "prettier --check \"**/*.{vue,js,ts,json,md,html,css}\" && stylelint \"src/**/*.{vue,css}\" \"packages/css/src/**/*.css\" && eslint \"src/**/*.{vue,ts}\"",
         "prepare": "husky",
         "prepack": "npm run build",
+        "bump": "node scripts/bump.mjs",
         "docs:dev": "npm run dev --workspace docs",
         "docs:build": "npm run generate --workspace docs",
         "docs:preview": "npm run preview --workspace docs"

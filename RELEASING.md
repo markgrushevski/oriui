@@ -35,18 +35,17 @@ uninstallable. Keep all four versions in lockstep.
 
 ### 1. Bump versions in lockstep
 
-Set the same new version across all four packages **and** the pinned internal deps:
-
-- `package.json` — `version` + `dependencies."@oriui/css"` + `dependencies."@oriui/vue"`
-- `packages/vue/package.json` — `version` + `dependencies."@oriui/core"`
-- `packages/css/package.json` — `version`
-- `packages/core/package.json` — `version`
-
-Then sync the lockfile and commit:
+Use the helper — it rewrites the version **and** the pinned internal `@oriui/*` deps across all four
+`package.json` files at once (a `*` range can't match a prerelease, so internal deps stay pinned exact):
 
 ```bash
-npm install --package-lock-only
+node scripts/bump.mjs 1.0.0-alpha.2   # or: npm run bump 1.0.0-alpha.2
+npm install --package-lock-only       # sync the lockfile
+git commit -am "chore(release): v1.0.0-alpha.2"
 ```
+
+It replaces the current version string everywhere it appears: each package's own `version` plus the
+pinned internal deps (`@oriui/css`, `@oriui/vue` in the root; `@oriui/core` in `packages/vue`).
 
 ### 2. Green check
 
@@ -56,15 +55,21 @@ npm run lint:ci && npm run types && npm run test && npm run build
 
 ### 3. Publish in dependency order
 
-Each publish needs a **fresh OTP** and `--access public` (scoped packages are private
-by default, which would otherwise demand a paid plan):
+**Preferred — CI, no OTP.** Push the bump commit, then run the **Release** workflow (GitHub →
+Actions → _Release_ → _Run workflow_ → pick the dist-tag). It runs the quality gate, builds, and
+publishes all four packages in order using the `NPM_TOKEN` automation secret. One-time setup: create an
+npm **automation** access token (npmjs → _Access Tokens_ → Granular/Automation — it bypasses 2FA) and
+add it as the repo secret `NPM_TOKEN`.
+
+**Manual fallback — OTP.** `--access public` now lives in each package's `publishConfig`, so it can be
+omitted; each publish still needs a **fresh OTP**:
 
 ```bash
 npm run build
-npm publish -w @oriui/css  --access public --tag next --otp=XXXXXX
-npm publish -w @oriui/core --access public --tag next --otp=XXXXXX
-npm publish -w @oriui/vue  --access public --tag next --otp=XXXXXX
-npm publish                --access public --tag next --otp=XXXXXX
+npm publish -w @oriui/css  --tag next --otp=XXXXXX
+npm publish -w @oriui/core --tag next --otp=XXXXXX
+npm publish -w @oriui/vue  --tag next --otp=XXXXXX
+npm publish                --tag next --otp=XXXXXX
 ```
 
 Order matters so the whole graph exists in the registry by the time anyone installs:
@@ -110,8 +115,13 @@ npm view @oriui/core
 - **"You cannot publish over the previously published versions"** — bump the version;
   published versions are immutable (and unpublish is restricted after 72h).
 
-## Not automated yet
+## Automation status
 
-Per [ROADMAP.md](ROADMAP.md) Phase 8: `changesets` for version/changelog management and
-a CI publish job (`NPM_TOKEN`, alpha on the `next` tag) are still to do. Until then this
-runbook is manual.
+✅ **CI publish** — the `Release` workflow (`.github/workflows/release.yml`) builds and publishes via
+the `NPM_TOKEN` automation secret, no OTP (step 3 above). The lockstep version bump is scripted
+(`scripts/bump.mjs`), and `--access public` lives in each package's `publishConfig`.
+
+🔄 **`changesets`** (auto version + changelog + PR-based releases) stays deferred: it can only version
+packages that are **workspace members**, but the publishable `@oriui/ui` is the repo **root**. Adopting
+it needs the full monorepo split (root → `packages/ui`), which [ROADMAP.md](ROADMAP.md) parks under
+_Deferred_. The bump-script + CI-publish flow covers releases until then.
