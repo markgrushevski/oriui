@@ -1,0 +1,114 @@
+@layer ori.components {
+    .ori-tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    .ori-tabs.ori-tabs_vertical {
+        flex-direction: row;
+    }
+
+    .ori-tabs__list {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25em;
+
+        border-bottom: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+    }
+
+    .ori-tabs.ori-tabs_vertical .ori-tabs__list {
+        flex-direction: column;
+        flex-shrink: 0;
+
+        border-right: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        border-bottom: 0;
+    }
+
+    .ori-tabs__tab {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5em 0.9em;
+
+        transition: color 0.15s ease-out;
+
+        border: 0;
+
+        background-color: transparent;
+        color: color-mix(in srgb, currentcolor 70%, transparent);
+
+        font: inherit;
+        font-weight: 500;
+        white-space: nowrap;
+
+        cursor: pointer;
+    }
+
+    /* The active indicator (underline horizontal, side bar vertical) — driven by aria-selected, not a class. */
+    .ori-tabs__tab::after {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: -1px;
+
+        height: 2px;
+
+        transform: scaleX(0);
+        transition: transform 0.15s ease-out;
+
+        background-color: var(--ori-color, currentcolor);
+    }
+
+    .ori-tabs.ori-tabs_vertical .ori-tabs__tab::after {
+        inset-block: 0;
+        inset-inline: auto;
+        inset-inline-end: -1px;
+
+        width: 2px;
+        height: auto;
+
+        transform: scaleY(0);
+    }
+
+    .ori-tabs__tab[aria-selected='true'] {
+        color: var(--ori-color, currentcolor);
+    }
+
+    .ori-tabs__tab[aria-selected='true']::after {
+        transform: scaleX(1);
+    }
+
+    .ori-tabs.ori-tabs_vertical .ori-tabs__tab[aria-selected='true']::after {
+        transform: scaleY(1);
+    }
+
+    .ori-tabs__tab:disabled {
+        opacity: 0.45;
+
+        cursor: not-allowed;
+    }
+
+    .ori-tabs__tab:focus-visible {
+        outline: 2px solid var(--ori-color, currentcolor);
+        outline-offset: -2px;
+    }
+
+    @media (hover: hover) {
+        .ori-tabs__tab:not(:disabled, [aria-selected='true']):hover {
+            color: currentcolor;
+        }
+    }
+
+    .ori-tabs__panel {
+        flex-grow: 1;
+
+        min-width: 0;
+    }
+
+    .ori-tabs__panel:focus-visible {
+        outline: 2px solid var(--ori-color, currentcolor);
+        outline-offset: 2px;
+    }
+}

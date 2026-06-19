@@ -1,0 +1,97 @@
+@layer ori.components {
+    .ori-input {
+        --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
+        --ori-input-bg: transparent;
+
+        display: inline-flex;
+        flex-direction: column;
+        gap: 0.375em;
+    }
+
+    .ori-input.ori-input_fluid {
+        display: flex;
+        width: 100%;
+    }
+
+    .ori-input.ori-input_fill {
+        --ori-input-border: transparent;
+        --ori-input-bg: color-mix(in srgb, currentcolor 6%, transparent);
+    }
+
+    .ori-input__label {
+        font-size: calc(var(--ori-font-size) * 0.875);
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .ori-input__required {
+        margin-inline-start: 0.15em;
+
+        color: var(--ori-color-danger);
+    }
+
+    .ori-input__field {
+        box-sizing: border-box;
+        width: 100%;
+        height: var(--ori-size-action);
+        padding-inline: 0.75em;
+
+        transition:
+            border-color 0.15s ease-out,
+            box-shadow 0.15s ease-out,
+            background-color 0.15s ease-out;
+
+        border: 1px solid var(--ori-input-border);
+        border-radius: var(--ori-size-radius);
+
+        background: var(--ori-input-bg);
+        color: inherit;
+
+        font-family: inherit;
+        font-size: var(--ori-font-size);
+        line-height: 1;
+    }
+
+    .ori-input__field::placeholder {
+        color: color-mix(in srgb, currentcolor 50%, transparent);
+    }
+
+    .ori-input__field:focus {
+        border-color: var(--ori-color);
+        outline: none;
+
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);
+    }
+
+    .ori-input__field[aria-invalid='true'] {
+        border-color: var(--ori-color-danger);
+    }
+
+    .ori-input__field[aria-invalid='true']:focus {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger) 25%, transparent);
+    }
+
+    .ori-input__field:disabled {
+        opacity: 0.55;
+
+        background: color-mix(in srgb, currentcolor 4%, transparent);
+
+        cursor: not-allowed;
+    }
+
+    .ori-input__hint,
+    .ori-input__error {
+        margin: 0;
+
+        font-size: calc(var(--ori-font-size) * 0.8);
+        line-height: 1.3;
+    }
+
+    .ori-input__hint {
+        opacity: 0.7;
+    }
+
+    .ori-input__error {
+        color: var(--ori-color-danger);
+    }
+}

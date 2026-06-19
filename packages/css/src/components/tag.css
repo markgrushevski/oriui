@@ -1,0 +1,92 @@
+@layer ori.components {
+    .ori-tag {
+        display: inline-flex;
+        flex-direction: row;
+        flex-shrink: 0;
+        align-items: center;
+
+        padding-block: 0.25em;
+        padding-inline: 0.625em;
+
+        border: 1px solid var(--ori-variant-border-color);
+        border-radius: var(--ori-size-radius);
+
+        opacity: var(--ori-variant-opacity);
+
+        background-color: var(--ori-variant-bg-color);
+        color: var(--ori-variant-text-color);
+
+        font-size: var(--ori-font-size);
+        line-height: 1;
+        white-space: nowrap;
+
+        user-select: none;
+        gap: 0.375em;
+    }
+
+    .ori-tag[aria-disabled='true'] {
+        opacity: 0.45;
+        pointer-events: none;
+    }
+
+    .ori-tag__text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ori-tag__icon {
+        flex-shrink: 0;
+        font-size: 1.125em;
+    }
+
+    .ori-tag__close {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+
+        width: 1.25em;
+        height: 1.25em;
+
+        margin-inline-end: -0.25em;
+        padding: 0;
+
+        transition: background-color 0.15s ease-out;
+
+        border: 0;
+        border-radius: 50%;
+
+        background-color: transparent;
+        color: inherit;
+
+        cursor: pointer;
+    }
+
+    .ori-tag__close-icon {
+        font-size: 0.75em;
+    }
+
+    /* Focus ring: on a `fill` chip the ring is the on-color (contrasts the solid fill); on tonal/outline/
+   text the chip surface is a pale tint of the hue, so a same-hue (currentcolor) ring can fall below the
+   3:1 non-text minimum — use the neutral on-surface color there, which contrasts in both light and dark. */
+    .ori-tag__close:focus-visible {
+        outline: 2px solid var(--ori-color-on-surface);
+        outline-offset: 1px;
+    }
+
+    .ori-tag__close:disabled {
+        cursor: default;
+    }
+
+    @media (hover: hover) {
+        .ori-tag__close:not(:disabled):hover {
+            background-color: color-mix(in srgb, currentcolor, transparent 88%);
+        }
+    }
+
+    /* On a fill chip the on-color ring contrasts the solid fill (the neutral default above is for the pale
+   tonal/outline surfaces). Placed last to keep specificity ascending. */
+    .ori-tag.ori-variant_fill .ori-tag__close:focus-visible {
+        outline-color: currentcolor;
+    }
+}

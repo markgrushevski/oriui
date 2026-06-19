@@ -90,13 +90,19 @@ practical gotchas go here.
 
 ## Component / CSS patterns
 
-- Component `<style>` is **unlayered** on purpose (it wins over the `@layer` utilities); modifiers use
-  the house `.ori-x.ori-x_y` compound pattern (not `:where()`), consistent across the library.
-- **Don't set `--ori-color` (or another utility-owned alias) in a component's own unlayered `<style>`.**
-  It shadows the `ori-color_*` utility (which lives in `@layer ori.utilities`) on the **same element**,
-  so the `color` prop adds a class with **zero effect** — a silent no-op (it bit OriProgress). The token
-  layer already defaults `--ori-color: currentColor` at `:root`; let the utility repoint it, and if you
-  need a no-class fallback read it at the point of use (`var(--ori-color, currentcolor)`).
+- **Component block styles live in `@oriui/css` under `@layer ori.components`** — one file per component
+  in `packages/css/src/components/<name>.css`, NOT in the SFC (the SFCs have **no `<style>` block**). So
+  a styled-component consumer must `import '@oriui/css'` once (it ships tokens + components + utilities),
+  and there are no per-component CSS chunks in `@oriui/ui`'s `dist`. The `ori.utilities` layer is declared
+  **last**, so utilities (`.ori-color_*`, `.ori-shadow`, …) win over a component's own rules — they set
+  tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
+  compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`
+  wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
+- **Don't set `--ori-color` (or another utility-owned alias) in a component's CSS.** The `ori-color_*`
+  utility (`@layer ori.utilities`) repoints it and now **wins** over the component layer, so a value the
+  component rule sets is overridden anyway (and historically it silently no-op'd OriProgress). The token
+  layer defaults `--ori-color: currentColor` at `:root`; read it (`var(--ori-color, currentcolor)`) and
+  let the utility set it.
 - **Focus-ring color depends on what surface the ring sits on.** Free-standing controls (Button,
   Checkbox, Switch, Radio, the form fields) ring with **`var(--ori-color)`** — it tracks the `color`
   prop and sits on the page, which contrasts. (Don't hardcode `--ori-color-primary`: it ignores the
