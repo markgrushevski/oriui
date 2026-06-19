@@ -20,7 +20,7 @@ describe('OriSpinner', () => {
     it('maps size / color / inline to classes', () => {
         const c = mount(OriSpinner, { props: { size: 'lg', color: 'primary', inline: true } }).classes();
 
-        expect(c).toContain('ori-size-action_lg');
+        expect(c).toContain('ori-spinner_lg');
         expect(c).toContain('ori-color_primary');
         expect(c).toContain('ori-spinner_inline');
     });

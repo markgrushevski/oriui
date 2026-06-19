@@ -1,6 +1,16 @@
 @layer ori.components {
     .ori-select {
         --ori-select-border: color-mix(in srgb, currentcolor 28%, transparent);
+        /* Baked default for the action-size axis: the bare `.ori-select` is already a valid `md`
+           control. A size modifier (`.ori-select_lg`) or the low-level `.ori-size-action_lg` utility
+           repoints it; the control inherits the alias. */
+        --ori-size-action: var(--ori-size-action_md);
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
+           layer) overrides by layer order. Maps onto the focus ring / error. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
+        --ori-font-size: var(--ori-font-size_md);
 
         display: inline-flex;
         flex-direction: column;
@@ -12,6 +22,33 @@
     .ori-select.ori-select_fluid {
         display: flex;
         width: 100%;
+    }
+
+    /* Size sugar (action-size axis / control height) — the daisyUI-familiar `.ori-select_lg` shape.
+       Compound with the block so it beats the baked `md` default by specificity; the control inherits
+       the repointed alias. Mirrors the low-level `.ori-size-action_*` utility one-for-one. */
+    .ori-select.ori-select_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-select.ori-select_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-select.ori-select_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-select.ori-select_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-select.ori-select_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-select.ori-select_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
     }
 
     .ori-select.ori-select_fluid .ori-select__control-wrap {

@@ -14,15 +14,15 @@ component.
 
 ## Classes
 
-A button is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
-scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A button is a block class plus single-class token utilities — one class repoints one token, no base
+class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
 ## Variants
 
-Five visual styles, all driven by the `ori-variant` token pair.
+Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
 :ori-button{text="Fill" variant="fill"}
@@ -44,9 +44,9 @@ Five visual styles, all driven by the `ori-variant` token pair.
 #html
 
 ```html
-<button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_primary">Fill</button>
-<!-- swap the variant pair: ori-variant_fill → _tonal / _outline / _text / _plain -->
-<button class="ori-button … ori-variant ori-variant_outline ori-color ori-color_primary">Outline</button>
+<button class="ori-button ori-variant_fill ori-color_primary">Fill</button>
+<!-- swap the variant: ori-variant_fill → _tonal / _outline / _text / _plain -->
+<button class="ori-button ori-variant_outline ori-color_primary">Outline</button>
 ```
 
 ::
@@ -74,7 +74,7 @@ Every semantic role. `surface` / `background` are also available for neutral but
 #html
 
 ```html
-<button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_danger">danger</button>
+<button class="ori-button ori-variant_fill ori-color_danger">danger</button>
 ```
 
 ::
@@ -96,14 +96,14 @@ Variant × color compose freely — e.g. a tonal danger button:
 #html
 
 ```html
-<button class="ori-button … ori-variant ori-variant_tonal ori-color ori-color_danger">Delete</button>
+<button class="ori-button ori-variant_tonal ori-color_danger">Delete</button>
 ```
 
 ::
 
 ## Sizes
 
-`xs` → `xxl`. The size drives both the height (`ori-size-action`) and the label (`ori-font-size`).
+`xs` → `xxl`. The size sugar `ori-button_*` drives the height; `ori-font-size_*` scales the label.
 
 ::example
 :ori-button{text="xs" size="xs"}
@@ -122,8 +122,8 @@ Variant × color compose freely — e.g. a tonal danger button:
 #html
 
 ```html
-<button class="ori-button ori-size-action ori-size-action_sm … ori-font-size ori-font-size_sm …">sm</button>
-<button class="ori-button ori-size-action ori-size-action_xl … ori-font-size ori-font-size_xl …">xl</button>
+<button class="ori-button ori-button_sm ori-font-size_sm">sm</button>
+<button class="ori-button ori-button_xl ori-font-size_xl">xl</button>
 ```
 
 ::
@@ -149,7 +149,7 @@ From `zero` to the default `rounded` (pill).
 #html
 
 ```html
-<button class="ori-button … ori-size-radius ori-size-radius_zero …">zero</button>
+<button class="ori-button ori-size-radius_zero">zero</button>
 ```
 
 ::
@@ -176,7 +176,7 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 #html
 
 ```html
-<button class="ori-button …" aria-label="Add">
+<button class="ori-button ori-button_icon ori-variant_tonal" aria-label="Add">
     <i class="ori-icon" aria-hidden="true"
         ><svg viewBox="0 0 24 24"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg
     ></i>
@@ -204,8 +204,8 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 #html
 
 ```html
-<button class="ori-button …" aria-busy="true">
-    <span class="ori-spinner ori-spinner_inline …" role="status" aria-hidden="true"></span>
+<button class="ori-button" aria-busy="true">
+    <span class="ori-spinner ori-spinner_inline" role="status" aria-hidden="true"></span>
     <span class="ori-button__text">Saving</span>
 </button>
 ```
@@ -231,7 +231,7 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 #html
 
 ```html
-<button class="ori-button …" data-active>Active</button> <button class="ori-button …" disabled>Disabled</button>
+<button class="ori-button" data-active>Active</button> <button class="ori-button" disabled>Disabled</button>
 ```
 
 ::
@@ -252,7 +252,7 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 #html
 
 ```html
-<button class="ori-button ori-button_fluid …">Full width</button>
+<button class="ori-button ori-button_fluid">Full width</button>
 ```
 
 ::
@@ -278,8 +278,8 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 
 ```html
 <div style="display: flex; gap: 0.5rem">
-    <button class="ori-button … ori-variant_text …">Cancel</button>
-    <button class="ori-button … ori-variant_fill …">Save changes</button>
+    <button class="ori-button ori-variant_text">Cancel</button>
+    <button class="ori-button ori-variant_fill">Save changes</button>
 </div>
 ```
 
@@ -355,7 +355,7 @@ instead of the boolean attribute.
 #html
 
 ```html
-<a href="/docs" class="ori-button … ori-variant ori-variant_outline …">Link button</a>
+<a href="/docs" class="ori-button ori-variant_outline">Link button</a>
 ```
 
 ::

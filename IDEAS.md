@@ -99,8 +99,8 @@ general atomic set. Candidates that fit that rule:
 - ⭐ `.ori-link` (+ `_primary` / `_danger` / …, hover underline) — the CSS half of OriLink.
 - ⭐ `.ori-divider` · `.ori-stack` / `.ori-cluster` (gap via an `--ori-gap` token) · `.ori-join`.
 - ◽ `.ori-indicator` (+ placement) · `.ori-skeleton` (shimmer) · `.ori-kbd`.
-- ◽ New token pairs mirroring `ori-size-*`: a **shadow** scale (`.ori-shadow_*`), a **z-index**
-  scale, an **aspect-ratio** scale — same `base + value` repointing pattern.
+- ◽ New token scales mirroring `ori-size-*`: a **shadow** scale (`.ori-shadow_*`), a **z-index**
+  scale, an **aspect-ratio** scale — same single-class token-repointing pattern.
 - 🧪 `.ori-mask-*`.
 
 ## Cross-cutting / infra ideas (not components)
@@ -113,3 +113,26 @@ general atomic set. Candidates that fit that rule:
   reset can beat layered components (the exact footgun in NOTES.md; bit us twice in the docs shell).
 - ◽ **Theme / skin gallery** page · **framework-switch** examples (Vue ↔ Svelte) — ROADMAP phase 7.
 - 🧪 Tailwind v4 preset adapter · `@oriui/vanilla` (Zag) headless adapter for htmx / no-framework.
+
+## Inspired by UnoCSS (integration / no-framework layer)
+
+oriUI is component-first with a standalone CSS layer; UnoCSS is an on-demand atomic engine. The overlap
+is the css layer — these fit oriUI's "integrate, don't reinvent" philosophy (like native `<dialog>` and
+Zag-behind-a-contract), not a rewrite. Most serve the htmx / Astro / plain-HTML target.
+
+- ⭐ **oriUI UnoCSS preset** (`presetOri()`) — ship the tokens + `.ori-*` utilities as a composable
+  UnoCSS **preset**, generated **on-demand**. This is the on-demand answer to "we ship all ~41 kB of
+  classes": a consumer already on UnoCSS gets only the oriUI classes they use, zero unused CSS. Pairs
+  with the planned **Tailwind v4 preset** — both are style adapters; the token contract is the shared
+  core. (UnoCSS: presets + JIT.)
+- ⭐ **Pure-CSS icons for `@oriui/css`** (`.ori-i-<name>`) — an icon as a single class via `mask-image`
+  (currentColor-tinted), no Vue, no SVG component, no JS. Lets htmx / Astro / plain-HTML use icons the
+  way OriIcon serves Vue. (UnoCSS: `preset-icons`.) Complements, doesn't replace, OriIcon.
+- ◽ **Attributify-style attribute API** for the css / htmx layer — `[ori-color="danger"]` /
+  `[ori-variant="fill"]` attribute selectors mirroring the class utilities, so server-rendered markup can
+  express an axis as an attribute instead of a class. (UnoCSS: attributify mode.) Niche, opt-in.
+- ◽ **Consumer recipes / shortcuts** — a documented pattern (or a tiny helper) to compose oriUI classes
+  into a named recipe, like UnoCSS `shortcuts`. oriUI's component size sugar (`ori-button_lg`) is already
+  a built-in shortcut; this would expose the mechanism to consumers.
+- 🧪 **Token inspector devtool** — a dev-time panel showing which `--ori-*` tokens resolve and which
+  `.ori-*` classes are active on a hovered element. (UnoCSS: inspector.)

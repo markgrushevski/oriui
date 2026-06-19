@@ -1,6 +1,17 @@
 @layer ori.components {
     .ori-button {
-        --ori-font-size-step_inc: 4px;
+        /* Baked per-axis defaults so a bare `.ori-button` is a valid filled-primary, rounded, md
+           button. Single-class utilities (.ori-button_lg, .ori-size-radius_zero, .ori-color_danger,
+           .ori-variant_*) override by layer order; the cluster below is the `fill` default. */
+        --ori-size-action: var(--ori-size-action_md);
+        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-font-size: var(--ori-font-size_md);
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-on);
 
         display: inline-flex;
         flex-direction: row;
@@ -83,6 +94,32 @@
 
     .ori-button.ori-button_icon-position_left {
         flex-direction: row;
+    }
+
+    /* Size sugar (action-size axis) — the daisyUI-familiar `.ori-button_lg` shape; mirrors the
+       low-level `.ori-size-action_*` utility. Drives both the height and the icon-button square. */
+    .ori-button.ori-button_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-button.ori-button_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-button.ori-button_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-button.ori-button_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-button.ori-button_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-button.ori-button_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
     }
 
     .ori-button:not(.ori-button_icon) .ori-button__icon {

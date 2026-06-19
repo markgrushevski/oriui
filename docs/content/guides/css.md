@@ -28,29 +28,32 @@ Or drop it in with no build step at all:
 
 ## How the classes compose
 
-Every component is built from a **block class** plus **paired token utilities** — `ori-size-action_*`
-(sizing), `ori-size-radius_*` (corners), `ori-font-size_*`, `ori-variant_*` (style), and
-`ori-color_*` (color). Each pair is a base class plus a scale value, so a single class repoints a
-single token:
+Every component is a **block class** plus **single-class token utilities** — one class repoints one
+token, no paired base class: `ori-<name>_<size>` (size sugar), `ori-size-radius_*` (corners),
+`ori-font-size_*`, `ori-variant_*` (style), and `ori-color_*` (color). The block **bakes sensible
+defaults**, so a bare block is already valid — you add a class only to override an axis:
 
 ```html
-<button
-    class="ori-button
-               ori-size-action ori-size-action_md
-               ori-size-radius ori-size-radius_rounded
-               ori-font-size ori-font-size_md
-               ori-variant ori-variant_fill
-               ori-color ori-color_primary"
->
-    Button
-</button>
+<!-- a bare block is a valid filled, primary, rounded, md button -->
+<button class="ori-button">Button</button>
+
+<!-- override only what differs -->
+<button class="ori-button ori-button_lg ori-variant_tonal ori-color_danger">Button</button>
 ```
 
 Swap `ori-variant_fill` → `_tonal`, or `ori-color_primary` → `ori-color_danger`, and nothing else
-changes. The verbosity is the point — it is what lets any single token be repointed, and it is the
-**same markup** whether rendered from Vue, Svelte, htmx, Astro, or hand-written HTML. Dynamic state
-is real **attributes**, not classes (`disabled`, `aria-busy="true"`, `aria-pressed`), so it stays
-accessible and identical across every layer.
+changes — each class repoints exactly one CSS variable the component reads. It is the **same markup**
+whether rendered from Vue, Svelte, htmx, Astro, or hand-written HTML. Dynamic state is real
+**attributes**, not classes (`disabled`, `aria-busy="true"`, `aria-pressed`), so it stays accessible
+and identical across every layer.
+
+> **Why single-class?** Every utility lives in the last cascade layer (`@layer ori.utilities`) and
+> sets one token — e.g. `.ori-color_danger { --ori-color: … }` — so it wins over the block's baked
+> default by layer order, not specificity. There is no "base + value" pair to remember (forgetting
+> the base used to be a silent no-op). **Size** is the one axis with a component-scoped sugar
+> (`ori-button_lg`, `ori-input_md`, `ori-avatar_xs`) because it is the most-swapped; under the hood it
+> repoints the same `--ori-size-action` token, so `<input class="ori-input__field ori-size-action_lg">`
+> works too.
 
 > Per-component class tables and live examples (each with an **HTML** tab — the canonical,
 > copy-pasteable markup) live on the component pages, e.g. [Button](/components/button). This guide

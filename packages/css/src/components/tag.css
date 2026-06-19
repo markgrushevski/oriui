@@ -1,5 +1,17 @@
 @layer ori.components {
     .ori-tag {
+        /* Baked per-axis defaults so a bare `.ori-tag` is a valid tonal-primary, rounded, sm chip.
+           Single-class utilities (.ori-color_danger, .ori-size-radius_zero, .ori-font-size_lg,
+           .ori-variant_*) override by layer order; the cluster below is the `tonal` default. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-font-size: var(--ori-font-size_sm);
+        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
+        --ori-variant-text-color: var(--ori-color);
+
         display: inline-flex;
         flex-direction: row;
         flex-shrink: 0;

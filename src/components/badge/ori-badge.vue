@@ -59,9 +59,9 @@ const decorative = computed(() => !label && (dot || displayValue.value === undef
                 {
                     'ori-badge_dot': dot,
                     'ori-badge_floating': floating,
-                    [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                    [`ori-variant ori-variant_${variant}`]: variant,
-                    [`ori-color ori-color_${color}`]: color
+                    [`ori-size-radius_${radius}`]: radius,
+                    [`ori-variant_${variant}`]: variant,
+                    [`ori-color_${color}`]: color
                 }
             ]"
             v-bind="$attrs"
@@ -78,9 +78,9 @@ const decorative = computed(() => !label && (dot || displayValue.value === undef
             'ori-badge',
             {
                 'ori-badge_dot': dot,
-                [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-size-radius_${radius}`]: radius,
+                [`ori-variant_${variant}`]: variant,
+                [`ori-color_${color}`]: color
             }
         ]"
         v-bind="$attrs"

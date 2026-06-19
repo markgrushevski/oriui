@@ -34,7 +34,7 @@ const bubbleId = useId();
 </script>
 
 <template>
-    <span :class="['ori-tooltip', color && `ori-color ori-color_${color}`]">
+    <span :class="['ori-tooltip', color && `ori-color_${color}`]">
         <span class="ori-tooltip__trigger" :aria-describedby="bubbleId">
             <!-- bubbleId is exposed so the consumer can put aria-describedby on their OWN focusable
                  control — aria-describedby only announces when the element bearing it is focused, and

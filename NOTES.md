@@ -8,6 +8,30 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions), [DECISIONS.md](DECISIONS.md) 
 and [REVIEW.md](REVIEW.md) (the per-change bar). Architectural decisions go in DECISIONS.md; small
 practical gotchas go here.
 
+## Class-API: single-class token utilities + block-baked defaults
+
+- **Override wins by LAYER ORDER, not specificity.** A value utility (`.ori-color_danger`) sets one token
+  in `@layer ori.utilities` (declared last), so it beats a block's baked default in `ori.components` even
+  at equal specificity. A component **size sugar** (`.ori-input.ori-input_lg`) is compound (0,2,0) so it
+  also beats the block default (0,1,0) on specificity. Either way the paired base class is gone — the old
+  compound `.ori-x.ori-x_y` selector, and the silent no-op of forgetting the base, is retired per axis.
+- **Bake a block default only for axes the component actually reads.** Add `--ori-<alias>: …` to the
+  `.ori-<name>` rule (custom props first) for each axis whose token the css reads, using the prop default.
+  Skip an axis it doesn't read: e.g. **tooltip** is color-only with a _defaultless_ color prop (the bubble
+  falls back via `var(--ori-color, …)`), so its css is left untouched — template + test only.
+- **Variant cluster: bake only if the css reads `var(--ori-variant-*)`.** Button / Card / Badge / Alert /
+  Tag read the cluster → bake the default variant's 4 lines into the block. Input / Select / Textarea do
+  variants with component-scoped tokens (`--ori-<name>-border` / `-bg`), so they bake **no** cluster.
+- **Wrapper + field components** (input / select / textarea): the size sugar (`ori-input_lg`) sits on the
+  **wrapper**, the field inherits `--ori-size-action`. Do NOT also set the size default on the field
+  element — an own value beats the inherited override and the sugar would no-op.
+- **`action-space` is single-class** (`.ori-size-action-space_*`); a component must **read**
+  `--ori-size-action-space` as margin for `spaced` to do anything. **Icon reads it; Avatar does not** —
+  Avatar's `spaced` is a pre-existing no-op (flagged separately), faithfully preserved by the migration.
+- **Backward compatible:** a component or doc still emitting `ori-color ori-color_primary` (base+value)
+  keeps working — the single-class value matches, the base is an inert extra. So the axis-utility files
+  could be converted ahead of the per-component template migration without a flag day.
+
 ## Verification / preview MCP
 
 - **`:focus` / `:checked` computed styles don't reflect a programmatic change** right after

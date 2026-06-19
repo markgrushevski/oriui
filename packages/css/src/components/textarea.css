@@ -2,6 +2,16 @@
     .ori-textarea {
         --ori-textarea-border: color-mix(in srgb, currentcolor 28%, transparent);
         --ori-textarea-bg: transparent;
+        /* Baked default for the action-size axis: the bare `.ori-textarea` already sizes its field's
+           min-height at `md`. A size modifier (`.ori-textarea_lg`) or the low-level
+           `.ori-size-action_lg` utility repoints it; the field inherits the alias. */
+        --ori-size-action: var(--ori-size-action_md);
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
+           layer) overrides by layer order — it maps onto the focus ring / error. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
+        --ori-font-size: var(--ori-font-size_md);
 
         display: inline-flex;
         flex-direction: column;
@@ -16,6 +26,33 @@
     .ori-textarea.ori-textarea_fill {
         --ori-textarea-border: transparent;
         --ori-textarea-bg: color-mix(in srgb, currentcolor 6%, transparent);
+    }
+
+    /* Size sugar (action-size axis / field min-height) — the daisyUI-familiar `.ori-textarea_lg` shape.
+       Compound with the block so it beats the baked `md` default by specificity; the field inherits
+       the repointed alias. Mirrors the low-level `.ori-size-action_*` utility one-for-one. */
+    .ori-textarea.ori-textarea_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-textarea.ori-textarea_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-textarea.ori-textarea_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-textarea.ori-textarea_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-textarea.ori-textarea_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-textarea.ori-textarea_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
     }
 
     .ori-textarea__label {

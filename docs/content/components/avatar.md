@@ -13,13 +13,13 @@ component.
 
 ## Classes
 
-An avatar is a block class plus paired token utilities — each pair is a base class
-(`ori-size-action`) and a scale value (`ori-size-action_lg`), so one class repoints one token. The
-Vue props in [Framework API](#framework-api) mirror these — font size and the titled layout are
-derived from `size` and `title` / `subtitle`. There is no variant; an optional `color` tints the
-initials backdrop.
+An avatar is a block class plus single-class token utilities — one class repoints one token; no
+separate base class is needed. The Vue props in [Framework API](#framework-api) mirror these — font
+size and the titled layout are derived from `size` and `title` / `subtitle`. There is no variant;
+an optional `color` tints the initials backdrop.
 
-:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space + ori-size-action-space_*","type":"Size","description":"adds padding around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-avatar_* (size)","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space_*","type":"Size","description":"adds margin around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
 
 ## Image & initials
 
@@ -45,17 +45,13 @@ to two letters from the first two words of `text`.
 #html
 
 ```html
-<!-- with image -->
-<div
-    class="ori-avatar ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
->
+<!-- with image — bare .ori-avatar is already lg + rounded (defaults baked in) -->
+<div class="ori-avatar">
     <img class="ori-avatar__image" src="/portrait.jpg" alt="Marcus Tullius Cicero" />
 </div>
 
 <!-- initials fallback: backdrop is aria-hidden -->
-<div
-    class="ori-avatar ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
->
+<div class="ori-avatar">
     <div class="ori-avatar__backdrop" aria-hidden="true">MT</div>
 </div>
 ```
@@ -90,9 +86,7 @@ when an image is showing.
 #html
 
 ```html
-<div
-    class="ori-avatar ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg ori-color ori-color_danger"
->
+<div class="ori-avatar ori-color_danger">
     <div class="ori-avatar__backdrop" aria-hidden="true">D</div>
 </div>
 ```
@@ -101,8 +95,8 @@ when an image is showing.
 
 ## Sizes
 
-`xs` → `xxl`. The size drives the box dimensions (`ori-size-action`) and the initials scale
-(`ori-font-size`). Default is `lg`.
+`xs` → `xxl`. The size drives the box dimensions (`ori-avatar_*`) and the initials scale
+(`ori-font-size_*`). Default is `lg`.
 
 ::example
 :ori-avatar{text="Extra Small" size="xs"}
@@ -123,14 +117,10 @@ when an image is showing.
 #html
 
 ```html
-<div
-    class="ori-avatar ori-size-action ori-size-action_sm ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_sm"
->
+<div class="ori-avatar ori-avatar_sm ori-font-size_sm">
     <div class="ori-avatar__backdrop" aria-hidden="true">S</div>
 </div>
-<div
-    class="ori-avatar ori-size-action ori-size-action_xl ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_xl"
->
+<div class="ori-avatar ori-avatar_xl ori-font-size_xl">
     <div class="ori-avatar__backdrop" aria-hidden="true">EL</div>
 </div>
 ```
@@ -158,9 +148,7 @@ From `zero` (square) to the default `rounded` (full pill / circle).
 #html
 
 ```html
-<div
-    class="ori-avatar ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_zero ori-font-size ori-font-size_lg"
->
+<div class="ori-avatar ori-size-radius_zero">
     <div class="ori-avatar__backdrop" aria-hidden="true">Z</div>
 </div>
 ```
@@ -193,9 +181,7 @@ element switches to `max-content` width via `ori-avatar_titled`.
 
 ```html
 <!-- ori-avatar_titled activates the text column layout -->
-<div
-    class="ori-avatar ori-avatar_titled ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
->
+<div class="ori-avatar ori-avatar_titled">
     <img class="ori-avatar__image" src="/portrait.jpg" alt="Marcus Tullius Cicero" />
     <div class="ori-avatar__text">
         <div class="ori-avatar__title">Marcus Tullius Cicero</div>
@@ -222,9 +208,7 @@ element switches to `max-content` width via `ori-avatar_titled`.
 #html
 
 ```html
-<div
-    class="ori-avatar ori-avatar_titled ori-avatar_reverse ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
->
+<div class="ori-avatar ori-avatar_titled ori-avatar_reverse ori-color_primary">
     <div class="ori-avatar__text">
         <div class="ori-avatar__title">Ada Lovelace</div>
         <div class="ori-avatar__subtitle">mathematician</div>
@@ -254,9 +238,7 @@ a tag list.
 #html
 
 ```html
-<div
-    class="ori-avatar ori-avatar_inline ori-size-action ori-size-action_xs ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_xs"
->
+<div class="ori-avatar ori-avatar_inline ori-avatar_xs ori-font-size_xs">
     <div class="ori-avatar__backdrop" aria-hidden="true">AL</div>
 </div>
 ```
@@ -282,9 +264,7 @@ inside a container that provides no gap of its own.
 #html
 
 ```html
-<div
-    class="ori-avatar ori-size-action ori-size-action_lg ori-size-action-space ori-size-action-space_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
->
+<div class="ori-avatar ori-size-action-space_lg">
     <div class="ori-avatar__backdrop" aria-hidden="true">AL</div>
 </div>
 ```
@@ -321,9 +301,7 @@ A user-list row and a comment header — the everyday compositions.
 ```html
 <ul style="display: flex; flex-direction: column; gap: 0.75rem; list-style: none; padding: 0">
     <li>
-        <div
-            class="ori-avatar ori-avatar_titled ori-size-action ori-size-action_lg ori-size-radius ori-size-radius_rounded ori-font-size ori-font-size_lg"
-        >
+        <div class="ori-avatar ori-avatar_titled">
             <img class="ori-avatar__image" src="/portrait.jpg" alt="Marcus Tullius Cicero" />
             <div class="ori-avatar__text">
                 <div class="ori-avatar__title">Marcus Tullius Cicero</div>

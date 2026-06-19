@@ -18,16 +18,16 @@ component.
 
 ## Classes
 
-A select is a block wrapper plus paired token utilities — each pair is a base class (`ori-color`) and
-a scale value (`ori-color_primary`), so one class repoints one token. The `ori-color` accent drives
-the focus ring; the idle border is a neutral, theme-aware blend. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A select is a block wrapper plus single-class token utilities — one class repoints one token, no base
+class needed. The `ori-color_*` accent drives the focus ring; the idle border is a neutral,
+theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-select","type":"Block","description":"Column wrapper (label, control, hint/error); carries the ori-color and ori-font-size utility classes."},{"class":"ori-color + ori-color_*","type":"Color","description":"primary (default) · secondary · success · warn · danger · info · surface (focus ring accent)."},{"class":"ori-size-action + ori-size-action_*","type":"Size","description":"xs · sm · md (default) · lg · xl · xxl (control height)."},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md (default) · lg · xl · rounded (control corners)."},{"class":"ori-font-size + ori-font-size_*","type":"Font","description":"xs · sm · md (default) · lg · xl · xxl (text scale, driven by size prop)."},{"class":"ori-select__control","type":"Part","description":"The native select element; carries ori-size-action and ori-size-radius utilities."},{"class":"ori-select__chevron","type":"Part","description":"Decorative aria-hidden chevron (inline SVG), absolutely positioned at inset-inline-end."},{"class":"ori-select__label · ori-select__required · ori-select__control-wrap · ori-select__hint · ori-select__error","type":"Part","description":"label / required asterisk / control+chevron wrapper / helper text / error message (role=alert)."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes, not classes"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-select","type":"Block","description":"Column wrapper (label, control, hint/error); carries the ori-color and ori-font-size utility classes."},{"class":"ori-color_*","type":"Color","description":"primary (default) · secondary · success · warn · danger · info · surface (focus ring accent)."},{"class":"ori-select_* (size)","type":"Size","description":"xs · sm · md (default) · lg · xl · xxl (control height sugar on the wrapper)."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md (default) · lg · xl · rounded (control corners, on the inner select element)."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · md (default) · lg · xl · xxl (text scale, driven by size prop)."},{"class":"ori-select__control","type":"Part","description":"The native select element; carries ori-size-radius utility."},{"class":"ori-select__chevron","type":"Part","description":"Decorative aria-hidden chevron (inline SVG), absolutely positioned at inset-inline-end."},{"class":"ori-select__label · ori-select__required · ori-select__control-wrap · ori-select__hint · ori-select__error","type":"Part","description":"label / required asterisk / control+chevron wrapper / helper text / error message (role=alert)."},{"class":"ori-select_fluid","type":"Layout","description":"Stretches the wrapper to full width of its container."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes, not classes"}]'}
 
 ## Colors
 
-The `ori-color` pair controls the focus ring accent.
+The `ori-color_*` class controls the focus ring accent.
 
 ::example
 :ori-select{color="primary" :options='[{"label":"Primary","value":"primary"}]'}
@@ -48,12 +48,14 @@ The `ori-color` pair controls the focus ring accent.
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
-<div class="ori-select ori-color ori-color_danger ori-font-size ori-font-size_md">
-    <select class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md">
-        <option value="danger">Danger</option>
-    </select>
-    <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+<!-- swap the color: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<div class="ori-select ori-color_danger">
+    <div class="ori-select__control-wrap">
+        <select class="ori-select__control ori-size-radius_md">
+            <option value="danger">Danger</option>
+        </select>
+        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    </div>
 </div>
 ```
 
@@ -61,8 +63,8 @@ The `ori-color` pair controls the focus ring accent.
 
 ## Sizes
 
-`xs` → `xxl`. The size drives both the control height (`ori-size-action`) and the text scale
-(`ori-font-size`).
+`xs` → `xxl`. The size drives both the control height (`ori-select_*` sugar on the wrapper) and the
+text scale (`ori-font-size_*`).
 
 ::example
 :ori-select{size="xs" :options='[{"label":"Extra small","value":"xs"}]'}
@@ -81,12 +83,14 @@ The `ori-color` pair controls the focus ring accent.
 #html
 
 ```html
-<!-- ori-size-action drives height; ori-font-size scales the text; both use the same size token -->
-<div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_xl">
-    <select class="ori-select__control ori-size-action ori-size-action_xl ori-size-radius ori-size-radius_md">
-        <option value="xl">Extra large</option>
-    </select>
-    <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+<!-- ori-select_* drives height; ori-font-size_* scales the text; both use the same size token -->
+<div class="ori-select ori-color_primary ori-select_xl ori-font-size_xl">
+    <div class="ori-select__control-wrap">
+        <select class="ori-select__control ori-size-radius_md">
+            <option value="xl">Extra large</option>
+        </select>
+        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    </div>
 </div>
 ```
 
@@ -113,7 +117,7 @@ From `zero` (square) through the default `md` to `rounded` (pill-shaped control)
 #html
 
 ```html
-<select class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_zero">
+<select class="ori-select__control ori-size-radius_zero">
     …
 </select>
 ```
@@ -145,14 +149,16 @@ A `placeholder` renders a disabled, non-reselectable first option that acts as a
 #html
 
 ```html
-<div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_md">
-    <select class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md">
-        <option value="" disabled selected>Choose a country</option>
-        <option value="fr">France</option>
-        <option value="de">Germany</option>
-        <option value="jp">Japan</option>
-    </select>
-    <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+<div class="ori-select ori-color_primary">
+    <div class="ori-select__control-wrap">
+        <select class="ori-select__control ori-size-radius_md">
+            <option value="" disabled selected>Choose a country</option>
+            <option value="fr">France</option>
+            <option value="de">Germany</option>
+            <option value="jp">Japan</option>
+        </select>
+        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    </div>
 </div>
 ```
 
@@ -219,19 +225,21 @@ replaces the `options`-prop rendering; the placeholder option (if any) still ren
 #html
 
 ```html
-<div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_md">
-    <select class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md">
-        <option value="" disabled selected>Pick a city</option>
-        <optgroup label="Europe">
-            <option value="par">Paris</option>
-            <option value="ber">Berlin</option>
-        </optgroup>
-        <optgroup label="Asia">
-            <option value="tok">Tokyo</option>
-            <option value="bkk">Bangkok</option>
-        </optgroup>
-    </select>
-    <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+<div class="ori-select ori-color_primary">
+    <div class="ori-select__control-wrap">
+        <select class="ori-select__control ori-size-radius_md">
+            <option value="" disabled selected>Pick a city</option>
+            <optgroup label="Europe">
+                <option value="par">Paris</option>
+                <option value="ber">Berlin</option>
+            </optgroup>
+            <optgroup label="Asia">
+                <option value="tok">Tokyo</option>
+                <option value="bkk">Bangkok</option>
+            </optgroup>
+        </select>
+        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    </div>
 </div>
 ```
 
@@ -290,17 +298,12 @@ wiring — a `label` (rendered `<label for>`, no external label needed), a `hint
 #html
 
 ```html
-<div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_md">
+<div class="ori-select ori-color_primary">
     <label for="country" class="ori-select__label"
         >Country<span class="ori-select__required" aria-hidden="true">*</span></label
     >
     <div class="ori-select__control-wrap">
-        <select
-            id="country"
-            required
-            aria-describedby="country-hint"
-            class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-        >
+        <select id="country" required aria-describedby="country-hint" class="ori-select__control ori-size-radius_md">
             <option value="fr">France</option>
             <option value="de">Germany</option>
         </select>
@@ -344,29 +347,26 @@ A shipping-address form row — color, size, radius, placeholder, and required f
 
 ```html
 <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
-    <div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_md">
-        <select
-            name="country"
-            required
-            class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-        >
-            <option value="" disabled selected>Country</option>
-            <option value="fr">France</option>
-            <option value="de">Germany</option>
-            <option value="jp">Japan</option>
-        </select>
-        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    <div class="ori-select ori-color_primary">
+        <div class="ori-select__control-wrap">
+            <select name="country" required class="ori-select__control ori-size-radius_md">
+                <option value="" disabled selected>Country</option>
+                <option value="fr">France</option>
+                <option value="de">Germany</option>
+                <option value="jp">Japan</option>
+            </select>
+            <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+        </div>
     </div>
-    <div class="ori-select ori-color ori-color_primary ori-font-size ori-font-size_md">
-        <select
-            name="state"
-            class="ori-select__control ori-size-action ori-size-action_md ori-size-radius ori-size-radius_md"
-        >
-            <option value="" disabled selected>State / Province</option>
-            <option value="idf">Île-de-France</option>
-            <option value="bay">Bavaria</option>
-        </select>
-        <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+    <div class="ori-select ori-color_primary">
+        <div class="ori-select__control-wrap">
+            <select name="state" class="ori-select__control ori-size-radius_md">
+                <option value="" disabled selected>State / Province</option>
+                <option value="idf">Île-de-France</option>
+                <option value="bay">Bavaria</option>
+            </select>
+            <span class="ori-select__chevron" aria-hidden="true"><!-- chevron SVG --></span>
+        </div>
     </div>
 </div>
 ```
@@ -428,9 +428,9 @@ planned.)
 | `label`       | `string`                                                                | —           | Built-in `<label>` rendered above the control and wired to it via `for`.                                                                        |
 | `options`     | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]`        | Options rendered as `<option>` elements. Ignored when a default slot is provided.                                                               |
 | `placeholder` | `string`                                                                | —           | Renders a disabled, selected-by-default first `<option value="">` as a non-selectable prompt.                                                   |
-| `radius`      | `RadiusSize`                                                            | `'md'`      | Border radius via the `ori-size-radius` alias (`zero` · xs · sm · md · lg · xl · rounded).                                                      |
+| `radius`      | `RadiusSize`                                                            | `'md'`      | Border radius via the `ori-size-radius_*` single-class token (`zero` · xs · sm · md · lg · xl · rounded).                                       |
 | `required`    | `boolean`                                                               | `false`     | Sets the native `required` attribute and renders a `*` after the label.                                                                         |
-| `size`        | `ActionSize`                                                            | `'md'`      | Control height (`ori-size-action` alias) and font-size (`ori-font-size` alias) (`xs`–`xxl`).                                                    |
+| `size`        | `ActionSize`                                                            | `'md'`      | Control height (`ori-select_*` size sugar) and font-size (`ori-font-size_*`) (`xs`–`xxl`).                                                      |
 
 ### Events & attributes
 

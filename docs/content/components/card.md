@@ -14,11 +14,11 @@ nested `.ori-card__*` classes you'd use in htmx, Astro, Svelte, or plain HTML. F
 
 ## Classes
 
-A card is a block class plus paired token utilities — each pair is a base class (`ori-color`) and a
-scale value (`ori-color_surface`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A card is a block class plus single-class token utilities — one class repoints one token, no base
+class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · <b>lg</b> · xl · rounded"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class. Defaults bake in fill variant, surface color, and lg radius — a bare ori-card is valid."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · <b>lg</b> · xl · rounded"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
 
 ## Anatomy
 
@@ -40,7 +40,7 @@ ori-card
 
 ## Variants
 
-Five visual styles, all driven by the `ori-variant` token pair. The default is `fill` on `surface`.
+Five visual styles, all driven by the `ori-variant_*` utilities. The default is `fill` on `surface`.
 
 ::example
 :ori-card{variant="fill" color="surface" title="Fill" text="Default fill on surface."}
@@ -62,13 +62,13 @@ Five visual styles, all driven by the `ori-variant` token pair. The default is `
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Fill</div></div>
     </div>
     <div class="ori-card__body">Default fill on surface.</div>
 </div>
-<!-- swap the variant pair: ori-variant_fill → _tonal / _outline / _text / _plain -->
+<!-- swap the variant: ori-variant_fill → ori-variant_tonal / ori-variant_outline / ori-variant_text / ori-variant_plain -->
 ```
 
 ::
@@ -103,12 +103,12 @@ Every semantic role composes with every variant. `surface` is the default — ne
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_tonal ori-color ori-color_danger">
+<div class="ori-card ori-size-radius_lg ori-variant_tonal ori-color_danger">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">danger</div></div>
     </div>
 </div>
-<!-- swap ori-color_danger for any role: _primary / _secondary / _success / _warn / _info / _surface / _background -->
+<!-- swap the color: ori-color_danger → ori-color_primary / ori-color_secondary / ori-color_success / ori-color_warn / ori-color_info / ori-color_surface / ori-color_background -->
 ```
 
 ::
@@ -131,7 +131,7 @@ Variant × color compose freely — e.g. a filled danger card or an outlined inf
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_danger">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_danger">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Delete zone</div></div>
     </div>
@@ -163,7 +163,7 @@ From `zero` (sharp) to `rounded` (pill-like). The default is `lg`.
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_zero ori-variant ori-variant_fill ori-color ori-color_surface">
+<div class="ori-card ori-size-radius_zero ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">zero</div></div>
     </div>
@@ -192,10 +192,10 @@ the trailing slot. Pass an SVG path to `prependIcon` or a URL to `prependAvatar`
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__header-prepend">
-            <i class="ori-icon ori-size-action ori-size-action_sm" aria-hidden="true">
+            <i class="ori-icon ori-icon_sm" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 …" /></svg>
             </i>
         </div>
@@ -231,12 +231,10 @@ the trailing slot. Pass an SVG path to `prependIcon` or a URL to `prependAvatar`
 #html
 
 ```html
-<div
-    class="ori-card ori-card_row ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface"
->
+<div class="ori-card ori-card_row ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__header-prepend">
-            <i class="ori-icon ori-size-action ori-size-action_sm" aria-hidden="true">
+            <i class="ori-icon ori-icon_sm" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
             </i>
         </div>
@@ -266,9 +264,7 @@ the trailing slot. Pass an SVG path to `prependIcon` or a URL to `prependAvatar`
 #html
 
 ```html
-<div
-    class="ori-card ori-card_fluid ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface"
->
+<div class="ori-card ori-card_fluid ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Full width</div></div>
     </div>
@@ -297,17 +293,14 @@ classes, matching the rest of the library.
 #html
 
 ```html
-<div
-    class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface"
-    aria-disabled="true"
->
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface" aria-disabled="true">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Disabled</div></div>
     </div>
     <div class="ori-card__body">aria-disabled — dimmed, non-interactive.</div>
 </div>
 
-<div class="ori-card … ori-variant ori-variant_fill ori-color ori-color_surface" aria-busy="true">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface" aria-busy="true">
     <div class="ori-card__header">
         <div class="ori-card__headline"><div class="ori-card__title">Loading</div></div>
     </div>
@@ -339,10 +332,10 @@ A profile card and a notification card with an action row — everyday compositi
 #html
 
 ```html
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__header-prepend">
-            <i class="ori-icon ori-size-action ori-size-action_sm" aria-hidden="true">
+            <i class="ori-icon ori-icon_sm" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4 …" /></svg>
             </i>
         </div>
@@ -397,7 +390,7 @@ the button order (e.g. destructive action on the right).
 
 ```html
 <!-- Notification card with action row -->
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_outline ori-color ori-color_warn">
+<div class="ori-card ori-size-radius_lg ori-variant_outline ori-color_warn">
     <div class="ori-card__header">
         <div class="ori-card__headline">
             <div class="ori-card__title">Delete account?</div>
@@ -405,13 +398,13 @@ the button order (e.g. destructive action on the right).
     </div>
     <div class="ori-card__body">This will permanently remove your data. This action cannot be undone.</div>
     <div class="ori-card__actions">
-        <button class="ori-button ori-variant ori-variant_text">Cancel</button>
-        <button class="ori-button ori-variant ori-variant_fill ori-color ori-color_danger">Delete</button>
+        <button class="ori-button ori-variant_text">Cancel</button>
+        <button class="ori-button ori-variant_fill ori-color_danger">Delete</button>
     </div>
 </div>
 
 <!-- Reversed order: add ori-card__actions_reverse to flip flex direction -->
-<div class="ori-card ori-size-radius ori-size-radius_lg ori-variant ori-variant_fill ori-color ori-color_surface">
+<div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
     <div class="ori-card__header">
         <div class="ori-card__headline">
             <div class="ori-card__title">Save changes?</div>
@@ -419,8 +412,8 @@ the button order (e.g. destructive action on the right).
     </div>
     <div class="ori-card__body">You have unsaved edits. Would you like to save before leaving?</div>
     <div class="ori-card__actions ori-card__actions_reverse">
-        <button class="ori-button ori-variant ori-variant_text">Discard</button>
-        <button class="ori-button ori-variant ori-variant_tonal ori-color ori-color_primary">Save</button>
+        <button class="ori-button ori-variant_text">Discard</button>
+        <button class="ori-button ori-variant_tonal ori-color_primary">Save</button>
     </div>
 </div>
 ```

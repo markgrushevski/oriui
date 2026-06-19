@@ -20,7 +20,6 @@ describe('OriTabs', () => {
         const wrapper = mount(OriTabs, { props: { tabs: TABS } });
 
         expect(wrapper.classes()).toContain('ori-tabs');
-        expect(wrapper.classes()).toContain('ori-color');
         expect(wrapper.classes()).toContain('ori-color_primary');
         expect(wrapper.classes()).not.toContain('ori-tabs_vertical');
 

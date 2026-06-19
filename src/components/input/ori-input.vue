@@ -65,11 +65,10 @@ const describedBy = computed(() => {
     <div
         :class="[
             'ori-input',
-            'ori-color',
             `ori-color_${color}`,
-            'ori-font-size',
             `ori-font-size_${size}`,
             `ori-input_${variant}`,
+            `ori-input_${size}`,
             { 'ori-input_fluid': fluid }
         ]"
     >
@@ -81,13 +80,7 @@ const describedBy = computed(() => {
             v-bind="$attrs"
             :id="fieldId"
             v-model="model"
-            :class="[
-                'ori-input__field',
-                'ori-size-action',
-                `ori-size-action_${size}`,
-                'ori-size-radius',
-                `ori-size-radius_${radius}`
-            ]"
+            :class="['ori-input__field', `ori-size-radius_${radius}`]"
             :type="type"
             :disabled="disabled"
             :required="required"

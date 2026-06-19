@@ -1,5 +1,16 @@
 @layer ori.components {
     .ori-card {
+        /* Baked per-axis defaults so a bare `.ori-card` is a valid filled-surface, lg-radius card.
+           Single-class utilities (.ori-size-radius_zero, .ori-color_danger, .ori-variant_*) override
+           by layer order; the cluster below is the `fill` default. */
+        --ori-size-radius: var(--ori-size-radius_lg);
+        --ori-color: var(--ori-color-surface);
+        --ori-color-on: var(--ori-color-on-surface);
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-on);
+
         min-width: min-content;
 
         padding: var(--ori-size-gap_xl);

@@ -100,19 +100,17 @@ describe('OriTooltip', () => {
     // Color prop — ori-color utility classes
     // -------------------------------------------------------------------------
 
-    it('color prop adds ori-color and ori-color_<color> classes to the wrapper', () => {
+    it('color prop adds the ori-color_<color> class to the wrapper', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info', color: 'primary' } });
         const classes = wrapper.classes();
 
-        expect(classes).toContain('ori-color');
         expect(classes).toContain('ori-color_primary');
     });
 
-    it('without a color prop the wrapper carries neither ori-color nor ori-color_* class', () => {
+    it('without a color prop the wrapper carries no ori-color_* class', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info' } });
         const classes = wrapper.classes();
 
-        expect(classes).not.toContain('ori-color');
         expect(classes.some((c) => c.startsWith('ori-color_'))).toBe(false);
     });
 
