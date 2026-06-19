@@ -14,7 +14,8 @@ woven around shared design tokens:
 
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
 (standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
-Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); key decisions and
+Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); the candidate-component /
+class backlog in [IDEAS.md](IDEAS.md); key decisions and
 their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
 non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runbook in
 [RELEASING.md](RELEASING.md); the branch / commit / release workflow in [CONTRIBUTING.md](CONTRIBUTING.md).
