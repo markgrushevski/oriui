@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 
     // Machine-readable docs for AI consumers: /llms.txt (a curated index) and /llms-full.txt (every
     // page concatenated, populated by the server/plugins/llms-full hook). `domain` is used for the
-    // absolute links in llms.txt — update it to the real deploy URL when the docs are hosted.
+    // absolute links in llms.txt; the docs are hosted at this URL (Vercel deploy of `main`).
     llms: {
         domain: 'https://oriui.vercel.app',
         title: 'oriUI',

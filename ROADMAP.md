@@ -34,29 +34,27 @@ a11y, tests, strong docs).
    adapters for both the simple primitives (Disclosure ✅) and the dialog (native `<dialog>` ✅), or
    bring-your-own. (Superseded "own ↔ Reka" and "Zag for complex" — see DECISIONS.md.) `OriDialog` ships
    in `@oriui/ui`.
-5. 🔄 **Styled components** — a11y pass on the 5 done (state-via-attributes, focus-visible); next:
-   `glass` variant + catalog expansion (forms, overlays) on the headless contract.
-6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (93 tests, ~95% line cov on
-   components): behavior/a11y contracts, OriDialog on a fake adapter, **executable token-contrast**
-   (every skin's role/on-role pair asserted WCAG AA — already caught a real Sumi failure). Chose VTU
-   over Testing Library (DECISIONS.md). Next: Playwright visual/e2e.
-7. 🔄 **Docs** — dogfooded **Nuxt 4 + Nuxt Content 3** app, UI built on oriUI (not VitePress). To do:
-    - **every component gets a full page** (intro + explanation + props/slots + a11y);
-    - **per-component playground** — demos + explanation live ON the component page; retire the
-      separate `/playground` route (its grid distributes into the pages);
-    - **framework-switchable examples (Vue ↔ Svelte)** — global toggle (like the skin switch); live
-      demo stays Vue, code shown for the selected framework (Svelte via the standalone `.ori-*` css);
-    - idea + comparisons + **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML /
-      Capacitor / Electron) — htmx & no-framework are first-class for the css layer (the Example
-      switcher can gain an HTML/htmx tab); theme gallery + `nuxt-llms` (llms.txt).
-8. 🔄 **CI/CD + deploy** — **GitHub Actions** quality gate ✅ (`lint → types → test → build` on
-   push/PR, Node 20.19 + 22; check-mode `lint:ci`). Vercel SSG preset pinned (`nuxi generate` →
-   `docs/.output/public`, root install). Foundation merged to `main`; internal workspace deps
-   pinned for the `1.0.0-alpha.0` publish; the manual publish runbook lives in
-   [RELEASING.md](RELEASING.md). ✅ `oriui` npm org + **first publish done** — all four
-   `@oriui/*` packages live at `1.0.0-alpha.0` (both `next` + `latest`) since 2026-06-18. To do:
-   automate with `changesets` + a CI publish job (`NPM_TOKEN`); connect the Vercel project;
-   status/coverage badges.
+5. 🔄 **Styled components** — **27 shipped** (actions, forms, overlays, layout, feedback, navigation,
+   data display), each with state-via-attributes + focus-visible a11y and a Vitest+axe suite. Remaining:
+   the `glass` variant; the catalog grows from [IDEAS.md](IDEAS.md) as real screens need it.
+6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (**456 tests**): behavior/a11y
+   contracts, OriDialog on a fake adapter, **executable token-contrast** (every skin's role/on-role pair
+   asserted WCAG AA — already caught a real Sumi failure). Chose VTU over Testing Library (DECISIONS.md).
+   Remaining: Playwright visual/e2e.
+7. 🔄 **Docs** — a **Nuxt 4 + Nuxt Content 3** app, its own UI built on oriUI itself (not VitePress).
+   ✅ a full page per component (27 — intro + classes + props/slots + a11y, with live demos on the page,
+   so there is no separate `/playground` route); ✅ `nuxt-llms` (`/llms.txt` + `/llms-full.txt`); ✅ a
+   one-page consumer cheat-sheet. Remaining:
+    - **framework-switchable examples (Vue ↔ Svelte)** — the switcher already has a Svelte tab; add the
+      Svelte code (live demo stays Vue, Svelte uses the standalone `.ori-*` css), plus an HTML/htmx tab;
+    - an **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML / Capacitor / Electron);
+    - a **theme / skin gallery** page; an **idea + comparisons** page.
+8. 🔄 **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
+   Node 20.19 + 22; check-mode `lint:ci`, now including the `@oriui/css` layer). ✅ **Vercel deploy** —
+   `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ `oriui` npm org +
+   publish — all four `@oriui/*` packages live at `1.0.0-alpha.1` (`next` + `latest`); the manual runbook
+   lives in [RELEASING.md](RELEASING.md). Remaining: automate with `changesets` + a CI publish job
+   (`NPM_TOKEN`); a root **README** with status/coverage badges.
 
 ## Deferred / out of scope (for now)
 

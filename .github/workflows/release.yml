@@ -1,0 +1,48 @@
+name: Release
+
+# Manual publish. Bump versions locally first (`node scripts/bump.mjs <version>` +
+# `npm install --package-lock-only`), commit + push, then run this workflow with the dist-tag.
+# Uses an npm **automation** token (NPM_TOKEN secret) so CI publishes without an OTP.
+on:
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'npm dist-tag to publish under'
+                required: true
+                default: 'next'
+                type: choice
+                options: [next, latest]
+
+concurrency: release
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: npm
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Install (npm ci — root + workspaces)
+              run: npm ci
+
+            - name: Quality gate
+              run: |
+                  npm run lint:ci
+                  npm run types
+                  npm run test:types
+                  npm run test
+                  npm run build
+
+            - name: Publish @oriui/* in dependency order
+              run: |
+                  npm publish -w @oriui/css  --tag ${{ inputs.tag }} --access public
+                  npm publish -w @oriui/core --tag ${{ inputs.tag }} --access public
+                  npm publish -w @oriui/vue  --tag ${{ inputs.tag }} --access public
+                  npm publish                --tag ${{ inputs.tag }} --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
