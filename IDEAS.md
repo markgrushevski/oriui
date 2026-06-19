@@ -8,11 +8,11 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (25) — for reference
+## Shipped today (26) — for reference
 
 Button · Card · Avatar · Icon · Spinner · Dialog · Input · Checkbox · Switch · RadioGroup ·
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip ·
-Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd.
+Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast.
 
 ## Candidate components
 

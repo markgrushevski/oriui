@@ -1,0 +1,172 @@
+@layer ori.components {
+    /* Portal container: fixed to a screen corner, ignores pointer events so it never blocks the
+       page; the toasts themselves re-enable pointer events. */
+    .ori-toaster {
+        display: flex;
+        position: fixed;
+        z-index: 1000;
+        flex-direction: column;
+
+        max-width: min(28rem, calc(100vw - 2rem));
+        padding: 1rem;
+
+        pointer-events: none;
+        gap: var(--ori-size-gap);
+    }
+
+    .ori-toaster > * {
+        pointer-events: auto;
+    }
+
+    .ori-toaster.ori-toaster_top-right {
+        top: 0;
+        right: 0;
+        align-items: flex-end;
+    }
+
+    .ori-toaster.ori-toaster_top-left {
+        top: 0;
+        left: 0;
+        align-items: flex-start;
+    }
+
+    .ori-toaster.ori-toaster_top-center {
+        top: 0;
+        left: 50%;
+        align-items: center;
+        transform: translateX(-50%);
+    }
+
+    .ori-toaster.ori-toaster_bottom-right {
+        right: 0;
+        bottom: 0;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+    }
+
+    .ori-toaster.ori-toaster_bottom-left {
+        bottom: 0;
+        left: 0;
+        flex-direction: column-reverse;
+        align-items: flex-start;
+    }
+
+    .ori-toaster.ori-toaster_bottom-center {
+        bottom: 0;
+        left: 50%;
+        flex-direction: column-reverse;
+        align-items: center;
+        transform: translateX(-50%);
+    }
+
+    .ori-toast {
+        /* Surface card with a role-colored accent. `.ori-color_*` (ori.utilities) repoints
+           --ori-color to drive the accent border + icon; the body stays on the surface pair so
+           text contrast holds WCAG AA on every skin. */
+        --ori-color: var(--ori-color-surface);
+
+        display: flex;
+        align-items: flex-start;
+
+        width: 100%;
+        min-width: 16rem;
+        padding: calc(var(--ori-size-gap) * 1.5) calc(var(--ori-size-gap) * 2);
+
+        border: 1px solid color-mix(in srgb, var(--ori-color) 30%, transparent);
+        border-radius: var(--ori-size-radius_md);
+
+        background-color: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-lg, 0 8px 24px rgb(0 0 0 / 0.18));
+        color: var(--ori-color-on-surface);
+        gap: calc(var(--ori-size-gap) * 1.5);
+        border-inline-start: 4px solid var(--ori-color);
+    }
+
+    .ori-toast .ori-toast__icon {
+        flex-shrink: 0;
+
+        color: var(--ori-color);
+    }
+
+    .ori-toast .ori-toast__body {
+        flex-grow: 1;
+
+        min-width: 0;
+    }
+
+    .ori-toast .ori-toast__title {
+        font-weight: bolder;
+    }
+
+    .ori-toast .ori-toast__text {
+        opacity: 0.85;
+        font-size: 0.9375rem;
+        overflow-wrap: break-word;
+    }
+
+    .ori-toast .ori-toast__close {
+        flex-shrink: 0;
+
+        width: 1.5em;
+        height: 1.5em;
+        padding: 0;
+
+        border: 0;
+        border-radius: var(--ori-size-radius_sm);
+        opacity: 0.6;
+
+        background: none;
+        color: inherit;
+
+        font-size: 1.25em;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+    @media (hover: hover) {
+        .ori-toast .ori-toast__close:hover {
+            opacity: 1;
+            background-color: color-mix(in srgb, currentcolor 12%, transparent);
+        }
+    }
+
+    .ori-toast .ori-toast__close:focus-visible {
+        outline: 2px solid var(--ori-color);
+        outline-offset: 1px;
+
+        opacity: 1;
+    }
+
+    /* TransitionGroup enter/leave — slide in from the side + fade; the leaving item is taken out of
+       flow so the rest slide up smoothly. */
+    .ori-toast-enter-active,
+    .ori-toast-leave-active {
+        transition:
+            opacity 0.25s ease,
+            transform 0.25s ease;
+    }
+
+    .ori-toast-enter-from,
+    .ori-toast-leave-to {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    .ori-toast-leave-active {
+        position: absolute;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ori-toast-enter-active,
+        .ori-toast-leave-active {
+            transition: opacity 0.15s ease;
+        }
+
+        .ori-toast-enter-from,
+        .ori-toast-leave-to {
+            transform: none;
+        }
+    }
+}

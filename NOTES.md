@@ -46,6 +46,14 @@ practical gotchas go here.
   resolves. Do **not** dispatch a `change` event before reading (Vue resets it).
 - **Screenshots are flaky** (paint hang). Prefer `preview_eval` (DOM/`getComputedStyle`) and
   `preview_inspect` for verification; use screenshots only as a last resort.
+- **The preview tab runs HIDDEN** (`document.visibilityState === 'hidden'`, `hasFocus() === false`, and
+  `document.body` often measures width 0). So `requestAnimationFrame`, CSS `transitionend`, and longer
+  `setTimeout`s don't fire/complete reliably: a Vue `<TransitionGroup>` **leave** node lingers in the DOM
+  (stuck with `*-leave-active`, opacity 0) because `transitionend` never arrives, and auto-dismiss timers
+  may not fire. Verify transition/timer **logic** by the applied classes (`.ori-toast-leave-active` proves
+  the leave started → the item left the reactive queue) + unit tests with fake timers — NOT by the node
+  visually disappearing. DOM-presence and class/attribute checks are reliable; visual completion, layout
+  width, and timer-elapsed checks are not.
 - Navigate with an **absolute** URL: `window.location.href = 'http://localhost:5173/...'` (a bare
   `/path` once errored on cold boot). Get the `serverId` from `preview_list` (it changes per run).
 
@@ -112,6 +120,11 @@ practical gotchas go here.
 - `.lintstagedrc.json` runs **stylelint → eslint → prettier (last)** so Prettier is authoritative.
   Don't hand-fight CSS property order — `stylelint --fix` applies the SMACSS order, then Prettier
   formats whitespace. Locally, run `stylelint --fix` then `prettier --write` (prettier last).
+- **`packages/css/**`is OUTSIDE the stylelint gate.** Both`lint:ci`and`.lintstagedrc.json`scope
+stylelint to`src/**/*.{vue,css}`, so the component block styles under `packages/css/src/components/*.css`— the actual`@oriui/css` product — are linted by **nobody\*\* (only Prettier touches them, and it doesn't
+  enforce SMACSS order). A new component CSS can ship with out-of-order properties while CI stays green.
+  Until the glob is widened, run `npx stylelint --fix packages/css/src/components/<name>.css` by hand for
+  each new component CSS file.
 - `currentcolor` must be **lowercase** (stylelint `value-keyword-case`).
 - stylelint `selector-not-notation` enforces the **complex** form: chained `:not(:disabled):not([aria-selected])`
   fails — combine into one `:not(:disabled, [aria-selected])`.
@@ -225,6 +238,13 @@ practical gotchas go here.
   is **no `neutral`** role (it's only the internal `--ori-neutral-*` ramp). An invalid member fails
   `test:types` (not assignable to `ThemeColor`) and asserts a dead class the CSS doesn't back. Mirror
   the docs' color row: `primary · secondary · success · warn · danger · info` (+ `surface` / `background`).
+- **Singleton stores (e.g. `useToast`) need an `afterEach` reset in tests.** The toast queue is a
+  module-level reactive singleton, so state leaks across tests — `afterEach(() => useToast().clear())`,
+  and don't assert exact ids (the `seq` counter keeps climbing). For auto-dismiss use `vi.useFakeTimers()`
+    - `vi.advanceTimersByTime()`, and call `vi.useRealTimers()` at the END of each fake-timer test (not only
+      in `afterEach`) so a failure can't strand the next test on fake timers. `<OriToaster>`'s Teleport works
+      in happy-dom with `attachTo: document.body` + one `nextTick()`; clear `document.body.innerHTML` between
+      tests so stale teleported nodes don't match.
 - The lib build keeps `@oriui/*` **external**; root `build` runs `build:packages` (tsdown) first so
   `vue-tsc` can resolve the package `.d.ts`.
 - OriDialog tests run on the **native `<dialog>` default** (no adapter), plus one test that swaps in a

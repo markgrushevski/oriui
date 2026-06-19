@@ -85,6 +85,7 @@ const sections = [
                     { label: 'Progress', to: '/components/progress' },
                     { label: 'Skeleton', to: '/components/skeleton' },
                     { label: 'Spinner', to: '/components/spinner' },
+                    { label: 'Toast', to: '/components/toast' },
                     { label: 'Tooltip', to: '/components/tooltip' }
                 ]
             },
@@ -198,5 +199,7 @@ onMounted(() => {
                 </aside>
             </div>
         </Teleport>
+
+        <OriToaster />
     </div>
 </template>
