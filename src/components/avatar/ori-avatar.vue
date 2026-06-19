@@ -45,7 +45,7 @@ const name = computed(() => {
                 'ori-avatar_inline': inline,
                 'ori-avatar_titled': title || subtitle,
                 [`ori-avatar_${size}`]: size,
-                [`ori-size-action ori-size-action-space_${size}`]: size && spaced,
+                [`ori-size-action-space_${size}`]: size && spaced,
                 [`ori-size-radius_${radius}`]: radius,
                 [`ori-font-size_${size}`]: size,
                 [`ori-color_${color}`]: color

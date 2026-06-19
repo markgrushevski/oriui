@@ -57,35 +57,33 @@
         --ori-size-action: var(--ori-size-action_xxl);
     }
 
-    /* .ori-size-action.ori-size-action-space {
-        padding: var(--ori-size-action-space);
-    } */
-
-    .ori-size-action.ori-size-action-space_text {
+    /* Action-space (margin) utilities — SINGLE-CLASS, like the size values: `.ori-size-action-space_md`
+       repoints --ori-size-action-space on its own; a component reads it as margin (e.g. Icon). */
+    .ori-size-action-space_text {
         --ori-size-action-space: var(--ori-size-action-space_text);
     }
 
-    .ori-size-action.ori-size-action-space_xs {
+    .ori-size-action-space_xs {
         --ori-size-action-space: var(--ori-size-action-space_xs);
     }
 
-    .ori-size-action.ori-size-action-space_sm {
+    .ori-size-action-space_sm {
         --ori-size-action-space: var(--ori-size-action-space_sm);
     }
 
-    .ori-size-action.ori-size-action-space_md {
+    .ori-size-action-space_md {
         --ori-size-action-space: var(--ori-size-action-space_md);
     }
 
-    .ori-size-action.ori-size-action-space_lg {
+    .ori-size-action-space_lg {
         --ori-size-action-space: var(--ori-size-action-space_lg);
     }
 
-    .ori-size-action.ori-size-action-space_xl {
+    .ori-size-action-space_xl {
         --ori-size-action-space: var(--ori-size-action-space_xl);
     }
 
-    .ori-size-action.ori-size-action-space_xxl {
+    .ori-size-action-space_xxl {
         --ori-size-action-space: var(--ori-size-action-space_xxl);
     }
 }

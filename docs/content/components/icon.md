@@ -20,7 +20,7 @@ There is no variant or radius — an icon takes a size, an optional color, and o
 modifiers.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (text) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-icon_spaced","type":"Layout","description":"adds margin equal to the action-space scale for the active size; pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
+:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (text) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-size-action-space_*","type":"Layout","description":"adds margin equal to the action-space scale for the active size (the spaced opt-in); pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
 
 ## Sizes
 
@@ -148,7 +148,7 @@ when the icon floats in open space rather than inside a button or label.
 #html
 
 ```html
-<i class="ori-icon ori-icon_lg ori-icon_spaced ori-color_primary" aria-hidden="true">
+<i class="ori-icon ori-icon_lg ori-size-action-space_lg ori-color_primary" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" /></svg>
 </i>
 ```
