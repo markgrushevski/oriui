@@ -1,0 +1,10 @@
+{
+    "mode": "pre",
+    "tag": "alpha",
+    "initialVersions": {
+        "@oriui/css": "1.0.0-alpha.1",
+        "@oriui/headless": "1.0.0-alpha.1",
+        "@oriui/vue": "1.0.0-alpha.1"
+    },
+    "changesets": []
+}

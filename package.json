@@ -40,12 +40,15 @@
         "lint:all": "npm run lint:prettier && npm run lint:stylelint && npm run lint:eslint",
         "lint:ci": "prettier --check \"**/*.{vue,js,ts,json,md,html,css}\" && stylelint \"packages/vue/src/**/*.{vue,css}\" \"packages/css/src/**/*.css\" && eslint \"packages/*/src/**/*.{vue,ts}\"",
         "prepare": "husky",
-        "bump": "node scripts/bump.mjs",
+        "changeset": "changeset",
+        "version": "changeset version && npm install --package-lock-only",
+        "release": "npm run build && changeset publish --tag next",
         "docs:dev": "npm run dev --workspace docs",
         "docs:build": "npm run generate --workspace docs",
         "docs:preview": "npm run preview --workspace docs"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.31.0",
         "@eslint/js": "^10.0.1",
         "@types/node": "^24",
         "@vitejs/plugin-vue": "^6.0.7",
