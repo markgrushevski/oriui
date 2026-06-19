@@ -29,10 +29,14 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Prose / nav links take the brand color. Exclude oriUI components rendered as links (e.g. an
-   OriButton with `as=NuxtLink`): their block styles live in `@layer ori.components`, so this
-   unlayered `a` rule would otherwise override their own color (a button-as-link is not a "link"). */
-a:not(.ori-button) {
+/* Prose links take the brand color. Exclude oriUI components rendered as links (e.g. an OriButton
+   with `as=NuxtLink`): their block styles live in `@layer ori.components`, so this unlayered `a`
+   rule would otherwise override their own color (a button-as-link is not a "link"). The exclusion
+   sits inside `:where()` so it contributes ZERO specificity — the whole selector stays at a bare
+   `a` (0,0,1), exactly as before. Without :where(), `:not(.ori-button)` is (0,1,1) and would beat
+   the single-class nav/ToC/sidebar/social link rules below (0,1,0), turning every chrome link the
+   brand color. */
+a:not(:where(.ori-button)) {
     color: var(--ori-color-primary);
     text-decoration: none;
 }
