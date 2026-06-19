@@ -156,18 +156,83 @@ describe('OriSelect', () => {
 
     it('forwards arbitrary native attrs to the <select>, not the wrapper (inheritAttrs:false)', () => {
         const wrapper = mount(OriSelect, {
-            attrs: { name: 'fruit', required: 'true', autocomplete: 'off' }
+            attrs: { name: 'fruit', autocomplete: 'off' }
         });
         const select = wrapper.find('select');
 
         expect(select.attributes('name')).toBe('fruit');
-        // `required` is a boolean attribute — happy-dom reflects it as an empty string
-        expect(select.attributes('required')).toBeDefined();
         expect(select.attributes('autocomplete')).toBe('off');
 
         // should NOT land on the wrapper div
         expect(wrapper.attributes('name')).toBeUndefined();
         expect(wrapper.attributes('autocomplete')).toBeUndefined();
+    });
+
+    // ----- built-in label / hint / error / required (parity with OriInput / OriTextarea) -----
+
+    it('renders a built-in <label for> targeting the select', () => {
+        const wrapper = mount(OriSelect, { props: { label: 'Fruit' } });
+        const label = wrapper.find('label.ori-select__label');
+        const fieldId = wrapper.find('select').attributes('id');
+
+        expect(label.exists()).toBe(true);
+        expect(label.text()).toContain('Fruit');
+        expect(label.attributes('for')).toBe(fieldId);
+    });
+
+    it('required renders an asterisk and sets the native required attribute', () => {
+        const wrapper = mount(OriSelect, { props: { label: 'Fruit', required: true } });
+
+        expect(wrapper.find('.ori-select__required').exists()).toBe(true);
+        expect((wrapper.find('select').element as HTMLSelectElement).required).toBe(true);
+    });
+
+    it('hint renders below the control and is wired via aria-describedby', () => {
+        const wrapper = mount(OriSelect, { props: { hint: 'Pick your favourite' } });
+        const hint = wrapper.find('.ori-select__hint');
+        const select = wrapper.find('select');
+
+        expect(hint.exists()).toBe(true);
+        expect(hint.text()).toBe('Pick your favourite');
+        expect(select.attributes('aria-describedby')).toBe(hint.attributes('id'));
+    });
+
+    it('error renders role=alert, flips aria-invalid, and is wired via aria-describedby', () => {
+        const wrapper = mount(OriSelect, { props: { error: 'Selection required' } });
+        const error = wrapper.find('.ori-select__error');
+        const select = wrapper.find('select');
+
+        expect(error.exists()).toBe(true);
+        expect(error.attributes('role')).toBe('alert');
+        expect(select.attributes('aria-invalid')).toBe('true');
+        expect(select.attributes('aria-describedby')).toBe(error.attributes('id'));
+    });
+
+    it('error replaces the hint and is the described element', () => {
+        const wrapper = mount(OriSelect, { props: { hint: 'A hint', error: 'An error' } });
+
+        expect(wrapper.find('.ori-select__hint').exists()).toBe(false);
+        expect(wrapper.find('.ori-select__error').exists()).toBe(true);
+        expect(wrapper.find('select').attributes('aria-describedby')).toBe(
+            wrapper.find('.ori-select__error').attributes('id')
+        );
+    });
+
+    it('appends the describedby prop to aria-describedby', () => {
+        const wrapper = mount(OriSelect, { props: { hint: 'A hint', describedby: 'form-note' } });
+        const describedby = wrapper.find('select').attributes('aria-describedby');
+
+        expect(describedby).toContain('form-note');
+        expect(describedby).toContain(wrapper.find('.ori-select__hint').attributes('id'));
+    });
+
+    it('has no axe violations (built-in label, no external <label> needed)', async () => {
+        const wrapper = mount(OriSelect, {
+            props: { label: 'Fruit', options: OPTIONS },
+            attachTo: document.body
+        });
+        await expectNoA11yViolations(wrapper.element);
+        wrapper.unmount();
     });
 
     it('has no axe violations (with a label and options)', async () => {
