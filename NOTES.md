@@ -98,6 +98,13 @@ practical gotchas go here.
   tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
   compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`
   wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
+- **Layered components lose to an UNLAYERED element reset.** Because component styles are now in
+  `@layer ori.components`, any **unlayered** global rule (an `a {}` / `button {}` / `input {}` reset)
+  beats them regardless of specificity — unlayered author styles outrank every layer. This bit the docs:
+  a global `a { color: var(--ori-color-primary) }` overrode the text color of an `OriButton` rendered as
+  a link (`as=NuxtLink`), so the fill button's white label turned brand-blue. Fix = scope the reset away
+  from components (`a:not(.ori-button)`), or put the reset in a layer. A real consumer with a broad
+  unlayered `a`/`button` reset hits the same thing — worth a heads-up in the CSS guide.
 - **Don't set `--ori-color` (or another utility-owned alias) in a component's CSS.** The `ori-color_*`
   utility (`@layer ori.utilities`) repoints it and now **wins** over the component layer, so a value the
   component rule sets is overridden anyway (and historically it silently no-op'd OriProgress). The token
