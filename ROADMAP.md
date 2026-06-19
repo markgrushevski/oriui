@@ -71,6 +71,8 @@ a11y, tests, strong docs).
   lighter path than `@zag-js/vanilla` for simple cases, or a native adapter behind the headless contract.
   Caveats: baseline support (popover & `<dialog>` ~2024; invokers newer → progressive enhancement) and
   top-layer / `::backdrop` styling.
-- Component catalog expansion (forms, overlays) — after the foundation.
+- Component catalog expansion (forms, overlays) — after the foundation. Candidate components,
+  classes, and tokens are parked in [IDEAS.md](IDEAS.md) (a backlog, not committed scope — pulled in
+  only when a real screen needs it).
 - **Ionic is deliberately NOT a target** (it's a competitor, not a backend; Capacitor is
   supported without it via the planned hybrid mode).
