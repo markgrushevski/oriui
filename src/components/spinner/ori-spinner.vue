@@ -15,8 +15,8 @@ const { label = 'Loading', size = 'text' } = defineProps<{
             'ori-spinner',
             {
                 'ori-spinner_inline': inline,
-                [`ori-size-action ori-size-action_${size}`]: size,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-spinner_${size}`]: size,
+                [`ori-color_${color}`]: color
             }
         ]"
         role="status"

@@ -97,7 +97,6 @@ describe('OriProgress', () => {
         const wrapper = mount(OriProgress, { props: { color: 'success' } });
         const classes = wrapper.classes();
 
-        expect(classes).toContain('ori-color');
         expect(classes).toContain('ori-color_success');
     });
 
@@ -105,7 +104,6 @@ describe('OriProgress', () => {
         const wrapper = mount(OriProgress);
         const classes = wrapper.classes();
 
-        expect(classes).toContain('ori-color');
         expect(classes).toContain('ori-color_primary');
     });
 
@@ -113,7 +111,6 @@ describe('OriProgress', () => {
         const wrapper = mount(OriProgress, { props: { radius: 'xl' } });
         const classes = wrapper.classes();
 
-        expect(classes).toContain('ori-size-radius');
         expect(classes).toContain('ori-size-radius_xl');
     });
 
@@ -121,7 +118,6 @@ describe('OriProgress', () => {
         const wrapper = mount(OriProgress);
         const classes = wrapper.classes();
 
-        expect(classes).toContain('ori-size-radius');
         expect(classes).toContain('ori-size-radius_rounded');
     });
 

@@ -14,17 +14,13 @@ describe('OriSelect', () => {
         const wrapper = mount(OriSelect);
 
         expect(wrapper.classes()).toContain('ori-select');
-        expect(wrapper.classes()).toContain('ori-color');
         expect(wrapper.classes()).toContain('ori-color_primary');
-        expect(wrapper.classes()).toContain('ori-font-size');
         expect(wrapper.classes()).toContain('ori-font-size_md');
+        expect(wrapper.classes()).toContain('ori-select_md');
 
         const select = wrapper.find('select');
         expect(select.exists()).toBe(true);
         expect(select.classes()).toContain('ori-select__control');
-        expect(select.classes()).toContain('ori-size-action');
-        expect(select.classes()).toContain('ori-size-action_md');
-        expect(select.classes()).toContain('ori-size-radius');
         expect(select.classes()).toContain('ori-size-radius_md');
     });
 
@@ -150,7 +146,7 @@ describe('OriSelect', () => {
 
         expect(wrapper.classes()).toContain('ori-color_danger');
         expect(wrapper.classes()).toContain('ori-font-size_lg');
-        expect(wrapper.find('select').classes()).toContain('ori-size-action_lg');
+        expect(wrapper.classes()).toContain('ori-select_lg');
         expect(wrapper.find('select').classes()).toContain('ori-size-radius_sm');
     });
 

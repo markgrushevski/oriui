@@ -1,5 +1,13 @@
 @layer ori.components {
     .ori-accordion {
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
+           (utilities layer) overrides by layer order. Drives the open marker + chevron. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the radius axis: bare block uses `md`; `.ori-size-radius_lg` overrides.
+           Without this a bare var(--ori-size-radius) would compute to 0 (square corners). */
+        --ori-size-radius: var(--ori-size-radius_md);
+
         display: flex;
         flex-direction: column;
 

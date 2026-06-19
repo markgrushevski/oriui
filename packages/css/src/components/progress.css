@@ -1,5 +1,12 @@
 @layer ori.components {
     .ori-progress {
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
+           (utilities layer) overrides by layer order. Drives the indicator fill. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the radius axis: bare block uses `rounded`; `.ori-size-radius_*`
+           overrides by layer order. */
+        --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-progress-height: 8px;
 
         display: block;

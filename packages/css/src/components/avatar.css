@@ -1,6 +1,12 @@
 @layer ori.components {
     .ori-avatar {
         --ori-font-size_md: calc(1rem + 2px);
+        /* Baked per-axis defaults so a bare `.ori-avatar` is a valid lg, rounded avatar. Single-class
+           utilities (.ori-avatar_xl, .ori-size-radius_sm, .ori-font-size_xl, .ori-color_primary)
+           override by layer order. The default tint stays the neutral backdrop fill below. */
+        --ori-size-action: var(--ori-size-action_lg);
+        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-font-size: var(--ori-font-size_lg);
         --ori-color: #00000018;
 
         display: flex;
@@ -12,6 +18,32 @@
         height: var(--ori-size-action);
 
         border-radius: var(--ori-size-radius);
+    }
+
+    /* Size sugar (action-size axis) — the daisyUI-familiar `.ori-avatar_lg` shape; mirrors the
+       low-level `.ori-size-action_*` utility. Drives the avatar square. */
+    .ori-avatar.ori-avatar_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-avatar.ori-avatar_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-avatar.ori-avatar_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-avatar.ori-avatar_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-avatar.ori-avatar_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-avatar.ori-avatar_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
     }
 
     .ori-avatar.ori-avatar_inline {

@@ -17,9 +17,9 @@ const { size = 'text' } = defineProps<{
             'ori-icon',
             {
                 'ori-icon_inline': inline,
-                [`ori-size-action ori-size-action_${size}`]: size,
-                [`ori-size-action-space ori-size-action-space_${size}`]: size && spaced,
-                [`ori-color ori-color_${color}`]: color
+                'ori-icon_spaced': size && spaced,
+                [`ori-icon_${size}`]: size,
+                [`ori-color_${color}`]: color
             }
         ]"
         :role="label ? 'img' : undefined"

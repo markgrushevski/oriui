@@ -1,6 +1,11 @@
 @layer ori.components {
     .ori-icon {
         --ori-color: currentcolor;
+        /* Baked per-axis defaults so a bare `.ori-icon` is a valid `text`-size, unspaced icon.
+           `.ori-color_*` (utilities layer) overrides the color by layer order; the action-size /
+           space axes are repointed by the component size sugar (`.ori-icon_lg`) below. */
+        --ori-size-action: var(--ori-size-action_text);
+        --ori-size-action-space: var(--ori-size-action-space_text);
 
         display: flex;
         align-items: center;
@@ -19,6 +24,66 @@
     .ori-icon.ori-icon_inline {
         display: inline-flex;
         margin: 0.25em;
+    }
+
+    /* Size sugar (action-size axis) — mirrors the low-level `.ori-size-action_*` utility, scoped to
+       the component. Compound with the block so it beats the baked `text` default by specificity. */
+    .ori-icon.ori-icon_text {
+        --ori-size-action: var(--ori-size-action_text);
+    }
+
+    .ori-icon.ori-icon_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-icon.ori-icon_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-icon.ori-icon_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-icon.ori-icon_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-icon.ori-icon_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-icon.ori-icon_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
+    }
+
+    /* Spacing sugar (action-space axis) — only the `.ori-icon_spaced` opt-in repoints the margin
+       alias off its `0` default, keyed to the active size. */
+    .ori-icon.ori-icon_spaced.ori-icon_text {
+        --ori-size-action-space: var(--ori-size-action-space_text);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_xs {
+        --ori-size-action-space: var(--ori-size-action-space_xs);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_sm {
+        --ori-size-action-space: var(--ori-size-action-space_sm);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_md {
+        --ori-size-action-space: var(--ori-size-action-space_md);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_lg {
+        --ori-size-action-space: var(--ori-size-action-space_lg);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_xl {
+        --ori-size-action-space: var(--ori-size-action-space_xl);
+    }
+
+    .ori-icon.ori-icon_spaced.ori-icon_xxl {
+        --ori-size-action-space: var(--ori-size-action-space_xxl);
     }
 
     .ori-icon > * {

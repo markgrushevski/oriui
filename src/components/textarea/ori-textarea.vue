@@ -67,11 +67,10 @@ const describedBy = computed(() => {
     <div
         :class="[
             'ori-textarea',
-            'ori-color',
             `ori-color_${color}`,
-            'ori-font-size',
             `ori-font-size_${size}`,
             `ori-textarea_${variant}`,
+            `ori-textarea_${size}`,
             { 'ori-textarea_fluid': fluid }
         ]"
     >
@@ -83,13 +82,7 @@ const describedBy = computed(() => {
             v-bind="$attrs"
             :id="fieldId"
             v-model="model"
-            :class="[
-                'ori-textarea__field',
-                'ori-size-action',
-                `ori-size-action_${size}`,
-                'ori-size-radius',
-                `ori-size-radius_${radius}`
-            ]"
+            :class="['ori-textarea__field', `ori-size-radius_${radius}`]"
             :rows="rows"
             :disabled="disabled"
             :required="required"
