@@ -2,8 +2,8 @@ import { fileURLToPath, URL } from 'node:url';
 
 const resolve = (path) => fileURLToPath(new URL(path, import.meta.url));
 
-// oriUI is consumed exactly as `from '@oriui/ui'`, aliased to the workspace source for live HMR
-// (a real package dep arrives with the @oriui/* monorepo split). The whole docs shell uses
+// oriUI is consumed as `from '@oriui/vue'` (components) and `@oriui/headless/vue` (composables),
+// aliased to the workspace source for live HMR. The whole docs shell uses
 // --ori-color-* tokens, so the nav theme/skin toggles reskin the entire site.
 export default defineNuxtConfig({
     modules: ['@nuxt/content', 'nuxt-llms'],
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         domain: 'https://oriui.vercel.app',
         title: 'oriUI',
         description:
-            'A layered Vue 3 UI library: styled components (@oriui/ui), headless composables (@oriui/vue), and a standalone, framework-free CSS layer (@oriui/css) woven around shared design tokens. Single-class token utilities, zero-runtime theming.',
+            'A layered Vue 3 UI library: styled components (@oriui/vue), a headless behavior layer (@oriui/headless, with @oriui/headless/vue bindings), and a standalone, framework-free CSS layer (@oriui/css) woven around shared design tokens. Single-class token utilities, zero-runtime theming.',
         full: {
             title: 'oriUI — full documentation',
             description: 'Every oriUI documentation page concatenated, for single-fetch consumption.'
@@ -88,7 +88,7 @@ export default defineNuxtConfig({
                 title: 'Headless',
                 description: 'The framework-agnostic behavior contract and the Vue composables.',
                 links: [
-                    { title: 'Core (@oriui/core)', href: '/headless/core' },
+                    { title: 'Core (@oriui/headless)', href: '/headless/core' },
                     { title: 'useDisclosure', href: '/headless/use-disclosure' },
                     { title: 'useDialog', href: '/headless/use-dialog' }
                 ]
@@ -97,8 +97,8 @@ export default defineNuxtConfig({
     },
 
     alias: {
-        '@oriui/ui': resolve('../src/index.ts'),
-        '@oriui/core': resolve('../packages/core/src/index.ts'),
+        '@oriui/headless/vue': resolve('../packages/headless/src/vue/index.ts'),
+        '@oriui/headless': resolve('../packages/headless/src/core/index.ts'),
         '@oriui/vue': resolve('../packages/vue/src/index.ts')
     },
 

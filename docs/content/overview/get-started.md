@@ -9,14 +9,14 @@ oriUI is a layered Vue 3 UI library. Install it and import only what you need.
 ## Install
 
 ```bash
-npm install @oriui/ui
+npm install @oriui/vue
 ```
 
 ## Use a styled component
 
 ```vue
 <script setup>
-import { OriButton } from '@oriui/ui';
+import { OriButton } from '@oriui/vue';
 </script>
 
 <template>
