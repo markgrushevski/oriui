@@ -1,0 +1,74 @@
+@layer ori.components {
+    .ori-checkbox {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        gap: 0.5em;
+
+        font-size: var(--ori-font-size);
+        line-height: 1.4;
+
+        cursor: pointer;
+    }
+
+    .ori-checkbox.ori-checkbox_disabled {
+        opacity: 0.55;
+
+        cursor: not-allowed;
+    }
+
+    .ori-checkbox__input {
+        position: absolute;
+        width: 1.15em;
+        height: 1.15em;
+        margin: 0;
+
+        opacity: 0;
+
+        cursor: inherit;
+    }
+
+    .ori-checkbox__box {
+        display: inline-flex;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 1.15em;
+        height: 1.15em;
+
+        transition:
+            border-color 0.15s ease-out,
+            background-color 0.15s ease-out;
+
+        border: 1px solid color-mix(in srgb, currentcolor 40%, transparent);
+        border-radius: 0.3em;
+    }
+
+    .ori-checkbox__box::after {
+        content: '';
+        width: 0.32em;
+        height: 0.6em;
+
+        transform: rotate(45deg) scale(0);
+        transition: transform 0.15s ease-out;
+
+        border: solid var(--ori-color-on);
+        border-width: 0 2px 2px 0;
+    }
+
+    .ori-checkbox__input:checked ~ .ori-checkbox__box {
+        border-color: var(--ori-color);
+
+        background-color: var(--ori-color);
+    }
+
+    .ori-checkbox__input:checked ~ .ori-checkbox__box::after {
+        transform: rotate(45deg) scale(1);
+    }
+
+    .ori-checkbox__input:focus-visible ~ .ori-checkbox__box {
+        outline: 2px solid var(--ori-color);
+        outline-offset: 2px;
+    }
+}

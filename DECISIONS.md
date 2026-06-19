@@ -62,9 +62,16 @@ first-class" positioning. `@oriui/css` has no deps and no peer, so `import '@ori
 `<link>`) is clean. `@oriui/ui` now **depends on** `@oriui/css` (its components read those tokens) and
 no longer ships its own `./css`; styled Vue consumers `import '@oriui/css'` for the stylesheet. The
 styles source moved `src/styles/` → `packages/css/src/`, bundled to one file via `postcss-import`
-(+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui). Deferred:
-minify the bundle (cssnano) and move component block styles into the CSS layer (today they still live
-in each SFC's unlayered `<style>`).
+(+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui).
+
+**Completed since:** the bundle is now **minified with cssnano** (~40 → 16.6 kB without component
+styles; ~40 kB with them), and the **component block styles were moved into `@oriui/css`** — each
+component's CSS now lives in `packages/css/src/components/<name>.css` under `@layer ori.components`, the
+SFCs carry no `<style>` block, and `@oriui/ui` emits no per-component CSS chunks. So the standalone CSS
+layer now renders the actual `.ori-*` components (not just tokens), making htmx / Astro / plain-HTML a
+real target; styled-component consumers `import '@oriui/css'` once for everything. Cascade note: moving
+the previously-**unlayered** SFC styles into `ori.components` means the `ori.utilities` layer (declared
+last) now wins over component rules — fine, since utilities only set tokens the components read.
 
 ## Root package renamed `oriui` → `@oriui/ui` (npm name-similarity block)
 

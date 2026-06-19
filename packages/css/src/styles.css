@@ -1,9 +1,9 @@
 /* ============================================================
    oriUI — global styles entry point
    Declare the cascade layer order once. Rules in later layers
-   win over earlier ones. Unlayered component style blocks
-   intentionally still win over all layers — a future phase
-   moves them into ori.components.
+   win over earlier ones. Component block styles live in
+   `ori.components` (see components/*.css), so the `ori.utilities`
+   layer (color / size / shadow utilities) still wins over them.
    ============================================================ */
 @layer ori.reset, ori.tokens, ori.base, ori.components, ori.utilities;
 
@@ -21,4 +21,27 @@
 @import 'themes/_themes-color.css';
 @import 'themes/_themes-variant.css';
 @import 'fonts/_fonts-size.css';
+
+/* Component block styles (@layer ori.components) — one file per styled component, so the standalone
+   CSS layer renders the .ori-* components for htmx / Astro / plain-HTML consumers, not just tokens. */
+@import 'components/accordion.css';
+@import 'components/alert.css';
+@import 'components/avatar.css';
+@import 'components/badge.css';
+@import 'components/button.css';
+@import 'components/card.css';
+@import 'components/checkbox.css';
+@import 'components/dialog.css';
+@import 'components/icon.css';
+@import 'components/input.css';
+@import 'components/progress.css';
+@import 'components/radio.css';
+@import 'components/select.css';
+@import 'components/spinner.css';
+@import 'components/switch.css';
+@import 'components/tabs.css';
+@import 'components/tag.css';
+@import 'components/textarea.css';
+@import 'components/tooltip.css';
+
 @import 'utils/utils.css';

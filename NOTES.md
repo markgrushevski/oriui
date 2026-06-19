@@ -26,12 +26,18 @@ practical gotchas go here.
 - A **new component in a new dir** plus a change to the global-registration plugin
   (`docs/app/plugins/oriui.ts`) may need a **dev-server restart** for MDC to resolve the new
   `:ori-*` tag — HMR usually picks it up, but not always.
-- MDC inline component **booleans**: write `:prop="true"` (v-bind), never bare `prop` or
-  `prop="true"` — the string form triggers Vue prop-type warnings.
+- MDC inline component **booleans and numbers**: write `:prop="true"` / `:rows="2"` / `:value="50"`
+  (v-bind), never bare `prop` or `prop="50"` — the string form triggers Vue prop-type warnings (a
+  numeric prop would receive the string `"50"`).
 - MDC inline **arrays/objects**: `:options='[{"label":"A","value":"a"}]'` (single-quoted JSON)
   parses correctly.
-- New oriUI components must be registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to
-  the sidebar in `docs/app/layouts/default.vue`.
+- New oriUI components must be re-exported from the **root barrel** `src/components/index.ts` (the
+  public `@oriui/ui` surface — tests import from `../src`, and the docs plugin imports from `@oriui/ui`),
+  registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to the sidebar in
+  `docs/app/layouts/default.vue`. Forgetting the barrel makes `import { OriX } from '../src'` resolve
+  to `undefined` (test-utils then throws "Invalid value used as weak map key"). When fanning components
+  out to parallel agents, the **orchestrator** owns these three shared files (agents touch only their
+  own component dir) to avoid parallel-edit conflicts.
 - Component doc pages follow the **Button page template** (Examples → Props → Events → Slots → CSS
   classes → Accessibility; interactive components add Anatomy + Headless + keyboard table).
 - **Bound MDC attributes (`:rows`, `:options`) must not contain quotes or apostrophes inside string
@@ -39,6 +45,14 @@ practical gotchas go here.
   raw string instead; a component that assumes an array then 500s the whole page. Keep description
   text quote-free (`type=checkbox`, not `type="checkbox"`). `ClassTable` now also degrades to an
   empty table instead of crashing on a bad value — but fix the content so the table actually renders.
+- **Prettier mangles BEM `__` (and `_*` globs) inside a `:class-table` `:rows='…'` JSON string** on
+  some pages — it parses the MDC attribute value as markdown and converts a `__x__` run to `**x**`
+  (and `_*` to `*\*`), so `ClassTable` (which renders `class` via `{{ }}`, raw text) then literally
+  shows `ori-accordion**item`. It's a flaky emphasis-flanking edge case: identical-looking tables
+  (e.g. `dialog.md`) survive, others (`accordion.md`) don't, and tweaking tokens won't reliably fix
+  it. The robust fix is a **`<!-- prettier-ignore -->` line immediately before the `:class-table`**
+  — prettier then leaves the line alone and the `__` names stay intact (verified idempotent +
+  lint-clean). Use it whenever a class-table's rendered `<code>` cells show `**`.
 - **Layout / new-component / moved-content changes need a dev-server restart.** Editing the layout
   (`default.vue`) or adding a component under `app/components/` is often not hot-reloaded. And moving or
   renaming content files leaves the **old** routes resolving from Nuxt Content's dev cache (they still
@@ -64,19 +78,67 @@ practical gotchas go here.
   Don't hand-fight CSS property order — `stylelint --fix` applies the SMACSS order, then Prettier
   formats whitespace. Locally, run `stylelint --fix` then `prettier --write` (prettier last).
 - `currentcolor` must be **lowercase** (stylelint `value-keyword-case`).
+- stylelint `selector-not-notation` enforces the **complex** form: chained `:not(:disabled):not([aria-selected])`
+  fails — combine into one `:not(:disabled, [aria-selected])`.
+- stylelint's SMACSS property order splits **SVG presentation props** (`stroke` / `fill` / `stroke-width`
+  / `stroke-linecap` / `stroke-linejoin`) across its border/background groups, so after `--fix` they may
+  read out of visual order (e.g. `stroke-linejoin` after `color`). Valid + lint-clean — don't hand-reorder.
+- happy-dom reflects a boolean attribute like `required` as the **empty string `''`**, not `'true'` —
+  assert presence with `toBeDefined()` / `.toBe('')`, not `.toBe('true')`.
 - CI gate is `npm run lint:ci` (check-mode prettier/stylelint/eslint — no `--fix`).
 - `.prettierignore` excludes build output (`.output`, `.nuxt`, `coverage`, `dist`).
 
 ## Component / CSS patterns
 
-- Component `<style>` is **unlayered** on purpose (it wins over the `@layer` utilities); modifiers use
-  the house `.ori-x.ori-x_y` compound pattern (not `:where()`), consistent across the library.
+- **Component block styles live in `@oriui/css` under `@layer ori.components`** — one file per component
+  in `packages/css/src/components/<name>.css`, NOT in the SFC (the SFCs have **no `<style>` block**). So
+  a styled-component consumer must `import '@oriui/css'` once (it ships tokens + components + utilities),
+  and there are no per-component CSS chunks in `@oriui/ui`'s `dist`. The `ori.utilities` layer is declared
+  **last**, so utilities (`.ori-color_*`, `.ori-shadow`, …) win over a component's own rules — they set
+  tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
+  compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`
+  wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
+- **Layered components lose to an UNLAYERED element reset.** Because component styles are now in
+  `@layer ori.components`, any **unlayered** global rule (an `a {}` / `button {}` / `input {}` reset)
+  beats them regardless of specificity — unlayered author styles outrank every layer. This bit the docs:
+  a global `a { color: var(--ori-color-primary) }` overrode the text color of an `OriButton` rendered as
+  a link (`as=NuxtLink`), so the fill button's white label turned brand-blue. Fix = scope the reset away
+  from components (`a:not(.ori-button)`), or put the reset in a layer. A real consumer with a broad
+  unlayered `a`/`button` reset hits the same thing — worth a heads-up in the CSS guide.
+- **Don't set `--ori-color` (or another utility-owned alias) in a component's CSS.** The `ori-color_*`
+  utility (`@layer ori.utilities`) repoints it and now **wins** over the component layer, so a value the
+  component rule sets is overridden anyway (and historically it silently no-op'd OriProgress). The token
+  layer defaults `--ori-color: currentColor` at `:root`; read it (`var(--ori-color, currentcolor)`) and
+  let the utility set it.
+- **Focus-ring color depends on what surface the ring sits on.** Free-standing controls (Button,
+  Checkbox, Switch, Radio, the form fields) ring with **`var(--ori-color)`** — it tracks the `color`
+  prop and sits on the page, which contrasts. (Don't hardcode `--ori-color-primary`: it ignores the
+  prop — was a real OriButton bug.) A close button **on a tinted chip/banner** (Tag/Alert) is the hard
+  case: a same-hue `currentcolor` ring can fall below the 3:1 non-text minimum on the pale tonal/outline
+  surface (warn ≈ 1.7:1), so ring with the neutral **`--ori-color-on-surface`** (contrasts light + dark),
+  and override to `currentcolor` only on the **`fill`** variant (there the on-color contrasts the solid
+  fill, and `var(--ori-color)` would BE the fill background → invisible ring). Place the `fill` override
+  last so stylelint `no-descending-specificity` stays happy.
+- **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
+  box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
+  container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is
+  free-standing → outset). Keep this split; don't "normalize" the inset rings.
 - Form controls: a **real hidden native input** (`opacity:0` over the visual element) drives a11y;
   style the visual via `:checked ~`, `:focus-visible ~`. The accent + ring read `var(--ori-color)`
   set by the `ori-color` class on the wrapper (inherits down).
 - `useId()` (Vue 3.5) for SSR-safe ids; pass props referenced in `<script>` through the reactive
   destructure (template-only props can stay undestructured). Gate any Teleport on a `mounted` ref —
   the library can't use Nuxt `<ClientOnly>`.
+- **A pure-CSS tooltip can't make `aria-describedby` announce on its own.** `aria-describedby` is read
+  when the element _bearing_ it is focused; OriTooltip puts it on the non-focusable `.ori-tooltip__trigger`
+  wrapper (which only guarantees the id resolves) and exposes `bubbleId` on the **default slot scope** so
+  the consumer binds `:aria-describedby="bubbleId"` on their _own_ focusable control. `:focus-within`
+  drives the bubble's CSS visibility, not the ARIA announcement — they're independent. Augmenting
+  arbitrary slot content would need JS (out of the CSS-only scope).
+- **A native `<summary>`/`<select>`/`<details>` has no real `disabled` state** — `aria-disabled` +
+  `tabindex="-1"` are advisory and don't stop Enter/Space/click from activating. OriAccordion blocks a
+  disabled item for real by `event.preventDefault()` on the summary's `click` + `keydown.enter`/`.space`
+  (pointer-events:none only covers the mouse). Don't present `aria-disabled` alone as "disabled".
 - **Dialog runs on the native `<dialog>` element, not a JS engine.** `useDialog` defaults to
   `nativeDialog` (no adapter needed). The adapter owns only `open` + the ARIA prop bags; the **consuming
   component** owns the `<dialog>` ref and drives `showModal()`/`close()` from `open` in a
