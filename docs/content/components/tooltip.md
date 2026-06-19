@@ -18,7 +18,8 @@ component.
 A tooltip is a wrapper block plus a bubble element. There are no variant or size utilities — the
 bubble adapts to its content, and placement is a single modifier class.
 
-:class-table{:rows='[{"class":"ori-tooltip","type":"Block","description":"Wrapper: inline-flex, position:relative. Defines local tokens (--ori-tooltip-bg, --ori-tooltip-color, --ori-tooltip-gap, --ori-tooltip-arrow). Carries ori-color + ori-color_* on the wrapper only when the color prop is set."},{"class":"ori-tooltip__trigger","type":"Part","description":"Inline-flex wrapper around the trigger slot; carries aria-describedby referencing the bubble id."},{"class":"ori-tooltip__bubble","type":"Part","description":"The tooltip surface, role=tooltip. Always in the DOM but visibility:hidden + opacity:0 + pointer-events:none until shown. Background var(--ori-tooltip-bg), shadow var(--ori-shadow-md), radius var(--ori-tooltip-radius). Arrow via ::after."},{"class":"ori-tooltip__bubble_top","type":"Placement","description":"Positions the bubble above the trigger (default), arrow pointing down."},{"class":"ori-tooltip__bubble_bottom","type":"Placement","description":"Positions the bubble below the trigger, arrow pointing up."},{"class":"ori-tooltip__bubble_left","type":"Placement","description":"Positions the bubble to the inline-start of the trigger, arrow pointing right."},{"class":"ori-tooltip__bubble_right","type":"Placement","description":"Positions the bubble to the inline-end of the trigger, arrow pointing left."},{"class":"ori-color ori-color_*","type":"Color","description":"Applied on the wrapper when color is set; repoints --ori-color / --ori-color-on for the bubble fill + contrast text. Omit for the default neutral inverse chip (dark in light mode)."}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-tooltip","type":"Block","description":"Wrapper: inline-flex, position:relative. Defines local tokens (--ori-tooltip-bg, --ori-tooltip-color, --ori-tooltip-gap, --ori-tooltip-arrow). Carries ori-color_* on the wrapper only when the color prop is set."},{"class":"ori-tooltip__trigger","type":"Part","description":"Inline-flex wrapper around the trigger slot; carries aria-describedby referencing the bubble id."},{"class":"ori-tooltip__bubble","type":"Part","description":"The tooltip surface, role=tooltip. Always in the DOM but visibility:hidden + opacity:0 + pointer-events:none until shown. Background var(--ori-tooltip-bg), shadow var(--ori-shadow-md), radius var(--ori-tooltip-radius). Arrow via ::after."},{"class":"ori-tooltip__bubble_top","type":"Placement","description":"Positions the bubble above the trigger (default), arrow pointing down."},{"class":"ori-tooltip__bubble_bottom","type":"Placement","description":"Positions the bubble below the trigger, arrow pointing up."},{"class":"ori-tooltip__bubble_left","type":"Placement","description":"Positions the bubble to the inline-start of the trigger, arrow pointing right."},{"class":"ori-tooltip__bubble_right","type":"Placement","description":"Positions the bubble to the inline-end of the trigger, arrow pointing left."},{"class":"ori-color_*","type":"Color","description":"Applied on the wrapper when color is set; repoints --ori-color / --ori-color-on for the bubble fill + contrast text. Omit for the default neutral inverse chip (dark in light mode)."}]'}
 
 ## Placements
 
@@ -103,8 +104,8 @@ tint the bubble with the matching role palette.
     <span id="tip-2" class="ori-tooltip__bubble ori-tooltip__bubble_bottom" role="tooltip">Default neutral</span>
 </span>
 
-<!-- colored — add ori-color + ori-color_<role> on the wrapper -->
-<span class="ori-tooltip ori-color ori-color_danger">
+<!-- colored — add ori-color_<role> on the wrapper -->
+<span class="ori-tooltip ori-color_danger">
     <span class="ori-tooltip__trigger" aria-describedby="tip-3"><button>danger</button></span>
     <span id="tip-3" class="ori-tooltip__bubble ori-tooltip__bubble_bottom" role="tooltip">Danger</span>
 </span>
@@ -167,10 +168,7 @@ keyboard focus.
 ```html
 <span class="ori-tooltip">
     <span class="ori-tooltip__trigger" aria-describedby="tip-5">
-        <button
-            class="ori-button ori-button_icon ori-variant ori-variant_tonal ori-color ori-color_primary"
-            aria-label="Add item"
-        >
+        <button class="ori-button ori-button_icon ori-variant_tonal ori-color_primary" aria-label="Add item">
             <i class="ori-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg>
             </i>
@@ -214,7 +212,7 @@ pattern.
 <div style="display: flex; gap: 0.25rem" role="toolbar" aria-label="Text formatting">
     <span class="ori-tooltip">
         <span class="ori-tooltip__trigger" aria-describedby="tip-bold">
-            <button class="ori-button ori-button_icon ori-variant ori-variant_plain …" aria-label="Bold">
+            <button class="ori-button ori-button_icon ori-variant_plain …" aria-label="Bold">
                 <!-- bold icon -->
             </button>
         </span>
@@ -280,7 +278,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 
 | Prop        | Type                                     | Default | Description                                                                                                                                                                      |
 | ----------- | ---------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`     | `ThemeColor`                             | —       | Bubble fill color. Adds the `ori-color` utility on the wrapper, repointing `--ori-color` / `--ori-color-on`. Omit for the default neutral inverse chip (dark in light mode).     |
+| `color`     | `ThemeColor`                             | —       | Bubble fill color. Adds `ori-color_<color>` on the wrapper, repointing `--ori-color` / `--ori-color-on`. Omit for the default neutral inverse chip (dark in light mode).         |
 | `content`   | `string`                                 | —       | Tooltip text. For rich content use the `#content` slot instead — it takes precedence over this prop.                                                                             |
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Static placement of the bubble relative to the trigger. Drives the `ori-tooltip__bubble_<placement>` modifier. No collision flip or repositioning (that would need a JS helper). |
 

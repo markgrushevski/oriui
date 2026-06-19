@@ -36,11 +36,11 @@ const {
                 'ori-button_icon': !text,
                 'ori-button_fluid': fluid,
                 [`ori-button_icon-position_${iconPosition}`]: iconPosition,
-                [`ori-size-action ori-size-action_${size}`]: size,
-                [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                [`ori-font-size ori-font-size_${size}`]: size,
-                [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-button_${size}`]: size,
+                [`ori-size-radius_${radius}`]: radius,
+                [`ori-font-size_${size}`]: size,
+                [`ori-variant_${variant}`]: variant,
+                [`ori-color_${color}`]: color
             }
         ]"
         :type="as === 'button' ? 'button' : undefined"

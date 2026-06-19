@@ -70,10 +70,9 @@ const describedBy = computed(() => {
     <div
         :class="[
             'ori-select',
-            'ori-color',
             `ori-color_${color}`,
-            'ori-font-size',
             `ori-font-size_${size}`,
+            `ori-select_${size}`,
             { 'ori-select_fluid': fluid }
         ]"
     >
@@ -86,13 +85,7 @@ const describedBy = computed(() => {
                 v-bind="$attrs"
                 :id="fieldId"
                 v-model="model"
-                :class="[
-                    'ori-select__control',
-                    'ori-size-action',
-                    `ori-size-action_${size}`,
-                    'ori-size-radius',
-                    `ori-size-radius_${radius}`
-                ]"
+                :class="['ori-select__control', `ori-size-radius_${radius}`]"
                 :disabled="disabled"
                 :required="required"
                 :aria-invalid="isInvalid ? 'true' : undefined"

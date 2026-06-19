@@ -1,5 +1,5 @@
-@layer ori.utilities {
-    .ori-font-size {
+@layer ori.tokens {
+    :root {
         --ori-font-size-step_dec: 2px;
         --ori-font-size-step_inc: 2px;
 
@@ -13,32 +13,37 @@
 
         --ori-font-size: var(--ori-font-size_text);
     }
+}
 
-    .ori-font-size.ori-font-size_text {
+@layer ori.utilities {
+    /* Single-class: `.ori-font-size_lg` repoints the alias on its own — the scale lives in :root
+       (ori.tokens), so no `.ori-font-size` base is needed. A component may still override the step
+       tokens locally (`--ori-font-size-step_inc`) to retune its own progression. */
+    .ori-font-size_text {
         --ori-font-size: var(--ori-font-size_text);
     }
 
-    .ori-font-size.ori-font-size_xs {
+    .ori-font-size_xs {
         --ori-font-size: var(--ori-font-size_xs);
     }
 
-    .ori-font-size.ori-font-size_sm {
+    .ori-font-size_sm {
         --ori-font-size: var(--ori-font-size_sm);
     }
 
-    .ori-font-size.ori-font-size_md {
+    .ori-font-size_md {
         --ori-font-size: var(--ori-font-size_md);
     }
 
-    .ori-font-size.ori-font-size_lg {
+    .ori-font-size_lg {
         --ori-font-size: var(--ori-font-size_lg);
     }
 
-    .ori-font-size.ori-font-size_xl {
+    .ori-font-size_xl {
         --ori-font-size: var(--ori-font-size_xl);
     }
 
-    .ori-font-size.ori-font-size_xxl {
+    .ori-font-size_xxl {
         --ori-font-size: var(--ori-font-size_xxl);
     }
 }

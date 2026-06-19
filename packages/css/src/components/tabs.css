@@ -1,5 +1,10 @@
 @layer ori.components {
     .ori-tabs {
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
+           layer) overrides by layer order. Drives the active indicator / focus ring. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+
         display: flex;
         flex-direction: column;
         gap: 1em;

@@ -204,10 +204,8 @@ A confirm / cancel pair inside a dialog, wired to an async action.
         <div class="ori-dialog__body">
             <p>This will permanently delete your account and all its data.</p>
             <div style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:1rem">
-                <button class="ori-button … ori-variant ori-variant_text …">Cancel</button>
-                <button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_danger …">
-                    Yes, delete
-                </button>
+                <button class="ori-button ori-variant_text">Cancel</button>
+                <button class="ori-button ori-variant_fill ori-color_danger">Yes, delete</button>
             </div>
         </div>
     </div>

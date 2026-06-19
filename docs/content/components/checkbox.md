@@ -16,11 +16,12 @@ group.
 
 ## Classes
 
-A checkbox is a block class on the `<label>` wrapper plus paired token utilities — each pair is a
-base class (`ori-color`) and a scale value (`ori-color_primary`), so one class repoints one token.
-The Vue props in [Framework API](#framework-api) map 1:1 to these.
+A checkbox is a block class on the `<label>` wrapper plus single-class token utilities — one class
+repoints one token; no paired base class is needed. The Vue props in [Framework API](#framework-api)
+map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the <label> wrapper."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl · text (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the label wrapper."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · md · lg · xl · xxl · text (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes"}]'}
 
 ## Colors
 
@@ -37,12 +38,12 @@ Every semantic color role. The accent fill and focus ring track `ori-color`.
 #html
 
 ```html
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="c1">
+<label class="ori-checkbox ori-color_primary" for="c1">
     <input id="c1" type="checkbox" class="ori-checkbox__input" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Primary</span>
 </label>
-<!-- swap the color pair: ori-color_primary → _success / _danger / _info / … -->
+<!-- swap the color class: ori-color_primary → ori-color_success / ori-color_danger / ori-color_info / … -->
 ```
 
 #vue
@@ -71,13 +72,13 @@ the box dimensions use `em` units.
 #html
 
 ```html
-<!-- box and label scale together off ori-font-size -->
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_sm" for="sm1">
+<!-- box and label scale together off ori-font-size_* -->
+<label class="ori-checkbox ori-font-size_sm" for="sm1">
     <input id="sm1" type="checkbox" class="ori-checkbox__input" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">sm</span>
 </label>
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_xl" for="xl1">
+<label class="ori-checkbox ori-font-size_xl" for="xl1">
     <input id="xl1" type="checkbox" class="ori-checkbox__input" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">xl</span>
@@ -107,13 +108,13 @@ the box dimensions use `em` units.
 #html
 
 ```html
-<label class="ori-checkbox ori-checkbox_disabled ori-color ori-color_primary ori-font-size ori-font-size_md" for="d1">
+<label class="ori-checkbox ori-checkbox_disabled" for="d1">
     <input id="d1" type="checkbox" class="ori-checkbox__input" disabled />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Disabled</span>
 </label>
 
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="inv1">
+<label class="ori-checkbox" for="inv1">
     <input id="inv1" type="checkbox" class="ori-checkbox__input" aria-invalid="true" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Invalid</span>
@@ -147,7 +148,7 @@ Color and size compose freely.
 #html
 
 ```html
-<label class="ori-checkbox ori-color ori-color_danger ori-font-size ori-font-size_lg" for="dl1">
+<label class="ori-checkbox ori-color_danger ori-font-size_lg" for="dl1">
     <input id="dl1" type="checkbox" class="ori-checkbox__input" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Danger lg</span>
@@ -178,12 +179,12 @@ handles checked state — no extra logic needed.
 
 ```html
 <!-- array binding is Vue-specific; in plain HTML use a name attribute for the group -->
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="a">
+<label class="ori-checkbox ori-color_primary" for="a">
     <input id="a" type="checkbox" class="ori-checkbox__input" name="opts" value="a" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Option A</span>
 </label>
-<label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="b">
+<label class="ori-checkbox ori-color_primary" for="b">
     <input id="b" type="checkbox" class="ori-checkbox__input" name="opts" value="b" />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Option B</span>
@@ -220,7 +221,7 @@ submit.
 
 ```html
 <form>
-    <label class="ori-checkbox ori-color ori-color_primary ori-font-size ori-font-size_md" for="terms">
+    <label class="ori-checkbox ori-color_primary" for="terms">
         <input id="terms" type="checkbox" class="ori-checkbox__input" required />
         <span class="ori-checkbox__box" aria-hidden="true"></span>
         <span class="ori-checkbox__label">I agree to the terms and conditions</span>

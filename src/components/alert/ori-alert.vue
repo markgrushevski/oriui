@@ -50,10 +50,10 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
         :class="[
             'ori-alert',
             {
-                [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                [`ori-font-size ori-font-size_${size}`]: size,
-                [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-size-radius_${radius}`]: radius,
+                [`ori-font-size_${size}`]: size,
+                [`ori-variant_${variant}`]: variant,
+                [`ori-color_${color}`]: color
             }
         ]"
         :role="ariaRole"

@@ -14,15 +14,15 @@ component.
 
 ## Classes
 
-A tag is a block class plus paired token utilities — each pair is a base class (`ori-variant`) and a
-scale value (`ori-variant_tonal`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A tag is a block class plus single-class token utilities — one class repoints one token, no base
+class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-tag","type":"Block","description":"Required base class."},{"class":"ori-variant + ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size + ori-font-size_*","type":"Size","description":"xs · <b>sm</b> · md · lg · xl · xxl — drives the label scale"},{"class":"ori-size-radius + ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-tag__icon","type":"Part","description":"icon element (prepend or append)"},{"class":"ori-tag__text","type":"Part","description":"label text element"},{"class":"ori-tag__close · ori-tag__close-icon","type":"Part","description":"close button and its icon (present when closable)"},{"class":"aria-disabled=true","type":"State","description":"real attribute — dims the tag and blocks pointer events"}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-tag","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · <b>sm</b> · md · lg · xl · xxl — drives the label scale"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-tag__icon","type":"Part","description":"icon element (prepend or append)"},{"class":"ori-tag__text","type":"Part","description":"label text element"},{"class":"ori-tag__close · ori-tag__close-icon","type":"Part","description":"close button and its icon (present when closable)"},{"class":"aria-disabled=true","type":"State","description":"real attribute — dims the tag and blocks pointer events"}]'}
 
 ## Variants
 
-Five visual styles, all driven by the `ori-variant` token pair.
+Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
 :ori-tag{text="Fill" variant="fill"}
@@ -44,15 +44,11 @@ Five visual styles, all driven by the `ori-variant` token pair.
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_fill ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_fill ori-color_primary ori-font-size_sm ori-size-radius_rounded">
     <span class="ori-tag__text">Fill</span>
 </span>
-<!-- swap the variant pair: ori-variant_fill → _tonal / _outline / _text / _plain -->
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<!-- swap the variant: ori-variant_fill → _tonal / _outline / _text / _plain -->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_sm ori-size-radius_rounded">
     <span class="ori-tag__text">Tonal</span>
 </span>
 ```
@@ -87,9 +83,7 @@ Every semantic role. Variant and color compose freely.
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_danger ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_tonal ori-color_danger ori-font-size_sm ori-size-radius_rounded">
     <span class="ori-tag__text">danger</span>
 </span>
 ```
@@ -116,9 +110,7 @@ Variant x color compose freely — e.g. a filled success tag or an outlined dang
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_fill ori-color ori-color_success ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_fill ori-color_success ori-font-size_sm ori-size-radius_rounded">
     <span class="ori-tag__text">Published</span>
 </span>
 ```
@@ -127,7 +119,7 @@ Variant x color compose freely — e.g. a filled success tag or an outlined dang
 
 ## Sizes
 
-`xs` → `xxl`. The size drives the label scale via `ori-font-size`. Default is `sm`.
+`xs` → `xxl`. The size drives the label scale via `ori-font-size_*`. Default is `sm`.
 
 ::example
 :ori-tag{text="xs" size="xs"}
@@ -149,14 +141,10 @@ Variant x color compose freely — e.g. a filled success tag or an outlined dang
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_xs ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_xs ori-size-radius_rounded">
     <span class="ori-tag__text">xs</span>
 </span>
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_lg ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_lg ori-size-radius_rounded">
     <span class="ori-tag__text">lg</span>
 </span>
 ```
@@ -186,9 +174,7 @@ From `zero` (square) to the default `rounded` (pill).
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_zero"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_sm ori-size-radius_zero">
     <span class="ori-tag__text">zero</span>
 </span>
 ```
@@ -216,9 +202,7 @@ path string. They can be used together.
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_sm ori-size-radius_rounded">
     <i class="ori-icon ori-tag__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" /></svg>
     </i>
@@ -247,9 +231,7 @@ path string. They can be used together.
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_sm ori-size-radius_rounded">
     <span class="ori-tag__text">React</span>
     <button type="button" class="ori-tag__close" aria-label="Remove">
         <i class="ori-icon ori-tag__close-icon" aria-hidden="true">
@@ -284,10 +266,7 @@ events including the close button.
 #html
 
 ```html
-<span
-    class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_primary ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
-    aria-disabled="true"
->
+<span class="ori-tag ori-variant_tonal ori-color_primary ori-font-size_sm ori-size-radius_rounded" aria-disabled="true">
     <span class="ori-tag__text">Archived</span>
 </span>
 ```
@@ -324,9 +303,7 @@ A filter chip list and a status badge in a table row — the everyday compositio
 ```html
 <!-- filter chip list -->
 <div style="display: flex; flex-wrap: wrap; gap: 0.5rem">
-    <span
-        class="ori-tag ori-variant ori-variant_tonal ori-color ori-color_success ori-font-size ori-font-size_sm ori-size-radius ori-size-radius_rounded"
-    >
+    <span class="ori-tag ori-variant_tonal ori-color_success ori-font-size_sm ori-size-radius_rounded">
         <span class="ori-tag__text">Vue</span>
         <button type="button" class="ori-tag__close" aria-label="Remove">
             <i class="ori-icon ori-tag__close-icon" aria-hidden="true">

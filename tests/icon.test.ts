@@ -23,7 +23,7 @@ describe('OriIcon', () => {
     it('maps size / color / spaced to classes', () => {
         const c = mount(OriIcon, { props: { icon: 'M0 0', size: 'sm', color: 'info', spaced: true } }).classes();
 
-        expect(c).toContain('ori-size-action_sm');
+        expect(c).toContain('ori-icon_sm');
         expect(c).toContain('ori-size-action-space_sm');
         expect(c).toContain('ori-color_info');
     });

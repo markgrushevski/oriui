@@ -4,6 +4,45 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Token-axis classes are single-class + block-baked defaults (dropped the paired base)
+
+The `.ori-*` token utilities were **paired** — a base class plus a value (`ori-color ori-color_primary`,
+`ori-size-action ori-size-action_md`). That had two costs the user flagged while imagining a consumer
+building their **own** Vue components on the css layer: **verbosity** (five axes × two classes is a wall
+of markup) and a **silent-no-op footgun** (the utility selector was the compound `.ori-x.ori-x_y`, so a
+value class without its base did nothing, with no error). Decision: make every axis a **single-class**
+utility and **bake sensible defaults into each block**.
+
+- **One class repoints one token.** `.ori-color_danger { --ori-color: …; --ori-color-on: … }` lives in
+  `@layer ori.utilities` (declared last), so it beats a block's baked default by **layer order, not
+  specificity** — the base class is gone, the no-op footgun with it. The radius/font **scales moved to
+  `:root`** (`@layer ori.tokens`) so the value class is self-sufficient (they previously lived inside the
+  base-class rule; one dead per-component step override — Button's `--ori-font-size-step_inc` — was
+  removed in the move, preserving the 2px progression).
+- **A bare block is valid.** Each `.ori-<name>` bakes its prop-default tokens (size / radius / font /
+  color, and the default variant cluster where the css reads `--ori-variant-*`), so
+  `<button class="ori-button">` is a complete filled-primary md button; add a class only to override.
+- **Size keeps a friendly component sugar.** `ori-button_lg` / `ori-input_md` / `ori-avatar_xs` (the
+  daisyUI-familiar shape) repoint `--ori-size-action`; the low-level `ori-size-action_lg` still works for
+  hand-authored markup. `action-space` was unified to the same single-class shape
+  (`ori-size-action-space_*`). Other axes are the generic single-class utilities.
+- **Backward compatible.** A component or doc still emitting `ori-color ori-color_primary` keeps working —
+  the value class matches; the now-inert base is a harmless extra — so all 18 components + 19 doc pages
+  migrated without a flag day.
+
+**Color is a ROLE, variant is the MAPPING — there is deliberately no `bg-color`** (user asked).
+`ori-color_*` sets a semantic pair (`--ori-color` accent + `--ori-color-on` contrast); the variant
+decides how it is painted (fill → bg + on-text; tonal / outline / text → accent). A separate `bg-color`
+would re-introduce the manual "pick bg AND matching text" pairing the variant abstracts away — and break
+the AA contrast pairing the contrast test enforces. An arbitrary background is a surface token
+(`ori-color_surface`) or an inline `--ori-color`.
+
+This supersedes the "two-tier aliases repointed by a utility class" entry below **only in the class
+surface** (one class, not a pair); the two-tier **token** model (raw scale → resolved alias the component
+reads) is unchanged and is exactly what makes the single class a one-line repoint. Rolled out via an
+orchestrated workflow with per-component / per-page adversarial verification; verified by 324 tests,
+types, lint, and browser measurements at every step. Input and Button are the hand-built references.
+
 ## `OriDialog` defaults to the native `<dialog>`; Zag dropped from the default path
 
 `useDialog` / `OriDialog` now run on the platform `<dialog>` element (`showModal()`), with **no

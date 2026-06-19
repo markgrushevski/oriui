@@ -1,5 +1,10 @@
 /* ============================================================
    Variant utility classes — layer: ori.utilities
+   Single-class: `.ori-variant_fill` sets the full cluster (border / opacity / bg / text) on its own —
+   no paired `.ori-variant` base is needed. The cluster reads the color axis (--ori-color /
+   --ori-color-on), so color is the ROLE and variant is the MAPPING (which surface the accent paints).
+   The bare `.ori-variant` default below is kept as a plain fallback for an element that opts into the
+   system without picking a value (and for backward compatibility with `ori-variant ori-variant_*`).
    ============================================================ */
 @layer ori.utilities {
     .ori-variant {
@@ -9,7 +14,7 @@
         --ori-variant-text-color: currentColor;
     }
 
-    .ori-variant.ori-variant_fill {
+    .ori-variant_fill {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
@@ -18,85 +23,85 @@
         --ori-variant-text-color: var(--ori-color-on);
     }
 
-    .ori-variant.ori-variant_tonal {
+    .ori-variant_tonal {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
         --ori-variant-text-color: var(--ori-color);
     }
 
-    .ori-variant.ori-variant_outline {
+    .ori-variant_outline {
         --ori-variant-border-color: var(--ori-color);
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color);
     }
 
-    .ori-variant.ori-variant_text {
+    .ori-variant_text {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color);
     }
 
-    .ori-variant.ori-variant_plain {
+    .ori-variant_plain {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 0.5;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color);
     }
 
-    .ori-variant.ori-variant_fill[data-active],
-    .ori-button.ori-variant.ori-variant_fill:active {
+    .ori-variant_fill[data-active],
+    .ori-button.ori-variant_fill:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant.ori-variant_fill:hover {
+        .ori-button.ori-variant_fill:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
         }
     }
 
-    .ori-variant.ori-variant_tonal[data-active],
-    .ori-button.ori-variant.ori-variant_tonal:active {
+    .ori-variant_tonal[data-active],
+    .ori-button.ori-variant_tonal:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant.ori-variant_tonal:hover {
+        .ori-button.ori-variant_tonal:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
         }
     }
 
-    .ori-variant.ori-variant_outline[data-active],
-    .ori-button.ori-variant.ori-variant_outline:active {
+    .ori-variant_outline[data-active],
+    .ori-button.ori-variant_outline:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant.ori-variant_outline:hover {
+        .ori-button.ori-variant_outline:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
         }
     }
 
-    .ori-variant.ori-variant_text[data-active],
-    .ori-button.ori-variant.ori-variant_text:active {
+    .ori-variant_text[data-active],
+    .ori-button.ori-variant_text:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant.ori-variant_text:hover {
+        .ori-button.ori-variant_text:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
         }
     }
 
-    .ori-variant.ori-variant_plain[data-active],
-    .ori-button.ori-variant.ori-variant_plain:active {
+    .ori-variant_plain[data-active],
+    .ori-button.ori-variant_plain:active {
         --ori-variant-opacity: 1;
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant.ori-variant_plain:hover {
+        .ori-button.ori-variant_plain:hover {
             --ori-variant-opacity: 1;
         }
     }

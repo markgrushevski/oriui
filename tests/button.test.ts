@@ -12,7 +12,7 @@ describe('OriButton', () => {
         expect(el.getAttribute('type')).toBe('button');
         for (const cls of [
             'ori-button',
-            'ori-size-action_md',
+            'ori-button_md',
             'ori-size-radius_rounded',
             'ori-font-size_md',
             'ori-variant_fill',
@@ -30,7 +30,7 @@ describe('OriButton', () => {
         const c = wrapper.classes();
 
         expect(c).toContain('ori-variant_tonal');
-        expect(c).toContain('ori-size-action_lg');
+        expect(c).toContain('ori-button_lg');
         expect(c).toContain('ori-font-size_lg');
         expect(c).toContain('ori-color_danger');
         expect(c).toContain('ori-size-radius_sm');

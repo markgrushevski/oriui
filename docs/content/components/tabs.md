@@ -15,16 +15,16 @@ component, where `v-model` holds the active tab value.
 
 ## Classes
 
-A tabs widget is a block class plus the color utility pair — each pair is a base class (`ori-color`)
-and a scale value (`ori-color_primary`), so one class repoints one token. The Vue props in
-[Framework API](#framework-api) map 1:1 to these.
+A tabs widget is a block class plus single-class token utilities — one class repoints one token, no
+base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
-:class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Carries the ori-color utility so --ori-color resolves for the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color + ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label colour shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
+<!-- prettier-ignore -->
+:class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Baked default accent is primary; override with ori-color_* to change the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label colour shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
 
 ## Anatomy
 
 ```
-div.ori-tabs  [ori-color ori-color_primary]
+div.ori-tabs  [ori-color_primary]
   div.ori-tabs__list  [role=tablist, aria-orientation]
     button.ori-tabs__tab  [role=tab, aria-selected, aria-controls, tabindex]  × N
   div.ori-tabs__panel  [role=tabpanel, aria-labelledby, tabindex=0]  × N
@@ -55,7 +55,7 @@ div.ori-tabs  [ori-color ori-color_primary]
 #html
 
 ```html
-<div class="ori-tabs ori-color ori-color_primary">
+<div class="ori-tabs ori-color_primary">
     <div class="ori-tabs__list" role="tablist" aria-orientation="horizontal">
         <button
             id="tabs-1-tab-0"
@@ -125,8 +125,8 @@ Every semantic role. The accent color is shared by the active indicator and the 
 #html
 
 ```html
-<!-- swap the color pair: ori-color_primary → _secondary / _success / _danger / _warn / _info -->
-<div class="ori-tabs ori-color ori-color_secondary">…</div>
+<!-- swap the color: ori-color_primary → _secondary / _success / _danger / _warn / _info -->
+<div class="ori-tabs ori-color_secondary">…</div>
 ```
 
 ::
@@ -161,7 +161,7 @@ Arrow axis switches to Up / Down.
 
 ```html
 <!-- add ori-tabs_vertical; list gets aria-orientation="vertical" -->
-<div class="ori-tabs ori-tabs_vertical ori-color ori-color_primary">
+<div class="ori-tabs ori-tabs_vertical ori-color_primary">
     <div class="ori-tabs__list" role="tablist" aria-orientation="vertical">
         <button class="ori-tabs__tab" role="tab" aria-selected="true" tabindex="0">General</button>
         <button class="ori-tabs__tab" role="tab" aria-selected="false" tabindex="-1">Security</button>
@@ -268,7 +268,7 @@ When `v-model` is omitted, the component auto-selects the first non-disabled tab
 
 ```html
 <!-- Same markup; the first tab gets aria-selected="true" by default -->
-<div class="ori-tabs ori-color ori-color_primary">…</div>
+<div class="ori-tabs ori-color_primary">…</div>
 ```
 
 ::
@@ -311,7 +311,7 @@ Vertical orientation, a non-default color, and named panel slots — a common se
 #html
 
 ```html
-<div class="ori-tabs ori-tabs_vertical ori-color ori-color_secondary">
+<div class="ori-tabs ori-tabs_vertical ori-color_secondary">
     <div class="ori-tabs__list" role="tablist" aria-orientation="vertical">
         <button class="ori-tabs__tab" role="tab" aria-selected="true" tabindex="0">Profile</button>
         <button class="ori-tabs__tab" role="tab" aria-selected="false" tabindex="-1">Account</button>

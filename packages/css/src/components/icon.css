@@ -1,6 +1,11 @@
 @layer ori.components {
     .ori-icon {
         --ori-color: currentcolor;
+        /* Baked per-axis defaults so a bare `.ori-icon` is a valid `text`-size, unspaced icon.
+           `.ori-color_*` (utilities layer) overrides the color by layer order; the action-size /
+           space axes are repointed by the component size sugar (`.ori-icon_lg`) below. */
+        --ori-size-action: var(--ori-size-action_text);
+        --ori-size-action-space: var(--ori-size-action-space_text);
 
         display: flex;
         align-items: center;
@@ -21,6 +26,38 @@
         margin: 0.25em;
     }
 
+    /* Size sugar (action-size axis) — mirrors the low-level `.ori-size-action_*` utility, scoped to
+       the component. Compound with the block so it beats the baked `text` default by specificity. */
+    .ori-icon.ori-icon_text {
+        --ori-size-action: var(--ori-size-action_text);
+    }
+
+    .ori-icon.ori-icon_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-icon.ori-icon_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-icon.ori-icon_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-icon.ori-icon_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-icon.ori-icon_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-icon.ori-icon_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
+    }
+
+    /* `spaced` margin is the global single-class `.ori-size-action-space_<size>` utility (it repoints
+       --ori-size-action-space, which `.ori-icon` reads as margin above); no component-scoped rule. */
     .ori-icon > * {
         width: 100%;
         height: 100%;

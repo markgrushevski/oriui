@@ -12,11 +12,11 @@ describe('OriTextarea', () => {
         expect(wrapClasses).toContain('ori-color_primary');
         expect(wrapClasses).toContain('ori-font-size_md');
         expect(wrapClasses).toContain('ori-textarea_outline');
+        expect(wrapClasses).toContain('ori-textarea_md');
 
         const field = wrapper.find('textarea');
         expect(field.exists()).toBe(true);
         expect(field.classes()).toContain('ori-textarea__field');
-        expect(field.classes()).toContain('ori-size-action_md');
         expect(field.classes()).toContain('ori-size-radius_md');
     });
 
@@ -112,7 +112,7 @@ describe('OriTextarea', () => {
         expect(wrapClasses).toContain('ori-font-size_lg');
         expect(wrapClasses).toContain('ori-textarea_fill');
         expect(wrapClasses).toContain('ori-color_danger');
-        expect(wrapper.find('textarea').classes()).toContain('ori-size-action_lg');
+        expect(wrapClasses).toContain('ori-textarea_lg');
         expect(wrapper.find('textarea').classes()).toContain('ori-size-radius_sm');
     });
 
