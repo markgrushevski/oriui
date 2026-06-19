@@ -168,7 +168,7 @@ Omit the `title` prop and supply markup in the `#title` slot when you need rich 
 
 ::
 
-## Real-world recipe — confirm destructive action
+## Common patterns
 
 A confirm / cancel pair inside a dialog, wired to an async action.
 

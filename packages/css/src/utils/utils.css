@@ -5,17 +5,6 @@
             0 3px 10px 0 rgb(0 0 0 / 0.19);
     }
 
-    .ori-disabled {
-        opacity: 0.2 !important;
-        cursor: default !important;
-        pointer-events: none !important;
-    }
-
-    .ori-loading {
-        cursor: default !important;
-        pointer-events: none !important;
-    }
-
     /* Safe-area insets for hybrid / PWA (notch, home indicator) */
     .ori-safe-area {
         padding-top: env(safe-area-inset-top);

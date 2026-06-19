@@ -33,34 +33,3 @@ const { size = 'text' } = defineProps<{
         </slot>
     </i>
 </template>
-
-<style>
-.ori-icon {
-    --ori-color: currentcolor;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: var(--ori-size-action);
-    height: var(--ori-size-action);
-
-    margin: var(--ori-size-action-space);
-
-    border-radius: 50%;
-
-    color: var(--ori-color);
-}
-
-.ori-icon.ori-icon_inline {
-    display: inline-flex;
-    margin: 0.25em;
-}
-
-.ori-icon > * {
-    width: 100%;
-    height: 100%;
-    fill: currentcolor;
-    color: currentcolor;
-}
-</style>

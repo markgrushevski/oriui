@@ -259,7 +259,7 @@ Set `disabled: true` on individual items in the `options` array to lock only tho
 
 ::
 
-## Real-world recipe — settings panel
+## Common patterns
 
 Color, size, inline layout, and per-option disabled in a compact panel.
 

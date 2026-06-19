@@ -1,0 +1,66 @@
+@layer ori.components {
+    .ori-dialog {
+        width: 100%;
+        max-width: 460px;
+        max-height: calc(100dvh - 32px);
+        margin: auto;
+        padding: 0;
+
+        overflow: auto;
+
+        border: 0;
+        border-radius: 14px;
+
+        background: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-lg);
+        color: var(--ori-color-on-surface);
+    }
+
+    .ori-dialog::backdrop {
+        background: color-mix(in srgb, #000000 50%, transparent);
+    }
+
+    .ori-dialog__content {
+        padding: 24px;
+    }
+
+    .ori-dialog__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .ori-dialog__title {
+        margin: 0;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .ori-dialog__close {
+        border: 0;
+        opacity: 0.7;
+
+        background: none;
+        color: inherit;
+
+        font-size: 22px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+    @media (hover: hover) {
+        .ori-dialog__close:hover {
+            opacity: 1;
+        }
+    }
+
+    .ori-dialog__body {
+        opacity: 0.85;
+        font-size: 14px;
+    }
+}

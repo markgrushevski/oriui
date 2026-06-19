@@ -1,0 +1,92 @@
+@layer ori.components {
+    .ori-radio-group {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 0.5em;
+
+        font-size: var(--ori-font-size);
+        line-height: 1.4;
+    }
+
+    .ori-radio-group__label {
+        font-weight: 500;
+    }
+
+    .ori-radio-group__options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+    }
+
+    .ori-radio-group.ori-radio-group_inline .ori-radio-group__options {
+        flex-flow: row wrap;
+        gap: 1em;
+    }
+
+    .ori-radio {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        gap: 0.5em;
+
+        cursor: pointer;
+    }
+
+    .ori-radio.ori-radio_disabled {
+        opacity: 0.55;
+
+        cursor: not-allowed;
+    }
+
+    .ori-radio__input {
+        position: absolute;
+        width: 1.15em;
+        height: 1.15em;
+        margin: 0;
+
+        opacity: 0;
+
+        cursor: inherit;
+    }
+
+    .ori-radio__circle {
+        display: inline-flex;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 1.15em;
+        height: 1.15em;
+
+        transition: border-color 0.15s ease-out;
+
+        border: 1px solid color-mix(in srgb, currentcolor 40%, transparent);
+        border-radius: 50%;
+    }
+
+    .ori-radio__circle::after {
+        content: '';
+        width: 0.6em;
+        height: 0.6em;
+
+        transform: scale(0);
+        transition: transform 0.15s ease-out;
+
+        border-radius: 50%;
+
+        background-color: var(--ori-color);
+    }
+
+    .ori-radio__input:checked ~ .ori-radio__circle {
+        border-color: var(--ori-color);
+    }
+
+    .ori-radio__input:checked ~ .ori-radio__circle::after {
+        transform: scale(1);
+    }
+
+    .ori-radio__input:focus-visible ~ .ori-radio__circle {
+        outline: 2px solid var(--ori-color);
+        outline-offset: 2px;
+    }
+}
