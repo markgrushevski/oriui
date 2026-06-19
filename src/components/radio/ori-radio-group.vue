@@ -41,9 +41,7 @@ const labelId = computed(() => `${uid}-label`);
     <div
         :class="[
             'ori-radio-group',
-            'ori-color',
             `ori-color_${color}`,
-            'ori-font-size',
             `ori-font-size_${size}`,
             { 'ori-radio-group_inline': inline }
         ]"

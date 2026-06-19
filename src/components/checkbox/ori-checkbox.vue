@@ -34,14 +34,7 @@ const fieldId = computed(() => id ?? uid);
 <template>
     <label
         :for="fieldId"
-        :class="[
-            'ori-checkbox',
-            'ori-color',
-            `ori-color_${color}`,
-            'ori-font-size',
-            `ori-font-size_${size}`,
-            { 'ori-checkbox_disabled': disabled }
-        ]"
+        :class="['ori-checkbox', `ori-color_${color}`, `ori-font-size_${size}`, { 'ori-checkbox_disabled': disabled }]"
     >
         <input
             v-bind="$attrs"

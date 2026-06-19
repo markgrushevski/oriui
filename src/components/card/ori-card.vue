@@ -36,9 +36,9 @@ const {
                 'ori-card_icon': !text,
                 'ori-card_fluid': fluid,
                 'ori-card_row': row,
-                [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                [`ori-variant ori-variant_${variant}`]: variant,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-size-radius_${radius}`]: radius,
+                [`ori-variant_${variant}`]: variant,
+                [`ori-color_${color}`]: color
             }
         ]"
         :aria-disabled="disabled ? 'true' : undefined"

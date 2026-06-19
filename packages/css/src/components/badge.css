@@ -5,6 +5,17 @@
     }
 
     .ori-badge {
+        /* Baked per-axis defaults so a bare `.ori-badge` is a valid filled-primary, rounded badge.
+           Single-class utilities (.ori-size-radius_zero, .ori-color_danger, .ori-variant_*) override
+           by layer order; the cluster below is the `fill` default. */
+        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-variant-border-color: transparent;
+        --ori-variant-opacity: 1;
+        --ori-variant-bg-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-on);
+
         display: inline-flex;
 
         box-sizing: border-box;

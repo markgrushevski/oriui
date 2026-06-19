@@ -1,5 +1,12 @@
 @layer ori.components {
     .ori-switch {
+        /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
+           (utilities layer) overrides by layer order. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        /* Baked default for the font-size axis: bare block uses `md` (the switch is em-sized off it). */
+        --ori-font-size: var(--ori-font-size_md);
+
         display: inline-flex;
         position: relative;
         align-items: center;

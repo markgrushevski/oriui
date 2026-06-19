@@ -29,7 +29,7 @@ describe('OriAvatar', () => {
             props: { text: 'A', size: 'xl', radius: 'sm', inline: true, reverse: true }
         }).classes();
 
-        expect(c).toContain('ori-size-action_xl');
+        expect(c).toContain('ori-avatar_xl');
         expect(c).toContain('ori-size-radius_sm');
         expect(c).toContain('ori-avatar_inline');
         expect(c).toContain('ori-avatar_reverse');

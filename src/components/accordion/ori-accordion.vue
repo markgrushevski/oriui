@@ -44,10 +44,9 @@ function blockDisabled(event: Event, disabled?: boolean): void {
     <div
         :class="[
             'ori-accordion',
-            'ori-color',
             `ori-color_${color}`,
             {
-                [`ori-size-radius ori-size-radius_${radius}`]: radius
+                [`ori-size-radius_${radius}`]: radius
             }
         ]"
     >

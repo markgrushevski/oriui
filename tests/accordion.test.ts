@@ -14,7 +14,6 @@ describe('OriAccordion', () => {
         const wrapper = mount(OriAccordion, { props: { items: ITEMS } });
 
         expect(wrapper.classes()).toContain('ori-accordion');
-        expect(wrapper.classes()).toContain('ori-color');
         expect(wrapper.classes()).toContain('ori-color_primary');
     });
 
@@ -115,19 +114,17 @@ describe('OriAccordion', () => {
 
     // ----- radius prop -----
 
-    it('adds radius classes when the radius prop is set', () => {
-        const wrapper = mount(OriAccordion, { props: { items: ITEMS, radius: 'md' } });
+    it('adds the radius value class when the radius prop is set', () => {
+        const wrapper = mount(OriAccordion, { props: { items: ITEMS, radius: 'lg' } });
 
-        expect(wrapper.classes()).toContain('ori-size-radius');
-        expect(wrapper.classes()).toContain('ori-size-radius_md');
+        expect(wrapper.classes()).toContain('ori-size-radius_lg');
     });
 
-    it('applies the default md radius classes when the radius prop is absent', () => {
+    it('applies the default md radius value class when the radius prop is absent', () => {
         const wrapper = mount(OriAccordion, { props: { items: ITEMS } });
 
-        // radius defaults to 'md' so the container always has a resolved --ori-size-radius (a bare
-        // var(--ori-size-radius) with no class would compute to 0 — square corners).
-        expect(wrapper.classes()).toContain('ori-size-radius');
+        // radius defaults to 'md'; the single-class utility repoints --ori-size-radius on its own
+        // (the bare block also bakes the md default, so corners are never square).
         expect(wrapper.classes()).toContain('ori-size-radius_md');
     });
 

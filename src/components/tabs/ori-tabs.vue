@@ -127,7 +127,7 @@ const onKeydown = (event: KeyboardEvent, index: number) => {
 </script>
 
 <template>
-    <div :class="['ori-tabs', 'ori-color', `ori-color_${color}`, { 'ori-tabs_vertical': orientation === 'vertical' }]">
+    <div :class="['ori-tabs', `ori-color_${color}`, { 'ori-tabs_vertical': orientation === 'vertical' }]">
         <div ref="tablistRef" class="ori-tabs__list" role="tablist" :aria-orientation="orientation">
             <button
                 v-for="(tab, index) in tabs"

@@ -1,5 +1,11 @@
 @layer ori.components {
     .ori-checkbox {
+        /* Baked per-axis defaults so a bare `.ori-checkbox` is a valid primary, md-text checkbox.
+           Single-class utilities (.ori-color_danger, .ori-font-size_lg) override by layer order. */
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-font-size: var(--ori-font-size_md);
+
         display: inline-flex;
         position: relative;
         align-items: center;

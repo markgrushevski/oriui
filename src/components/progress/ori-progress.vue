@@ -30,8 +30,8 @@ const percent = computed(() => (max > 0 ? (clamped.value / max) * 100 : 0));
             'ori-progress',
             `ori-progress_${size}`,
             {
-                [`ori-size-radius ori-size-radius_${radius}`]: radius,
-                [`ori-color ori-color_${color}`]: color
+                [`ori-size-radius_${radius}`]: radius,
+                [`ori-color_${color}`]: color
             }
         ]"
         role="progressbar"
