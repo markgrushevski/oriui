@@ -17,3 +17,6 @@ export * from './select';
 export * from './tooltip';
 export * from './accordion';
 export * from './tabs';
+export * from './divider';
+export * from './stack';
+export * from './join';

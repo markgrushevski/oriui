@@ -5,6 +5,11 @@ publishable packages plus the docs workspace. This is the **manual runbook** for
 alpha line; CI-driven releases (`changesets`) are tracked in [ROADMAP.md](ROADMAP.md)
 Phase 8.
 
+> **Status — already live.** The `oriui` npm org and the first alpha are published: all four
+> packages at `1.0.0-alpha.0` (both `next` + `latest`), first published 2026-06-18. The
+> _One-time setup_ below is already done — for a new release jump to [Cut a release](#cut-a-release)
+> and **bump the version first** (published versions are immutable).
+
 ## Packages & layout
 
 | Package       | Path            | Public name   | Depends on                 |

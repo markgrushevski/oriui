@@ -70,6 +70,14 @@ const sections = [
                 ]
             },
             {
+                title: 'Layout',
+                links: [
+                    { label: 'Divider', to: '/components/divider' },
+                    { label: 'Join', to: '/components/join' },
+                    { label: 'Stack', to: '/components/stack' }
+                ]
+            },
+            {
                 title: 'Feedback',
                 links: [
                     { label: 'Alert', to: '/components/alert' },

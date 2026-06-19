@@ -72,6 +72,9 @@ the page for the complete set.
 | [Tooltip](/components/tooltip)     | `<OriTooltip>`    | `content` `placement` `color`                                                                     |
 | [Accordion](/components/accordion) | `<OriAccordion>`  | `items` `multiple` `radius` `color`                                                               |
 | [Tabs](/components/tabs)           | `<OriTabs>`       | `tabs` `color` `orientation` (`v-model` = selected)                                               |
+| [Divider](/components/divider)     | `<OriDivider>`    | `color` `text` `vertical` (default slot = centered label)                                         |
+| [Stack](/components/stack)         | `<OriStack>`      | `align` `as` `cluster` `gap` `justify` (`.ori-stack` column · `.ori-cluster` wrapping row)        |
+| [Join](/components/join)           | `<OriJoin>`       | `as` `vertical` — collapses children's shared radii/borders (add `aria-label`)                    |
 | [Input](/components/input)         | `<OriInput>`      | `label` `type` `color` `size` `radius` `variant` `hint` `error` `required` `disabled` (`v-model`) |
 | [Textarea](/components/textarea)   | `<OriTextarea>`   | `label` `color` `size` `radius` `variant` `rows` `hint` `error` `required` (`v-model`)            |
 | [Select](/components/select)       | `<OriSelect>`     | `label` `options` `color` `size` `radius` `hint` `error` `required` (`v-model`)                   |

@@ -1,0 +1,21 @@
+@layer ori.components {
+    /* Flow layout primitives. Gap is the `--ori-size-gap` alias — repoint it with the single-class
+       `.ori-size-gap_*` utilities (or a scoped `--ori-size-gap` override). */
+    .ori-stack,
+    .ori-cluster {
+        display: flex;
+
+        gap: var(--ori-size-gap);
+    }
+
+    /* Stack: vertical flow. */
+    .ori-stack {
+        flex-direction: column;
+    }
+
+    /* Cluster: horizontal flow that wraps, items centered on the cross axis. */
+    .ori-cluster {
+        flex-flow: row wrap;
+        align-items: center;
+    }
+}
