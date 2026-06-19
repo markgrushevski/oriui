@@ -19,7 +19,7 @@ size and the titled layout are derived from `size` and `title` / `subtitle`. The
 an optional `color` tints the initials backdrop.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-avatar_* (size)","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action ori-size-action-space_*","type":"Size","description":"adds padding around the avatar when <code>spaced</code> is set (base + spacing value)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
+:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-avatar_* (size)","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space_*","type":"Size","description":"adds margin around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
 
 ## Image & initials
 
@@ -264,7 +264,7 @@ inside a container that provides no gap of its own.
 #html
 
 ```html
-<div class="ori-avatar ori-size-action ori-size-action-space_lg">
+<div class="ori-avatar ori-size-action-space_lg">
     <div class="ori-avatar__backdrop" aria-hidden="true">AL</div>
 </div>
 ```

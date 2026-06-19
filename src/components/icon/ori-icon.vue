@@ -17,8 +17,8 @@ const { size = 'text' } = defineProps<{
             'ori-icon',
             {
                 'ori-icon_inline': inline,
-                'ori-icon_spaced': size && spaced,
                 [`ori-icon_${size}`]: size,
+                [`ori-size-action-space_${size}`]: size && spaced,
                 [`ori-color_${color}`]: color
             }
         ]"
