@@ -1,0 +1,87 @@
+@layer ori.components {
+    .ori-alert {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: calc(var(--ori-size-gap) * 1.5);
+
+        padding: calc(var(--ori-size-gap) * 1.5) calc(var(--ori-size-gap) * 2);
+
+        border: 1px solid var(--ori-variant-border-color);
+        border-radius: var(--ori-size-radius);
+
+        opacity: var(--ori-variant-opacity);
+
+        background-color: var(--ori-variant-bg-color);
+        color: var(--ori-variant-text-color);
+
+        font-size: var(--ori-font-size);
+        line-height: 1.45;
+        overflow-wrap: break-word;
+    }
+
+    .ori-alert .ori-alert__icon {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+
+        margin-top: 0.05em;
+    }
+
+    .ori-alert .ori-alert__content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: calc(var(--ori-size-gap) / 2);
+
+        min-width: 0;
+    }
+
+    .ori-alert .ori-alert__title {
+        font-weight: bolder;
+    }
+
+    .ori-alert .ori-alert__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--ori-size-gap);
+
+        margin-top: var(--ori-size-gap);
+    }
+
+    .ori-alert .ori-alert__close {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+
+        margin: -0.25em -0.25em -0.25em 0;
+        padding: 0;
+
+        border: 0;
+        border-radius: var(--ori-size-radius);
+
+        background-color: transparent;
+        color: currentcolor;
+
+        cursor: pointer;
+    }
+
+    /* Neutral on-surface ring contrasts the pale tonal/outline surfaces (a same-hue currentcolor ring can
+   fall below 3:1 there); on a `fill` alert the on-color is correct against the solid fill. */
+    .ori-alert .ori-alert__close:focus-visible {
+        outline: 2px solid var(--ori-color-on-surface);
+        outline-offset: 2px;
+    }
+
+    .ori-alert.ori-variant_fill .ori-alert__close:focus-visible {
+        outline-color: currentcolor;
+    }
+
+    @media (hover: hover) {
+        .ori-alert .ori-alert__close:hover {
+            background-color: color-mix(in srgb, currentcolor, transparent 88%);
+        }
+    }
+}

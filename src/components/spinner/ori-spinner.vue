@@ -23,35 +23,3 @@ const { label = 'Loading', size = 'text' } = defineProps<{
         :aria-label="label"
     ></div>
 </template>
-
-<style>
-.ori-spinner {
-    --ori-color: currentcolor;
-
-    display: block;
-
-    width: var(--ori-size-action);
-    height: var(--ori-size-action);
-
-    animation: rotation 1s linear infinite;
-
-    border: 2px solid var(--ori-color);
-    border-radius: 50%;
-    border-bottom-color: transparent;
-}
-
-.ori-spinner.ori-spinner_inline {
-    display: inline-block;
-    margin: 0.25em;
-}
-
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-</style>
