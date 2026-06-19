@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import OriLink from '../src/components/link/ori-link.vue';
+import OriLink from '../packages/vue/src/components/link/ori-link.vue';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriLink', () => {

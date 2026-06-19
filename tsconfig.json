@@ -1,14 +1,10 @@
 {
-    "include": ["src"],
     "compilerOptions": {
-        "rootDir": "src",
-        "declaration": true,
-        "declarationMap": true,
-        "emitDeclarationOnly": false,
-        "declarationDir": "./types",
-        "strict": true,
         "module": "ESNext",
         "target": "ESNext",
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "strict": true,
         "skipLibCheck": true,
         "isolatedModules": true,
         "esModuleInterop": true,
@@ -16,8 +12,13 @@
         "allowImportingTsExtensions": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "bundler",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "incremental": true
+        "noEmit": true,
+        "ignoreDeprecations": "6.0",
+        "baseUrl": ".",
+        "paths": {
+            "@oriui/vue": ["packages/vue/src/index.ts"],
+            "@oriui/headless": ["packages/headless/src/core/index.ts"],
+            "@oriui/headless/vue": ["packages/headless/src/vue/index.ts"]
+        }
     }
 }

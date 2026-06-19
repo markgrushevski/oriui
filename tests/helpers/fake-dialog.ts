@@ -1,5 +1,5 @@
 import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue';
-import type { DialogControl, UseDialogOptions } from '@oriui/vue';
+import type { DialogControl, UseDialogOptions } from '@oriui/headless/vue';
 
 /**
  * A minimal in-memory DialogAdapter conforming to oriUI's headless contract, used to prove the

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriProgress } from '../src/components/progress';
+import { OriProgress } from '../packages/vue/src/components/progress';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriProgress', () => {

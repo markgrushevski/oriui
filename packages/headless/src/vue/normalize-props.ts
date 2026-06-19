@@ -1,4 +1,4 @@
-import { createNormalizer, type Dict, type PropTypes } from '@oriui/core';
+import { createNormalizer, type Dict, type PropTypes } from '../core';
 
 export interface VuePropTypes extends PropTypes {
     element: Record<string, unknown>;

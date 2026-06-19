@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriKbd } from '../src/components/kbd';
+import { OriKbd } from '../packages/vue/src/components/kbd';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriKbd', () => {

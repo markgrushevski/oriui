@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriTextarea } from '../src/components/textarea';
+import { OriTextarea } from '../packages/vue/src/components/textarea';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriTextarea', () => {
