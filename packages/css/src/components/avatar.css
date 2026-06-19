@@ -8,6 +8,9 @@
         --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-font-size: var(--ori-font-size_lg);
         --ori-color: #00000018;
+        /* `spaced` opt-in margin — the `.ori-size-action-space_<size>` utility repoints this; 0 by
+           default so an unspaced avatar has no outer margin. */
+        --ori-size-action-space: var(--ori-size-action-space_text);
 
         display: flex;
         align-items: center;
@@ -16,6 +19,7 @@
 
         width: var(--ori-size-action);
         height: var(--ori-size-action);
+        margin: var(--ori-size-action-space);
 
         border-radius: var(--ori-size-radius);
     }
