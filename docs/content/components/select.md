@@ -284,7 +284,7 @@ wiring — a `label` (rendered `<label for>`, no external label needed), a `hint
 (`role="alert"`, flips `aria-invalid`, wired through `aria-describedby`), and a `required` asterisk.
 
 ::example
-:ori-select{label="Country" required="true" hint="Where the order ships" placeholder="Select…" :options='[{"label":"France","value":"fr"},{"label":"Germany","value":"de"}]'}
+:ori-select{label="Country" :required="true" hint="Where the order ships" placeholder="Select…" :options='[{"label":"France","value":"fr"},{"label":"Germany","value":"de"}]'}
 :ori-select{label="Plan" error="Please choose a plan" placeholder="Select…" :options='[{"label":"Free","value":"free"},{"label":"Pro","value":"pro"}]'}
 
 #vue
