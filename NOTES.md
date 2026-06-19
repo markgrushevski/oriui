@@ -100,11 +100,15 @@ practical gotchas go here.
   wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
 - **Layered components lose to an UNLAYERED element reset.** Because component styles are now in
   `@layer ori.components`, any **unlayered** global rule (an `a {}` / `button {}` / `input {}` reset)
-  beats them regardless of specificity — unlayered author styles outrank every layer. This bit the docs:
-  a global `a { color: var(--ori-color-primary) }` overrode the text color of an `OriButton` rendered as
-  a link (`as=NuxtLink`), so the fill button's white label turned brand-blue. Fix = scope the reset away
-  from components (`a:not(.ori-button)`), or put the reset in a layer. A real consumer with a broad
-  unlayered `a`/`button` reset hits the same thing — worth a heads-up in the CSS guide.
+  beats them regardless of specificity — unlayered author styles outrank every layer. This bit the docs
+  twice via the global `a {}` reset hitting an `OriButton` rendered as a link (`as=NuxtLink`):
+  (1) `color: var(--ori-color-primary)` turned the fill button's white label brand-blue; (2) once the
+  reset was scoped to `a:not(.ori-button)`, the button lost the reset's `text-decoration: none` and
+  showed the **UA link underline**. Fixes: scope the reset away from components (`a:not(.ori-button)`)
+  for the color, AND `.ori-button` now defensively sets `text-decoration: none` (a button is never
+  underlined, even as a link, and a layered author rule still beats the UA default). A real consumer
+  with a broad unlayered `a`/`button` reset hits the same class of issue — they should layer or scope
+  their reset; worth a heads-up in the CSS guide.
 - **Don't set `--ori-color` (or another utility-owned alias) in a component's CSS.** The `ori-color_*`
   utility (`@layer ori.utilities`) repoints it and now **wins** over the component layer, so a value the
   component rule sets is overridden anyway (and historically it silently no-op'd OriProgress). The token
