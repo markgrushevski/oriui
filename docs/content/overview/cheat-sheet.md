@@ -78,6 +78,7 @@ the page for the complete set.
 | [Input](/components/input)         | `<OriInput>`      | `label` `type` `color` `size` `radius` `variant` `hint` `error` `required` `disabled` (`v-model`) |
 | [Textarea](/components/textarea)   | `<OriTextarea>`   | `label` `color` `size` `radius` `variant` `rows` `hint` `error` `required` (`v-model`)            |
 | [Select](/components/select)       | `<OriSelect>`     | `label` `options` `color` `size` `radius` `hint` `error` `required` (`v-model`)                   |
+| [Field](/components/field)         | `<OriField>`      | `label` `hint` `error` `required` `disabled` `size` — shared form shell; wraps any control        |
 | [Checkbox](/components/checkbox)   | `<OriCheckbox>`   | `label` `color` `size` `value` `disabled` `invalid` `required` (`v-model`)                        |
 | [Radio](/components/radio)         | `<OriRadioGroup>` | `label` `options` `color` `size` `inline` `disabled` `required` (`v-model`)                       |
 | [Switch](/components/switch)       | `<OriSwitch>`     | `label` `color` `size` `disabled` `invalid` (`v-model` boolean)                                   |

@@ -8,9 +8,9 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (27) — for reference
+## Shipped today (28) — for reference
 
-Button · Card · Avatar · Icon · Spinner · Dialog · Input · Checkbox · Switch · RadioGroup ·
+Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Checkbox · Switch · RadioGroup ·
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider.
 
@@ -18,8 +18,6 @@ Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slid
 
 ### Forms & input
 
-- ⭐ **Field / FormControl** — extract the shared label / hint / error / required contract that
-  Input and Select grew by hand, so every control wires a11y identically (one source of truth).
 - ⭐ **Slider / Range** — single + range thumb; token-sized track. Pure-CSS thumb is doable; keyboard
   step needs a little JS.
 - ⭐ **Combobox / Autocomplete** — filterable listbox; needs the headless layer (roving, listbox

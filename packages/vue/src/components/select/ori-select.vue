@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, useId } from 'vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
+import { useOriField } from '../field/context';
 
 interface SelectOption {
     label: string;
@@ -28,6 +29,7 @@ const {
     invalid = false,
     options = [],
     radius = 'md',
+    required = false,
     size = 'md'
 } = defineProps<{
     color?: ThemeColor;
@@ -51,16 +53,26 @@ const {
 
 const model = defineModel<string | number>();
 
-// SSR-safe ids (Vue 3.5): the label's `for`, plus describedby targets for the hint/error.
+// When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
+// label / hint / error; standalone the control wires its own (behaviour unchanged).
+const field = useOriField();
+const inField = Boolean(field);
+
+// SSR-safe ids (Vue 3.5): the label's `for`, plus describedby targets for the hint/error. Inside a
+// field, the field's id + wiring win.
 const uid = useId();
-const fieldId = computed(() => id ?? uid);
+const fieldId = computed(() => field?.id.value ?? id ?? uid);
 const hintId = computed(() => `${fieldId.value}-hint`);
 const errorId = computed(() => `${fieldId.value}-error`);
-const isInvalid = computed(() => invalid || Boolean(error));
+const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)));
+const isRequired = computed(() => required || (field?.required.value ?? false));
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
+const fieldSize = computed(() => field?.size.value ?? size);
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
-// id — never reference an element that isn't in the DOM.
+// id — never reference an element that isn't in the DOM. Inside a field, the field supplies it.
 const describedBy = computed(() => {
+    if (field) return field.describedBy.value;
     const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean);
     return ids.length ? ids.join(' ') : undefined;
 });
@@ -71,12 +83,12 @@ const describedBy = computed(() => {
         :class="[
             'ori-select',
             `ori-color_${color}`,
-            `ori-font-size_${size}`,
-            `ori-select_${size}`,
-            { 'ori-select_fluid': fluid }
+            `ori-font-size_${fieldSize}`,
+            `ori-select_${fieldSize}`,
+            { 'ori-select_fluid': fluid || inField }
         ]"
     >
-        <label v-if="label" :for="fieldId" class="ori-select__label">
+        <label v-if="label && !inField" :for="fieldId" class="ori-select__label">
             {{ label }}<span v-if="required" class="ori-select__required" aria-hidden="true">*</span>
         </label>
 
@@ -86,8 +98,8 @@ const describedBy = computed(() => {
                 :id="fieldId"
                 v-model="model"
                 :class="['ori-select__control', `ori-size-radius_${radius}`]"
-                :disabled="disabled"
-                :required="required"
+                :disabled="isDisabled"
+                :required="isRequired"
                 :aria-invalid="isInvalid ? 'true' : undefined"
                 :aria-describedby="describedBy"
             >
@@ -113,7 +125,7 @@ const describedBy = computed(() => {
             </span>
         </div>
 
-        <p v-if="error" :id="errorId" class="ori-select__error" role="alert">{{ error }}</p>
-        <p v-else-if="hint" :id="hintId" class="ori-select__hint">{{ hint }}</p>
+        <p v-if="error && !inField" :id="errorId" class="ori-select__error" role="alert">{{ error }}</p>
+        <p v-else-if="hint && !inField" :id="hintId" class="ori-select__hint">{{ hint }}</p>
     </div>
 </template>

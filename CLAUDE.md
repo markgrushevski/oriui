@@ -22,8 +22,8 @@ non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runb
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
-swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **27 styled components** (Button,
-Card, Avatar, Icon, Spinner, Dialog, Input, Checkbox, Switch, RadioGroup). Next — more form/overlay
+swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **28 styled components** (Button,
+Card, Avatar, Icon, Spinner, Dialog, Input, Field, Checkbox, Switch, RadioGroup). Next — more form/overlay
 components, the docs-template rollout, npm publish.
 
 ## Working modes (solo / orchestrated)
