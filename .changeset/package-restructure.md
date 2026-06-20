@@ -1,0 +1,11 @@
+---
+'@oriui/vue': minor
+'@oriui/headless': minor
+'@oriui/css': minor
+---
+
+Restructure and rename the packages. The styled components move from the repo root (`@oriui/ui`) into
+`@oriui/vue`; the headless layer consolidates `@oriui/core` and the old `@oriui/vue` into a single
+`@oriui/headless` package — `@oriui/headless` is the framework-agnostic engine, `@oriui/headless/vue`
+the Vue composables (a `@oriui/headless/svelte` adapter can follow). `@oriui/css` is unchanged. The
+old `@oriui/ui`, `@oriui/core`, and the old `@oriui/vue` (headless) package names are retired.

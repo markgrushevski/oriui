@@ -54,7 +54,7 @@ the shared `name` attribute, no JavaScript required.
 >
     <template #default="{ item }">
         <p v-if="item.value === 'one'">oriUI is a layered Vue 3 component library.</p>
-        <p v-else-if="item.value === 'two'">Run <code>npm i @oriui/ui</code>.</p>
+        <p v-else-if="item.value === 'two'">Run <code>npm i @oriui/vue</code>.</p>
         <p v-else>Yes — import <code>@oriui/css</code> and use the ori-* classes anywhere.</p>
     </template>
 </OriAccordion>
@@ -247,7 +247,7 @@ Colors, radius, and rich slot content together — a common FAQ or settings patt
             Yes — MIT licensed. Use it in personal and commercial projects.
         </p>
         <p v-else-if="item.value === 'framework'">
-            Vue 3 via <code>@oriui/ui</code>; any framework or plain HTML via
+            Vue 3 via <code>@oriui/vue</code>; any framework or plain HTML via
             <code>@oriui/css</code>.
         </p>
         <p v-else>

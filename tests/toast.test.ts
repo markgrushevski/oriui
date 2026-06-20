@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { useToast, OriToast, OriToaster } from '../src';
+import { useToast, OriToast, OriToaster } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 // The store is a module-level singleton — reset between every test so they don't bleed into

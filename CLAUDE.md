@@ -8,8 +8,8 @@ Guidance for Claude Code / contributors working in this repository.
 _prototype fast, scale without rewriting_. Three independently-consumable layers
 woven around shared design tokens:
 
-- `@oriui/ui` (styled) — ready components: `<OriButton variant="tonal" />`
-- `@oriui/vue` (behavior) — composables for focus/keyboard/ARIA
+- `@oriui/vue` (styled) — ready components: `<OriButton variant="tonal" />`
+- `@oriui/headless` (behavior) — composables for focus/keyboard/ARIA
 - `@oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue
 
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
@@ -22,7 +22,7 @@ non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runb
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
-swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **10 styled components** (Button,
+swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **27 styled components** (Button,
 Card, Avatar, Icon, Spinner, Dialog, Input, Checkbox, Switch, RadioGroup). Next — more form/overlay
 components, the docs-template rollout, npm publish.
 
@@ -73,15 +73,16 @@ skin CSS and asserts every role/on-role pair meets WCAG AA). `test:types` uses `
 ## Structure
 
 ```
-src/                  @oriui/ui — styled components (the root publishable package)
-  index.ts            entry: re-exports types + components
-  types.ts            shared token/prop types (ActionSize, ThemeColor, Variant, ...)
-  components/<name>/   ori-<name>.vue + index.ts barrel
 packages/
-  css/                @oriui/css — standalone design tokens + .ori-* utilities (the CSS layer)
-  core/               @oriui/core — framework-agnostic headless contract + native engine
-  vue/                @oriui/vue — Vue headless bindings (composables)
-docs/                 Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
+  vue/                  @oriui/vue — styled components (the main publishable package)
+    src/index.ts        entry: re-exports types + components
+    src/types.ts        shared token/prop types (ActionSize, ThemeColor, Variant, ...)
+    src/components/<name>/   ori-<name>.vue + index.ts barrel
+  headless/             @oriui/headless — framework-agnostic engine (`.`) + Vue adapter (`./vue`)
+    src/core/           the engine: state machines, prop-getters, the OriHeadless contract
+    src/vue/            the Vue composables (useDialog / useDisclosure)
+  css/                  @oriui/css — standalone design tokens + .ori-* utilities (the CSS layer)
+docs/                   Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
 ```
 
 Components import types from `../../types` and sibling components directly (e.g.

@@ -1,8 +1,8 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { OriHeadless } from '@oriui/vue';
-import { OriDialog } from '../src';
+import { OriHeadless } from '@oriui/headless/vue';
+import { OriDialog } from '../packages/vue/src';
 import { fakeDialog } from './helpers/fake-dialog';
 import { expectNoA11yViolations } from './helpers/axe';
 

@@ -5,7 +5,7 @@ import { nativeDisclosure } from './native';
 /**
  * Resolve the active Disclosure behavior. Components call this and stay engine-agnostic: it
  * returns whichever adapter the app provided (Zag / custom) via the OriHeadless plugin, falling
- * back to the native `@oriui/core` adapter when none is configured.
+ * back to the native `../core` adapter when none is configured.
  */
 export function useDisclosure(options?: MaybeRefOrGetter<UseDisclosureOptions>): DisclosureControl {
     const adapters = inject(ORI_HEADLESS, null);

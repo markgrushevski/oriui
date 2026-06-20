@@ -1,16 +1,23 @@
 {
+    "include": ["src"],
     "compilerOptions": {
-        "target": "ESNext",
-        "ignoreDeprecations": "6.0",
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "strict": true,
+        "rootDir": "src",
         "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": false,
+        "declarationDir": "./types",
+        "strict": true,
+        "module": "ESNext",
+        "target": "ESNext",
         "skipLibCheck": true,
-        "verbatimModuleSyntax": true,
         "isolatedModules": true,
-        "esModuleInterop": true
-    },
-    "include": ["src"]
+        "esModuleInterop": true,
+        "verbatimModuleSyntax": true,
+        "allowImportingTsExtensions": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "incremental": true
+    }
 }

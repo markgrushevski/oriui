@@ -1,19 +1,19 @@
 # oriUI 織り
 
 [![CI](https://github.com/markgrushevski/oriui/actions/workflows/ci.yml/badge.svg)](https://github.com/markgrushevski/oriui/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/@oriui/ui?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/ui)
+[![npm](https://img.shields.io/npm/v/@oriui/vue?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/vue)
 [![codecov](https://codecov.io/gh/markgrushevski/oriui/branch/main/graph/badge.svg)](https://codecov.io/gh/markgrushevski/oriui)
-[![license](https://img.shields.io/npm/l/@oriui/ui?color=blue)](LICENSE)
+[![license](https://img.shields.io/npm/l/@oriui/vue?color=blue)](LICENSE)
 
 A layered **Vue 3** UI library — _prototype fast, scale without rewriting_. Three independently
 consumable layers woven around shared design tokens, so you can start with styled components and drop
 to headless behavior or raw CSS when you need control, without rewriting.
 
-| Package                                              | Layer    | What you get                                                   |
-| ---------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| [`@oriui/ui`](https://npmjs.com/package/@oriui/ui)   | styled   | Ready Vue components — `<OriButton variant="tonal" />`         |
-| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue) | behavior | Headless composables for focus / keyboard / ARIA               |
-| [`@oriui/css`](https://npmjs.com/package/@oriui/css) | style    | Standalone `.ori-*` classes + design tokens — **no framework** |
+| Package                                                        | Layer    | What you get                                                   |
+| -------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="tonal" />`         |
+| [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless composables for focus / keyboard / ARIA               |
+| [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework** |
 
 Zero-runtime theming via CSS custom properties · no Tailwind dependency · **27 components** · WCAG-AA
 token contrast (executably tested) · fully typed · htmx / Astro / plain-HTML friendly through the CSS
@@ -22,20 +22,20 @@ layer.
 ## Install
 
 ```bash
-npm install @oriui/ui      # styled Vue components (pulls in @oriui/css + @oriui/vue)
+npm install @oriui/vue      # styled Vue components (pulls in @oriui/css + @oriui/headless)
 # or just the layer you need:
 npm install @oriui/css     # standalone CSS — no framework
-npm install @oriui/vue     # headless composables
+npm install @oriui/headless     # headless composables
 ```
 
-> **Alpha.** The line is `1.0.0-alpha.*` on both the `next` and `latest` dist-tags — `npm i @oriui/ui`
+> **Alpha.** The line is `1.0.0-alpha.*` on both the `next` and `latest` dist-tags — `npm i @oriui/vue`
 > works today; APIs may still shift before `1.0.0`.
 
 ## Use it — Vue
 
 ```ts
 import '@oriui/css'; // the stylesheet, once (e.g. in your entry file)
-import { OriButton } from '@oriui/ui';
+import { OriButton } from '@oriui/vue';
 ```
 
 ```vue

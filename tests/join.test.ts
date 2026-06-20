@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriJoin } from '../src/components/join';
+import { OriJoin } from '../packages/vue/src/components/join';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriJoin', () => {

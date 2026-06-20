@@ -1,22 +1,21 @@
 name: Release
 
-# Manual publish. Bump versions locally first (`node scripts/bump.mjs <version>` +
-# `npm install --package-lock-only`), commit + push, then run this workflow with the dist-tag.
-# Uses an npm **automation** token (NPM_TOKEN secret) so CI publishes without an OTP.
+# Changesets-driven release. On push to main, changesets/action opens (or updates) a "Version
+# Packages" PR that aggregates the pending changesets; merging that PR runs the `release` script
+# (changeset publish) to publish the bumped packages to npm. One-time setup: add an npm **automation**
+# access token (bypasses 2FA) as the repo secret NPM_TOKEN.
 on:
-    workflow_dispatch:
-        inputs:
-            tag:
-                description: 'npm dist-tag to publish under'
-                required: true
-                default: 'next'
-                type: choice
-                options: [next, latest]
+    push:
+        branches: [main]
 
-concurrency: release
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+    contents: write
+    pull-requests: write
 
 jobs:
-    publish:
+    release:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -36,13 +35,12 @@ jobs:
                   npm run types
                   npm run test:types
                   npm run test
-                  npm run build
 
-            - name: Publish @oriui/* in dependency order
-              run: |
-                  npm publish -w @oriui/css  --tag ${{ inputs.tag }} --access public
-                  npm publish -w @oriui/core --tag ${{ inputs.tag }} --access public
-                  npm publish -w @oriui/vue  --tag ${{ inputs.tag }} --access public
-                  npm publish                --tag ${{ inputs.tag }} --access public
+            - name: Create Release PR or publish to npm
+              uses: changesets/action@v1
+              with:
+                  version: npm run version
+                  publish: npm run release
               env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

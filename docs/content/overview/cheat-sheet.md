@@ -11,14 +11,14 @@ machine-readable version (e.g. to paste into an AI), fetch [`/llms.txt`](/llms.t
 ## Install
 
 ```bash
-npm install @oriui/ui      # styled Vue components
+npm install @oriui/vue      # styled Vue components
 npm install @oriui/css     # standalone CSS layer (no framework)
-npm install @oriui/vue     # headless composables (focus / keyboard / ARIA)
+npm install @oriui/headless     # headless composables (focus / keyboard / ARIA)
 ```
 
 ```ts
 import '@oriui/css'; // the stylesheet, once (e.g. in your entry file)
-import { OriButton } from '@oriui/ui';
+import { OriButton } from '@oriui/vue';
 ```
 
 ## Two ways to use it
