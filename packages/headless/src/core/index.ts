@@ -7,3 +7,7 @@ export * from './machine';
 
 // Components — namespaced (mirrors Zag's `import * as disclosure from '@zag-js/...'`)
 export * as disclosure from './disclosure';
+export * as combobox from './combobox';
+
+// Public data shapes consumers pass in (flat, not namespaced)
+export type { ComboboxItem } from './combobox';

@@ -8,9 +8,9 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (28) — for reference
+## Shipped today (29) — for reference
 
-Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Checkbox · Switch · RadioGroup ·
+Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combobox · Checkbox · Switch · RadioGroup ·
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider.
 
@@ -20,8 +20,6 @@ Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slid
 
 - ⭐ **Slider / Range** — single + range thumb; token-sized track. Pure-CSS thumb is doable; keyboard
   step needs a little JS.
-- ⭐ **Combobox / Autocomplete** — filterable listbox; needs the headless layer (roving, listbox
-  ARIA, type-ahead). The first control that really exercises `@oriui/headless`.
 - ◽ **NumberField / Stepper** — numeric input with +/− and clamping.
 - ◽ **Segmented / ToggleGroup** — single/multi-select button row (pairs with **Join**).
 - ◽ **FileInput / Dropzone** — styled file picker.

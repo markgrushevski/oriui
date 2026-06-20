@@ -2,6 +2,10 @@
 export { useDisclosure } from './use-disclosure';
 export { useDialog } from './use-dialog';
 
+// Headless behaviors built directly on the core engine
+export { useCombobox, type UseComboboxOptions } from './use-combobox';
+export type { ComboboxItem } from '../core';
+
 // Adapter selection
 export { provideHeadless, OriHeadless } from './plugin';
 

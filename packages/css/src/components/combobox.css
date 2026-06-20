@@ -1,0 +1,203 @@
+@layer ori.components {
+    .ori-combobox {
+        /* Same baked field tokens as `.ori-input` — the inner control reuses `.ori-input__field`,
+           which reads these from this ancestor. A `.ori-color_*` / `.ori-font-size_*` utility or a
+           size modifier repoints them; the field inherits. */
+        --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
+        --ori-input-bg: transparent;
+        --ori-size-action: var(--ori-size-action_md);
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-font-size: var(--ori-font-size_md);
+
+        display: inline-flex;
+        flex-direction: column;
+        gap: 0.375em;
+    }
+
+    .ori-combobox.ori-combobox_fluid {
+        display: flex;
+        width: 100%;
+    }
+
+    /* Action-size sugar (field height) — mirrors `.ori-input_*`. */
+    .ori-combobox.ori-combobox_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-combobox.ori-combobox_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-combobox.ori-combobox_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-combobox.ori-combobox_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-combobox.ori-combobox_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-combobox.ori-combobox_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
+    }
+
+    .ori-combobox__label {
+        font-size: calc(var(--ori-font-size) * 0.875);
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .ori-combobox__required {
+        margin-inline-start: 0.15em;
+
+        color: var(--ori-color-danger);
+    }
+
+    .ori-combobox__control {
+        display: flex;
+        position: relative;
+        width: 100%;
+    }
+
+    /* Reuses `.ori-input__field` for the box; just reserve room for the trailing trigger/clear. */
+    .ori-combobox__input {
+        padding-inline-end: 2.25em;
+    }
+
+    .ori-combobox__trigger,
+    .ori-combobox__clear {
+        display: inline-flex;
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+        width: 1.75em;
+        padding: 0;
+
+        border: 0;
+        opacity: 0.6;
+
+        background: none;
+        color: inherit;
+
+        cursor: pointer;
+        inset-block: 0;
+    }
+
+    .ori-combobox__trigger {
+        inset-inline-end: 0.25em;
+    }
+
+    .ori-combobox__clear {
+        inset-inline-end: 2em;
+    }
+
+    .ori-combobox__trigger svg,
+    .ori-combobox__clear svg {
+        width: 1.15em;
+        height: 1.15em;
+    }
+
+    .ori-combobox__trigger svg {
+        transition: transform 0.15s ease-out;
+    }
+
+    .ori-combobox__trigger[aria-expanded='true'] svg {
+        transform: rotate(180deg);
+    }
+
+    @media (hover: hover) {
+        .ori-combobox__trigger:hover,
+        .ori-combobox__clear:hover {
+            opacity: 1;
+        }
+    }
+
+    .ori-combobox__trigger:disabled,
+    .ori-combobox__clear:disabled {
+        opacity: 0.3;
+
+        cursor: not-allowed;
+    }
+
+    /* The popup listbox — absolutely anchored under the control (no JS positioner; collision flip is
+       out of scope, matching the tooltip's static model). `hidden` (from the prop-getter when closed)
+       wins over the block display via the attribute selector. */
+    .ori-combobox__listbox {
+        position: absolute;
+        z-index: 50;
+        top: calc(100% + 0.25em);
+
+        max-height: 15rem;
+        margin: 0;
+        padding: 0.25em;
+        overflow-y: auto;
+
+        border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+        border-radius: var(--ori-size-radius_md);
+
+        background: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-md);
+        color: var(--ori-color-on-surface);
+
+        list-style: none;
+        inset-inline: 0;
+    }
+
+    .ori-combobox__listbox[hidden] {
+        display: none;
+    }
+
+    .ori-combobox__option {
+        padding: 0.4em 0.6em;
+
+        border-radius: calc(var(--ori-size-radius_md) - 0.15em);
+
+        font-size: var(--ori-font-size);
+        line-height: 1.3;
+
+        cursor: pointer;
+    }
+
+    .ori-combobox__option[data-highlighted] {
+        background: color-mix(in srgb, var(--ori-color) 14%, transparent);
+    }
+
+    .ori-combobox__option_selected {
+        color: var(--ori-color);
+        font-weight: 600;
+    }
+
+    .ori-combobox__option[aria-disabled='true'] {
+        opacity: 0.45;
+
+        cursor: not-allowed;
+    }
+
+    .ori-combobox__empty {
+        padding: 0.4em 0.6em;
+
+        opacity: 0.6;
+        font-size: var(--ori-font-size);
+    }
+
+    .ori-combobox__hint,
+    .ori-combobox__error {
+        margin: 0;
+
+        font-size: calc(var(--ori-font-size) * 0.8);
+        line-height: 1.3;
+    }
+
+    .ori-combobox__hint {
+        opacity: 0.7;
+    }
+
+    .ori-combobox__error {
+        color: var(--ori-color-danger);
+    }
+}
