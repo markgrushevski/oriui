@@ -22,7 +22,7 @@
         "build": "node build.mjs"
     },
     "devDependencies": {
-        "autoprefixer": "^10.4.23",
+        "autoprefixer": "^10.5.0",
         "cssnano": "^8.0.2",
         "postcss": "^8.5.15",
         "postcss-import": "^16.1.1"
