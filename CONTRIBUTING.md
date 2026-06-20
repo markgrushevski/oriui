@@ -47,28 +47,26 @@ to `main` and every PR: `lint:ci → types → test → build` across Node 20.19
 oriUI follows **SemVer**. The line is currently **`1.0.0-alpha.0`** — alpha, so the public API
 may shift before `1.0`.
 
-The four published packages move in **lockstep**: `@oriui/vue`, `@oriui/css`, `@oriui/headless`, and
-`@oriui/headless` always share one version, and their internal dependencies are pinned to that exact
+The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headless`, and `@oriui/css`
+always share one version, and their internal dependencies are pinned to that exact
 version (a
 `*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
 under the **`next`** npm dist-tag, so a plain `npm install @oriui/vue` does not pick up an alpha.
 
 ## Releases & tags
 
-A **release is a deliberate event, separate from merging to `main`.** Merging puts code on the
-trunk; a release maps a chosen `main` commit to a published npm version and a git tag:
+A **release is a deliberate event, separate from merging to `main`** — and it is automated with
+**[changesets](https://github.com/changesets/changesets)** (alpha pre mode). The flow:
 
-1. **Bump** all four package versions (and the pinned internal deps) in lockstep, sync the
-   lockfile (`npm install --package-lock-only`), and commit on `main`.
-2. **Green check** — `npm run lint:ci && npm run types && npm run test && npm run build`.
-3. **Publish** to npm — the dependency-ordered runbook in [RELEASING.md](RELEASING.md).
-4. **Tag** the release commit and push the tag:
+1. **Add a changeset** with your change, before merging the PR: `npm run changeset` — pick the bump
+   type and write the changelog line. The three packages are a **fixed** group, so naming any one
+   bumps all three; commit the generated `.changeset/*.md`.
+2. **Merge to `main`.** The **Release** workflow (`changesets/action`) opens/updates a **"Version
+   Packages"** PR that applies the pending changesets — bumping the lockstep version + the pinned
+   internal deps and updating each `CHANGELOG.md`.
+3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`next`** dist-tag
+   (via the `NPM_TOKEN` secret, no OTP) and tags the release commit, so every `@oriui/vue@x` is
+   checkout-able.
 
-    ```bash
-    git tag -a v1.0.0-alpha.0 -m "v1.0.0-alpha.0"
-    git push origin v1.0.0-alpha.0
-    ```
-
-The tag is what ties a published version to an exact commit, so every `@oriui/vue@x` is checkout-able.
-Automating this — `changesets` + a CI publish job (`NPM_TOKEN`) — is a Phase 8 to-do; see
-[ROADMAP.md](ROADMAP.md).
+Full runbook — token setup, the manual fallback (`npm run version` / `npm run release`), and the
+prerelease / dist-tag rules — is in [RELEASING.md](RELEASING.md).

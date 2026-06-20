@@ -95,13 +95,13 @@ personal value is a design system the author understands and can bend to their o
 
 The CSS layer (tokens + base + `.ori-*` utilities) now ships as its own **zero-dependency** package,
 `@oriui/css` (`packages/css/`), instead of an `@oriui/vue/css` subpath. **Why:** the subpath forced a
-CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/vue`, which drags in `@oriui/headless` +
-`@oriui/headless` and a `vue` peer-dependency warning — directly contradicting the "CSS layer is Vue-free,
+CSS-only consumer (htmx / Astro / plain HTML) to `npm install @oriui/vue`, which drags in `@oriui/headless` and a `vue` peer-dependency warning
+— directly contradicting the "CSS layer is Vue-free,
 first-class" positioning. `@oriui/css` has no deps and no peer, so `import '@oriui/css'` (or a CDN
 `<link>`) is clean. `@oriui/vue` now **depends on** `@oriui/css` (its components read those tokens) and
 no longer ships its own `./css`; styled Vue consumers `import '@oriui/css'` for the stylesheet. The
 styles source moved `src/styles/` → `packages/css/src/`, bundled to one file via `postcss-import`
-(+ autoprefixer). Four packages now move in lockstep (`@oriui/css` joins core / vue / ui).
+(+ autoprefixer). Three packages now move in lockstep: `@oriui/vue`, `@oriui/headless`, `@oriui/css`.
 
 **Completed since:** the bundle is now **minified with cssnano** (~40 → 16.6 kB without component
 styles; ~40 kB with them), and the **component block styles were moved into `@oriui/css`** — each
@@ -403,11 +403,11 @@ Multi-framework needs **separate npm packages**: `dependencies`/`peerDependencie
 once per package, so a single `oriui` with `./headless/vue` + `./headless/svelte` subpaths would
 force a Svelte consumer to carry `vue` as a peer (and vice-versa). Ark UI proves the split —
 `@ark-ui/vue` (peer vue) and `@ark-ui/svelte` (peer svelte) are separate; a Svelte app installs
-zero Vue. So: `@oriui/headless` (vanilla TS) ← `@oriui/headless` (peer vue), later `@oriui/svelte` (peer
-svelte); styled stays `oriui`; `@oriui/css` split deferred.
+zero Vue. So: `@oriui/headless` ships the vanilla-TS engine (`.`) + a Vue adapter (`./vue`, peer vue), with a
+`./svelte` adapter later; styled stays `@oriui/vue`; `@oriui/css` split deferred.
 
-- **Build:** per-package — `tsdown` (headless `@oriui/headless` + `@oriui/headless`, ESM + dts; migrated off
-  `tsup`, now maintenance-mode), Vite-lib + `vue-tsc` (styled `oriui`, SFCs + CSS),
+- **Build:** per-package — `tsdown` (headless `@oriui/headless` — engine + Vue adapter, ESM + dts; migrated off
+  `tsup`, now maintenance-mode), Vite-lib + `vue-tsc` (styled `@oriui/vue`, SFCs + CSS),
   `svelte-package` (svelte, later); validate exports with `publint` + `@arethetypeswrong/cli`.
 - **Tooling:** keep **npm workspaces** for now (pnpm's phantom-dep strictness pays off at Svelte
   time — switch then); `changesets` at first publish; skip Turborepo/Nx (overkill solo).
