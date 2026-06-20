@@ -34,7 +34,7 @@ a11y, tests, strong docs).
    adapters for both the simple primitives (Disclosure ✅) and the dialog (native `<dialog>` ✅), or
    bring-your-own. (Superseded "own ↔ Reka" and "Zag for complex" — see DECISIONS.md.) `OriDialog` ships
    in `@oriui/vue`.
-5. 🔄 **Styled components** — **27 shipped** (actions, forms, overlays, layout, feedback, navigation,
+5. 🔄 **Styled components** — **28 shipped** (actions, forms, overlays, layout, feedback, navigation,
    data display), each with state-via-attributes + focus-visible a11y and a Vitest+axe suite. Remaining:
    the `glass` variant; the catalog grows from [IDEAS.md](IDEAS.md) as real screens need it.
 6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (**456 tests**): behavior/a11y
@@ -42,7 +42,7 @@ a11y, tests, strong docs).
    asserted WCAG AA — already caught a real Sumi failure). Chose VTU over Testing Library (DECISIONS.md).
    Remaining: Playwright visual/e2e.
 7. 🔄 **Docs** — a **Nuxt 4 + Nuxt Content 3** app, its own UI built on oriUI itself (not VitePress).
-   ✅ a full page per component (27 — intro + classes + props/slots + a11y, with live demos on the page,
+   ✅ a full page per component (28 — intro + classes + props/slots + a11y, with live demos on the page,
    so there is no separate `/playground` route); ✅ `nuxt-llms` (`/llms.txt` + `/llms-full.txt`); ✅ a
    one-page consumer cheat-sheet. Remaining:
     - **framework-switchable examples (Vue ↔ Svelte)** — the switcher already has a Svelte tab; add the

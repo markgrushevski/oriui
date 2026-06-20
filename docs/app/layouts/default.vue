@@ -51,6 +51,7 @@ const sections = [
                 title: 'Data input',
                 links: [
                     { label: 'Checkbox', to: '/components/checkbox' },
+                    { label: 'Field', to: '/components/field' },
                     { label: 'Input', to: '/components/input' },
                     { label: 'Radio', to: '/components/radio' },
                     { label: 'Select', to: '/components/select' },

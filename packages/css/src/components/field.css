@@ -1,0 +1,51 @@
+@layer ori.components {
+    .ori-field {
+        /* Baked default for the font-size axis (text scale): a bare `.ori-field` is already a valid
+           `md` field. A `.ori-font-size_*` utility repoints it; the label / hint / error inherit. */
+        --ori-font-size: var(--ori-font-size_md);
+
+        display: inline-flex;
+        flex-direction: column;
+        gap: 0.375em;
+    }
+
+    .ori-field.ori-field_fluid {
+        display: flex;
+        width: 100%;
+    }
+
+    /* A control nested in a field stretches to the field's width (the field owns the layout). */
+    .ori-field > .ori-input,
+    .ori-field > .ori-select,
+    .ori-field > .ori-textarea {
+        width: 100%;
+    }
+
+    .ori-field__label {
+        font-size: calc(var(--ori-font-size) * 0.875);
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .ori-field__required {
+        margin-inline-start: 0.15em;
+
+        color: var(--ori-color-danger);
+    }
+
+    .ori-field__hint,
+    .ori-field__error {
+        margin: 0;
+
+        font-size: calc(var(--ori-font-size) * 0.8);
+        line-height: 1.3;
+    }
+
+    .ori-field__hint {
+        opacity: 0.7;
+    }
+
+    .ori-field__error {
+        color: var(--ori-color-danger);
+    }
+}
