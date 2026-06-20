@@ -29,7 +29,7 @@ notifications; each auto-dismisses after 4 seconds unless sticky.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { success, error, warn, info, toast } = useToast();
 
@@ -79,7 +79,7 @@ Four severity shortcuts preset a color; the plain `toast()` call has no color cl
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { success, error, warn, info, toast } = useToast();
 </script>
@@ -131,7 +131,7 @@ Pass `title` for a bold heading and `icon` (SVG path) for a coloured leading ico
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { success, error, info } = useToast();
 
@@ -177,7 +177,7 @@ to suppress it — useful for short-lived toasts that auto-dismiss quickly.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { info } = useToast();
 </script>
@@ -217,7 +217,7 @@ until the user clicks the dismiss button or you call `dismiss(id)` / `clear()` m
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { toast, warn } = useToast();
 </script>
@@ -261,7 +261,7 @@ a specific toast early, or call `clear()` to flush the entire queue.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { toast, dismiss, clear } = useToast();
 
@@ -308,7 +308,7 @@ The composable is a module-level singleton — every call returns the same react
 it anywhere; no Vue injection or plugin registration required.
 
 ```ts
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { toasts, toast, success, error, warn, info, dismiss, clear } = useToast();
 ```

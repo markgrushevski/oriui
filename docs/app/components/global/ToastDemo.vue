@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '@oriui/ui';
+import { useToast } from '@oriui/vue';
 
 const { success, error, warn, info, toast } = useToast();
 

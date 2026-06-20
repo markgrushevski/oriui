@@ -13,11 +13,11 @@ every layer is woven around the **same design tokens**.
 
 oriUI ships as three independently consumable layers. Use just one, or compose them:
 
-| Layer        | Package      | What it gives you                                                                 |
-| ------------ | ------------ | --------------------------------------------------------------------------------- |
-| **Styled**   | `@oriui/ui`  | Ready components — `<OriButton variant="tonal" />`. Behavior + style composed.    |
-| **Headless** | `@oriui/vue` | Behavior only — composables for state, keyboard, focus, and ARIA. You own markup. |
-| **CSS**      | `@oriui/css` | Standalone `.ori-*` classes + tokens. No Vue, no build step, no Tailwind.         |
+| Layer        | Package               | What it gives you                                                                 |
+| ------------ | --------------------- | --------------------------------------------------------------------------------- |
+| **Styled**   | `@oriui/vue`          | Ready components — `<OriButton variant="tonal" />`. Behavior + style composed.    |
+| **Headless** | `@oriui/headless/vue` | Behavior only — composables for state, keyboard, focus, and ARIA. You own markup. |
+| **CSS**      | `@oriui/css`          | Standalone `.ori-*` classes + tokens. No Vue, no build step, no Tailwind.         |
 
 These are not three separate products — they are **three depths of one system**. A styled `OriButton`
 is the CSS layer's `.ori-button` classes plus token theming; a styled `OriDialog` is the headless
@@ -32,7 +32,7 @@ keep everything visually consistent.
   htmx, Astro, or hand-written HTML. Tailwind is an _optional_ preset, not a requirement.
 - **Swappable behavior.** The headless layer runs on a tiny zero-dependency native engine by default,
   and you can swap in a battle-tested one (Zag) per primitive behind one contract — without touching
-  your markup. See [@oriui/core](/headless/core).
+  your markup. See [@oriui/headless](/headless/core).
 - **Accessibility is structural.** State lives in real attributes (`disabled`, `aria-busy`,
   `aria-expanded`), color pairs are contrast-checked in CI, and focus rings ride `:focus-visible`.
   See [Accessibility](/overview/accessibility).
@@ -54,14 +54,14 @@ oriUI deliberately sits between the usual categories:
 
 The CSS layer works **everywhere**; only the styled and headless layers need a JS framework.
 
-| Target                 | `@oriui/ui` (styled) | `@oriui/css` (classes) | `@oriui/vue` (headless)  |
-| ---------------------- | :------------------: | :--------------------: | :----------------------: |
-| Vue / Nuxt             |       ✅ best        |           ✅           |            ✅            |
-| Svelte / SvelteKit     |          —           |           ✅           |        ⚠️ planned        |
-| htmx / server-rendered |          —           |        ✅ ideal        | ⚠️ Zag-vanilla (planned) |
-| Astro / 11ty (static)  |     island only      |        ✅ ideal        |            —             |
-| Plain HTML / CDN       |          —           |           ✅           |            —             |
-| Capacitor / Electron   |          ✅          |           ✅           |            ✅            |
+| Target                 | `@oriui/vue` (styled) | `@oriui/css` (classes) | `@oriui/headless/vue` (headless) |
+| ---------------------- | :-------------------: | :--------------------: | :------------------------------: |
+| Vue / Nuxt             |        ✅ best        |           ✅           |                ✅                |
+| Svelte / SvelteKit     |           —           |           ✅           |            ⚠️ planned            |
+| htmx / server-rendered |           —           |        ✅ ideal        |     ⚠️ Zag-vanilla (planned)     |
+| Astro / 11ty (static)  |      island only      |        ✅ ideal        |                —                 |
+| Plain HTML / CDN       |           —           |           ✅           |                —                 |
+| Capacitor / Electron   |          ✅           |           ✅           |                ✅                |
 
 Only complex behavior (focus traps, menus, comboboxes) needs the headless layer, which is Vue today;
 a vanilla adapter (via Zag) is planned for the no-framework targets.

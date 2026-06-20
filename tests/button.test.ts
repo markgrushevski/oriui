@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriButton } from '../src';
+import { OriButton } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriButton', () => {

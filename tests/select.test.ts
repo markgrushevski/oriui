@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriSelect } from '../src';
+import { OriSelect } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 const OPTIONS = [

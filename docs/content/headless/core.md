@@ -2,7 +2,7 @@
 title: Core
 ---
 
-# @oriui/core
+# @oriui/headless
 
 The framework-agnostic heart of the headless layer: a **behaviour contract** plus a zero-dependency
 **native engine**, written in vanilla TypeScript. Every framework binding consumes the same contract,
@@ -18,11 +18,11 @@ for the standalone styling layer see the [CSS guide](/guides/css).
 The headless layer is split along a framework axis. The behaviour lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
-| Package         | What it is                                  | Framework    |
-| --------------- | ------------------------------------------- | ------------ |
-| `@oriui/core`   | Behaviour contract + native engine          | **agnostic** |
-| `@oriui/vue`    | Vue bindings — `useDisclosure`, `useDialog` | Vue          |
-| `@oriui/svelte` | Svelte bindings (planned)                   | Svelte       |
+| Package               | What it is                                  | Framework    |
+| --------------------- | ------------------------------------------- | ------------ |
+| `@oriui/headless`     | Behaviour contract + native engine          | **agnostic** |
+| `@oriui/headless/vue` | Vue bindings — `useDisclosure`, `useDialog` | Vue          |
+| `@oriui/svelte`       | Svelte bindings (planned)                   | Svelte       |
 
 ## The contract
 
@@ -31,10 +31,10 @@ imperative handlers. A component spreads the prop bags onto its markup — it ne
 keyboard, or ARIA. For the native disclosure engine the shape is `DisclosureApi`:
 
 ```ts
-import { disclosure, createNormalizer } from '@oriui/core';
+import { disclosure, createNormalizer } from '@oriui/headless';
 
 // `connect()` lives in core but the prop normalizer is per-framework. A binding
-// imports its own (Vue's `normalizeProps` from @oriui/vue); here we build a
+// imports its own (Vue's `normalizeProps` from @oriui/headless/vue); here we build a
 // minimal pass-through to keep the example self-contained.
 const normalizeProps = createNormalizer((props) => props);
 
@@ -69,18 +69,18 @@ Three small building blocks back every primitive:
 
 Behaviour is chosen per primitive — provided once at the app root, never threaded through markup.
 
-- **Disclosure** — a native, zero-dependency engine ships from `@oriui/core` as the default. Nothing
+- **Disclosure** — a native, zero-dependency engine ships from `@oriui/headless` as the default. Nothing
   to wire; it just works.
 - **Dialog** — runs on the native `<dialog>` element (`showModal()`), so the focus trap, scroll lock,
   focus return, `::backdrop` and `aria-modal` come from the platform. It is the **default**, with no
   adapter or dependency required. See [useDialog](/headless/use-dialog).
 
-Both default to a zero-dependency engine. The `OriHeadless` plugin (from `@oriui/vue`) is the hedge for
+Both default to a zero-dependency engine. The `OriHeadless` plugin (from `@oriui/headless/vue`) is the hedge for
 swapping an engine per primitive — e.g. a custom or Zag-backed adapter for a genuinely hard widget —
 without changing a component's template:
 
 ```ts
-import { OriHeadless } from '@oriui/vue';
+import { OriHeadless } from '@oriui/headless/vue';
 
 // Both primitives default to native; register an adapter only to override one.
 app.use(OriHeadless, { dialog: myDialog });

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriAlert } from '../src/components/alert';
+import { OriAlert } from '../packages/vue/src/components/alert';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriAlert', () => {

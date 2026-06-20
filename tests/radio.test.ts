@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriRadioGroup } from '../src';
+import { OriRadioGroup } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 const OPTIONS = [

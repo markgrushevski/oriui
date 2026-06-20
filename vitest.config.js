@@ -12,8 +12,9 @@ export default defineConfig({
             // Run tests against the headless packages' SOURCE (not built dist) so the suite is
             // self-sufficient — no `build:packages` prerequisite (matters for a clean CI run), and
             // it mirrors how the docs app aliases the workspace packages.
-            '@oriui/vue': fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url)),
-            '@oriui/core': fileURLToPath(new URL('./packages/core/src/index.ts', import.meta.url))
+            '@oriui/headless/vue': fileURLToPath(new URL('./packages/headless/src/vue/index.ts', import.meta.url)),
+            '@oriui/headless': fileURLToPath(new URL('./packages/headless/src/core/index.ts', import.meta.url)),
+            '@oriui/vue': fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url))
         }
     },
     test: {
@@ -22,7 +23,7 @@ export default defineConfig({
         include: ['tests/**/*.test.ts'],
         coverage: {
             provider: 'v8',
-            include: ['src/components/**/*.vue'],
+            include: ['packages/vue/src/components/**/*.vue'],
             reporter: ['text', 'html', 'lcov']
         }
     }

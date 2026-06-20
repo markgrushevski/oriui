@@ -12,8 +12,8 @@ the tokens are shared across every layer.
 
 Layers (each independently consumable via subpath exports):
 
-- `@oriui/ui` — styled components (behavior + style composed)
-- `@oriui/vue` — behavior contract; swappable adapter (native / Zag / your own)
+- `@oriui/vue` — styled components (behavior + style composed)
+- `@oriui/headless` — behavior contract; swappable adapter (native / Zag / your own)
 - `@oriui/css` — standalone CSS classes + tokens (Tailwind-free, DaisyUI-like)
 
 The `@oriui/css` layer needs **no JS framework** — server-rendered **htmx**, Astro, and plain HTML
@@ -33,7 +33,7 @@ a11y, tests, strong docs).
 4. ✅ **Headless layer** — swappable behavior **contract** (`OriHeadless` plugin): **native** zero-dep
    adapters for both the simple primitives (Disclosure ✅) and the dialog (native `<dialog>` ✅), or
    bring-your-own. (Superseded "own ↔ Reka" and "Zag for complex" — see DECISIONS.md.) `OriDialog` ships
-   in `@oriui/ui`.
+   in `@oriui/vue`.
 5. 🔄 **Styled components** — **27 shipped** (actions, forms, overlays, layout, feedback, navigation,
    data display), each with state-via-attributes + focus-visible a11y and a Vitest+axe suite. Remaining:
    the `glass` variant; the catalog grows from [IDEAS.md](IDEAS.md) as real screens need it.
@@ -59,8 +59,8 @@ a11y, tests, strong docs).
 ## Deferred / out of scope (for now)
 
 - Full hybrid/Capacitor mode (haptics, native gestures); iOS adaptive skin.
-- Optional Tailwind v4 preset adapter; monorepo split `@oriui/*` (started: `@oriui/core`,
-  `@oriui/vue`; full split + pnpm/changesets deferred).
+- Optional Tailwind v4 preset adapter; monorepo split `@oriui/*` (started: `@oriui/headless`,
+  `@oriui/headless`; full split + pnpm/changesets deferred).
 - **Headless** for **no-framework / htmx** via Zag's `@zag-js/vanilla` behind the contract
   (an `@oriui/vanilla` adapter) — complex behavior (focus-trap, roving-tabindex) without a framework.
 - **Native platform dialogs / Popover API — a separate feature track** (idea, do later). Lean on the

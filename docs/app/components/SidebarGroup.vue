@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Dogfood: the docs sidebar groups are collapsible via the headless Disclosure primitive
-// from @oriui/vue (built on the framework-agnostic @oriui/core).
-import { useDisclosure } from '@oriui/vue';
+// from @oriui/headless/vue (built on the framework-agnostic @oriui/headless).
+import { useDisclosure } from '@oriui/headless/vue';
 
 defineProps<{ title: string }>();
 

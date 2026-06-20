@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import OriSkeleton from '../src/components/skeleton/ori-skeleton.vue';
+import OriSkeleton from '../packages/vue/src/components/skeleton/ori-skeleton.vue';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriSkeleton', () => {

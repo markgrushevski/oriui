@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriBadge } from '../src/components/badge';
+import { OriBadge } from '../packages/vue/src/components/badge';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriBadge', () => {

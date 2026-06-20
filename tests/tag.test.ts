@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriTag } from '../src/components/tag';
+import { OriTag } from '../packages/vue/src/components/tag';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriTag', () => {

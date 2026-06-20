@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriStack } from '../src';
+import { OriStack } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriStack', () => {

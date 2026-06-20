@@ -26,7 +26,7 @@ import {
     OriToast,
     OriToaster,
     OriSlider
-} from '@oriui/ui';
+} from '@oriui/vue';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
 export default defineNuxtPlugin((nuxtApp) => {
