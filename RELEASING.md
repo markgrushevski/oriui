@@ -59,10 +59,12 @@ npm view @oriui/css
 
 ## Notes
 
-- **The rename is breaking.** `@oriui/vue` used to be the headless package; it now ships the
-  components, and the headless lives in `@oriui/headless` (`./vue` for the composables). The old
-  `@oriui/ui`, `@oriui/core`, and old `@oriui/vue` names are retired — `npm deprecate` them with a
-  pointer to the new names when the first renamed alpha publishes.
+- **The rename is breaking, and the old names are already unpublished.** `@oriui/vue` used to be the
+  headless package; it now ships the components, with the headless in `@oriui/headless` (`./vue` for
+  the composables). `@oriui/ui`, `@oriui/core`, and the old `@oriui/vue` were **unpublished** from npm
+  — only `@oriui/css` is still live. ⚠️ npm **blocks reusing an unpublished name for 24h**, so the
+  renamed `@oriui/vue` cannot publish until 24h after its unpublish (`@oriui/headless` is a brand-new
+  name and `@oriui/css` stayed live, so neither is affected). Check with `npm view @oriui/vue`.
 - Published versions are **immutable** (and unpublish is restricted after 72h) — bump, don't republish.
 - A scoped first publish needs `--access public`; that lives in each package's `publishConfig`, and
   `.changeset/config.json` sets `access: public`.

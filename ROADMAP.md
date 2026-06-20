@@ -49,12 +49,13 @@ a11y, tests, strong docs).
       Svelte code (live demo stays Vue, Svelte uses the standalone `.ori-*` css), plus an HTML/htmx tab;
     - an **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML / Capacitor / Electron);
     - a **theme / skin gallery** page; an **idea + comparisons** page.
-8. 🔄 **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
-   Node 20.19 + 22; check-mode `lint:ci`, now including the `@oriui/css` layer). ✅ **Vercel deploy** —
-   `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ `oriui` npm org +
-   publish — all four `@oriui/*` packages live at `1.0.0-alpha.1` (`next` + `latest`); the manual runbook
-   lives in [RELEASING.md](RELEASING.md). Remaining: automate with `changesets` + a CI publish job
-   (`NPM_TOKEN`); a root **README** with status/coverage badges.
+8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
+   Node 20.19 + 22; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ **Vercel
+   deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
+   release** — `changesets` in alpha pre mode (a **fixed** lockstep group of the three packages) + a CI
+   publish job (`changesets/action`, `NPM_TOKEN`); runbook in [RELEASING.md](RELEASING.md). ✅ root
+   **README** with status/coverage badges. Operational note: after the package rename only `@oriui/css`
+   is currently live on npm — the renamed `@oriui/vue` + `@oriui/headless` publish on the next release.
 
 ## Deferred / out of scope (for now)
 
