@@ -35,5 +35,8 @@
         "vue": {
             "optional": true
         }
+    },
+    "devDependencies": {
+        "tsdown": "^0.22.3"
     }
 }
