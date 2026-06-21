@@ -1,31 +1,34 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
-import type { Framework } from '../composables/useOriFramework';
+import { useOriFramework, NO_FRAMEWORK, FRAMEWORKS, type Framework } from '../composables/useOriFramework';
 
-// A documentation example: a live (Vue) preview + the source code, switchable across frameworks.
-// Default slot = the live preview; #vue / #svelte / #html slots = the code blocks. Vue and HTML tabs
-// appear only when their slot is provided; the Svelte tab is ALWAYS shown as a "soon" teaser and is
-// enabled only on examples that ship Svelte code. The global preference (default Vue) picks the active.
-const { framework, setFramework } = useOriFramework();
+// A documentation example: a live (Vue) preview + the source code, switchable across the layers it
+// provides. Default slot = the live preview; #html / #js / #ts (framework-free) and #vue / #svelte
+// (framework) slots = the code blocks. An example that ships any framework-free code defaults to the
+// framework-free preference (HTML); a pure-framework example defaults to the framework one (Vue). A
+// framework example also shows a disabled "Svelte" tab ("soon") until it ships #svelte code.
+const { noFramework, framework, setCode } = useOriFramework();
 const slots = useSlots();
 
-const ALL: { key: Framework; label: string }[] = [
-    { key: 'vue', label: 'Vue' },
-    { key: 'svelte', label: 'Svelte' },
-    { key: 'html', label: 'HTML' }
-];
+const LABELS: Record<Framework, string> = { html: 'HTML', js: 'JS', ts: 'TS', vue: 'Vue', svelte: 'Svelte' };
+const ORDER: Framework[] = ['html', 'js', 'ts', 'vue', 'svelte'];
 
-// Render Vue/HTML only when present; Svelte always (the "soon" teaser).
-const tabs = computed(() => ALL.filter((f) => f.key === 'svelte' || slots[f.key]));
+const hasFramework = computed(() => FRAMEWORKS.some((f) => slots[f]));
+const isFree = computed(() => NO_FRAMEWORK.some((f) => slots[f]));
 const enabled = (key: Framework): boolean => Boolean(slots[key]);
 
-// Honour the global preference when this example has that code; otherwise the first enabled tab.
+// Show every provided slot in canonical order; a framework example also shows the Svelte "soon" tab.
+const tabs = computed(() =>
+    ORDER.filter((f) => slots[f] || (f === 'svelte' && hasFramework.value)).map((key) => ({ key, label: LABELS[key] }))
+);
+// Default to the relevant group's preference; fall back to the first available tab.
+const pref = computed<Framework>(() => (isFree.value ? noFramework.value : framework.value));
 const active = computed<Framework | undefined>(() =>
-    slots[framework.value] ? framework.value : tabs.value.find((f) => enabled(f.key))?.key
+    enabled(pref.value) ? pref.value : tabs.value.find((f) => enabled(f.key))?.key
 );
 
 function pick(key: Framework): void {
-    if (enabled(key)) setFramework(key);
+    if (enabled(key)) setCode(key);
 }
 </script>
 
