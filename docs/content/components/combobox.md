@@ -57,6 +57,61 @@ const options = [
 </template>
 ```
 
+#svelte
+
+```svelte
+<script>
+    // The @oriui/css classes are framework-free — this is the look + a basic filter in Svelte 5
+    // today. The full keyboard + ARIA behaviour ships with the @oriui/headless Svelte adapter (soon).
+    const options = [
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+        { label: 'Cherry', value: 'cherry' },
+        { label: 'Grape', value: 'grape' },
+        { label: 'Mango', value: 'mango' }
+    ];
+    let query = $state('');
+    let open = $state(false);
+    let selected = $state(null);
+    const items = $derived(query ? options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase())) : options);
+</script>
+
+<div class="ori-combobox ori-color_primary ori-font-size_md">
+    <label class="ori-combobox__label" for="fruit">Fruit</label>
+    <div class="ori-combobox__control">
+        <input
+            id="fruit"
+            class="ori-input__field ori-combobox__input ori-size-radius_md"
+            role="combobox"
+            aria-expanded={open}
+            bind:value={query}
+            oninput={() => (open = true)}
+            onblur={() => (open = false)}
+            placeholder="Search a fruit…"
+        />
+        <button class="ori-combobox__trigger" type="button" tabindex="-1" onclick={() => (open = !open)}>▾</button>
+        <ul class="ori-combobox__listbox" role="listbox" hidden={!open}>
+            {#each items as item}
+                <li
+                    class="ori-combobox__option"
+                    class:ori-combobox__option_selected={selected === item.value}
+                    role="option"
+                    aria-selected={selected === item.value}
+                    onmousedown={(e) => {
+                        e.preventDefault();
+                        selected = item.value;
+                        query = item.label;
+                        open = false;
+                    }}
+                >
+                    {item.label}
+                </li>
+            {/each}
+        </ul>
+    </div>
+</div>
+```
+
 ::
 
 ## Clearable
