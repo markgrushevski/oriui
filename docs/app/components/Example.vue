@@ -2,24 +2,31 @@
 import { computed, useSlots } from 'vue';
 import type { Framework } from '../composables/useOriFramework';
 
-// A documentation example: a live (Vue) preview + the source code, switchable across the
-// frameworks the page provides. Default slot = the live preview; #vue / #svelte / #html slots =
-// the code blocks. Tabs appear only for provided slots; the global preference picks the active one.
+// A documentation example: a live (Vue) preview + the source code, switchable across frameworks.
+// Default slot = the live preview; #vue / #svelte / #html slots = the code blocks. Vue and HTML tabs
+// appear only when their slot is provided; the Svelte tab is ALWAYS shown as a "soon" teaser and is
+// enabled only on examples that ship Svelte code. The global preference (default Vue) picks the active.
 const { framework, setFramework } = useOriFramework();
 const slots = useSlots();
 
-// HTML first: the framework-agnostic markup is the default; Vue/Svelte are opt-in. When the global
-// framework preference isn't available on an example, active falls back to the first provided slot.
 const ALL: { key: Framework; label: string }[] = [
-    { key: 'html', label: 'HTML' },
     { key: 'vue', label: 'Vue' },
-    { key: 'svelte', label: 'Svelte' }
+    { key: 'svelte', label: 'Svelte' },
+    { key: 'html', label: 'HTML' }
 ];
 
-const available = computed(() => ALL.filter((f) => slots[f.key]));
+// Render Vue/HTML only when present; Svelte always (the "soon" teaser).
+const tabs = computed(() => ALL.filter((f) => f.key === 'svelte' || slots[f.key]));
+const enabled = (key: Framework): boolean => Boolean(slots[key]);
+
+// Honour the global preference when this example has that code; otherwise the first enabled tab.
 const active = computed<Framework | undefined>(() =>
-    available.value.some((f) => f.key === framework.value) ? framework.value : available.value[0]?.key
+    slots[framework.value] ? framework.value : tabs.value.find((f) => enabled(f.key))?.key
 );
+
+function pick(key: Framework): void {
+    if (enabled(key)) setFramework(key);
+}
 </script>
 
 <template>
@@ -28,21 +35,22 @@ const active = computed<Framework | undefined>(() =>
             <slot />
         </div>
 
-        <div v-if="available.length" class="example__bar">
+        <div v-if="tabs.length" class="example__bar">
             <button
-                v-for="f in available"
+                v-for="f in tabs"
                 :key="f.key"
                 type="button"
                 class="example__tab"
                 :data-active="active === f.key || undefined"
-                @click="setFramework(f.key)"
+                :disabled="!enabled(f.key)"
+                @click="pick(f.key)"
             >
-                {{ f.label }}
+                {{ f.label }}<span v-if="!enabled(f.key)" class="example__soon">soon</span>
             </button>
         </div>
 
         <div class="example__code">
-            <div v-for="f in available" v-show="active === f.key" :key="f.key">
+            <div v-for="f in tabs" v-show="active === f.key" :key="f.key">
                 <slot :name="f.key" />
             </div>
         </div>
@@ -110,6 +118,26 @@ const active = computed<Framework | undefined>(() =>
     background: color-mix(in srgb, var(--ori-color-primary) 14%, transparent);
     color: var(--ori-color-primary);
     opacity: 1;
+}
+
+.example__tab:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+.example__soon {
+    margin-inline-start: 5px;
+    padding: 1px 5px;
+
+    border-radius: 5px;
+
+    background: color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
+
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
 }
 
 .example__code pre {
