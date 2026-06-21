@@ -10,9 +10,10 @@ the rendered hint or error. The label is wired to the field with `for`/`id` (aut
 `useId` when you don't pass one), and arbitrary native attributes (`name`, `autocomplete`,
 `inputmode`, …) fall through to the underlying `<input>`.
 
-Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
-classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
-component.
+This page is laid out by **layer**. The live demos are the **`@oriui/css`** layer — their code
+defaults to **HTML** (the standalone classes, also your htmx / Astro / Svelte / plain-HTML usage),
+with **Vue** one tab away and **Svelte** _(soon)_; the [Framework API](#framework-api) documents the
+**`@oriui/vue`** component. Input is pure CSS — there is no behaviour layer in between.
 
 ## Classes
 
