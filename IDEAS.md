@@ -14,6 +14,53 @@ Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combo
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider.
 
+## Project improvements (beyond the catalog)
+
+Engineering / DX / docs work that raises the quality bar — distinct from new catalog entries below.
+Roughly by priority.
+
+1. ⭐ **Floating / positioning primitive** — a small anchored-panel helper (CSS `anchor-positioning`,
+   or a tiny JS positioner behind a contract). **Highest leverage:** unblocks Menu, Popover, Combobox
+   collision-flip, and a rich Tooltip. Today the Tooltip + Combobox panels are statically placed (no flip).
+2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
+   layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
+   explicit section separation. _(in progress)_
+3. ⭐ **Svelte adapter** `@oriui/headless/svelte` — a `useService` bridge + a Svelte `normalizeProps`
+   (lowercased event names); the core is already framework-agnostic (proven by Combobox). Unlocks real
+   live Svelte examples instead of CSS-layer-only ones.
+4. ⭐ **Real composed screen / recipes page** — assemble an actual screen on oriUI to surface API gaps
+   (the "build a real screen" goal); doubles as a portfolio piece.
+5. ◽ **Size budget in CI** (`size-limit` / `bundlewatch`) + a badge — guards the zero-runtime /
+   small-bundle promise.
+6. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
+   visual regression that jsdom can't assert.
+7. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the
+   **`glass`** variant — the ROADMAP phase 5/7 remainders.
+8. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
+   devtool.
+
+## Idea sources & periodic mining
+
+oriUI is **not racing** these on catalog size — they are reference points to **mine** for API shape,
+a11y patterns, class names, states, and gaps. The practice: **periodically run a scout agent** (when
+starting a component, or every few weeks) to compare one oriUI area against one or two libraries and
+report ideas worth pulling into this backlog — _findings land here, nothing is auto-adopted._
+
+- **Headless / behavior:** [Ark UI](https://ark-ui.com) (+ [Zag.js](https://zagjs.com)) ·
+  [Reka UI](https://reka-ui.com) (Vue) · [Headless UI](https://headlessui.com) ·
+  [Radix](https://www.radix-ui.com) · [Ariakit](https://ariakit.org).
+- **Styled / CSS catalogs:** [daisyUI](https://daisyui.com) · [Quasar](https://quasar.dev) ·
+  [PrimeVue](https://primevue.org) · [Naive UI](https://www.naiveui.com) ·
+  [Element Plus](https://element-plus.org) · [Mantine](https://mantine.dev) ·
+  [Park UI](https://park-ui.com) · [Chakra](https://chakra-ui.com).
+- **Tokens / positioning / distribution:** [Open Props](https://open-props.style) ·
+  [Floating UI](https://floating-ui.com) · [shadcn/ui](https://ui.shadcn.com) (registry / CLI model) ·
+  [Panda](https://panda-css.com).
+
+> **Reusable scout prompt:** _"Compare oriUI's `<component / area>` against `<library>`. List concrete,
+> on-philosophy ideas we're missing (props, states, a11y wiring, class names) — token-first, standalone
+> CSS, a11y-correct, not chasing catalog size. Output a short ranked list; don't adopt anything."_
+
 ## Candidate components
 
 ### Forms & input
