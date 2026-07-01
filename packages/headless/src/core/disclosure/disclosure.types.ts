@@ -4,10 +4,7 @@ export interface DisclosureContext {
 }
 
 export type DisclosureEvent =
-    | { type: 'TOGGLE' }
-    | { type: 'OPEN' }
-    | { type: 'CLOSE' }
-    | { type: 'SET'; open: boolean };
+    { type: 'TOGGLE' } | { type: 'OPEN' } | { type: 'CLOSE' } | { type: 'SET'; open: boolean };
 
 export interface DisclosureProps {
     /** Stable, SSR-safe base id (from the adapter: Vue `useId()`, Svelte `$props.id()`). */

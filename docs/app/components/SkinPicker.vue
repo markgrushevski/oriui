@@ -11,6 +11,7 @@ const root = ref<HTMLDetailsElement>();
 
 const MODES: Theme[] = ['light', 'dark'];
 const modeLabel = (m: Theme) => (m === 'dark' ? 'Dark' : 'Light');
+const fallbackSkin = SKINS[0]!;
 
 const options = computed(() =>
     SKINS.flatMap((s) =>
@@ -18,7 +19,7 @@ const options = computed(() =>
     )
 );
 
-const current = computed(() => SKINS.find((s) => s.id === skin.value) ?? SKINS[0]);
+const current = computed(() => SKINS.find((s) => s.id === skin.value) ?? fallbackSkin);
 
 function pick(id: SkinId, mode: Theme) {
     setSkin(id);

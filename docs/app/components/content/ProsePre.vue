@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Overrides Nuxt Content's default ProsePre: wraps highlighted code in a card with a language
 // label and a copy button. `code` is the raw (un-highlighted) text, ideal for the clipboard.
-import { ref } from 'vue';
+import { ref, type StyleValue } from 'vue';
 
 const props = defineProps<{
     code?: string;
@@ -10,7 +10,7 @@ const props = defineProps<{
     highlights?: number[];
     meta?: string | null;
     class?: string;
-    style?: unknown;
+    style?: StyleValue;
 }>();
 
 const copied = ref(false);
