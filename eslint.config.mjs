@@ -4,10 +4,11 @@ import tseslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import configPrettier from 'eslint-config-prettier';
 
-export default tseslint.config(
+
+export default /** @type {import('eslint').Linter.Config[]} */ [
     { ignores: ['dist', 'types', 'cache', 'node_modules', '.idea', '.vscode'] },
     {
-        files: ['packages/*/src/**/*.{ts,vue}'],
+        files: ['packages/*/src/**/*.{ts,vue}', 'docs/**/*.{ts,vue}'],
         languageOptions: {
             globals: globals.browser,
             parserOptions: { ecmaVersion: 'latest' }
@@ -29,4 +30,4 @@ export default tseslint.config(
         }
     },
     configPrettier
-);
+];
