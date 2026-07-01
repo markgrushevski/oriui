@@ -9,9 +9,10 @@ flex column: children flow top-to-bottom with a consistent gap. A **cluster** (`
 wrapping flex row: children flow left-to-right, wrap onto new lines, and are centered on the
 cross-axis — ideal for tag clouds, button groups, and badge sets.
 
-Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
-classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
-component.
+The examples are organised by **layer**: the [class reference](#classes) is the standalone
+**`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
+example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
+plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
 
 ## Classes
 

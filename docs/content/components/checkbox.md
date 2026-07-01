@@ -9,10 +9,10 @@ A styled, accessible checkbox built on a **real `<input type="checkbox">`** — 
 The accent color and `:focus-visible` ring are driven by the `ori-color` token; `invalid` sets
 `aria-invalid`; `disabled` is the native attribute.
 
-Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the same
-classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
-component, where `v-model` accepts a boolean for a single box or an array (with `value`) for a native
-group.
+The examples are organised by **layer**: the [class reference](#classes) is the standalone
+**`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
+example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
+plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
 
 ## Classes
 

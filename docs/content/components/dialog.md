@@ -10,11 +10,10 @@ lock, `Esc`-to-close, click-outside dismissal, and the full WAI-ARIA keyboard co
 from the platform via `showModal()` — no state-machine dependency and no adapter to wire. The styled
 `OriDialog` supplies only the markup and tokens.
 
-Every example is live and shows the standalone **HTML / `@oriui/css`** markup by default — the part
-classes you'd use in htmx, Astro, Svelte, or plain HTML. Flip any example to **Vue** for the styled
-component. Note that the HTML tabs are **structure only — not functional on their own**: a static
-`<dialog>` has no focus trap, scroll lock, or dismissal until `showModal()` drives it (the styled
-component, or your own script).
+The examples are organised by **layer**: the [class reference](#classes) is the standalone
+**`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
+example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
+plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
 
 ## Classes
 
