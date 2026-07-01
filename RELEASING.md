@@ -15,9 +15,26 @@ the `next` dist-tag.
 
 ## One-time setup
 
-1. **npm org** `oriui` with publish rights (exists).
-2. **`NPM_TOKEN` secret** — an npm **automation** access token (npmjs → _Access Tokens_ →
-   Granular/Automation; bypasses 2FA), added to the GitHub repo secrets so CI publishes without an OTP.
+Authentication is npm **Trusted Publishing (OIDC)** — no token to store or rotate, and provenance is
+added automatically. For **each** of the three packages, on npmjs: **package → Settings → Trusted
+Publishers → Add → GitHub Actions**, then:
+
+- **Organization or user:** `markgrushevski`
+- **Repository:** `oriui`
+- **Workflow filename:** `release.yml` _(filename only, not a path)_
+- **Environment name:** _leave empty_
+- **Allowed actions:** `npm publish`
+
+Needs npm **≥ 11.5.1** + Node **≥ 22.14.0** — the workflow installs a recent npm and requests the OIDC
+token via `id-token: write`. No `NPM_TOKEN` secret, nothing to rotate every 90 days.
+
+> **Bootstrap (once):** a trusted publisher can only be added to a package that **already exists** —
+> npm has no "pending" publishers. `@oriui/css` exists, so configure it now. `@oriui/headless` and
+> `@oriui/vue` aren't on npm yet, so publish the first version **locally** — `npm run version` then
+> `npm run release` (your `npm login` + OTP; see the manual fallback below) — which ships all three at
+> the aligned version. Then add trusted publishers for those two, and every release after that runs
+> through this OIDC workflow with **no token anywhere**. Mind the **24h name-reuse block** on
+> `@oriui/vue`.
 
 ## Cut a release
 
@@ -36,7 +53,8 @@ the `next` dist-tag.
 
 3. **Merge the "Version Packages" PR.** That push runs `npm run release`
    (`npm run build && changeset publish --tag next`), publishing the bumped packages to npm in
-   dependency order via `NPM_TOKEN`, and tagging the release. No OTP.
+   dependency order via **Trusted Publishing (OIDC)** — no token, provenance attached — and tagging the
+   release.
 
 Once a release is stable, move it to the default tag: `npm dist-tag add @oriui/vue@<v> latest` (and the
 same for `@oriui/headless` + `@oriui/css`), or run `changeset pre exit` and cut a non-prerelease.
@@ -69,5 +87,5 @@ npm view @oriui/css
 - A scoped first publish needs `--access public`; that lives in each package's `publishConfig`, and
   `.changeset/config.json` sets `access: public`.
 - **Troubleshooting** — `402`/`404` on publish = missing `--access public` or no publish rights;
-  `EOTP` = the OTP expired (CI avoids this via `NPM_TOKEN`); "cannot publish over previously published
+  `EOTP` = an OTP was expected (CI avoids this entirely via OIDC Trusted Publishing); "cannot publish over previously published
   versions" = bump the version.
