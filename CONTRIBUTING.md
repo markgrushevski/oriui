@@ -65,7 +65,7 @@ A **release is a deliberate event, separate from merging to `main`** — and it 
    Packages"** PR that applies the pending changesets — bumping the lockstep version + the pinned
    internal deps and updating each `CHANGELOG.md`.
 3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`next`** dist-tag
-   (via the `NPM_TOKEN` secret, no OTP) and tags the release commit, so every `@oriui/vue@x` is
+   (via OIDC Trusted Publishing — no token, provenance attached) and tags the release commit, so every `@oriui/vue@x` is
    checkout-able.
 
 Full runbook — token setup, the manual fallback (`npm run version` / `npm run release`), and the

@@ -2,8 +2,16 @@ name: Release
 
 # Changesets-driven release. On push to main, changesets/action opens (or updates) a "Version
 # Packages" PR that aggregates the pending changesets; merging that PR runs the `release` script
-# (changeset publish) to publish the bumped packages to npm. One-time setup: add an npm **automation**
-# access token (bypasses 2FA) as the repo secret NPM_TOKEN.
+# (changeset publish) to publish the bumped packages to npm.
+#
+# Auth is npm **Trusted Publishing (OIDC)** — no token to store or rotate. One-time setup: on npmjs,
+# per package (Settings -> Trusted Publishers -> GitHub Actions), authorise this repo + the workflow
+# `release.yml`. The job requests an OIDC token via `id-token: write`; npm exchanges it for publish
+# rights and adds provenance automatically. Requires npm >= 11.5.1 (installed below).
+#
+# Bootstrap: @oriui/headless and @oriui/vue don't exist on npm yet, so a trusted publisher can't be
+# configured for them until their first publish — do that once (locally, or a temporary token), then
+# add their trusted publishers and this workflow needs no token at all. See RELEASING.md.
 on:
     push:
         branches: [main]
@@ -11,8 +19,9 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-    contents: write
-    pull-requests: write
+    contents: write # changesets: version commit + git tag
+    pull-requests: write # changesets: the "Version Packages" PR
+    id-token: write # npm Trusted Publishing (OIDC) + provenance
 
 jobs:
     release:
@@ -20,11 +29,16 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            # No `registry-url`: with OIDC there is no token, and setup-node's `_authToken` .npmrc line
+            # (empty) would 401 before OIDC engages. npm publishes to the default registry via OIDC.
             - uses: actions/setup-node@v4
               with:
-                  node-version: '22'
+                  node-version: '24'
                   cache: npm
-                  registry-url: 'https://registry.npmjs.org'
+
+            # OIDC publishing needs npm >= 11.5.1; guarantee it regardless of the runner's bundled npm.
+            - name: Ensure a recent npm
+              run: npm install -g npm@latest
 
             - name: Install (npm ci — root + workspaces)
               run: npm ci
@@ -43,4 +57,3 @@ jobs:
                   publish: npm run release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
