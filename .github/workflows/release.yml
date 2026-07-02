@@ -27,11 +27,11 @@ jobs:
     release:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             # No `registry-url`: with OIDC there is no token, and setup-node's `_authToken` .npmrc line
             # (empty) would 401 before OIDC engages. npm publishes to the default registry via OIDC.
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
                   node-version: '24'
                   cache: npm
