@@ -51,7 +51,7 @@ a11y, tests, strong docs).
     - an **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML / Capacitor / Electron);
     - a **theme / skin gallery** page; an **idea + comparisons** page.
 8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
-   Node 20.19 + 22; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ **Vercel
+   Node 22 + 24; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ **Vercel
    deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
    release** — `changesets` in alpha pre mode (a **fixed** lockstep group of the three packages) + a CI
    publish job (`changesets/action` + OIDC Trusted Publishing); runbook in [RELEASING.md](RELEASING.md). ✅ root

@@ -142,4 +142,4 @@ each is a deliberate engineering choice, not legacy to copy blindly.
 
 ## Node
 
-Requires Node >= 20.19 (Vite 8 / ESLint 10).
+Requires Node >= 22.18 (the tsdown build toolchain; Node 20 is EOL). Vite 8 / ESLint 10 also run here.

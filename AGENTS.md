@@ -8,7 +8,7 @@ this file is a short map; read it (and the docs it links) before non-trivial wor
 
 **oriUI** (織り, "weaving") — a layered Vue 3 UI library. Three independently-consumable packages woven
 around shared design tokens: `@oriui/vue` (styled components), `@oriui/headless` (behavior),
-`@oriui/css` (standalone tokens + `.ori-*` classes). Node ≥ 20.19, npm workspaces.
+`@oriui/css` (standalone tokens + `.ori-*` classes). Node ≥ 22.18, npm workspaces.
 
 ## Setup & commands
 
