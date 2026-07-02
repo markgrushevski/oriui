@@ -28,7 +28,7 @@ npm install @oriui/css     # standalone CSS — no framework
 npm install @oriui/headless     # headless composables
 ```
 
-> **Alpha.** The line is `1.0.0-alpha.*` on both the `next` and `latest` dist-tags — `npm i @oriui/vue`
+> **Alpha.** The line is `1.0.0-alpha.*` on the `alpha` dist-tag (and, pre-1.0, `latest` too) — `npm i @oriui/vue`
 > works today; APIs may still shift before `1.0.0`.
 
 ## Use it — Vue

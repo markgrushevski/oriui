@@ -190,7 +190,7 @@ across a Node matrix (`20.19.0` — the Vite 8 floor from `engines` — and `22`
   authoritative. Added `.prettierignore` entries for generated output (`.output`, `.nuxt`, `coverage`).
 - **Deploy stays Vercel-side**, not in Actions — Vercel's Git integration builds `npm run docs:build`
   on push (preset pinned in an earlier commit). **npm publish via changesets is deferred** — it needs
-  the npm Trusted-Publishing setup and a release-flow decision (alpha `next` tag), which are the maintainer's call.
+  the npm Trusted-Publishing setup and a release-flow decision (the `alpha` prerelease dist-tag), which are the maintainer's call.
 
 **Stack** — Vitest 4 (the line that peer-supports Vite 8), happy-dom (fast, no layout engine),
 `@vue/test-utils` for mounting, `axe-core` for structural a11y. Lives in `tests/` (out of `src`,

@@ -51,7 +51,7 @@ The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headles
 always share one version, and their internal dependencies are pinned to that exact
 version (a
 `*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
-under the **`next`** npm dist-tag, so a plain `npm install @oriui/vue` does not pick up an alpha.
+under the **`alpha`** npm dist-tag; pre-1.0, with no stable release yet, `latest` also tracks the newest alpha, so `npm install @oriui/vue` gets the current alpha (pin it with `@oriui/vue@alpha`). Once `1.0.0` ships, `latest` moves to the stable line.
 
 ## Releases & tags
 
@@ -64,7 +64,7 @@ A **release is a deliberate event, separate from merging to `main`** — and it 
 2. **Merge to `main`.** The **Release** workflow (`changesets/action`) opens/updates a **"Version
    Packages"** PR that applies the pending changesets — bumping the lockstep version + the pinned
    internal deps and updating each `CHANGELOG.md`.
-3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`next`** dist-tag
+3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`alpha`** dist-tag
    (via OIDC Trusted Publishing — no token, provenance attached) and tags the release commit, so every `@oriui/vue@x` is
    checkout-able.
 

@@ -42,7 +42,7 @@
         "prepare": "husky",
         "changeset": "changeset",
         "version": "changeset version && npm install --package-lock-only",
-        "release": "npm run build && changeset publish --tag next",
+        "release": "npm run build && changeset publish",
         "docs:dev": "npm run dev --workspace docs",
         "docs:build": "npm run generate --workspace docs",
         "docs:preview": "npm run preview --workspace docs"

@@ -54,8 +54,8 @@ a11y, tests, strong docs).
    deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
    release** — `changesets` in alpha pre mode (a **fixed** lockstep group of the three packages) + a CI
    publish job (`changesets/action` + OIDC Trusted Publishing); runbook in [RELEASING.md](RELEASING.md). ✅ root
-   **README** with status/coverage badges. Operational note: after the package rename only `@oriui/css`
-   is currently live on npm — the renamed `@oriui/vue` + `@oriui/headless` publish on the next release.
+   **README** with status/coverage badges. Operational note: after the package rename all three packages
+   are live on npm at `1.0.0-alpha.2` (the `alpha` dist-tag).
 
 ## Deferred / out of scope (for now)
 
