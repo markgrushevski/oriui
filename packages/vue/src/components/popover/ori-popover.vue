@@ -46,7 +46,7 @@ const triggerProps = computed(() => ({
         :id="panelId"
         popover
         :role="role"
-        :class="['ori-popover', `ori-popover_${placement}`]"
+        :class="['ori-popover', 'ori-anchored', `ori-anchored_${placement}`]"
         :style="{ '--ori-anchor': anchorName }"
     >
         <slot />

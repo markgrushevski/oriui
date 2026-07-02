@@ -1,18 +1,11 @@
 @layer ori.components {
-    /* A floating panel tethered to a trigger with CSS Anchor Positioning (Baseline 2026). The trigger
-       carries `anchor-name` (set per-instance), the panel `position-anchor`; each placement class sets
-       its `position-area` + the gap margin on the side facing the trigger, and `position-try-fallbacks`
-       flips it on overflow. Zero positioning JS — no scroll/resize listeners. Progressive enhancement:
-       engines without `position-try` still place it (no collision flip); engines with the Popover API
-       but no anchor positioning at all land it at the fixed-position origin — a known gap (see NOTES.md).
-       Pair with the Popover API (`popover` + `popovertarget`) for top-layer + light-dismiss, also zero-JS. */
+    /* The popover surface — a floating panel on the Popover API (`popover` + `popovertarget`: top-layer,
+       light-dismiss, Esc, all zero-JS). Placement comes from the shared `.ori-anchored` primitive
+       (composed alongside this class); this file owns only the surface: sizing, padding, border,
+       elevation, and the open/close transition. */
     .ori-popover {
-        /* Baked defaults so consumer utilities repoint them by layer order (two-tier); `--ori-popover-gap`
-           is the single source for the panel-to-trigger gap, read bare by every placement class below. */
+        /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the alias (two-tier). */
         --ori-size-radius: var(--ori-size-radius_md);
-        --ori-popover-gap: 0.25rem;
-
-        position: fixed;
 
         box-sizing: border-box;
         /* respect the anchor's width for menu/select-style panels; opt out with a width utility */
@@ -29,11 +22,6 @@
 
         box-shadow: var(--ori-shadow-lg);
         color: var(--ori-color-on-surface);
-        position-anchor: var(--ori-anchor);
-        position-try-fallbacks:
-            flip-block,
-            flip-inline,
-            flip-block flip-inline;
     }
 
     /* The panel is keyboard-focusable when it scrolls (overflow: auto) — keep the focus ring visible. */
@@ -46,44 +34,6 @@
        (non-popover) element, hide it via [hidden]. */
     .ori-popover[hidden] {
         display: none;
-    }
-
-    /* ---- Placement — position-area on the anchor's 3x3 area grid (logical, so RTL-aware) plus the gap
-       margin on the side facing the trigger. Each class is the single source for its placement. ---- */
-    .ori-popover_bottom {
-        position-area: block-end span-inline-end;
-
-        margin-block-start: var(--ori-popover-gap);
-    }
-
-    .ori-popover_bottom-end {
-        position-area: block-end span-inline-start;
-
-        margin-block-start: var(--ori-popover-gap);
-    }
-
-    .ori-popover_top {
-        position-area: block-start span-inline-end;
-
-        margin-block-end: var(--ori-popover-gap);
-    }
-
-    .ori-popover_top-end {
-        position-area: block-start span-inline-start;
-
-        margin-block-end: var(--ori-popover-gap);
-    }
-
-    .ori-popover_left {
-        position-area: inline-start span-block-end;
-
-        margin-inline-end: var(--ori-popover-gap);
-    }
-
-    .ori-popover_right {
-        position-area: inline-end span-block-end;
-
-        margin-inline-start: var(--ori-popover-gap);
     }
 
     /* Smooth in when supported (discrete display + starting-style); no-op elsewhere. */

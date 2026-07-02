@@ -26,6 +26,7 @@
    CSS layer renders the .ori-* components for htmx / Astro / plain-HTML consumers, not just tokens. */
 @import 'components/accordion.css';
 @import 'components/alert.css';
+@import 'components/anchored.css';
 @import 'components/avatar.css';
 @import 'components/badge.css';
 @import 'components/button.css';
