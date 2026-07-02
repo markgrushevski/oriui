@@ -9,7 +9,7 @@ contract, so you can add another later without reworking what you built.
 
 ## Requirements
 
-- **Node ≥ 20.19** and a bundler (Vite, webpack, Nuxt, …) for the Vue layers.
+- **Node ≥ 22** and a bundler (Vite, webpack, Nuxt, …) for the Vue layers.
 - **Vue 3.5+** for the styled and headless layers (the components use reactive props destructure).
 - The **CSS layer needs none of the above** — it is a plain stylesheet and classes.
 

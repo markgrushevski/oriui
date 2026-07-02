@@ -16,9 +16,9 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-            # Test the engines floor (20.19, required by Vite 8) and current LTS.
+            # Build toolchain floor is Node 22 (tsdown needs ^22.18 || >=24.11; Node 20 is EOL).
             matrix:
-                node: ['20.19.0', '22']
+                node: ['22', '24']
         steps:
             - uses: actions/checkout@v5
 
