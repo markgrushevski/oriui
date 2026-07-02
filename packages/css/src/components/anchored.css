@@ -1,0 +1,58 @@
+@layer ori.components {
+    /* Anchored-panel placement primitive — CSS Anchor Positioning (Baseline 2026). A floating element
+       (popover, menu, listbox) sets `position-anchor` to the trigger's `anchor-name` (via `--ori-anchor`)
+       and picks a placement class; `position-area` places it and `position-try-fallbacks` flips it on
+       overflow. Zero positioning JS — no scroll/resize listeners. Compose it with a surface class
+       (`.ori-popover`, `.ori-menu`, …). Progressive enhancement: engines without `position-try` place it
+       without the flip; engines with no anchor positioning at all land it at the fixed-position origin. */
+    .ori-anchored {
+        /* Gap between the panel and its trigger, applied by each placement class on the facing side. */
+        --ori-anchored-gap: 0.25rem;
+
+        position: fixed;
+
+        position-anchor: var(--ori-anchor);
+        position-try-fallbacks:
+            flip-block,
+            flip-inline,
+            flip-block flip-inline;
+    }
+
+    /* ---- Placement — position-area on the anchor's 3x3 area grid (logical, so RTL-aware) plus the gap
+       margin on the side facing the trigger. Each class is the single source for its placement. ---- */
+    .ori-anchored_bottom {
+        position-area: block-end span-inline-end;
+
+        margin-block-start: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_bottom-end {
+        position-area: block-end span-inline-start;
+
+        margin-block-start: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_top {
+        position-area: block-start span-inline-end;
+
+        margin-block-end: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_top-end {
+        position-area: block-start span-inline-start;
+
+        margin-block-end: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_left {
+        position-area: inline-start span-block-end;
+
+        margin-inline-end: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_right {
+        position-area: inline-end span-block-end;
+
+        margin-inline-start: var(--ori-anchored-gap);
+    }
+}

@@ -44,7 +44,8 @@ describe('OriPopover', () => {
         const classes = wrapper.find('.ori-popover').classes();
 
         expect(classes).toContain('ori-popover');
-        expect(classes).toContain('ori-popover_bottom');
+        expect(classes).toContain('ori-anchored');
+        expect(classes).toContain('ori-anchored_bottom');
     });
 
     it('projects the default slot as the panel content', () => {
@@ -148,15 +149,15 @@ describe('OriPopover', () => {
         const wrapper = mountPopover({ placement: 'top' });
         const classes = wrapper.find('.ori-popover').classes();
 
-        expect(classes).toContain('ori-popover_top');
-        expect(classes).not.toContain('ori-popover_bottom');
+        expect(classes).toContain('ori-anchored_top');
+        expect(classes).not.toContain('ori-anchored_bottom');
     });
 
     it('every placement value maps to its own modifier class', () => {
         const placements = ['top', 'top-end', 'bottom', 'bottom-end', 'left', 'right'] as const;
         placements.forEach((placement) => {
             const wrapper = mountPopover({ placement });
-            expect(wrapper.find('.ori-popover').classes()).toContain(`ori-popover_${placement}`);
+            expect(wrapper.find('.ori-popover').classes()).toContain(`ori-anchored_${placement}`);
         });
     });
 
