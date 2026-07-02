@@ -6,6 +6,10 @@ export { useDialog } from './use-dialog';
 export { useCombobox, type UseComboboxOptions } from './use-combobox';
 export type { ComboboxItem } from '../core';
 
+// Headless menu (WAI-ARIA menu-button + roving tabindex) built on the core engine
+export { useMenu, type UseMenuOptions } from './use-menu';
+export type { MenuItem } from '../core';
+
 // Adapter selection
 export { provideHeadless, OriHeadless } from './plugin';
 
