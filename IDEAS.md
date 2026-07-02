@@ -21,7 +21,7 @@ Roughly by priority.
 
 1. ⭐ **Floating / positioning primitive** — a small anchored-panel helper (CSS `anchor-positioning`,
    or a tiny JS positioner behind a contract). **Highest leverage:** unblocks Menu, Popover, Combobox
-   collision-flip, and a rich Tooltip. **OriPopover + OriMenu shipped**, and the **`.ori-anchored` placement primitive is extracted** (`components/anchored.css`) — both consume it. Remaining, per the architecture review: retrofit collision-flip into Combobox (its listbox clips near the viewport bottom) + Tooltip onto `.ori-anchored`; and lock the shared `placement` enum to the 12-value `<side>-<align>` grid (needs visual / Playwright verification).
+   collision-flip, and a rich Tooltip. **OriPopover + OriMenu shipped**, and the **`.ori-anchored` placement primitive is extracted** (`components/anchored.css`) — both consume it. **Done since:** Combobox listbox flip, and the **12-value `<side>[-start|-end]` placement grid** — locked + **Playwright-verified in real Chromium** (`e2e/placement-grid.spec.ts`). **Remaining:** retrofit Tooltip onto `.ori-anchored` (deferred — its arrow doesn't auto-flip under `position-try`; low value).
 2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
    layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
    explicit section separation. _(in progress)_

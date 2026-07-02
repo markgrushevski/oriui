@@ -5,9 +5,10 @@
 // single inline drop-in tag.
 import { ref } from 'vue';
 import { OriButton, OriMenu } from '@oriui/vue';
+import type { AnchoredPlacement } from '@oriui/vue';
 
-const { placement = 'bottom' } = defineProps<{
-    placement?: 'top' | 'top-end' | 'bottom' | 'bottom-end' | 'left' | 'right';
+const { placement = 'bottom-start' } = defineProps<{
+    placement?: AnchoredPlacement;
 }>();
 
 const items = [

@@ -282,6 +282,11 @@ practical gotchas go here.
   first) + raw `.ori-*` markup (no Vue). `reducedMotion: 'reduce'` in the config kills the popover
   open/close opacity transition so `boundingBox()` reads are stable. Vitest ignores them — its `include`
   is `tests/**/*.test.ts` (unit `.test.ts`, e2e `.spec.ts`).
+- **`.ori-anchored` placement is the 12-value `<side>[-start|-end]` grid.** A **bare side centers** on the
+  cross axis (`_bottom` = below-centre); `-start` / `-end` align to the trigger's start / end edge. So
+  OriPopover / OriMenu / Combobox default to **`bottom-start`** (below, start-aligned) — a plain `bottom`
+  would centre. The 12 `position-area` mappings are Playwright-verified (`e2e/placement-grid.spec.ts`);
+  the shared prop type is `AnchoredPlacement` (`packages/vue/src/types.ts`).
 
 ## Orchestration / role agents
 

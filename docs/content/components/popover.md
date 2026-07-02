@@ -24,7 +24,7 @@ one placement modifier). There is no variant or color axis — the panel takes i
 surface tokens.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-popover","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg. Composed with .ori-anchored for placement; requires the native popover attribute for top-layer + light-dismiss."},{"class":"ori-anchored","type":"Placement base","description":"Shared floating-panel placement primitive — position:fixed + position-anchor + collision flip. Add alongside the surface class."},{"class":"ori-anchored_top / _top-end","type":"Placement","description":"Above the trigger, aligned to its inline-start / inline-end edge."},{"class":"ori-anchored_bottom / _bottom-end","type":"Placement","description":"Below the trigger (the default), aligned to its inline-start / inline-end edge."},{"class":"ori-anchored_left / _right","type":"Placement","description":"To the inline-start / inline-end of the trigger, aligned to its block-start edge."},{"class":"--ori-anchored-gap","type":"Custom prop","description":"Gap between trigger and panel on the facing side. Default 0.25rem."},{"class":"--ori-anchor","type":"Custom prop","description":"The anchor-name linking the panel to its trigger; set per-instance by the component (or by you in plain HTML)."}]'}
+:class-table{:rows='[{"class":"ori-popover","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg. Composed with .ori-anchored for placement; requires the native popover attribute for top-layer + light-dismiss."},{"class":"ori-anchored","type":"Placement base","description":"Shared floating-panel placement primitive — position:fixed + position-anchor + collision flip. Add alongside the surface class."},{"class":"ori-anchored_<side>","type":"Placement","description":"top / bottom / left / right of the trigger, centered on the cross axis."},{"class":"ori-anchored_<side>-start / -end","type":"Placement","description":"Same four sides, aligned to the trigger's start / end edge instead of centered (logical, RTL-aware)."},{"class":"--ori-anchored-gap","type":"Custom prop","description":"Gap between trigger and panel on the facing side. Default 0.25rem."},{"class":"--ori-anchor","type":"Custom prop","description":"The anchor-name linking the panel to its trigger; set per-instance by the component (or by you in plain HTML)."}]'}
 
 ## Basic
 
@@ -60,7 +60,7 @@ native to the Popover API).
     id="pop-1"
     popover
     role="dialog"
-    class="ori-popover ori-anchored ori-anchored_bottom"
+    class="ori-popover ori-anchored ori-anchored_bottom-start"
     style="--ori-anchor: --pop-1"
     aria-labelledby="popover-title"
 >
@@ -73,8 +73,10 @@ native to the Popover API).
 
 ## Placements
 
-Six placements — `bottom` is the default. Each sets a `position-area` on the trigger's anchor grid plus
-the gap margin on the facing side; `position-try-fallbacks` flips it on overflow.
+Twelve placements — `bottom-start` is the default. A bare side (`top` / `bottom` / `left` / `right`)
+centers on the cross axis; `-start` / `-end` align to the trigger's start / end edge (logical,
+RTL-aware). Each sets a `position-area` on the trigger's anchor grid plus the gap margin on the facing
+side; `position-try-fallbacks` flips it on overflow.
 
 ::example
 :popover-demo{placement="top"}
@@ -102,7 +104,7 @@ the gap margin on the facing side; `position-try-fallbacks` flips it on overflow
 #html
 
 ```html
-<!-- swap the modifier: ori-anchored_top → _top-end / _bottom / _bottom-end / _left / _right -->
+<!-- swap the modifier: ori-anchored_top / _top-start / _top-end / _bottom / _bottom-start / _bottom-end / _left / _left-start / _left-end / _right / _right-start / _right-end -->
 <div id="pop-2" popover role="dialog" class="ori-popover ori-anchored ori-anchored_top" style="--ori-anchor: --pop-2">
     <p>Above the trigger.</p>
 </div>
@@ -193,10 +195,10 @@ yourself. (Svelte bindings are planned.)
 
 ### Props
 
-| Prop        | Type                                                                  | Default    | Description                                                                                        |
-| ----------- | --------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------- |
-| `placement` | `'top' \| 'top-end' \| 'bottom' \| 'bottom-end' \| 'left' \| 'right'` | `'bottom'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier.                 |
-| `role`      | `string`                                                              | `'dialog'` | ARIA role for the panel — `'dialog'` (default), `'menu'`, `'listbox'`, … per the content it holds. |
+| Prop        | Type                                                                   | Default          | Description                                                                                        |
+| ----------- | ---------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier.                 |
+| `role`      | `string`                                                               | `'dialog'`       | ARIA role for the panel — `'dialog'` (default), `'menu'`, `'listbox'`, … per the content it holds. |
 
 ### Events & attributes
 

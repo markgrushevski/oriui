@@ -4,9 +4,12 @@
        and picks a placement class; `position-area` places it and `position-try-fallbacks` flips it on
        overflow. Zero positioning JS — no scroll/resize listeners. Compose it with a surface class
        (`.ori-popover`, `.ori-menu`, …). Progressive enhancement: engines without `position-try` place it
-       without the flip; engines with no anchor positioning at all land it at the fixed-position origin. */
+       without the flip; engines with no anchor positioning at all land it at the fixed-position origin.
+
+       Placement is the standard 12-value `<side>[-<align>]` grid: a bare side (`_bottom`) centers on the
+       cross axis; `-start` / `-end` align to the trigger's start / end edge. `position-area` is logical,
+       so the alignment is RTL- and writing-mode-aware. Each class also adds the gap on the facing side. */
     .ori-anchored {
-        /* Gap between the panel and its trigger, applied by each placement class on the facing side. */
         --ori-anchored-gap: 0.25rem;
 
         position: fixed;
@@ -18,9 +21,14 @@
             flip-block flip-inline;
     }
 
-    /* ---- Placement — position-area on the anchor's 3x3 area grid (logical, so RTL-aware) plus the gap
-       margin on the side facing the trigger. Each class is the single source for its placement. ---- */
+    /* ---- Below the trigger ---- */
     .ori-anchored_bottom {
+        position-area: block-end center;
+
+        margin-block-start: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_bottom-start {
         position-area: block-end span-inline-end;
 
         margin-block-start: var(--ori-anchored-gap);
@@ -32,7 +40,14 @@
         margin-block-start: var(--ori-anchored-gap);
     }
 
+    /* ---- Above the trigger ---- */
     .ori-anchored_top {
+        position-area: block-start center;
+
+        margin-block-end: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_top-start {
         position-area: block-start span-inline-end;
 
         margin-block-end: var(--ori-anchored-gap);
@@ -44,14 +59,40 @@
         margin-block-end: var(--ori-anchored-gap);
     }
 
+    /* ---- To the inline-start (left in LTR) ---- */
     .ori-anchored_left {
-        position-area: inline-start span-block-end;
+        position-area: center inline-start;
 
         margin-inline-end: var(--ori-anchored-gap);
     }
 
+    .ori-anchored_left-start {
+        position-area: span-block-end inline-start;
+
+        margin-inline-end: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_left-end {
+        position-area: span-block-start inline-start;
+
+        margin-inline-end: var(--ori-anchored-gap);
+    }
+
+    /* ---- To the inline-end (right in LTR) ---- */
     .ori-anchored_right {
-        position-area: inline-end span-block-end;
+        position-area: center inline-end;
+
+        margin-inline-start: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_right-start {
+        position-area: span-block-end inline-end;
+
+        margin-inline-start: var(--ori-anchored-gap);
+    }
+
+    .ori-anchored_right-end {
+        position-area: span-block-start inline-end;
 
         margin-inline-start: var(--ori-anchored-gap);
     }
