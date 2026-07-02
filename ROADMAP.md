@@ -40,7 +40,8 @@ a11y, tests, strong docs).
 6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (**456 tests**): behavior/a11y
    contracts, OriDialog on a fake adapter, **executable token-contrast** (every skin's role/on-role pair
    asserted WCAG AA — already caught a real Sumi failure). Chose VTU over Testing Library (DECISIONS.md).
-   Remaining: Playwright visual/e2e.
+   ✅ **Playwright e2e** (`e2e/`, real Chromium — `.ori-anchored` placement + collision flip + the
+   Popover API, asserted against the built CSS layer); remaining: broader visual-regression snapshots.
 7. 🔄 **Docs** — a **Nuxt 4 + Nuxt Content 3** app, its own UI built on oriUI itself (not VitePress).
    ✅ a full page per component (31 — intro + classes + props/slots + a11y, with live demos on the page,
    so there is no separate `/playground` route); ✅ `nuxt-llms` (`/llms.txt` + `/llms-full.txt`); ✅ a
