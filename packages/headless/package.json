@@ -37,6 +37,7 @@
         }
     },
     "devDependencies": {
-        "tsdown": "^0.22.3"
+        "tsdown": "^0.22.3",
+        "unrun": "^0.3.1"
     }
 }
