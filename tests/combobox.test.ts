@@ -86,6 +86,14 @@ describe('OriCombobox', () => {
         expect(listbox.exists()).toBe(true);
         expect(input.attributes('aria-controls')).toBe(listbox.attributes('id'));
         expect(listbox.attributes('hidden')).toBeDefined();
+
+        // Retrofit: the listbox is placed by the shared .ori-anchored primitive, tethered to the control.
+        expect(listbox.classes()).toContain('ori-anchored');
+        expect(listbox.classes()).toContain('ori-anchored_bottom');
+        const anchorVar = (listbox.element as HTMLElement).style.getPropertyValue('--ori-anchor');
+        expect(anchorVar).toMatch(/^--ori-combobox-/);
+        const control = wrapper.find('.ori-combobox__control').element as HTMLElement;
+        expect((control.style as unknown as Record<string, string>).anchorName).toBe(anchorVar);
     });
 
     it('associates the built-in label with the input via for/id', () => {
