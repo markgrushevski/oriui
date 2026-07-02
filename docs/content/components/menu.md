@@ -69,7 +69,7 @@ highlighted one, to select and close.
     id="menu-1"
     role="menu"
     tabindex="-1"
-    class="ori-menu ori-anchored ori-anchored_bottom"
+    class="ori-menu ori-anchored ori-anchored_bottom-start"
     style="--ori-anchor: --menu-1"
     aria-labelledby="menu-1-trigger"
     hidden
@@ -84,8 +84,10 @@ highlighted one, to select and close.
 
 ## Placements
 
-Six placements — `bottom` is the default. Same placement classes and collision-flip logic as the
-Popover, since both compose `.ori-anchored`.
+Twelve placements — `bottom-start` is the default. A bare side (`top` / `bottom` / `left` / `right`)
+centers on the cross axis; `-start` / `-end` align to the trigger's start / end edge (logical,
+RTL-aware). Same placement classes and collision-flip logic as the Popover, since both compose
+`.ori-anchored`.
 
 ::example
 :menu-demo{placement="top"}
@@ -110,7 +112,7 @@ Popover, since both compose `.ori-anchored`.
 #html
 
 ```html
-<!-- swap the modifier: ori-anchored_top → _top-end / _bottom / _bottom-end / _left / _right -->
+<!-- swap the modifier: ori-anchored_top / _top-start / _top-end / _bottom / _bottom-start / _bottom-end / _left / _left-start / _left-end / _right / _right-start / _right-end -->
 <div
     id="menu-2"
     role="menu"
@@ -271,11 +273,11 @@ behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/
 
 ### Props
 
-| Prop        | Type                                                                  | Default      | Description                                                                        |
-| ----------- | --------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------- |
-| `items`     | `MenuItem[]`                                                          | **required** | `{ value: string; label?: string; disabled?: boolean }[]`, in render order.        |
-| `disabled`  | `boolean`                                                             | `false`      | Disables the trigger and blocks opening the menu.                                  |
-| `placement` | `'top' \| 'top-end' \| 'bottom' \| 'bottom-end' \| 'left' \| 'right'` | `'bottom'`   | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier. |
+| Prop        | Type                                                                   | Default          | Description                                                                        |
+| ----------- | ---------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| `items`     | `MenuItem[]`                                                           | **required**     | `{ value: string; label?: string; disabled?: boolean }[]`, in render order.        |
+| `disabled`  | `boolean`                                                              | `false`          | Disables the trigger and blocks opening the menu.                                  |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier. |
 
 ### Events & attributes
 

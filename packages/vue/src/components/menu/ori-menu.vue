@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, useId, useTemplateRef, watch } from 'vue';
 import { useMenu, type MenuItem } from '@oriui/headless/vue';
+import type { AnchoredPlacement } from '../../types';
 
 // OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behaviour
 // (open/close, Arrow/Home/End roving, Enter/Space activate, Escape/Tab/outside-click close) lives in the
@@ -16,11 +17,11 @@ defineOptions({ inheritAttrs: false });
 const {
     disabled = false,
     items,
-    placement = 'bottom'
+    placement = 'bottom-start'
 } = defineProps<{
     disabled?: boolean;
     items: MenuItem[];
-    placement?: 'top' | 'top-end' | 'bottom' | 'bottom-end' | 'left' | 'right';
+    placement?: AnchoredPlacement;
 }>();
 
 const emit = defineEmits<{ select: [value: string] }>();

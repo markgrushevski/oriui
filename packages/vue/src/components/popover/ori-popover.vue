@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, useId } from 'vue';
+import type { AnchoredPlacement } from '../../types';
 
 // OriPopover — a positioned overlay built on the platform. The trigger opens the panel via the
 // Popover API (`popovertarget` → top-layer, light-dismiss, Esc — zero JS); the panel is placed with
@@ -17,8 +18,8 @@ import { computed, useId } from 'vue';
 // name by passing `aria-label` / `aria-labelledby` — undeclared attrs fall through to the panel.
 defineOptions({ inheritAttrs: false });
 
-const { placement = 'bottom', role = 'dialog' } = defineProps<{
-    placement?: 'top' | 'top-end' | 'bottom' | 'bottom-end' | 'left' | 'right';
+const { placement = 'bottom-start', role = 'dialog' } = defineProps<{
+    placement?: AnchoredPlacement;
     /** ARIA role for the panel — "dialog" (default), "menu", "listbox", … per the content it holds. */
     role?: string;
 }>();

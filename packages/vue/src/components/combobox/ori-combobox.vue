@@ -169,7 +169,7 @@ const describedBy = computed(() => {
 
             <ul
                 v-bind="listboxProps"
-                :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom']"
+                :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom-start']"
                 :style="{ '--ori-anchor': anchorName }"
                 :aria-labelledby="label ? labelId : undefined"
             >
