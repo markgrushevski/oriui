@@ -8,10 +8,10 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (29) — for reference
+## Shipped today (30) — for reference
 
 Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combobox · Checkbox · Switch · RadioGroup ·
-Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip ·
+Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip · Popover ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider.
 
 ## Project improvements (beyond the catalog)
@@ -21,7 +21,7 @@ Roughly by priority.
 
 1. ⭐ **Floating / positioning primitive** — a small anchored-panel helper (CSS `anchor-positioning`,
    or a tiny JS positioner behind a contract). **Highest leverage:** unblocks Menu, Popover, Combobox
-   collision-flip, and a rich Tooltip. Today the Tooltip + Combobox panels are statically placed (no flip).
+   collision-flip, and a rich Tooltip. **OriPopover shipped** (Popover API + CSS `anchor-positioning`, zero JS). Next, per the architecture review: extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating the empty `positions/positions.css`) so Menu/Combobox/Tooltip consume it instead of re-forking; retrofit collision-flip into Combobox (its listbox clips near the viewport bottom) + Tooltip; and lock the `placement` enum to the 12-value `<side>-<align>` grid before OriMenu shares it.
 2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
    layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
    explicit section separation. _(in progress)_
