@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, useId, watch } from 'vue';
 import { useCombobox, type ComboboxItem } from '@oriui/headless/vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 
@@ -56,6 +56,9 @@ const {
 }>();
 
 const model = defineModel<string | null>();
+
+// Per-instance anchor-name tethers the fixed listbox to the control (CSS Anchor Positioning + flip).
+const anchorName = `--ori-combobox-${useId()}`;
 
 const {
     value: selectedValue,
@@ -123,7 +126,7 @@ const describedBy = computed(() => {
             {{ label }}<span v-if="required" class="ori-combobox__required" aria-hidden="true">*</span>
         </label>
 
-        <div v-bind="controlProps" class="ori-combobox__control">
+        <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
             <input
                 v-bind="{ ...$attrs, ...inputProps }"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
@@ -164,7 +167,12 @@ const describedBy = computed(() => {
                 </svg>
             </button>
 
-            <ul v-bind="listboxProps" class="ori-combobox__listbox" :aria-labelledby="label ? labelId : undefined">
+            <ul
+                v-bind="listboxProps"
+                :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom']"
+                :style="{ '--ori-anchor': anchorName }"
+                :aria-labelledby="label ? labelId : undefined"
+            >
                 <li
                     v-for="(item, index) in items"
                     :key="item.value"
