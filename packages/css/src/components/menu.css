@@ -1,0 +1,66 @@
+@layer ori.components {
+    /* The menu surface — a roving-tabindex action list floated by the shared `.ori-anchored` primitive
+       (composed alongside this class). Unlike the popover it is not top-layer (no Popover API), so it
+       carries a z-index; placement + collision flip come from `.ori-anchored`. */
+    .ori-menu {
+        /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the alias (two-tier). */
+        --ori-size-radius: var(--ori-size-radius_md);
+
+        z-index: 50;
+
+        box-sizing: border-box;
+        min-width: max(anchor-size(width), 10rem);
+        max-width: min(20rem, 100dvw - 1rem);
+        max-height: min(24rem, 100dvh - 1rem);
+        padding: 0.35rem;
+        overflow: auto;
+
+        border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+        border-radius: var(--ori-size-radius);
+
+        background: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-lg);
+        color: var(--ori-color-on-surface);
+    }
+
+    .ori-menu[hidden] {
+        display: none;
+    }
+
+    .ori-menu__item {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        padding: 0.4rem 0.6rem;
+
+        border-radius: calc(var(--ori-size-radius) - 0.15rem);
+
+        cursor: pointer;
+
+        user-select: none;
+    }
+
+    .ori-menu__item[aria-disabled='true'] {
+        opacity: 0.4;
+
+        cursor: not-allowed;
+    }
+
+    /* Highlight follows the roving focus (keyboard) and pointer hover. */
+    .ori-menu__item[data-highlighted] {
+        background: color-mix(in srgb, var(--ori-color, currentcolor) 12%, transparent);
+    }
+
+    @media (hover: hover) {
+        .ori-menu__item:hover:not([aria-disabled='true']) {
+            background: color-mix(in srgb, currentcolor 8%, transparent);
+        }
+    }
+
+    .ori-menu__item:focus-visible {
+        outline: 2px solid var(--ori-color, currentcolor);
+        outline-offset: -2px;
+    }
+}

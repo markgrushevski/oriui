@@ -8,10 +8,10 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (30) — for reference
+## Shipped today (31) — for reference
 
 Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combobox · Checkbox · Switch · RadioGroup ·
-Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip · Popover ·
+Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip · Popover · Menu ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider.
 
 ## Project improvements (beyond the catalog)
@@ -21,7 +21,7 @@ Roughly by priority.
 
 1. ⭐ **Floating / positioning primitive** — a small anchored-panel helper (CSS `anchor-positioning`,
    or a tiny JS positioner behind a contract). **Highest leverage:** unblocks Menu, Popover, Combobox
-   collision-flip, and a rich Tooltip. **OriPopover shipped** (Popover API + CSS `anchor-positioning`, zero JS). Next, per the architecture review: extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating the empty `positions/positions.css`) so Menu/Combobox/Tooltip consume it instead of re-forking; retrofit collision-flip into Combobox (its listbox clips near the viewport bottom) + Tooltip; and lock the `placement` enum to the 12-value `<side>-<align>` grid before OriMenu shares it.
+   collision-flip, and a rich Tooltip. **OriPopover + OriMenu shipped**, and the **`.ori-anchored` placement primitive is extracted** (`components/anchored.css`) — both consume it. Remaining, per the architecture review: retrofit collision-flip into Combobox (its listbox clips near the viewport bottom) + Tooltip onto `.ori-anchored`; and lock the shared `placement` enum to the 12-value `<side>-<align>` grid (needs visual / Playwright verification).
 2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
    layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
    explicit section separation. _(in progress)_

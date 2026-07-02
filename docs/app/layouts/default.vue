@@ -45,6 +45,7 @@ const sections = [
                 links: [
                     { label: 'Button', to: '/components/button' },
                     { label: 'Dialog', to: '/components/dialog' },
+                    { label: 'Menu', to: '/components/menu' },
                     { label: 'Popover', to: '/components/popover' }
                 ]
             },
