@@ -34,6 +34,7 @@
         "test:watch": "vitest",
         "test:cov": "vitest run --coverage",
         "test:types": "vue-tsc -p tsconfig.vitest.json --noEmit",
+        "test:e2e": "npm run build -w @oriui/css && playwright test",
         "lint:prettier": "npx prettier --write **/*.{vue,js,ts,json,md,html,css}",
         "lint:stylelint": "npx stylelint --fix \"packages/vue/src/**/*.{vue,css}\" \"packages/css/src/**/*.css\"",
         "lint:eslint": "npx eslint --fix \"packages/*/src/**/*.{vue,ts}\"",
@@ -50,6 +51,7 @@
     "devDependencies": {
         "@changesets/cli": "^2.31.0",
         "@eslint/js": "^10.0.1",
+        "@playwright/test": "^1.61.1",
         "@types/node": "^26.0.1",
         "@vitejs/plugin-vue": "^6.0.7",
         "@vitest/coverage-v8": "^4.1.9",
