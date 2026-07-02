@@ -2,11 +2,15 @@
     "extends": "../../tsconfig.base.json",
     "include": ["src"],
     "compilerOptions": {
-        "rootDir": "src",
-        "declaration": true,
-        "declarationMap": true,
-        "emitDeclarationOnly": false,
-        "declarationDir": "./types",
-        "allowImportingTsExtensions": true
+        // Type-CHECK config (`vue-tsc --noEmit`): resolve the workspace packages to SOURCE so the
+        // check is self-sufficient — no `build:packages` prerequisite, mirroring vitest/docs. No
+        // `declaration`/`rootDir` here: they'd make tsc compute a rootDir and reject the cross-package
+        // source files (TS6059). Declaration emit lives in tsconfig.build.json (resolves to dist).
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
+        "paths": {
+            "@oriui/headless": ["../headless/src/core/index.ts"],
+            "@oriui/headless/vue": ["../headless/src/vue/index.ts"]
+        }
     }
 }
