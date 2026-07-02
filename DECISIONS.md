@@ -179,7 +179,7 @@ earned its keep by finding real component bugs while writing the docs.
 ## CI: GitHub Actions quality gate (Phase 8, first slice)
 
 `.github/workflows/ci.yml` runs on push to `main` + every PR: **lint → types → test → build**
-across a Node matrix (`20.19.0` — the Vite 8 floor from `engines` — and `22`). Decisions:
+across a Node matrix (`22` and `24`; the tsdown build toolchain requires Node ≥ 22.18, and Node 20 is EOL). Decisions:
 
 - **Separate `lint:ci` (check mode) from the local `lint:*` (fix mode).** The everyday scripts run
   `prettier --write` / `--fix` for DX; CI must _fail_ on drift, so `lint:ci` runs `prettier --check`,

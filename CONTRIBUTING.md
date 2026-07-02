@@ -4,7 +4,7 @@ How work flows through oriUI — branches, commits, versioning, and releases. Th
 these choices lives in [DECISIONS.md](DECISIONS.md); the coding conventions and commands in
 [CLAUDE.md](CLAUDE.md); the npm publish mechanics in [RELEASING.md](RELEASING.md).
 
-Prerequisites: **Node ≥ 20.19** (the Vite 8 floor) and npm. The repo uses **npm workspaces** —
+Prerequisites: **Node ≥ 22.18** (the tsdown build toolchain; Node 20 is EOL) and npm. The repo uses **npm workspaces** —
 a single root `npm install` wires the `docs/` and `packages/*` workspaces.
 
 ## Branching
@@ -40,7 +40,7 @@ author **Leonid**, **no `Co-Authored-By` trailer**, and grouping into reasonably
 
 A husky **pre-commit** hook runs `npm run build` + `lint-staged` on every commit, so a commit
 fails fast if the build or formatting breaks. CI (GitHub Actions) re-runs the gate on every push
-to `main` and every PR: `lint:ci → types → test → build` across Node 20.19 and 22.
+to `main` and every PR: `lint:ci → types → test → build` across Node 22 and 24.
 
 ## Versioning
 
