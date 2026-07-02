@@ -22,7 +22,7 @@ non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runb
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
-swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **29 styled components** (Button,
+swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **30 styled components** (Button,
 Card, Avatar, Icon, Spinner, Dialog, Input, Field, Combobox, Checkbox, Switch, RadioGroup). Next — more form/overlay
 components, the docs-template rollout, npm publish.
 
@@ -43,9 +43,10 @@ standing override ("always orchestrate" / "always solo" / "ask each time") holds
 default is "ask each time".
 
 **Roles** (`.claude/agents/`): `oriui-builder` (Opus), `oriui-test-author` (Sonnet),
-`oriui-docs-author` (Sonnet); review lenses `oriui-reviewer` (Opus, code/contract),
-`oriui-design-reviewer` (Opus, visual/UX), `oriui-a11y-auditor` (Opus, deep a11y), and
-`oriui-perf-reviewer` (Sonnet, size/zero-runtime). They share the bar by reading
+`oriui-docs-author` (Sonnet); review lenses `oriui-architect` (Opus, architecture — reviews + proposes), `oriui-reviewer` (Opus, code/contract),
+`oriui-design-reviewer` (Opus, visual/UX), `oriui-a11y-auditor` (Opus, deep a11y),
+`oriui-perf-reviewer` (Sonnet, size/zero-runtime), and `oriui-docs-reviewer` (Sonnet, docs
+accuracy/staleness). They share the bar by reading
 CLAUDE.md / DECISIONS.md / REVIEW.md / NOTES.md; agents **report** new gotchas and the orchestrator
 records them in NOTES.md (so nothing is analyzed twice). Agents touch only their own files; the
 orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid parallel-edit conflicts.

@@ -541,3 +541,25 @@ behavior layer be swapped without touching component markup.
 Touch minimum 44px in the action scale; safe-area insets + `@media (hover:hover)`. Capacitor
 is supported via a planned `hybrid` platform mode (token + behavior tweaks). Ionic is a
 competing adaptive component library, not a backend — deliberately out of scope.
+
+## OriPopover: non-modal overlays are platform primitives, not headless-contract behavior
+
+OriPopover deliberately sits **outside** the `OriHeadless` contract — no `useDisclosure` / adapter, no JS
+state machine. The platform supplies everything a non-modal popover needs with zero JS: top-layer +
+light-dismiss + `Esc` from the **Popover API** (`popover` + `popovertarget`), and placement + collision
+flip from **CSS Anchor Positioning** (`position-anchor` + `position-area` + `position-try-fallbacks`). This
+extends the native-`<dialog>` thesis (the dialog ADR above) to the non-modal case: the contract seam is
+for behavior with real state (focus-trap, roving-tabindex, typeahead); a pure placement primitive has
+none, so wrapping it in `useDisclosure` would be a wrong abstraction. **Corollary:** OriMenu _will_ re-enter
+the contract (roving-tabindex is real state) while **reusing** OriPopover's placement CSS.
+
+Its a11y is a **consumer contract** (the zero-JS cost): the panel `role` defaults to `dialog`, the
+accessible name comes from `aria-label` / `aria-labelledby` (fall through via `inheritAttrs: false` +
+`v-bind="$attrs"`), and the trigger's expanded state is **unmanaged** — `aria-haspopup` + `aria-controls`
+convey the relationship statically, since there is no JS open-state to bind `aria-expanded` to.
+
+This anchor-positioning placement is the **new catalog reference** for floating panels; OriTooltip and
+OriCombobox use older static placement and are **legacy to retrofit** onto it. Pending (with OriMenu):
+extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating `positions/positions.css`),
+retrofit Combobox/Tooltip collision-flip, and lock the shared `placement` enum to the 12-value
+`<side>-<align>` grid before Menu consumes it.

@@ -15,7 +15,7 @@ to headless behavior or raw CSS when you need control, without rewriting.
 | [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless composables for focus / keyboard / ARIA               |
 | [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework** |
 
-Zero-runtime theming via CSS custom properties · no Tailwind dependency · **29 components** · WCAG-AA
+Zero-runtime theming via CSS custom properties · no Tailwind dependency · **30 components** · WCAG-AA
 token contrast (executably tested) · fully typed · htmx / Astro / plain-HTML friendly through the CSS
 layer.
 

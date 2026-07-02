@@ -44,7 +44,8 @@ const sections = [
                 title: 'Actions',
                 links: [
                     { label: 'Button', to: '/components/button' },
-                    { label: 'Dialog', to: '/components/dialog' }
+                    { label: 'Dialog', to: '/components/dialog' },
+                    { label: 'Popover', to: '/components/popover' }
                 ]
             },
             {

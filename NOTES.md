@@ -259,6 +259,23 @@ practical gotchas go here.
   `inheritAttrs`) in the axe test. **Separators:** `aria-orientation` is **omitted** for the horizontal
   default (the ARIA implicit value) and set only for vertical — assert `toBeUndefined()`, never
   `toBe('horizontal')` (Vue renders an `undefined` binding as no attribute).
+- **OriPopover a11y is a consumer contract (zero-JS Popover API).** The panel defaults to `role="dialog"`;
+  give it an accessible name via `aria-label` / `aria-labelledby` — undeclared attrs fall through
+  (`inheritAttrs: false` + `v-bind="$attrs"` on the panel). The trigger's **expanded state is unmanaged**:
+  the Popover API drives open/close in CSS with no JS state, so `aria-expanded` can't track it —
+  `triggerProps` conveys the relationship statically via `aria-haspopup` (mirrors the panel `role`) +
+  `aria-controls`. Same CSS-only shape as OriTooltip; live open/close + placement need Playwright, not happy-dom.
+- **OriPopover CSS gotchas.** `min-width: anchor-size(width)` makes the panel inherit the **trigger's width**
+  by default (right for menu/select panels; a content-sized popover opts out with a width utility), and
+  `anchor-size()` resolves against the implicit `position-anchor`, so width and anchoring share
+  `--ori-anchor`. `--ori-popover-gap` (block default `0.25rem`) is the single gap source, read bare by each
+  placement class. `--ori-size-radius` is baked to `_md` so `.ori-size-radius_*` can repoint it.
+- **Testing anchor-positioning / Popover-API components in happy-dom (OriPopover).** happy-dom doesn't
+  serialize unsupported CSS props: an object `:style="{ anchorName }"` sets `el.style.anchorName` but
+  `getPropertyValue('anchor-name')` / `cssText` come back empty — assert `el.style.anchorName` directly.
+  `useId()` restarts at `v-0` per `mount()`, so two separate mounts get the **same** id — to assert
+  per-instance uniqueness, mount both under one parent so they share the counter. The Popover API
+  (`showPopover` / `:popover-open` / top-layer) isn't implemented either — open/close is Playwright's job.
 
 ## Orchestration / role agents
 
