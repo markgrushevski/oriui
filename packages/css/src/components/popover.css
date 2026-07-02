@@ -1,0 +1,96 @@
+@layer ori.components {
+    /* A floating panel tethered to a trigger with CSS Anchor Positioning (Baseline 2026). The trigger
+       carries `anchor-name` (set per-instance), the panel `position-anchor`; `position-area` places it
+       and `position-try-fallbacks` flips it on overflow. Zero positioning JS — no scroll/resize
+       listeners. Progressive enhancement: browsers without `position-try` place it without the flip
+       (base placement is written outside any @position-try, so it still lands in the right spot). Pair
+       with the Popover API (`popover` + `popovertarget`) for top-layer + light-dismiss, also zero-JS. */
+    .ori-popover {
+        position: fixed;
+
+        box-sizing: border-box;
+        /* respect the anchor's width for menu/select-style panels; opt out with a width utility */
+        min-width: anchor-size(width);
+        max-width: min(20rem, 100vw - 1rem);
+        max-height: min(24rem, 100dvh - 1rem);
+        margin: var(--ori-popover-gap, 0.25rem) 0 0 0;
+        padding: 0.35rem;
+        overflow: auto;
+
+        border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+        border-radius: var(--ori-size-radius_md);
+
+        background: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-lg);
+        color: var(--ori-color-on-surface);
+        position-anchor: var(--ori-anchor);
+        /* base placement: below, aligned to the start edge */
+        position-area: block-end span-inline-end;
+        position-try-fallbacks:
+            flip-block,
+            flip-inline,
+            flip-block flip-inline;
+    }
+
+    /* The Popover API keeps the panel display:none until open; when it uses these classes as a plain
+       (non-popover) element, hide it via [hidden]. */
+    .ori-popover[hidden] {
+        display: none;
+    }
+
+    /* ---- Placement (position-area on the anchor's 3x3 area grid; logical, so RTL-aware) ---- */
+    .ori-popover.ori-popover_bottom {
+        position-area: block-end span-inline-end;
+    }
+
+    .ori-popover.ori-popover_bottom-end {
+        position-area: block-end span-inline-start;
+    }
+
+    .ori-popover.ori-popover_top {
+        position-area: block-start span-inline-end;
+
+        margin: 0 0 var(--ori-popover-gap, 0.25rem) 0;
+    }
+
+    .ori-popover.ori-popover_top-end {
+        position-area: block-start span-inline-start;
+
+        margin: 0 0 var(--ori-popover-gap, 0.25rem) 0;
+    }
+
+    .ori-popover.ori-popover_left {
+        position-area: inline-start span-block-end;
+
+        margin: 0 var(--ori-popover-gap, 0.25rem) 0 0;
+    }
+
+    .ori-popover.ori-popover_right {
+        position-area: inline-end span-block-end;
+
+        margin: 0 0 0 var(--ori-popover-gap, 0.25rem);
+    }
+
+    /* Smooth in when supported (discrete display + starting-style); no-op elsewhere. */
+    @media (prefers-reduced-motion: no-preference) {
+        .ori-popover {
+            transition:
+                opacity 0.14s ease-out,
+                overlay 0.14s ease-out allow-discrete,
+                display 0.14s ease-out allow-discrete;
+
+            opacity: 1;
+        }
+
+        .ori-popover:not(:popover-open) {
+            opacity: 0;
+        }
+
+        @starting-style {
+            .ori-popover:popover-open {
+                opacity: 0;
+            }
+        }
+    }
+}
