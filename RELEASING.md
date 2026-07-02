@@ -11,7 +11,7 @@ workspace, released with **changesets** in alpha prerelease mode.
 
 The three are a **fixed** lockstep group (`.changeset/config.json`) — they always bump together. The
 repo is in **alpha pre mode** (`.changeset/pre.json`), so versions stay `1.0.0-alpha.N` and publish to
-the `next` dist-tag.
+the `alpha` dist-tag automatically (changesets uses the `pre.json` tag); pre-1.0, with no stable release, `latest` also tracks the newest alpha (npm always keeps a `latest`) and moves to the stable line when you exit pre mode.
 
 ## One-time setup
 
@@ -52,9 +52,9 @@ token via `id-token: write`. No `NPM_TOKEN` secret, nothing to rotate every 90 d
    internal deps and updating `CHANGELOG.md`.
 
 3. **Merge the "Version Packages" PR.** That push runs `npm run release`
-   (`npm run build && changeset publish --tag next`), publishing the bumped packages to npm in
-   dependency order via **Trusted Publishing (OIDC)** — no token, provenance attached — and tagging the
-   release.
+   (`npm run build && changeset publish`), publishing the bumped packages to npm in dependency order
+   via **Trusted Publishing (OIDC)** — no token, provenance attached. In pre mode changesets tags them
+   with the pre-release tag automatically (**`alpha`**) and tags the release commit.
 
 Once a release is stable, move it to the default tag: `npm dist-tag add @oriui/vue@<v> latest` (and the
 same for `@oriui/headless` + `@oriui/css`), or run `changeset pre exit` and cut a non-prerelease.
@@ -63,7 +63,7 @@ same for `@oriui/headless` + `@oriui/css`), or run `changeset pre exit` and cut 
 
 ```bash
 npm run version    # changeset version + lockfile sync  (the "Version Packages" step)
-npm run release    # build + changeset publish --tag next  (needs npm login / OTP locally)
+npm run release    # build + changeset publish → alpha dist-tag  (needs npm login / OTP locally)
 ```
 
 ## Verify
@@ -72,7 +72,7 @@ npm run release    # build + changeset publish --tag next  (needs npm login / OT
 npm view @oriui/vue
 npm view @oriui/headless
 npm view @oriui/css
-#  npm i @oriui/vue@next     (fresh-install smoke test)
+#  npm i @oriui/vue@alpha     (fresh-install smoke test)
 ```
 
 ## Notes
