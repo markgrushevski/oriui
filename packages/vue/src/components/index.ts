@@ -17,6 +17,7 @@ export * from './alert';
 export * from './progress';
 export * from './select';
 export * from './tooltip';
+export * from './popover';
 export * from './accordion';
 export * from './tabs';
 export * from './divider';
