@@ -123,14 +123,13 @@
         cursor: not-allowed;
     }
 
-    /* The popup listbox — absolutely anchored under the control (no JS positioner; collision flip is
-       out of scope, matching the tooltip's static model). `hidden` (from the prop-getter when closed)
-       wins over the block display via the attribute selector. */
+    /* The popup listbox — floated by the shared `.ori-anchored` primitive (composed on the element):
+       fixed + anchored under the control, with a collision flip on overflow. `min-width` matches the
+       control; `hidden` (from the prop-getter when closed) wins via the attribute selector. */
     .ori-combobox__listbox {
-        position: absolute;
         z-index: 50;
-        top: calc(100% + 0.25em);
 
+        min-width: anchor-size(width);
         max-height: 15rem;
         margin: 0;
         padding: 0.25em;
@@ -145,7 +144,6 @@
         color: var(--ori-color-on-surface);
 
         list-style: none;
-        inset-inline: 0;
     }
 
     .ori-combobox__listbox[hidden] {
