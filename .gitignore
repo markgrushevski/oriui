@@ -10,3 +10,7 @@ node_modules
 types
 
 *.tsbuildinfo
+
+# Playwright e2e
+test-results
+playwright-report
