@@ -56,18 +56,31 @@ describe('OriMenu', () => {
         wrapper.unmount();
     });
 
-    it('panel carries the anchored placement class (default bottom)', () => {
+    it('panel carries the anchored placement class (default bottom-start)', () => {
         const wrapper = mountMenu();
         const classes = wrapper.find('[role="menu"]').classes();
 
         expect(classes).toContain('ori-menu');
         expect(classes).toContain('ori-anchored');
-        expect(classes).toContain('ori-anchored_bottom');
+        expect(classes).toContain('ori-anchored_bottom-start');
         wrapper.unmount();
     });
 
     it('every placement value maps to its own modifier class', () => {
-        const placements = ['top', 'top-end', 'bottom', 'bottom-end', 'left', 'right'] as const;
+        const placements = [
+            'top',
+            'top-start',
+            'top-end',
+            'bottom',
+            'bottom-start',
+            'bottom-end',
+            'left',
+            'left-start',
+            'left-end',
+            'right',
+            'right-start',
+            'right-end'
+        ] as const;
         placements.forEach((placement) => {
             const wrapper = mountMenu({ placement });
             expect(wrapper.find('[role="menu"]').classes()).toContain(`ori-anchored_${placement}`);

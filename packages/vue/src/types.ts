@@ -50,6 +50,11 @@ export type CustomPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-
 export type CenteredPosition = BlockPosition | InlinePosition;
 export type Position = CenterPosition | CenteredPosition | CustomPosition;
 
+/** The 12-value anchored-panel placement grid for overlays (popover, menu, …): a bare side centers on
+ *  the cross axis; `-start` / `-end` align to the trigger's start / end edge (logical, RTL-aware). */
+export type AnchoredSide = 'top' | 'bottom' | 'left' | 'right';
+export type AnchoredPlacement = AnchoredSide | `${AnchoredSide}-start` | `${AnchoredSide}-end`;
+
 /* ==================== Colors ==================== */
 
 interface SeverityColors {

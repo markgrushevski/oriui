@@ -3,9 +3,10 @@
 // syntax can't fill the `#trigger` scoped slot, so — same approach as `:dialog-demo` — this component
 // wraps OriPopover with a real button trigger + sample panel content for a single inline drop-in tag.
 import { OriButton, OriPopover } from '@oriui/vue';
+import type { AnchoredPlacement } from '@oriui/vue';
 
-const { placement = 'bottom' } = defineProps<{
-    placement?: 'top' | 'top-end' | 'bottom' | 'bottom-end' | 'left' | 'right';
+const { placement = 'bottom-start' } = defineProps<{
+    placement?: AnchoredPlacement;
 }>();
 </script>
 

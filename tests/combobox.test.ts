@@ -89,7 +89,7 @@ describe('OriCombobox', () => {
 
         // Retrofit: the listbox is placed by the shared .ori-anchored primitive, tethered to the control.
         expect(listbox.classes()).toContain('ori-anchored');
-        expect(listbox.classes()).toContain('ori-anchored_bottom');
+        expect(listbox.classes()).toContain('ori-anchored_bottom-start');
         const anchorVar = (listbox.element as HTMLElement).style.getPropertyValue('--ori-anchor');
         expect(anchorVar).toMatch(/^--ori-combobox-/);
         const control = wrapper.find('.ori-combobox__control').element as HTMLElement;
