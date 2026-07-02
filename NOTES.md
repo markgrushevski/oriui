@@ -276,6 +276,12 @@ practical gotchas go here.
   `useId()` restarts at `v-0` per `mount()`, so two separate mounts get the **same** id — to assert
   per-instance uniqueness, mount both under one parent so they share the counter. The Popover API
   (`showPopover` / `:popover-open` / top-layer) isn't implemented either — open/close is Playwright's job.
+- **Playwright e2e (`e2e/*.spec.ts`) verify what happy-dom can't** — real-Chromium geometry of the
+  `.ori-anchored` floating components: placement, the `position-try` collision flip, and the Popover API.
+  They load the **built** `packages/css/dist/styles.css` (so `npm run test:e2e` rebuilds `@oriui/css`
+  first) + raw `.ori-*` markup (no Vue). `reducedMotion: 'reduce'` in the config kills the popover
+  open/close opacity transition so `boundingBox()` reads are stable. Vitest ignores them — its `include`
+  is `tests/**/*.test.ts` (unit `.test.ts`, e2e `.spec.ts`).
 
 ## Orchestration / role agents
 
