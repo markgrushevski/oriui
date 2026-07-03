@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { get } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import {
     nativeDisclosure,
     nativeDialog,
@@ -196,6 +196,26 @@ describe('Svelte useCombobox', () => {
         expect(optionProps.role).toBe('option');
         expect(typeof optionProps.id).toBe('string');
     });
+
+    it('reacts to an options store — a new list re-filters the visible items', () => {
+        const opts = writable({ id: 'rx', options: OPTIONS });
+        const cb = useCombobox(opts);
+        expect(get(cb.items)).toHaveLength(4);
+
+        opts.set({ id: 'rx', options: [{ label: 'Kiwi', value: 'kiwi' }] });
+        expect(get(cb.items).map((i) => i.label)).toEqual(['Kiwi']);
+    });
+
+    it('reacts to a disabled store — toggling disabled pushes SET_DISABLED and closes the listbox', () => {
+        const opts = writable({ id: 'rd', options: OPTIONS, disabled: false });
+        const cb = useCombobox(opts);
+
+        cb.setOpen(true);
+        expect(get(cb.open)).toBe(true);
+
+        opts.set({ id: 'rd', options: OPTIONS, disabled: true });
+        expect(get(cb.open)).toBe(false);
+    });
 });
 
 describe('Svelte useMenu', () => {
@@ -235,6 +255,15 @@ describe('Svelte useMenu', () => {
         expect(itemProps.role).toBe('menuitem');
         expect(typeof itemProps.onclick).toBe('function');
         expect('onClick' in itemProps).toBe(false);
+    });
+
+    it('reacts to an items store — a new list is reflected', () => {
+        const opts = writable({ id: 'rm', items: ITEMS });
+        const m = useMenu(opts);
+        expect(get(m.items)).toHaveLength(2);
+
+        opts.set({ id: 'rm', items: [{ label: 'Cut', value: 'cut' }] });
+        expect(get(m.items).map((i) => i.label)).toEqual(['Cut']);
     });
 });
 
