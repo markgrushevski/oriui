@@ -3,6 +3,7 @@
 [![CI](https://github.com/markgrushevski/oriui/actions/workflows/ci.yml/badge.svg)](https://github.com/markgrushevski/oriui/actions/workflows/ci.yml)
 [![Release](https://github.com/markgrushevski/oriui/actions/workflows/release.yml/badge.svg)](https://github.com/markgrushevski/oriui/actions/workflows/release.yml)
 [![npm](https://img.shields.io/npm/v/@oriui/vue?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/vue)
+[![minzip](https://img.shields.io/bundlephobia/minzip/@oriui/vue?label=minzip&color=44cc11)](https://bundlephobia.com/package/@oriui/vue)
 [![codecov](https://codecov.io/gh/markgrushevski/oriui/branch/main/graph/badge.svg)](https://codecov.io/gh/markgrushevski/oriui)
 [![license](https://img.shields.io/npm/l/@oriui/vue?color=blue)](LICENSE)
 

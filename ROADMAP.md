@@ -57,8 +57,10 @@ a11y, tests, strong docs).
     - ✅ a **theme / skin gallery** page (`guides/skins` — the 7 skins, each clickable to reskin the whole
       site live via `useOriTheme`, demonstrating the zero-runtime theming);
     - an **idea + comparisons** page.
-8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
-   Node 22 + 24; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ **Vercel
+8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build → size` on
+   push/PR, Node 22 + 24; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ a
+   **size budget** (`size-limit`, `.size-limit.json`) fails CI on a CSS/JS bundle regression, guarding the
+   zero-runtime promise; a bundlephobia minzip badge in the README. ✅ **Vercel
    deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
    release** — `changesets` in alpha pre mode (a **fixed** lockstep group of the three packages) + a CI
    publish job (`changesets/action` + OIDC Trusted Publishing); runbook in [RELEASING.md](RELEASING.md). ✅ root
