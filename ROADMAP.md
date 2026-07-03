@@ -52,8 +52,11 @@ a11y, tests, strong docs).
       behaviour-driven components (Combobox / Dialog / Menu) and the headless pages show
       `@oriui/headless/svelte`; the CSS components are covered by the HTML tab (standalone `.ori-*` — also
       the htmx / Astro / Svelte-static path). The switcher shows Svelte only where a real `#svelte` block ships;
-    - an **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML / Capacitor / Electron);
-    - a **theme / skin gallery** page; an **idea + comparisons** page.
+    - ✅ an **applicability matrix** (`overview/applicability` — layer × Vue / Svelte / Astro / htmx, plus
+      the Nuxt / SvelteKit / Capacitor / Electron runtime shells that inherit their framework column);
+    - ✅ a **theme / skin gallery** page (`guides/skins` — the 7 skins, each clickable to reskin the whole
+      site live via `useOriTheme`, demonstrating the zero-runtime theming);
+    - an **idea + comparisons** page.
 8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
    Node 22 + 24; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ **Vercel
    deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
