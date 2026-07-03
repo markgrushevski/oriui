@@ -50,25 +50,18 @@ oriUI deliberately sits between the usual categories:
 - **vs. full component libraries (Vuetify, PrimeVue)** — lighter and unopinionated about styling: the
   token contract _is_ the theming API, so customization is CSS, not a framework-specific config object.
 
+For a deeper, library-by-library take, see [Idea & comparisons](/overview/comparisons).
+
 ## Where each layer fits
 
-The CSS layer works **everywhere**; only the styled and headless layers need a JS framework.
-
-| Target                 | `@oriui/vue` (styled) | `@oriui/css` (classes) | `@oriui/headless/vue` (headless) |
-| ---------------------- | :-------------------: | :--------------------: | :------------------------------: |
-| Vue / Nuxt             |        ✅ best        |           ✅           |                ✅                |
-| Svelte / SvelteKit     |           —           |           ✅           |            ⚠️ planned            |
-| htmx / server-rendered |           —           |        ✅ ideal        |     ⚠️ Zag-vanilla (planned)     |
-| Astro / 11ty (static)  |      island only      |        ✅ ideal        |                —                 |
-| Plain HTML / CDN       |           —           |           ✅           |                —                 |
-| Capacitor / Electron   |          ✅           |           ✅           |                ✅                |
-
-Only complex behavior (focus traps, menus, comboboxes) needs the headless layer, which is Vue today;
-a vanilla adapter (via Zag) is planned for the no-framework targets.
+The CSS layer works **everywhere**; the styled layer is Vue, and the headless layer ships **Vue and
+Svelte** adapters over one core. See the full [Applicability matrix](/overview/applicability) for the
+per-environment breakdown (Vue / Svelte / Astro / htmx, plus the Nuxt / SvelteKit / Capacitor / Electron
+shells). A vanilla / htmx headless adapter is still planned.
 
 ## Status
 
-oriUI is in **alpha** (`1.0.0-alpha.0`). The token contract, the CSS layer, and the styled components
+oriUI is in **alpha** (`1.0.0-alpha.2`). The token contract, the CSS layer, and the styled components
 under [Components](/components/button) are solid enough to build with; the catalog is still growing and
 the public API may shift before `1.0`.
 

@@ -56,7 +56,8 @@ a11y, tests, strong docs).
       the Nuxt / SvelteKit / Capacitor / Electron runtime shells that inherit their framework column);
     - ✅ a **theme / skin gallery** page (`guides/skins` — the 7 skins, each clickable to reskin the whole
       site live via `useOriTheme`, demonstrating the zero-runtime theming);
-    - an **idea + comparisons** page.
+    - ✅ an **idea + comparisons** page (`overview/comparisons` — positioning vs Ark/Zag, Reka, Radix,
+      daisyUI, Panda/shadcn, Open Props, Floating UI; the "mine, don't race" philosophy).
 8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build → size` on
    push/PR, Node 22 + 24; check-mode `lint:ci`, including the `@oriui/css` layer) + Codecov upload. ✅ a
    **size budget** (`size-limit`, `.size-limit.json`) fails CI on a CSS/JS bundle regression, guarding the
