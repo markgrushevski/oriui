@@ -306,6 +306,13 @@ practical gotchas go here.
 - **Native-dialog ids are built directly** (`` `${baseId}-title` ``), NOT through `scope.getId` (which
   prefixes `ori-`). So the dialog's `titleId` is `myid-title`, while a disclosure's trigger is
   `ori-myid-trigger`. Same split as the Vue native dialog — mirror it, don't "fix" it.
+- **Reactive options = a store, not a getter.** The Svelte twin of Vue's `MaybeRefOrGetter` is
+  `MaybeReactive<T> = T | Readable<T>` — because a **plain getter can't be tracked** in a plain `.ts`
+  file (runes only track inside `.svelte`/`.svelte.ts`). `useCombobox`/`useMenu` fold the options store
+  into `derived([serviceVersion, opts$], …)` so list/filter changes re-project; `disabled` is a **side
+  effect** (a machine `SET_DISABLED`), so it rides a separate eager `opts$.subscribe` torn down via
+  `safeOnDestroy`. Don't do the `SET_DISABLED` inside the `derived` callback — mutating the machine there
+  re-enters the derived (machine change → `serviceVersion` bump → recompute).
 
 ## Orchestration / role agents
 

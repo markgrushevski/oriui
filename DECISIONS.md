@@ -404,9 +404,13 @@ compile in `.svelte`/`.svelte.ts` files, which would pull the Svelte compiler in
 build (headless ships plain ESM); stores stay pure `.ts`, are SSR-safe, work in Svelte 4 & 5, and give
 consumers `$store` auto-subscription. Item prop-getters (`getOptionProps(item, i)`) are exposed as a
 **store of a function** (`$getOptionProps(item, i)`) — the store establishes reactivity, the call takes
-the runtime args. (2) **Snapshot options, not getters, in v1.** External `options`/`disabled` are read
-once at creation; the interactive machine state (input/highlight/open/selection) stays fully reactive
-through the stores, so typing-to-filter works live. Reactive-getter external options are a follow-up.
+the runtime args. (2) **Reactive options via `MaybeReactive<T> = T | Readable<T>`** — the Svelte twin of
+Vue's `MaybeRefOrGetter`. A **plain getter can't be tracked** in plain `.ts` (runes only track inside
+`.svelte`/`.svelte.ts`), so the reactive channel is a **store**, not a getter: `useCombobox`/`useMenu`
+take a plain object (snapshot) OR a `Readable`; option-list changes re-filter via
+`derived([serviceVersion, opts$], …)` and `disabled` is pushed into the machine through a lifecycle-safe
+`opts$.subscribe` (torn down via `safeOnDestroy` = `onDestroy`-in-try/catch). Interactive machine state
+(input/highlight/open/selection) is reactive regardless of call style.
 SSR ids: Svelte has no `useId()` callable outside component init, so the adapter uses a module counter
 (`uid`) and documents "pass an explicit `id` for SSR". The build adds a third `tsdown` entry
 (`src/svelte/index.ts` → `dist/svelte/*`) and a `./svelte` export; `svelte ^5` is an optional peer.
