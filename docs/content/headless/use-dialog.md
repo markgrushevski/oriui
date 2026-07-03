@@ -87,6 +87,33 @@ No `<Teleport>` and no mounted-ref gating are needed: a modal `<dialog>` renders
 layer regardless of where it sits in the DOM, and a closed `<dialog>` is hidden, so the SSR markup stays
 stable. The styled [`OriDialog`](/components/dialog) wraps exactly this pattern.
 
+The **Svelte** binding is the same — drive `showModal()` / `close()` from `$open` in an `$effect`:
+
+```svelte
+<script>
+    import { useDialog } from '@oriui/headless/svelte';
+
+    let dialogEl;
+    const { open, triggerProps, dialogProps, titleProps, descriptionProps, closeTriggerProps } = useDialog({
+        modal: true
+    });
+
+    $effect(() => {
+        if (!dialogEl) return;
+        if ($open && !dialogEl.open) dialogEl.showModal();
+        else if (!$open && dialogEl.open) dialogEl.close();
+    });
+</script>
+
+<button {...$triggerProps}>Open</button>
+
+<dialog bind:this={dialogEl} {...$dialogProps}>
+    <h2 {...$titleProps}>Title</h2>
+    <p {...$descriptionProps}>Body copy.</p>
+    <button {...$closeTriggerProps}>Close</button>
+</dialog>
+```
+
 ## Adapter
 
 `useDialog` defaults to the native `<dialog>` engine — the focus trap, scroll lock, `Esc`, `::backdrop`

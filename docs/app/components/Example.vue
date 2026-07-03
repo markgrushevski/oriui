@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
-import { useOriFramework, NO_FRAMEWORK, FRAMEWORKS, type Framework } from '../composables/useOriFramework';
+import { useOriFramework, NO_FRAMEWORK, type Framework } from '../composables/useOriFramework';
 
 // A documentation example: a live (Vue) preview + the source code, switchable across the layers it
 // provides. Default slot = the live preview; #html / #js / #ts (framework-free) and #vue / #svelte
 // (framework) slots = the code blocks. An example that ships any framework-free code defaults to the
-// framework-free preference (HTML); a pure-framework example defaults to the framework one (Vue). A
-// framework example also shows a disabled "Svelte" tab ("soon") until it ships #svelte code.
+// framework-free preference (HTML); a pure-framework example defaults to the framework one (Vue). Only
+// slots that ship code become tabs — Svelte appears just on the behaviour-driven components that ship a
+// #svelte block (@oriui/headless/svelte), not on the styled-only pages (HTML covers Svelte usage there).
 const { noFramework, framework, setCode } = useOriFramework();
 const slots = useSlots();
 
 const LABELS: Record<Framework, string> = { html: 'HTML', js: 'JS', ts: 'TS', vue: 'Vue', svelte: 'Svelte' };
 const ORDER: Framework[] = ['html', 'js', 'ts', 'vue', 'svelte'];
 
-const hasFramework = computed(() => FRAMEWORKS.some((f) => slots[f]));
 const isFree = computed(() => NO_FRAMEWORK.some((f) => slots[f]));
 const enabled = (key: Framework): boolean => Boolean(slots[key]);
 
-// Show every provided slot in canonical order; a framework example also shows the Svelte "soon" tab.
-const tabs = computed(() =>
-    ORDER.filter((f) => slots[f] || (f === 'svelte' && hasFramework.value)).map((key) => ({ key, label: LABELS[key] }))
-);
+// Show every provided slot in canonical order — Svelte appears only where a #svelte block ships.
+const tabs = computed(() => ORDER.filter((f) => slots[f]).map((key) => ({ key, label: LABELS[key] })));
 // Default to the relevant group's preference; fall back to the first available tab.
 const pref = computed<Framework>(() => (isFree.value ? noFramework.value : framework.value));
 const active = computed<Framework | undefined>(() =>
@@ -45,10 +43,9 @@ function pick(key: Framework): void {
                 type="button"
                 class="example__tab"
                 :data-active="active === f.key || undefined"
-                :disabled="!enabled(f.key)"
                 @click="pick(f.key)"
             >
-                {{ f.label }}<span v-if="!enabled(f.key)" class="example__soon">soon</span>
+                {{ f.label }}
             </button>
         </div>
 
@@ -121,26 +118,6 @@ function pick(key: Framework): void {
     background: color-mix(in srgb, var(--ori-color-primary) 14%, transparent);
     color: var(--ori-color-primary);
     opacity: 1;
-}
-
-.example__tab:disabled {
-    cursor: default;
-    opacity: 0.4;
-}
-
-.example__soon {
-    margin-inline-start: 5px;
-    padding: 1px 5px;
-
-    border-radius: 5px;
-
-    background: color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
-
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    vertical-align: middle;
 }
 
 .example__code pre {
