@@ -29,9 +29,10 @@ Roughly by priority.
    `subscribe()` → Svelte `readable`/`derived`) + a Svelte `normalizeProps` (lowercased event names);
    full parity with `./vue` — `useDisclosure` / `useDialog` / `useCombobox` / `useMenu` + `provideHeadless`,
    returning Svelte stores. Chose **stores over runes** (no Svelte compiler in the tsdown build; SSR-safe);
-   item-getters are stores-of-functions; external `options`/`disabled` are snapshot in v1 (see DECISIONS).
-   17 vitest specs; `svelte ^5` optional peer. **Remaining:** wire the docs framework-switcher's Svelte
-   tab to real snippets (that's improvement #2) and reactive-getter options later.
+   item-getters are stores-of-functions; options are `MaybeReactive<T> = T | Readable<T>` (a plain object
+   or a store — Combobox/Menu re-filter + re-sync `disabled` reactively when a store is passed). 20 vitest
+   specs; `svelte ^5` optional peer. **Remaining:** wire the docs framework-switcher's Svelte tab to real
+   snippets (that's improvement #2).
 4. ⭐ **Real composed screen / recipes page** — assemble an actual screen on oriUI to surface API gaps
    (the "build a real screen" goal); doubles as a portfolio piece.
 5. ◽ **Size budget in CI** (`size-limit` / `bundlewatch`) + a badge — guards the zero-runtime /
