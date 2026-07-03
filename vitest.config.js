@@ -13,6 +13,9 @@ export default defineConfig({
             // self-sufficient — no `build:packages` prerequisite (matters for a clean CI run), and
             // it mirrors how the docs app aliases the workspace packages.
             '@oriui/headless/vue': fileURLToPath(new URL('./packages/headless/src/vue/index.ts', import.meta.url)),
+            '@oriui/headless/svelte': fileURLToPath(
+                new URL('./packages/headless/src/svelte/index.ts', import.meta.url)
+            ),
             '@oriui/headless': fileURLToPath(new URL('./packages/headless/src/core/index.ts', import.meta.url)),
             '@oriui/vue': fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url))
         }

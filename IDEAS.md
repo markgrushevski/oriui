@@ -25,9 +25,13 @@ Roughly by priority.
 2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
    layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
    explicit section separation. _(in progress)_
-3. ⭐ **Svelte adapter** `@oriui/headless/svelte` — a `useService` bridge + a Svelte `normalizeProps`
-   (lowercased event names); the core is already framework-agnostic (proven by Combobox). Unlocks real
-   live Svelte examples instead of CSS-layer-only ones.
+3. ⭐ **Svelte adapter** `@oriui/headless/svelte` — **SHIPPED.** A `connectStore` bridge (core
+   `subscribe()` → Svelte `readable`/`derived`) + a Svelte `normalizeProps` (lowercased event names);
+   full parity with `./vue` — `useDisclosure` / `useDialog` / `useCombobox` / `useMenu` + `provideHeadless`,
+   returning Svelte stores. Chose **stores over runes** (no Svelte compiler in the tsdown build; SSR-safe);
+   item-getters are stores-of-functions; external `options`/`disabled` are snapshot in v1 (see DECISIONS).
+   17 vitest specs; `svelte ^5` optional peer. **Remaining:** wire the docs framework-switcher's Svelte
+   tab to real snippets (that's improvement #2) and reactive-getter options later.
 4. ⭐ **Real composed screen / recipes page** — assemble an actual screen on oriUI to surface API gaps
    (the "build a real screen" goal); doubles as a portfolio piece.
 5. ◽ **Size budget in CI** (`size-limit` / `bundlewatch`) + a badge — guards the zero-runtime /

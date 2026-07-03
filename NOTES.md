@@ -288,6 +288,25 @@ practical gotchas go here.
   would centre. The 12 `position-area` mappings are Playwright-verified (`e2e/placement-grid.spec.ts`);
   the shared prop type is `AnchoredPlacement` (`packages/vue/src/types.ts`).
 
+## Svelte adapter (`@oriui/headless/svelte`)
+
+- **A new subpath needs TWO alias entries, not one.** The vitest runtime alias
+  (`vitest.config.js`) makes tests import the adapter's SOURCE, but `test:types` / `vue-tsc` resolve
+  types through `tsconfig.json` `paths`. Add `@oriui/headless/svelte` to **both**. Miss the tsconfig
+  path and TS falls back to the built `dist/svelte/*.d.ts`, where `tsdown` **widens the inferred
+  `useCombobox`/`useMenu` return types to `unknown`** (the disclosure/dialog controls have explicit
+  hand-written interfaces, so they stay precise — that asymmetry is the tell).
+- **`getContext` throws outside component init** (Svelte 5 `lifecycle_outside_component`). `getHeadless()`
+  wraps it in try/catch and returns `null`, so the composables fall back to the native adapter and stay
+  unit-testable without rendering a component.
+- **Reactivity is stores, not runes** (see DECISIONS.md for why). Item prop-getters are a **store of a
+  function** — `derived(api, (a) => (item, i) => a.getOptionProps(item, i))`, consumed as
+  `$getOptionProps(item, i)`. Stateless imperative methods (`setOpen`/`select`/`clear`/`highlight`) read
+  the current api via `get(api)`.
+- **Native-dialog ids are built directly** (`` `${baseId}-title` ``), NOT through `scope.getId` (which
+  prefixes `ori-`). So the dialog's `titleId` is `myid-title`, while a disclosure's trigger is
+  `ori-myid-trigger`. Same split as the Vue native dialog — mirror it, don't "fix" it.
+
 ## Orchestration / role agents
 
 - Custom agents in `.claude/agents/*.md` load into the Agent/Workflow registry **at session start** —

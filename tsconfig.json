@@ -6,7 +6,8 @@
         "paths": {
             "@oriui/vue": ["./packages/vue/src/index.ts"],
             "@oriui/headless": ["./packages/headless/src/core/index.ts"],
-            "@oriui/headless/vue": ["./packages/headless/src/vue/index.ts"]
+            "@oriui/headless/vue": ["./packages/headless/src/vue/index.ts"],
+            "@oriui/headless/svelte": ["./packages/headless/src/svelte/index.ts"]
         }
     },
     "files": []
