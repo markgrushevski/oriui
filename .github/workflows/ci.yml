@@ -52,6 +52,10 @@ jobs:
             - name: Build (headless packages -> lib -> .d.ts)
               run: npm run build
 
+            - name: Size budget (size-limit — CSS + JS gzip, guards the zero-runtime promise)
+              if: matrix.node == '22'
+              run: npm run size
+
     e2e:
         name: e2e (Playwright — real Chromium)
         runs-on: ubuntu-latest
