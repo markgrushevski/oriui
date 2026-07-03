@@ -37,8 +37,10 @@ Roughly by priority.
    snippets (that's improvement #2).
 4. ⭐ **Real composed screen / recipes page** — assemble an actual screen on oriUI to surface API gaps
    (the "build a real screen" goal); doubles as a portfolio piece.
-5. ◽ **Size budget in CI** (`size-limit` / `bundlewatch`) + a badge — guards the zero-runtime /
-   small-bundle promise.
+5. ✅ **Size budget in CI** — **DONE.** `size-limit` (`@size-limit/file`, gzip) with budgets in
+   `.size-limit.json` for the CSS bundle + the full `@oriui/vue` lib + the three headless entries;
+   `npm run size` (self-contained `size:build`), a CI gate after Build (node 22), and a bundlephobia
+   minzip badge in the README. Guards the zero-runtime / small-bundle promise.
 6. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
    visual regression that jsdom can't assert.
 7. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the

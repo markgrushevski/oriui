@@ -1,0 +1,32 @@
+[
+    {
+        "name": "@oriui/css — styles.css (gzip)",
+        "path": "packages/css/dist/styles.css",
+        "gzip": true,
+        "limit": "11 kB"
+    },
+    {
+        "name": "@oriui/vue — full library, all 31 components (gzip)",
+        "path": "packages/vue/dist/**/*.js",
+        "gzip": true,
+        "limit": "44 kB"
+    },
+    {
+        "name": "@oriui/headless — core engine (gzip)",
+        "path": "packages/headless/dist/core/index.js",
+        "gzip": true,
+        "limit": "1 kB"
+    },
+    {
+        "name": "@oriui/headless/vue (gzip)",
+        "path": "packages/headless/dist/vue/index.js",
+        "gzip": true,
+        "limit": "4 kB"
+    },
+    {
+        "name": "@oriui/headless/svelte (gzip)",
+        "path": "packages/headless/dist/svelte/index.js",
+        "gzip": true,
+        "limit": "5.5 kB"
+    }
+]

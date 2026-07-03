@@ -58,7 +58,9 @@ orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid para
 - `npm run types` — type-check without emit (`vue-tsc --noEmit`)
 - `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite; `test:e2e` runs the Playwright e2e in real Chromium)
 - `npm run lint:all` — prettier + stylelint + eslint (with `--fix`); `lint:ci` is the check-mode gate
-  (no `--fix`) the GitHub Actions CI runs alongside `types` / `test:types` / `test` / `build`
+  (no `--fix`) the GitHub Actions CI runs alongside `types` / `test:types` / `test` / `build` / `size`
+- `npm run size` — `size-limit` gzip budgets (`.size-limit.json`: CSS bundle + full `@oriui/vue` + the
+  three headless entries) — assumes a prior `build`; `size:build` builds first. CI runs it after `build`
 - `npm run docs:dev` / `docs:build` / `docs:preview` — Nuxt (Nuxt Content) docs: dev server, static
   generate (`nuxi generate`), and preview of the generated output
 
