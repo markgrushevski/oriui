@@ -12,7 +12,7 @@ indeterminate, giving screen readers the correct cue automatically.
 The examples are organised by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
+plain-HTML usage), **Vue**; HTML is the default.
 
 ## Classes
 

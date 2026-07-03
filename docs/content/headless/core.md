@@ -18,11 +18,11 @@ for the standalone styling layer see the [CSS guide](/guides/css).
 The headless layer is split along a framework axis. The behaviour lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
-| Package               | What it is                                  | Framework    |
-| --------------------- | ------------------------------------------- | ------------ |
-| `@oriui/headless`     | Behaviour contract + native engine          | **agnostic** |
-| `@oriui/headless/vue` | Vue bindings — `useDisclosure`, `useDialog` | Vue          |
-| `@oriui/svelte`       | Svelte bindings (planned)                   | Svelte       |
+| Package                  | What it is                                                                                | Framework    |
+| ------------------------ | ----------------------------------------------------------------------------------------- | ------------ |
+| `@oriui/headless`        | Behaviour contract + native engine                                                        | **agnostic** |
+| `@oriui/headless/vue`    | Vue bindings — `useDisclosure` / `useDialog` / `useCombobox` / `useMenu` (`ComputedRef`s) | Vue          |
+| `@oriui/headless/svelte` | The same four as Svelte stores                                                            | Svelte       |
 
 ## The contract
 
@@ -54,7 +54,7 @@ the content bag is a landmark `region` (`role: 'region'`). The prop bags are fra
 objects**. `connect()` is a pure projection of machine state to prop-getters; the binding supplies a
 `normalizeProps` transform (Vue keeps `onClick`, Svelte lowercases it to `onclick`) and re-invokes
 `connect()` on every state change, wrapping the result in the framework's reactivity primitive — a Vue
-`ComputedRef`, a Svelte store or rune. The same engine, the same ARIA, expressed once.
+`ComputedRef` or a Svelte store. The same engine, the same ARIA, expressed once.
 
 Three small building blocks back every primitive:
 
@@ -90,8 +90,8 @@ app.use(OriHeadless, { dialog: myDialog });
 
 The same core powers each binding, so a primitive behaves the same everywhere.
 
-- **Vue** (today) — [useDisclosure](/headless/use-disclosure) and [useDialog](/headless/use-dialog).
-- **Svelte** (planned) — will consume the identical contract; no behaviour is re-implemented.
+- **Vue** — [useDisclosure](/headless/use-disclosure) and [useDialog](/headless/use-dialog) (plus `useCombobox` / `useMenu`).
+- **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behaviour is re-implemented.
 
 ## See also
 

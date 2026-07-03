@@ -23,8 +23,10 @@ Roughly by priority.
    or a tiny JS positioner behind a contract). **Highest leverage:** unblocks Menu, Popover, Combobox
    collision-flip, and a rich Tooltip. **OriPopover + OriMenu shipped**, and the **`.ori-anchored` placement primitive is extracted** (`components/anchored.css`) — both consume it. **Done since:** Combobox listbox flip, and the **12-value `<side>[-start|-end]` placement grid** — locked + **Playwright-verified in real Chromium** (`e2e/placement-grid.spec.ts`). **Remaining:** retrofit Tooltip onto `.ori-anchored` (deferred — its arrow doesn't auto-flip under `position-try`; low value).
 2. ⭐ **Docs IA + framework switcher** — a consistent per-page section order that mirrors the three
-   layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Vue active, **Svelte "soon"**), and
-   explicit section separation. _(in progress)_
+   layers (CSS / headless-JS / framework), a Vue ↔ Svelte switcher (Svelte now ships **real
+   `@oriui/headless/svelte` snippets** on the behaviour-driven components — Combobox / Dialog / Menu +
+   the headless pages; the CSS-only components are covered by the HTML tab, so the perpetual "soon" tab is
+   gone), and explicit section separation. _(mostly done — applicability matrix / skin gallery remain)_
 3. ⭐ **Svelte adapter** `@oriui/headless/svelte` — **SHIPPED.** A `connectStore` bridge (core
    `subscribe()` → Svelte `readable`/`derived`) + a Svelte `normalizeProps` (lowercased event names);
    full parity with `./vue` — `useDisclosure` / `useDialog` / `useCombobox` / `useMenu` + `provideHeadless`,

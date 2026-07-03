@@ -48,8 +48,10 @@ a11y, tests, strong docs).
    ✅ a full page per component (31 — intro + classes + props/slots + a11y, with live demos on the page,
    so there is no separate `/playground` route); ✅ `nuxt-llms` (`/llms.txt` + `/llms-full.txt`); ✅ a
    one-page consumer cheat-sheet. Remaining:
-    - **framework-switchable examples (Vue ↔ Svelte)** — the switcher already has a Svelte tab; add the
-      Svelte code (live demo stays Vue, Svelte uses the standalone `.ori-*` css), plus an HTML/htmx tab;
+    - ✅ **framework-switchable examples (Vue ↔ Svelte)** — the Svelte tab now ships real code: the
+      behaviour-driven components (Combobox / Dialog / Menu) and the headless pages show
+      `@oriui/headless/svelte`; the CSS components are covered by the HTML tab (standalone `.ori-*` — also
+      the htmx / Astro / Svelte-static path). The switcher shows Svelte only where a real `#svelte` block ships;
     - an **applicability matrix** (Vue / Svelte / htmx / Astro / plain HTML / Capacitor / Electron);
     - a **theme / skin gallery** page; an **idea + comparisons** page.
 8. ✅ **CI/CD + deploy** — ✅ **GitHub Actions** quality gate (`lint → types → test → build` on push/PR,
