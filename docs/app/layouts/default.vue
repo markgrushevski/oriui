@@ -22,6 +22,7 @@ const sections = [
         title: 'Overview',
         links: [
             { label: 'Introduction', to: '/overview/introduction' },
+            { label: 'Applicability', to: '/overview/applicability' },
             { label: 'Get started', to: '/overview/get-started' },
             { label: 'Cheat sheet', to: '/overview/cheat-sheet' },
             { label: 'Installation', to: '/overview/installation' },
@@ -33,6 +34,7 @@ const sections = [
         links: [
             { label: 'Design tokens', to: '/guides/design-tokens' },
             { label: 'Theming', to: '/guides/theming' },
+            { label: 'Skin gallery', to: '/guides/skins' },
             { label: 'Customization', to: '/guides/customization' },
             { label: 'Using the CSS layer', to: '/guides/css' }
         ]
