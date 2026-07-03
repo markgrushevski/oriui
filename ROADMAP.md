@@ -33,7 +33,9 @@ a11y, tests, strong docs).
 4. ✅ **Headless layer** — swappable behavior **contract** (`OriHeadless` plugin): **native** zero-dep
    adapters for both the simple primitives (Disclosure ✅) and the dialog (native `<dialog>` ✅), or
    bring-your-own. (Superseded "own ↔ Reka" and "Zag for complex" — see DECISIONS.md.) `OriDialog` ships
-   in `@oriui/vue`.
+   in `@oriui/vue`. **Two framework adapters over the one framework-agnostic core**: `@oriui/headless/vue`
+   (Vue `ComputedRef`s) and `@oriui/headless/svelte` (Svelte stores) — `useDisclosure`/`useDialog`/
+   `useCombobox`/`useMenu` at full parity, proving the "behavior travels between frameworks" thesis.
 5. 🔄 **Styled components** — **31 shipped** (actions, forms, overlays, layout, feedback, navigation,
    data display), each with state-via-attributes + focus-visible a11y and a Vitest+axe suite. Remaining:
    the `glass` variant; the catalog grows from [IDEAS.md](IDEAS.md) as real screens need it.

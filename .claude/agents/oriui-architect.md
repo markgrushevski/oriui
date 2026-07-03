@@ -17,7 +17,7 @@ The architecture you guard — three independently-consumable layers woven aroun
 
 - `@oriui/css` — standalone tokens + `.ori-*` classes, **no framework, no JS**. Must work alone.
 - `@oriui/headless` — a framework-agnostic **core** (state machines + prop-getters behind a swappable
-  contract) + thin per-framework adapters (`./vue`; Svelte planned). The core imports no framework.
+  contract) + thin per-framework adapters (`./vue` Vue, `./svelte` Svelte). The core imports no framework.
 - `@oriui/vue` — styled components composing the two.
 
 ## Review dimensions (each PASS / FAIL, grounded in `file:line`)
