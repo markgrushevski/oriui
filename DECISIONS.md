@@ -397,6 +397,20 @@ next, maybe React). The architecture mirrors Zag.js / Ark UI (verified against t
 First primitives, driven by docs needs: **Disclosure** (sidebar groups, mobile nav) →
 **Toggle** (OriButton toggle state) → **Tabs** (example demo/source switch).
 
+**Update — Svelte adapter shipped (`@oriui/headless/svelte`), with two deviations from the sketch above:**
+(1) **Svelte stores, not runes.** The reactive cell is a `readable`/`derived` store (a `connectStore`
+bridge re-emitting `connect()` on every `subscribe()`), not `$state`/`$derived`. Rationale: runes only
+compile in `.svelte`/`.svelte.ts` files, which would pull the Svelte compiler into the `tsdown` library
+build (headless ships plain ESM); stores stay pure `.ts`, are SSR-safe, work in Svelte 4 & 5, and give
+consumers `$store` auto-subscription. Item prop-getters (`getOptionProps(item, i)`) are exposed as a
+**store of a function** (`$getOptionProps(item, i)`) — the store establishes reactivity, the call takes
+the runtime args. (2) **Snapshot options, not getters, in v1.** External `options`/`disabled` are read
+once at creation; the interactive machine state (input/highlight/open/selection) stays fully reactive
+through the stores, so typing-to-filter works live. Reactive-getter external options are a follow-up.
+SSR ids: Svelte has no `useId()` callable outside component init, so the adapter uses a module counter
+(`uid`) and documents "pass an explicit `id` for SSR". The build adds a third `tsdown` entry
+(`src/svelte/index.ts` → `dist/svelte/*`) and a `./svelte` export; `svelte ^5` is an optional peer.
+
 ## Packaging = scoped monorepo packages, not subpath exports
 
 Multi-framework needs **separate npm packages**: `dependencies`/`peerDependencies` are declared
