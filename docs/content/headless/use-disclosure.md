@@ -60,6 +60,19 @@ const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen:
 </template>
 ```
 
+The **Svelte** binding is the same primitive as stores — auto-subscribe with `$` and spread the bags:
+
+```svelte
+<script>
+    import { useDisclosure } from '@oriui/headless/svelte';
+
+    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false });
+</script>
+
+<button {...$triggerProps}>Details {$open ? '▲' : '▼'}</button>
+<div {...$contentProps}>…content…</div>
+```
+
 ## Adapter
 
 The behaviour resolves through the `OriHeadless` contract. With nothing wired, `useDisclosure` falls

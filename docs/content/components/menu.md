@@ -13,7 +13,7 @@ zero positioning JS.
 The examples are organised by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
+plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is the default.
 
 ## Classes
 
@@ -77,6 +77,47 @@ highlighted one, to select and close.
     <div role="menuitem" tabindex="-1" class="ori-menu__item">New file</div>
     <div role="menuitem" tabindex="-1" class="ori-menu__item">Open…</div>
     <div role="menuitem" tabindex="-1" class="ori-menu__item">Delete</div>
+</div>
+```
+
+#svelte
+
+```svelte
+<script>
+    import { useMenu } from '@oriui/headless/svelte';
+
+    // No styled Svelte component yet — drive the roving-tabindex menu with @oriui/headless/svelte.
+    let contentEl;
+    const { open, highlightedValue, items, triggerProps, contentProps, getItemProps } = useMenu({
+        id: 'actions',
+        items: [
+            { value: 'new', label: 'New file' },
+            { value: 'open', label: 'Open…' },
+            { value: 'delete', label: 'Delete' }
+        ],
+        onSelect: (value) => console.log(value)
+    });
+
+    // Roving tabindex: move real DOM focus to the highlighted item (a projection can't touch the DOM).
+    // Full parity also wires click-outside + focus-return — see OriMenu for the complete host.
+    $effect(() => {
+        if ($open && $highlightedValue != null) contentEl?.querySelector('[data-highlighted]')?.focus();
+    });
+</script>
+
+<button {...$triggerProps} class="ori-button ori-variant_tonal ori-color_primary" style="anchor-name: --actions">
+    Actions
+</button>
+
+<div
+    {...$contentProps}
+    bind:this={contentEl}
+    class="ori-menu ori-anchored ori-anchored_bottom-start"
+    style="--ori-anchor: --actions"
+>
+    {#each $items as item, i}
+        <div {...$getItemProps(item, i)} class="ori-menu__item">{item.label ?? item.value}</div>
+    {/each}
 </div>
 ```
 
