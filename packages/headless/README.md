@@ -52,7 +52,8 @@ const d = useDisclosure();
 
 Same surface as Vue (`useDialog` / `useCombobox` / `useMenu`, `provideHeadless()`), returning Svelte
 stores instead of `ComputedRef`s and lowercased event handlers (`onclick`). Item prop-getters are a
-store of a function — `$getOptionProps(item, i)`.
+store of a function — `$getOptionProps(item, i)`. `useCombobox` / `useMenu` take a plain options object
+**or a store** (`MaybeReactive`) — pass a store to react to a changing option list / `disabled`.
 
 ## Use — the engine directly
 
