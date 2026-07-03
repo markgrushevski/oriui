@@ -61,48 +61,33 @@ const options = [
 
 ```svelte
 <script>
-    // The @oriui/css classes are framework-free — this is the look + a basic filter in Svelte 5
-    // today. The full keyboard + ARIA behaviour ships with the @oriui/headless Svelte adapter (soon).
-    const options = [
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' },
-        { label: 'Cherry', value: 'cherry' },
-        { label: 'Grape', value: 'grape' },
-        { label: 'Mango', value: 'mango' }
-    ];
-    let query = $state('');
-    let open = $state(false);
-    let selected = $state(null);
-    const items = $derived(query ? options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase())) : options);
+    import { useCombobox } from '@oriui/headless/svelte';
+
+    // The full state machine + WAI-ARIA listbox keyboard — the same engine as Vue, as Svelte stores.
+    // (No styled Svelte component yet: compose @oriui/headless/svelte with the .ori-* classes.)
+    const { items, rootProps, labelProps, controlProps, inputProps, listboxProps, getOptionProps, getOptionState } =
+        useCombobox({
+            id: 'fruit',
+            options: [
+                { label: 'Apple', value: 'apple' },
+                { label: 'Banana', value: 'banana' },
+                { label: 'Cherry', value: 'cherry' },
+                { label: 'Grape', value: 'grape' },
+                { label: 'Mango', value: 'mango' }
+            ]
+        });
 </script>
 
-<div class="ori-combobox ori-color_primary ori-font-size_md">
-    <label class="ori-combobox__label" for="fruit">Fruit</label>
-    <div class="ori-combobox__control">
-        <input
-            id="fruit"
-            class="ori-input__field ori-combobox__input ori-size-radius_md"
-            role="combobox"
-            aria-expanded={open}
-            bind:value={query}
-            oninput={() => (open = true)}
-            onblur={() => (open = false)}
-            placeholder="Search a fruit…"
-        />
-        <button class="ori-combobox__trigger" type="button" tabindex="-1" onclick={() => (open = !open)}>▾</button>
-        <ul class="ori-combobox__listbox" role="listbox" hidden={!open}>
-            {#each items as item}
+<div {...$rootProps} class="ori-combobox ori-color_primary ori-font-size_md">
+    <label {...$labelProps} class="ori-combobox__label">Fruit</label>
+    <div {...$controlProps} class="ori-combobox__control">
+        <input {...$inputProps} class="ori-input__field ori-combobox__input ori-size-radius_md" placeholder="Search a fruit…" />
+        <ul {...$listboxProps} class="ori-combobox__listbox ori-anchored ori-anchored_bottom-start">
+            {#each $items as item, i}
                 <li
+                    {...$getOptionProps(item, i)}
                     class="ori-combobox__option"
-                    class:ori-combobox__option_selected={selected === item.value}
-                    role="option"
-                    aria-selected={selected === item.value}
-                    onmousedown={(e) => {
-                        e.preventDefault();
-                        selected = item.value;
-                        query = item.label;
-                        open = false;
-                    }}
+                    class:ori-combobox__option_selected={$getOptionState(item).selected}
                 >
                     {item.label}
                 </li>
@@ -199,6 +184,36 @@ const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useC
     </div>
 </template>
 ```
+
+The same behaviour in Svelte 5 via `@oriui/headless/svelte` — the composable returns stores (auto-subscribe
+with `$`), and the item prop-getters are a store of a function (`$getOptionProps(item, i)`):
+
+```svelte
+<script>
+    import { useCombobox } from '@oriui/headless/svelte';
+
+    const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useCombobox({
+        options: [
+            { label: 'Apple', value: 'apple' },
+            { label: 'Banana', value: 'banana' }
+        ]
+    });
+</script>
+
+<div>
+    <input {...$inputProps} />
+    <ul {...$listboxProps}>
+        {#each $items as item, i}
+            <li {...$getOptionProps(item, i)} data-selected={$getOptionState(item).selected}>
+                {item.label}
+            </li>
+        {/each}
+    </ul>
+</div>
+```
+
+Options are a `MaybeReactive` — pass a Svelte store instead of a plain object to react to a changing
+option list or `disabled`.
 
 Pass a `filter` (`(item, query) => boolean`) to override the default case-insensitive substring
 match — for fuzzy matching, async results, or server-side filtering.

@@ -13,7 +13,7 @@ from the platform via `showModal()` — no state-machine dependency and no adapt
 The examples are organised by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** _(soon)_; HTML is the default.
+plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is the default.
 
 ## Classes
 
@@ -70,6 +70,39 @@ trigger. Page scroll is locked while it is open.
         </header>
         <div class="ori-dialog__body">
             <p>This modal traps focus, closes on Escape, and locks page scroll.</p>
+        </div>
+    </div>
+</dialog>
+```
+
+#svelte
+
+```svelte
+<script>
+    import { useDialog } from '@oriui/headless/svelte';
+
+    // No styled Svelte component yet — drive a native <dialog> with @oriui/headless/svelte.
+    let dialogEl;
+    const { open, triggerProps, dialogProps, titleProps, closeTriggerProps } = useDialog({ id: 'greet' });
+
+    // The platform gives the focus trap, Esc and ::backdrop; we only toggle showModal()/close() on `open`.
+    $effect(() => {
+        if (!dialogEl) return;
+        if ($open) dialogEl.showModal();
+        else if (dialogEl.open) dialogEl.close();
+    });
+</script>
+
+<button {...$triggerProps} class="ori-button ori-variant_fill ori-color_primary">Open dialog</button>
+
+<dialog {...$dialogProps} bind:this={dialogEl} class="ori-dialog">
+    <div class="ori-dialog__content">
+        <header class="ori-dialog__header">
+            <h2 {...$titleProps} class="ori-dialog__title">Hello, oriUI</h2>
+            <button {...$closeTriggerProps} class="ori-dialog__close" aria-label="Close">×</button>
+        </header>
+        <div class="ori-dialog__body">
+            <p>This modal traps focus and closes on Escape or a backdrop click.</p>
         </div>
     </div>
 </dialog>
