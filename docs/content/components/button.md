@@ -157,8 +157,9 @@ From `zero` to the default `rounded` (pill).
 
 ## With icon
 
-Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-only button (give it an
-`aria-label`).
+Pass an SVG path to `icon`. `iconPosition` places it. For an icon-only square, pass `icon` **without**
+`text` (give it an `aria-label`) — icon mode is triggered by the explicit `icon` prop, so a slot-only or
+text button is never forced into a square.
 
 ::example
 :ori-button{text="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"}
@@ -170,7 +171,7 @@ Pass an SVG path to `icon`. `iconPosition` places it; omit `text` for an icon-on
 ```vue
 <OriButton text="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
 <OriButton text="Next" icon="M12 4l-1.41…" iconPosition="right" />
-<!-- icon-only: drop `text`, add an accessible name -->
+<!-- icon-only square: pass `icon` with no `text`, add an accessible name -->
 <OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="tonal" />
 ```
 
@@ -309,20 +310,20 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 
 ### Props
 
-| Prop           | Type                                                  | Default     | Description                                                                    |
-| -------------- | ----------------------------------------------------- | ----------- | ------------------------------------------------------------------------------ |
-| `text`         | `string`                                              | —           | Label. Omit for an icon-only button (adds `ori-button_icon`).                  |
-| `variant`      | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'fill'`    | Visual style.                                                                  |
-| `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warn · danger · info · surface. |
-| `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                             |
-| `radius`       | `RadiusSize`                                          | `'rounded'` | Corner radius (`zero`–`rounded`).                                              |
-| `icon`         | `string`                                              | —           | SVG path for an icon; hidden while `loading`.                                  |
-| `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'`              | `'left'`    | Icon placement around the label.                                               |
-| `loading`      | `boolean`                                             | `false`     | Shows a spinner, sets `aria-busy`, and blocks interaction.                     |
-| `disabled`     | `boolean`                                             | `false`     | Real `disabled` (button) or `aria-disabled` + `tabindex="-1"` (other tags).    |
-| `active`       | `boolean`                                             | `false`     | Pressed look via `data-active`.                                                |
-| `fluid`        | `boolean`                                             | `false`     | Full-width (block) button.                                                     |
-| `as`           | `string \| Component`                                 | `'button'`  | Element or component to render (e.g. `'a'`, a router link).                    |
+| Prop           | Type                                                  | Default     | Description                                                                                                    |
+| -------------- | ----------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| `text`         | `string`                                              | —           | Label. A text (or slotted) button is a normal button, never an icon square.                                    |
+| `variant`      | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'fill'`    | Visual style.                                                                                                  |
+| `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warn · danger · info · surface.                                 |
+| `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                                                             |
+| `radius`       | `RadiusSize`                                          | `'rounded'` | Corner radius (`zero`–`rounded`).                                                                              |
+| `icon`         | `string`                                              | —           | SVG path for an icon; hidden while `loading`. `icon` with no `text` → an icon-only square (`ori-button_icon`). |
+| `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'`              | `'left'`    | Icon placement around the label.                                                                               |
+| `loading`      | `boolean`                                             | `false`     | Shows a spinner, sets `aria-busy`, and blocks interaction.                                                     |
+| `disabled`     | `boolean`                                             | `false`     | Real `disabled` (button) or `aria-disabled` + `tabindex="-1"` (other tags).                                    |
+| `active`       | `boolean`                                             | `false`     | Pressed look via `data-active`.                                                                                |
+| `fluid`        | `boolean`                                             | `false`     | Full-width (block) button.                                                                                     |
+| `as`           | `string \| Component`                                 | `'button'`  | Element or component to render (e.g. `'a'`, a router link).                                                    |
 
 ### Events & attributes
 
