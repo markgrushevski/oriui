@@ -13,7 +13,8 @@ woven around shared design tokens:
 - `@oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue
 
 Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
-(standalone CSS), swappable adapters (behavior: own ↔ Reka UI; style: CSS ↔ optional
+(standalone CSS), swappable adapters (behavior: a native-first engine behind the `OriHeadless`
+contract — a custom or per-widget Zag adapter can slot in; style: CSS ↔ optional
 Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); the candidate-component /
 class backlog in [IDEAS.md](IDEAS.md); key decisions and
 their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
@@ -21,10 +22,11 @@ non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runb
 [RELEASING.md](RELEASING.md); the branch / commit / release workflow in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
-vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` behind a
-swappable adapter), the Vitest + axe suite, GitHub Actions CI, and **31 styled components** (Button,
-Card, Avatar, Icon, Spinner, Dialog, Input, Field, Combobox, Checkbox, Switch, RadioGroup). Next — more form/overlay
-components, the docs-template rollout, npm publish.
+vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` /
+`useCombobox` / `useMenu` behind a swappable adapter, with Vue **and Svelte** adapters), the Vitest +
+axe suite, GitHub Actions CI, and **31 styled components** (e.g. Button, Card, Dialog, Combobox, Menu,
+Popover, Toast, Slider — the full list is in [IDEAS.md](IDEAS.md) "Shipped today"). Next — more
+form/overlay components, the docs-template rollout, npm publish.
 
 ## Working modes (solo / orchestrated)
 
@@ -54,7 +56,8 @@ orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid para
 ## Commands
 
 - `npm run dev` — docs dev server (Nuxt, port 5173); alias of `docs:dev` (root `dev` runs the docs workspace)
-- `npm run build` — build the library to `dist/` (Vite → JS/CSS, then **vue-tsc** → `.d.ts`); `build:watch` watches
+- `npm run build` — build the library to `dist/` (Vite → JS, then **vue-tsc** → `.d.ts`; component CSS
+  ships from `@oriui/css`); `build:watch` watches
 - `npm run types` — type-check without emit (`vue-tsc --noEmit`)
 - `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite; `test:e2e` runs the Playwright e2e in real Chromium)
 - `npm run lint:all` — prettier + stylelint + eslint (with `--fix`); `lint:ci` is the check-mode gate
@@ -81,10 +84,12 @@ packages/
     src/index.ts        entry: re-exports types + components
     src/types.ts        shared token/prop types (ActionSize, ThemeColor, Variant, ...)
     src/components/<name>/   ori-<name>.vue + index.ts barrel
-  headless/             @oriui/headless — framework-agnostic engine (`.`) + Vue adapter (`./vue`)
+  headless/             @oriui/headless — framework-agnostic engine (`.`) + Vue (`./vue`) / Svelte (`./svelte`) adapters
     src/core/           the engine: state machines, prop-getters, the OriHeadless contract
-    src/vue/            the Vue composables (useDialog / useDisclosure)
-  css/                  @oriui/css — standalone design tokens + .ori-* utilities (the CSS layer)
+    src/vue/            the Vue composables (useDialog / useDisclosure / useCombobox / useMenu)
+    src/svelte/         the Svelte adapter (same composables, returning Svelte stores)
+  css/                  @oriui/css — tokens + .ori-* utilities + the component block styles (the CSS layer)
+    src/components/<name>.css   per-component block styles (@layer ori.components), imported by styles.css
 docs/                   Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
 ```
 
@@ -100,9 +105,12 @@ each is a deliberate engineering choice, not legacy to copy blindly.
 
 ### Components (SFC)
 
-- Block order `<script lang="ts" setup>` → `<template>` → `<style>`. `<style>` is **not
-  scoped** on purpose — classes are real global `.ori-*` so the css layer ships standalone.
-  Cascade safety comes from `@layer` + the `ori-` prefix, not from scoping.
+- SFCs are `<script lang="ts" setup>` + `<template>` only (behavior + classes) — **no `<style>`
+  block**. A component's CSS lives in the css package — one file per component,
+  `packages/css/src/components/<name>.css`, wrapped in `@layer ori.components` and imported by
+  `styles.css` — so the CSS layer ships standalone for non-Vue consumers. Cascade safety still
+  comes from `@layer` + the `ori-` prefix. Adding a styled component means adding its stylesheet
+  there and importing it in `styles.css`.
 - Declare props with **reactive props destructure** (Vue 3.5+), not `withDefaults` —
   defaults co-locate with the declaration and there is no `@default` JSDoc to drift:
     ```ts
