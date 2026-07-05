@@ -6,5 +6,5 @@
         "@oriui/headless": "1.0.0-alpha.1",
         "@oriui/vue": "1.0.0-alpha.1"
     },
-    "changesets": ["explicit-icon-mode", "package-restructure", "svelte-adapter"]
+    "changesets": ["css-entry-points", "explicit-icon-mode", "package-restructure", "svelte-adapter", "token-bridge"]
 }
