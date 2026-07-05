@@ -1,14 +1,13 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { libInjectCss } from 'vite-plugin-lib-inject-css';
-import autoprefixer from 'autoprefixer';
 
+// No CSS flows through this build: SFCs are script+template only, all component styles
+// ship from @oriui/css (see CLAUDE.md) — so no css/postcss options and no lib-inject-css.
 export default defineConfig({
-    plugins: [vue(), libInjectCss()],
+    plugins: [vue()],
     build: {
         sourcemap: true,
         copyPublicDir: false,
-        cssCodeSplit: true,
         lib: {
             formats: ['es'],
             entry: 'src/index.ts'
@@ -26,9 +25,5 @@ export default defineConfig({
             }
         }
     },
-    esbuild: { sourcemap: 'external' },
-    css: {
-        postcss: { plugins: [autoprefixer] },
-        devSourcemap: true
-    }
+    esbuild: { sourcemap: 'external' }
 });
