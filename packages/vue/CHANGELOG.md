@@ -1,5 +1,14 @@
 # @oriui/vue
 
+## 1.0.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [59744ba]
+- Updated dependencies [6481f5a]
+    - @oriui/css@1.0.0-alpha.4
+    - @oriui/headless@1.0.0-alpha.4
+
 ## 1.0.0-alpha.3
 
 ### Minor Changes
