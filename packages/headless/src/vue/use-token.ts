@@ -9,6 +9,20 @@ import { observeTheme, resolveToken } from '../core';
  * the token changes (pass a getter/ref — a plain string is a fixed snapshot) and on theme changes via
  * the core `observeTheme` (skin class/style toggles + OS scheme flips). Colors-only MVP: the token
  * must resolve to a `<color>`. The observer is torn down on scope dispose (component unmount).
+ *
+ * Bridging into a canvas engine (Konva, ECharts, …): create the engine in `onMounted`, seed it with the
+ * already-resolved value (this composable's own `onMounted` ran first — it registered earlier in setup),
+ * then `watch` — theme flips re-push automatically. The ref is `''` until mount, so the first client
+ * frame renders without the color:
+ *
+ * ```ts
+ * const brand = useThemeColor('primary');
+ * onMounted(() => {
+ *     engine = createEngine(canvasEl.value);
+ *     engine.setColor(brand.value || null); // seed the initial resolved color
+ * });
+ * watch(brand, (c) => engine?.setColor(c || null)); // '' (SSR/unresolved) -> engine default
+ * ```
  */
 export function useToken(token: MaybeRefOrGetter<string>): Readonly<Ref<string>> {
     const value = shallowRef('');

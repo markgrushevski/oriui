@@ -1,3 +1,7 @@
+/* The menu floats on the shared `.ori-anchored` placement primitive (a file no component name hints
+   at) — inlined so this entry is self-contained (deduped in the full bundle by postcss-import). */
+@import './anchored.css';
+
 @layer ori.components {
     /* The menu surface — a roving-tabindex action list floated by the shared `.ori-anchored` primitive
        (composed alongside this class). Unlike the popover it is not top-layer (no Popover API), so it
