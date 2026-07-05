@@ -6,5 +6,5 @@
         "@oriui/headless": "1.0.0-alpha.1",
         "@oriui/vue": "1.0.0-alpha.1"
     },
-    "changesets": ["package-restructure"]
+    "changesets": ["explicit-icon-mode", "package-restructure", "svelte-adapter"]
 }
