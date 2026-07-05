@@ -50,9 +50,5 @@
     },
     "peerDependencies": {
         "vue": "^3"
-    },
-    "devDependencies": {
-        "autoprefixer": "^10.5.2",
-        "vite-plugin-lib-inject-css": "^2.2.2"
     }
 }

@@ -1,0 +1,24 @@
+/* ============================================================
+   oriUI — tokens entry point (reset-free foundation)
+   For apps that bring their own reset/preflight: the cascade
+   layer-order declaration (layers.css — must come first), the
+   design tokens (sizes / positions / themes / fonts), and the
+   .ori-* utilities — everything base.css has EXCEPT the global
+   reset. Import it before any components/*.css.
+   ============================================================ */
+@import 'layers.css';
+
+/* Each imported partial declares its own @layer block internally.
+   The order here determines source order within each layer. */
+@import 'sizes/_sizes-screen.css';
+@import 'sizes/_sizes-action.css';
+@import 'sizes/_sizes-gap.css';
+@import 'sizes/_sizes-radius.css';
+@import 'positions/positions.css';
+@import 'themes/_themes-color-tokens.css';
+@import 'themes/_themes-skins.css';
+@import 'themes/_themes-elevation.css';
+@import 'themes/_themes-color.css';
+@import 'themes/_themes-variant.css';
+@import 'fonts/_fonts-size.css';
+@import 'utils/utils.css';

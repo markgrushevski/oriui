@@ -31,6 +31,27 @@ import '@oriui/css';
 <button class="ori-button ori-variant_tonal ori-color_primary ori-button_lg">Save</button>
 ```
 
+## À-la-carte imports
+
+Don't need every component? Import a foundation once, then only the component blocks you use —
+**foundation first**, it declares the cascade-layer order. Three foundation options:
+
+- `@oriui/css/base.css` — batteries-included: tokens + skins + utilities **+ the global reset**.
+- `@oriui/css/tokens.css` — bring your own reset/preflight: everything in base except the reset.
+- `@oriui/css/reset.css` — the global reset alone (box-sizing + margin/padding zeroing).
+
+```js
+import '@oriui/css/base.css';
+import '@oriui/css/components/button.css';
+import '@oriui/css/components/card.css';
+```
+
+`import '@oriui/css'` (the full bundle, also `@oriui/css/styles.css`) is unchanged and includes everything.
+
+> Caveat: the components are not yet fully reset-independent — some rely on the global
+> box-sizing/margin zeroing — so skipping `reset.css` may leak UA styles until the self-sufficiency
+> audit lands.
+
 ## The class model
 
 A **block class** plus **single-class token utilities** — one class repoints one token, no paired base
