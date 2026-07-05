@@ -238,6 +238,14 @@ practical gotchas go here.
   `:root`, so they aren't `:root`-overridable at all — repoint them on that base class, or per-instance.
   CSS `@layer` only breaks ties between declarations on the **same** element; it never makes an inherited
   value beat a value a class sets directly on the element.
+- **Cross-component class reuse is a CSS dependency.** OriCombobox renders `.ori-input__field`
+  WITHOUT importing OriInput — so its stylesheet must `@import './input.css'`. When adding a
+  component css dep, remember the dep map guard (`tests/css.entries.test.ts`) derives deps from
+  sibling-component imports **and emitted class literals**, not imports alone.
+- **Per-component dist css is self-contained**: each `src/components/*.css` `@import`s its deps and
+  the build inlines them (`dist/components/button.css` = button + icon + spinner). The full bundle
+  stays deduped — postcss-import's `skipDuplicates` drops repeated imports while bundling
+  `styles.css` — so adding a dep costs the subset consumer bytes, not the bundle.
 
 ## Build / tests
 

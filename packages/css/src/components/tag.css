@@ -1,3 +1,6 @@
+/* The tag renders an icon — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './icon.css';
+
 @layer ori.components {
     .ori-tag {
         /* Baked per-axis defaults so a bare `.ori-tag` is a valid tonal-primary, rounded, sm chip.

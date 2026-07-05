@@ -75,9 +75,29 @@ describe('resolveToken (core)', () => {
     });
 
     it('returns "" for an undeclared token (sentinel, not the inherited text color)', () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {}); // silence the dev-mode unresolvable warning
         document.documentElement.style.color = 'rgb(90, 90, 90)';
         expect(resolveToken('--ori-test-definitely-missing')).toBe('');
         document.documentElement.style.removeProperty('color');
+    });
+
+    it('dev-mode warning: an unresolvable token warns once per token; resolvable tokens never warn', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        // NODE_ENV=test (not 'production'), real document, unresolvable token -> warn, but only once.
+        resolveToken('--ori-test-warn-once');
+        resolveToken('--ori-test-warn-once');
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining("'--ori-test-warn-once'"));
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('colors-only'));
+
+        // A different unresolvable token gets its own (single) warning.
+        resolveToken('--ori-test-warn-other');
+        expect(warn).toHaveBeenCalledTimes(2);
+
+        // Resolvable tokens never warn.
+        expect(resolveToken('--ori-test-brand')).toBe(BRAND_LIGHT);
+        expect(warn).toHaveBeenCalledTimes(2);
     });
 
     it('creates the probe and removes it again — no DOM residue', () => {
@@ -261,6 +281,7 @@ describe('useToken (Svelte)', () => {
     });
 
     it('useThemeColor resolves --ori-color-<role> and follows a role store', () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {}); // the missing role below warns in dev mode
         expect(get(useThemeColorSvelte('testrole'))).toBe(ACCENT);
 
         const role = writable('testrole');

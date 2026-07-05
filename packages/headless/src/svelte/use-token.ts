@@ -11,6 +11,20 @@ import { toReadable, type MaybeReactive } from './use-store';
  * scheme flips). Colors-only MVP: the token must resolve to a `<color>`. Lazy like every Svelte store —
  * resolution and the theme observer start with the first subscriber and tear down with the last; on the
  * server the store stays `''` (the core APIs are inert without `document`).
+ *
+ * Bridging into a canvas engine (Konva, ECharts, …): create the engine in `onMount`, then subscribe —
+ * the subscription fires immediately with the current resolved value (seeding the engine) and again on
+ * every theme flip. Before mount / on the server the store is `''`, so the first frame renders without
+ * the color:
+ *
+ * ```ts
+ * const brand = useThemeColor('primary');
+ * onMount(() => {
+ *     const engine = createEngine(canvas);
+ *     const stop = brand.subscribe((c) => engine.setColor(c || null)); // fires immediately, then on theme flips
+ *     return () => stop();
+ * });
+ * ```
  */
 export function useToken(token: MaybeReactive<string>): Readable<string> {
     const token$ = toReadable(token);
