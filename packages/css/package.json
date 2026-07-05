@@ -3,6 +3,11 @@
     "version": "1.0.0-alpha.3",
     "description": "Standalone CSS design tokens + .ori-* utility classes for oriUI — no framework, no build step",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/markgrushevski/oriui.git",
+        "directory": "packages/css"
+    },
     "type": "module",
     "sideEffects": [
         "**/*.css"
