@@ -137,6 +137,11 @@ practical gotchas go here.
 
 ## Component / CSS patterns
 
+- **A non-standard mode (icon square) must be an EXPLICIT opt-in, never the absence of another prop.**
+  `ori-button_icon` is `Boolean(icon) && !text` (icon set, no label), NOT `!text` — the old `!text`
+  silently turned `<OriButton>Label</OriButton>` (slot-only) into a fixed-size icon square that clipped
+  its label. Same for `ori-card_icon` (`Boolean(prependIcon || appendIcon) && !text`). When a modifier
+  changes layout, gate it on the prop that _means_ the mode, not on the mere lack of the default one.
 - **Component block styles live in `@oriui/css` under `@layer ori.components`** — one file per component
   in `packages/css/src/components/<name>.css`, NOT in the SFC (the SFCs have **no `<style>` block**). So
   a styled-component consumer must `import '@oriui/css'` once (it ships tokens + components + utilities),
