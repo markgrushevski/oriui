@@ -15,19 +15,32 @@ import cssnano from 'cssnano';
 //   dist/components/<name>.css — one file per component block, to pair with base/tokens.css
 const pipeline = postcss([postcssImport(), autoprefixer(), cssnano({ preset: 'default' })]);
 
-async function emit(from, to) {
+// Every dist file opens with a one-line `/*!` banner so the usage rule survives minification —
+// prepended AFTER cssnano runs, so no minifier setting can ever strip it. Component files state
+// the base-or-tokens-first rule; foundation entries name what they carry.
+const COMPONENT_BANNER = '/*! @oriui/css — requires @oriui/css/base.css or tokens.css imported first */';
+const FOUNDATION_BANNERS = {
+    'src/styles.css':
+        '/*! @oriui/css styles.css — the full bundle: layer order + reset + tokens + utilities + every component */',
+    'src/base.css': '/*! @oriui/css base.css — layer order + reset + tokens + utilities */',
+    'src/tokens.css':
+        '/*! @oriui/css tokens.css — layer order + tokens + utilities (reset-free; pair with reset.css or your own preflight) */',
+    'src/reset.css': '/*! @oriui/css reset.css — the global reset alone (pair with tokens.css) */'
+};
+
+async function emit(from, to, banner) {
     const css = readFileSync(from, 'utf8');
     const result = await pipeline.process(css, { from, to });
-    writeFileSync(to, result.css);
-    console.log(`@oriui/css -> ${to} (${(result.css.length / 1024).toFixed(1)} kB, minified)`);
+    const out = `${banner}\n${result.css}`;
+    writeFileSync(to, out);
+    console.log(`@oriui/css -> ${to} (${(out.length / 1024).toFixed(1)} kB, minified)`);
 }
 
 mkdirSync('dist/components', { recursive: true });
 
-await emit('src/styles.css', 'dist/styles.css');
-await emit('src/base.css', 'dist/base.css');
-await emit('src/tokens.css', 'dist/tokens.css');
-await emit('src/reset.css', 'dist/reset.css');
+for (const [from, banner] of Object.entries(FOUNDATION_BANNERS)) {
+    await emit(from, join('dist', basename(from)), banner);
+}
 for (const file of readdirSync('src/components').filter((f) => f.endsWith('.css'))) {
-    await emit(join('src/components', file), join('dist/components', basename(file)));
+    await emit(join('src/components', file), join('dist/components', basename(file)), COMPONENT_BANNER);
 }

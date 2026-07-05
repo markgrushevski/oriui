@@ -1,3 +1,6 @@
+/* The alert renders an icon — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './icon.css';
+
 @layer ori.components {
     .ori-alert {
         /* Component defaults (bare .ori-alert is valid): color info, tonal variant, radius/font md. */

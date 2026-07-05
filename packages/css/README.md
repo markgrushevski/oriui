@@ -34,11 +34,16 @@ import '@oriui/css';
 ## À-la-carte imports
 
 Don't need every component? Import a foundation once, then only the component blocks you use —
-**foundation first**, it declares the cascade-layer order. Three foundation options:
+**foundation first** (`base.css` or `tokens.css`), it declares the cascade-layer order the component
+files rely on. What each entry contains:
 
-- `@oriui/css/base.css` — batteries-included: tokens + skins + utilities **+ the global reset**.
-- `@oriui/css/tokens.css` — bring your own reset/preflight: everything in base except the reset.
-- `@oriui/css/reset.css` — the global reset alone (box-sizing + margin/padding zeroing).
+| Entry                           | Layer order | Reset | Tokens + skins | Utilities | Component styles   |
+| ------------------------------- | :---------: | :---: | :------------: | :-------: | ------------------ |
+| `@oriui/css` (= `styles.css`)   |     yes     |  yes  |      yes       |    yes    | all                |
+| `@oriui/css/base.css`           |     yes     |  yes  |      yes       |    yes    | —                  |
+| `@oriui/css/tokens.css`         |     yes     |   —   |      yes       |    yes    | —                  |
+| `@oriui/css/reset.css`          |      —      |  yes  |       —        |     —     | —                  |
+| `@oriui/css/components/<n>.css` |      —      |   —   |       —        |     —     | one (deps inlined) |
 
 ```js
 import '@oriui/css/base.css';
@@ -46,11 +51,22 @@ import '@oriui/css/components/button.css';
 import '@oriui/css/components/card.css';
 ```
 
+Per-component files are **self-contained**: the blocks a component renders are inlined (`button.css`
+carries the icon + spinner styles, `combobox.css` the input field + the `anchored` placement
+primitive), so no component ships half-styled. Importing files with overlapping dependencies
+duplicates those rules — harmlessly: identical rules in the same `@layer` resolve identically, and
+gzip eats most of the byte cost.
+
 `import '@oriui/css'` (the full bundle, also `@oriui/css/styles.css`) is unchanged and includes everything.
 
 > Caveat: the components are not yet fully reset-independent — some rely on the global
 > box-sizing/margin zeroing — so skipping `reset.css` may leak UA styles until the self-sufficiency
 > audit lands.
+
+> TypeScript note: under TypeScript 6's `noUncheckedSideEffectImports`, bare CSS subpath imports
+> (`import '@oriui/css/base.css'`) are errors unless the compiler can type them. Either set
+> `noUncheckedSideEffectImports: false`, or add an ambient declaration:
+> `declare module '@oriui/css/*.css';` (most bundler-first setups ship one already).
 
 ## The class model
 

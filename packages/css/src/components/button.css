@@ -1,3 +1,8 @@
+/* The button renders an icon and (on `loading`) a spinner — inlined so this entry is self-contained
+   (deduped in the full bundle by postcss-import). */
+@import './icon.css';
+@import './spinner.css';
+
 @layer ori.components {
     .ori-button {
         /* Baked per-axis defaults so a bare `.ori-button` is a valid filled-primary, rounded, md

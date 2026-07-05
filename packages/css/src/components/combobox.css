@@ -1,3 +1,8 @@
+/* The combobox reuses `.ori-input__field` for its text box and floats the listbox with the shared
+   `.ori-anchored` primitive — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './anchored.css';
+@import './input.css';
+
 @layer ori.components {
     .ori-combobox {
         /* Same baked field tokens as `.ori-input` — the inner control reuses `.ori-input__field`,

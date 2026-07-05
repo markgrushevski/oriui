@@ -64,6 +64,29 @@ import { combobox } from '@oriui/headless';
 // combobox.machine · combobox.connect · combobox.anatomy — the contract every adapter implements
 ```
 
+## Reading tokens from JS
+
+Canvas/WebGL/chart renderers (Konva, ECharts, …) paint outside the CSS cascade but should still follow
+the active skin. The token bridge resolves `--ori-*` tokens to their **computed** values —
+`getComputedStyle().getPropertyValue('--x')` only returns the unresolved `var()` chain — and re-resolves
+on theme changes. Colors-only MVP: the token must resolve to a `<color>`. The value is `''` during SSR
+and before mount (the first client frame renders without it); in dev builds, a token that genuinely
+fails to resolve warns once per token.
+
+```ts
+import { useThemeColor } from '@oriui/headless/vue'; // or /svelte — same surface, stores instead of refs
+
+const brand = useThemeColor('primary'); // resolves --ori-color-primary, e.g. 'rgb(25, 118, 210)'
+onMounted(() => {
+    engine = createEngine(canvasEl.value);
+    engine.setColor(brand.value || null); // seed the initial resolved color
+});
+watch(brand, (c) => engine?.setColor(c || null)); // theme/skin flips re-push automatically
+```
+
+The core exports the primitives directly: `resolveToken('--ori-color-primary')` (one-shot) and
+`observeTheme(callback)` (skin class/style mutations + OS scheme flips; returns an unsubscribe).
+
 **[Full docs → oriui.vercel.app](https://oriui.vercel.app)**
 
 > **Alpha** (`1.0.0-alpha.*`, `alpha` dist-tag). APIs may shift before `1.0.0`.

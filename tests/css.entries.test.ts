@@ -51,4 +51,60 @@ describe('@oriui/css à-la-carte entry points', () => {
         const orphans = files.filter((f) => !imported.includes(`components/${f}`));
         expect(orphans, `component css not imported by styles.css: ${orphans.join(', ')}`).toEqual([]);
     });
+
+    // ------------------------------------------------------------------
+    // Self-contained per-component entries — the dependency map is DERIVED from the vue sources at
+    // test time, so it can never silently drift: the moment a component starts rendering a sibling
+    // (or floating on `.ori-anchored`), this fails until its css entry inlines the dependency.
+    // Without the inline, a consumer importing only button.css ships an unstyled spinner on `loading`.
+    // ------------------------------------------------------------------
+
+    it('per-component css inlines every block its vue component renders (self-contained entries)', () => {
+        const vueComponents = resolve(process.cwd(), 'packages/vue/src/components');
+        const names = readdirSync(vueComponents, { withFileTypes: true })
+            .filter((entry) => entry.isDirectory())
+            .map((entry) => entry.name);
+
+        const problems: string[] = [];
+        for (const name of names) {
+            const dir = resolve(vueComponents, name);
+            const source = readdirSync(dir)
+                .filter((f) => f.endsWith('.vue'))
+                .map((f) => readFileSync(resolve(dir, f), 'utf8'))
+                .join('\n');
+
+            // Three dependency signals: (a) sibling component barrel imports (`from '../icon'` —
+            // rendered child components; `../field/context` intentionally does NOT match: context
+            // wiring renders nothing); (b) another component's `ori-*` block class emitted directly
+            // as a string literal (the combobox reuses `.ori-input__field` without importing
+            // OriInput); (c) the shared `.ori-anchored` placement primitive, which has no component
+            // of its own so no name hints at it.
+            const deps = new Set<string>();
+            for (const m of source.matchAll(/from\s+'\.\.\/([a-z0-9-]+)';/g)) deps.add(m[1]);
+            for (const m of source.matchAll(/['"`]ori-([a-z][a-z-]*)/g)) if (names.includes(m[1])) deps.add(m[1]);
+            if (/['"`]ori-anchored/.test(source)) deps.add('anchored');
+            deps.delete(name);
+
+            const cssImports = imports(read(`src/components/${name}.css`)).map((p) =>
+                p.replace(/^\.\//, '').replace(/\.css$/, '')
+            );
+            for (const dep of deps) {
+                if (!cssImports.includes(dep)) {
+                    problems.push(`${name}.css must @import './${dep}.css' — the ${name} component renders it`);
+                }
+            }
+        }
+        expect(problems, problems.join('\n')).toEqual([]);
+    });
+
+    it('component css @imports precede all other statements (CSS requires it; postcss-import skips late ones)', () => {
+        const files = readdirSync(resolve(pkgDir, 'src/components')).filter((f) => f.endsWith('.css'));
+        for (const file of files) {
+            const noComments = read(`src/components/${file}`).replace(/\/\*[\s\S]*?\*\//g, '');
+            const lastImport = noComments.lastIndexOf('@import');
+            if (lastImport === -1) continue;
+            const firstLayer = noComments.indexOf('@layer');
+            expect(lastImport, `${file}: @import after the first @layer block`).toBeLessThan(firstLayer);
+        }
+    });
 });
