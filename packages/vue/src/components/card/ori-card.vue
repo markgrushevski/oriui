@@ -33,7 +33,7 @@ const {
         :class="[
             'ori-card',
             {
-                'ori-card_icon': !text,
+                'ori-card_icon': Boolean(prependIcon || appendIcon) && !text,
                 'ori-card_fluid': fluid,
                 'ori-card_row': row,
                 [`ori-size-radius_${radius}`]: radius,

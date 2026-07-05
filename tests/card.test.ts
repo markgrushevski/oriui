@@ -42,6 +42,32 @@ describe('OriCard', () => {
         expect(c).toContain('ori-card_row');
     });
 
+    // Icon mode is EXPLICIT: it needs an icon prop (prepend/append) AND no text — never the mere
+    // absence of `text`. A plain or text-only card must not silently switch layout.
+    it('icon mode (prependIcon, no text) takes the icon modifier class', () => {
+        const c = mount(OriCard, { props: { prependIcon: 'M0 0' } }).classes();
+
+        expect(c).toContain('ori-card_icon');
+    });
+
+    it('a text-only card is NOT icon mode', () => {
+        const c = mount(OriCard, { props: { text: 'Body' } }).classes();
+
+        expect(c).not.toContain('ori-card_icon');
+    });
+
+    it('a bare card (no icon, no text) is NOT forced into icon mode', () => {
+        const c = mount(OriCard, { props: { title: 'Hello' } }).classes();
+
+        expect(c).not.toContain('ori-card_icon');
+    });
+
+    it('an icon + text card is NOT icon mode', () => {
+        const c = mount(OriCard, { props: { prependIcon: 'M0 0', text: 'Body' } }).classes();
+
+        expect(c).not.toContain('ori-card_icon');
+    });
+
     it('has no axe violations', async () => {
         const wrapper = mount(OriCard, {
             props: { title: 'Hello', subtitle: 'World', text: 'Body' },
