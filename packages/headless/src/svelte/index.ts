@@ -8,6 +8,9 @@ export type { ComboboxItem } from '../core';
 export { useMenu, type UseMenuOptions } from './use-menu';
 export type { MenuItem } from '../core';
 
+// Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
+export { useToken, useThemeColor } from './use-token';
+
 // Adapter selection (Svelte context)
 export { provideHeadless, getHeadless } from './plugin';
 
