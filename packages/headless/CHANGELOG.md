@@ -1,5 +1,15 @@
 # @oriui/headless
 
+## 1.0.0-alpha.3
+
+### Minor Changes
+
+- c9d1ec3: Add `@oriui/headless/svelte` — a Svelte 5 adapter at full parity with `./vue`
+  (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` + `provideHeadless`), built on the shared
+  framework-agnostic core. Returns Svelte stores (`readable` / `derived`) with lowercased event handlers;
+  `svelte ^5` is an optional peer. Same behavior, per-framework reactive wrapper. `useCombobox` / `useMenu`
+  accept `MaybeReactive` options (a plain object or a store) so a changing option list / `disabled` reacts.
+
 ## 1.0.0-alpha.2
 
 ### Minor Changes
