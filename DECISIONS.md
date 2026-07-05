@@ -4,6 +4,21 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Tests stay in the root `tests/` directory (not co-located in `src`, not per-package)
+
+Decided 2026-07-05. The suite is **contract / cross-package by nature** — `tokens.contrast` parses the
+css package's skin CSS, the headless contract is driven through a fake `DialogAdapter`, and the a11y/axe
+pass runs over the styled components — so there is no single component or package to co-locate with. Root
+placement also keeps the tests out of the lib build and `npm run types` **for free** (its original
+purpose). Alternatives considered:
+
+- **Co-location in `src`** — loses the free isolation, and the contract tests have no home.
+- **Per-package `tests/`** — only pays off when the packages gain independent CI / releases; today the
+  three release in lockstep via a fixed changesets group, so YAGNI.
+
+**Revisit trigger:** if the packages start releasing / CI-ing independently, split per-package while
+keeping the out-of-`src` principle.
+
 ## Token-axis classes are single-class + block-baked defaults (dropped the paired base)
 
 The `.ori-*` token utilities were **paired** — a base class plus a value (`ori-color ori-color_primary`,

@@ -41,12 +41,32 @@ Roughly by priority.
    `.size-limit.json` for the CSS bundle + the full `@oriui/vue` lib + the three headless entries;
    `npm run size` (self-contained `size:build`), a CI gate after Build (node 22), and a bundlephobia
    minzip badge in the README. Guards the zero-runtime / small-bundle promise.
-6. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
+6. ⭐ **`@oriui/css` à-la-carte entry points** — **accepted, in implementation (2026-07-05).** Split the
+   package exports so direct CSS consumers (htmx / Astro / plain HTML) pay only for what they use — today
+   `.` is the full bundle (~11 kB gzip, all 31 components). Plan: keep `.` (the full `styles.css`); add
+   `./base.css` = the foundation (the `@layer` order declaration + reset + size/theme/font tokens +
+   positions + utilities — everything except `components/*`); add `./components/*.css` wildcard
+   per-component entries. **Pitfall to remember:** the cascade-layer ORDER is declared once
+   (`@layer ori.reset, ori.tokens, ori.base, ori.components, ori.utilities;`) — for arbitrary import
+   subsets/orders to cascade correctly, that declaration must ship in `base.css` and `base.css` must be
+   imported first. The win is only for direct `@oriui/css` consumers; `@oriui/vue` consumers still get
+   the full sheet.
+7. ⭐ **Token bridge: `useToken` / `useThemeColor`** — **accepted, in implementation (2026-07-05).** An
+   official way to read resolved `--ori-*` design tokens from JS — canvas / WebGL / charting libs (Konva)
+   cannot read CSS custom properties. Naive `getComputedStyle().getPropertyValue()` returns the
+   UNresolved `var()` chain for unregistered custom properties, so the engine resolves through a **probe
+   element** (set `color: var(--ori-color-primary)` on a hidden probe, read the computed color). Reactive
+   to theme switches: a MutationObserver on the documentElement class (`ori-theme_dark`) +
+   `matchMedia('(prefers-color-scheme: dark)')` for auto mode. Shape: framework-agnostic engine in
+   `@oriui/headless` core + Vue and Svelte adapters (`useToken('--ori-color-primary')`,
+   `useThemeColor('primary')` sugar). First real consumer: justpaint (the Konva canvas app). MVP scope:
+   **colors only** (the probe reads through the `color` property).
+8. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
    visual regression that jsdom can't assert.
-7. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the
+9. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
-8. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
-   devtool.
+10. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
+    devtool.
 
 ## Idea sources & periodic mining
 
