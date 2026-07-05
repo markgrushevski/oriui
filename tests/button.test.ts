@@ -71,10 +71,29 @@ describe('OriButton', () => {
         expect(el.getAttribute('tabindex')).toBe('-1');
     });
 
-    it('icon-only (no text) takes the icon modifier class', () => {
+    // Icon mode is EXPLICIT: it needs the `icon` prop AND no text — never the mere absence of `text`.
+    it('icon-only (icon prop, no text) takes the icon modifier class', () => {
         const wrapper = mount(OriButton, { props: { icon: 'M0 0' }, attrs: { 'aria-label': 'Menu' } });
 
         expect(wrapper.classes()).toContain('ori-button_icon');
+    });
+
+    it('a text button (no icon) is NOT icon mode', () => {
+        const wrapper = mount(OriButton, { props: { text: 'Save' } });
+
+        expect(wrapper.classes()).not.toContain('ori-button_icon');
+    });
+
+    it('a slot-only button (no icon, no text) is NOT forced into an icon square', () => {
+        const wrapper = mount(OriButton, { slots: { default: 'Save' } });
+
+        expect(wrapper.classes()).not.toContain('ori-button_icon');
+    });
+
+    it('an icon + text button is a labelled button, NOT an icon square', () => {
+        const wrapper = mount(OriButton, { props: { icon: 'M0 0', text: 'Save' } });
+
+        expect(wrapper.classes()).not.toContain('ori-button_icon');
     });
 
     it('has no axe violations when labeled', async () => {

@@ -33,7 +33,7 @@ const {
         :class="[
             'ori-button',
             {
-                'ori-button_icon': !text,
+                'ori-button_icon': Boolean(icon) && !text,
                 'ori-button_fluid': fluid,
                 [`ori-button_icon-position_${iconPosition}`]: iconPosition,
                 [`ori-button_${size}`]: size,
