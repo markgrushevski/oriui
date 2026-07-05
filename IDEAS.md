@@ -51,7 +51,7 @@ Roughly by priority.
    subsets/orders to cascade correctly, that declaration must ship in `base.css` and `base.css` must be
    imported first. The win is only for direct `@oriui/css` consumers; `@oriui/vue` consumers still get
    the full sheet.
-7. ⭐ **Token bridge: `useToken` / `useThemeColor`** — **accepted, in implementation (2026-07-05).** An
+7. ⭐ **Token bridge: `useToken` / `useThemeColor`** — **SHIPPED (2026-07-05).** An
    official way to read resolved `--ori-*` design tokens from JS — canvas / WebGL / charting libs (Konva)
    cannot read CSS custom properties. Naive `getComputedStyle().getPropertyValue()` returns the
    UNresolved `var()` chain for unregistered custom properties, so the engine resolves through a **probe
@@ -60,7 +60,9 @@ Roughly by priority.
    `matchMedia('(prefers-color-scheme: dark)')` for auto mode. Shape: framework-agnostic engine in
    `@oriui/headless` core + Vue and Svelte adapters (`useToken('--ori-color-primary')`,
    `useThemeColor('primary')` sugar). First real consumer: justpaint (the Konva canvas app). MVP scope:
-   **colors only** (the probe reads through the `color` property).
+   **colors only** (the probe reads through the `color` property). Shipped as `resolveToken` /
+   `observeTheme` in core + `useToken` / `useThemeColor` for Vue (`MaybeRefOrGetter`) and Svelte
+   (`MaybeReactive`, lazy `readable`); 19 vitest specs; all headless entries stay within their size budgets.
 8. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
    visual regression that jsdom can't assert.
 9. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the

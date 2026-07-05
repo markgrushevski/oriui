@@ -292,6 +292,17 @@ practical gotchas go here.
   OriPopover / OriMenu / Combobox default to **`bottom-start`** (below, start-aligned) — a plain `bottom`
   would centre. The 12 `position-area` mappings are Playwright-verified (`e2e/placement-grid.spec.ts`);
   the shared prop type is `AnchoredPlacement` (`packages/vue/src/types.ts`).
+- **happy-dom does NOT support `var()` fallbacks** — `var(--missing, sentinel)` computes to `''`, so
+  unresolvable-token detection can't use a fallback argument; the token bridge wraps its probe in a
+  sentinel-colored parent and compares against the inherited color instead. Related: happy-dom's
+  `getComputedStyle().getPropertyValue('--x')` does **not inherit** (returns `''` unless declared on that
+  very element) — which is exactly why the probe technique is needed even in tests.
+- **`vi.stubGlobal('document', undefined)` must be unstubbed FIRST in `afterEach`**, before any DOM
+  cleanup — a throwing cleanup line otherwise never reaches `vi.unstubAllGlobals()` and strands every
+  subsequent test without a `document` (one failure cascades into dozens).
+- **The 1 kB "core engine" size budget measures a re-export shim, not the engine** — tsdown/rolldown
+  chunk-splits the shared core into `dist/core-<hash>.js` (~6 kB gzip) imported by all three entries;
+  `dist/core/index.js` is ~0.2 kB of re-exports. Read the budget numbers accordingly.
 
 ## Svelte adapter (`@oriui/headless/svelte`)
 
