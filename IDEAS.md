@@ -41,7 +41,7 @@ Roughly by priority.
    `.size-limit.json` for the CSS bundle + the full `@oriui/vue` lib + the three headless entries;
    `npm run size` (self-contained `size:build`), a CI gate after Build (node 22), and a bundlephobia
    minzip badge in the README. Guards the zero-runtime / small-bundle promise.
-6. ⭐ **`@oriui/css` à-la-carte entry points** — **accepted, in implementation (2026-07-05).** Split the
+6. ⭐ **`@oriui/css` à-la-carte entry points** — **SHIPPED (2026-07-05).** Split the
    package exports so direct CSS consumers (htmx / Astro / plain HTML) pay only for what they use — today
    `.` is the full bundle (~11 kB gzip, all 31 components). Plan: keep `.` (the full `styles.css`); add
    `./base.css` = the foundation (the `@layer` order declaration + reset + size/theme/font tokens +
@@ -50,7 +50,9 @@ Roughly by priority.
    (`@layer ori.reset, ori.tokens, ori.base, ori.components, ori.utilities;`) — for arbitrary import
    subsets/orders to cascade correctly, that declaration must ship in `base.css` and `base.css` must be
    imported first. The win is only for direct `@oriui/css` consumers; `@oriui/vue` consumers still get
-   the full sheet.
+   the full sheet. Shipped with an extra foundation pair beyond the plan: `./tokens.css` (reset-free, for
+   apps with their own preflight) + `./reset.css` (standalone) — `base.css` = tokens + reset; guarded by
+   `tests/css.entries.test.ts`, `base.css` budgeted at 3 kB gzip in `.size-limit.json` (2.5 kB today).
 7. ⭐ **Token bridge: `useToken` / `useThemeColor`** — **SHIPPED (2026-07-05).** An
    official way to read resolved `--ori-*` design tokens from JS — canvas / WebGL / charting libs (Konva)
    cannot read CSS custom properties. Naive `getComputedStyle().getPropertyValue()` returns the
@@ -69,6 +71,12 @@ Roughly by priority.
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
 10. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
     devtool.
+11. ◽ **Reset-independence audit** — make every `.ori-*` component block self-sufficient (declare its
+    own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` + components works with **no
+    reset at all** — today only 10 of 32 component files set `box-sizing` themselves. Also reconsider
+    `html { font-size: 16px }` in `reset.css`: it's not a reset — it pins the rem base and overrides
+    the user's browser font-size preference (an a11y smell); dropping it would let the rem tokens
+    scale with user settings.
 
 ## Idea sources & periodic mining
 

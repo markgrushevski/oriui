@@ -1,0 +1,14 @@
+/* ============================================================
+   oriUI — base entry point (à-la-carte foundation)
+   The batteries-included foundation: tokens.css (the cascade
+   layer order + tokens + utilities) plus the global reset.
+   This is what every à-la-carte component import requires —
+   import it BEFORE any components/*.css. tokens.css comes
+   first so the @layer order declaration stays the very first
+   statement in the bundle; the reset's source placement after
+   it is irrelevant — it sits in its own `ori.reset` layer
+   (declared first), so layer order, not source order, decides
+   the cascade. Bring your own reset? Use tokens.css instead.
+   ============================================================ */
+@import 'tokens.css';
+@import 'reset.css';
