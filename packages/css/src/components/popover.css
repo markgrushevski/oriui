@@ -1,3 +1,7 @@
+/* The popover floats on the shared `.ori-anchored` placement primitive (a file no component name hints
+   at) — inlined so this entry is self-contained (deduped in the full bundle by postcss-import). */
+@import './anchored.css';
+
 @layer ori.components {
     /* The popover surface — a floating panel on the Popover API (`popover` + `popovertarget`: top-layer,
        light-dismiss, Esc, all zero-JS). Placement comes from the shared `.ori-anchored` primitive

@@ -1,3 +1,6 @@
+/* The toast renders a status icon — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './icon.css';
+
 @layer ori.components {
     /* Portal container: fixed to a screen corner, ignores pointer events so it never blocks the
        page; the toasts themselves re-enable pointer events. */

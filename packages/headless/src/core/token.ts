@@ -25,6 +25,33 @@
  */
 const UNRESOLVED_SENTINEL = 'rgba(1, 2, 3, 0.004)';
 
+/**
+ * The package targets the DOM and deliberately carries no Node types — declare the bundler-injected
+ * `process.env.NODE_ENV` shape locally (module-scoped) so the dev-only guard type-checks. The runtime
+ * `typeof` check below keeps plain browser ESM (where no `process` global exists) safe.
+ */
+declare const process: { env: { NODE_ENV?: string } } | undefined;
+
+/** Tokens already warned about — an unresolvable token warns once, not on every resolve call. */
+const warnedTokens = new Set<string>();
+
+/**
+ * Dev-only diagnosis for the silent-`''` trap: `''` means SSR, but with a real `document` it means the
+ * token genuinely failed to resolve — worth a console.warn naming the token. The `typeof process` guard
+ * keeps plain browser ESM (no bundler, no `process` global) from throwing; bundlers inline `NODE_ENV`
+ * and strip this whole branch from production builds.
+ */
+function warnUnresolved(token: string): void {
+    if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return;
+    if (warnedTokens.has(token)) return;
+    warnedTokens.add(token);
+    console.warn(
+        `[@oriui/headless] resolveToken: '${token}' did not resolve — returning ''. Either the token is not ` +
+            'declared in the active skin/scope, or it is not a <color>: the token bridge is a colors-only MVP ' +
+            '(the probe reads through the `color` property), so length/shadow/font tokens do not resolve.'
+    );
+}
+
 export interface ResolveTokenOptions {
     /**
      * Resolve within this element's cascade context, so subtree token overrides (a scoped skin, a
@@ -37,7 +64,9 @@ export interface ResolveTokenOptions {
  * Resolve a custom property (e.g. `'--ori-color-primary'`) to its COMPUTED value — `'rgb(25, 118, 210)'`,
  * not the `var()` chain. Appends a hidden probe (`position: absolute; visibility: hidden` — kept out of
  * flow and paint WITHOUT suppressing style computation), reads `getComputedStyle(probe).color`, removes
- * the probe. Returns `''` when the token is unresolvable or `document` is undefined (SSR).
+ * the probe. Returns `''` when the token is unresolvable or `document` is undefined (SSR) — and in dev
+ * builds an unresolvable token (real `document`, no resolution) additionally warns once per token, so
+ * the two `''` cases are distinguishable.
  *
  * Synchronous and allocation-light, but it does touch the DOM — cache per frame if you resolve many
  * tokens in a render loop, and re-resolve on theme changes via {@link observeTheme}.
@@ -60,7 +89,10 @@ export function resolveToken(token: string, options: ResolveTokenOptions = {}): 
     try {
         const resolved = getComputedStyle(probe).color;
         // Compare against the wrapper's COMPUTED color so both sides carry the engine's normalization.
-        if (resolved === '' || resolved === getComputedStyle(wrapper).color) return '';
+        if (resolved === '' || resolved === getComputedStyle(wrapper).color) {
+            warnUnresolved(token);
+            return '';
+        }
         return resolved;
     } finally {
         wrapper.remove();
