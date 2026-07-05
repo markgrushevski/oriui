@@ -1,0 +1,12 @@
+/* ============================================================
+   oriUI — cascade layer order
+   Declared ONCE, and it must be the first thing any consumer
+   loads: the first @layer statement the browser sees fixes the
+   order for good. Rules in later layers win over earlier ones,
+   so `ori.utilities` (declared last) beats `ori.components`.
+   À-la-carte imports (base.css + components/*.css) rely on
+   base.css shipping this declaration first — without it, the
+   cascade order would depend on whichever layer a stylesheet
+   happened to mention first, i.e. on import order.
+   ============================================================ */
+@layer ori.reset, ori.tokens, ori.base, ori.components, ori.utilities;

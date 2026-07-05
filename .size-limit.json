@@ -6,6 +6,12 @@
         "limit": "11 kB"
     },
     {
+        "name": "@oriui/css — base.css foundation (gzip)",
+        "path": "packages/css/dist/base.css",
+        "gzip": true,
+        "limit": "3 kB"
+    },
+    {
         "name": "@oriui/vue — full library, all 31 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,

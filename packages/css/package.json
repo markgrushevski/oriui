@@ -21,6 +21,11 @@
     "style": "./dist/styles.css",
     "exports": {
         ".": "./dist/styles.css",
+        "./styles.css": "./dist/styles.css",
+        "./base.css": "./dist/base.css",
+        "./tokens.css": "./dist/tokens.css",
+        "./reset.css": "./dist/reset.css",
+        "./components/*.css": "./dist/components/*.css",
         "./package.json": "./package.json"
     },
     "scripts": {
