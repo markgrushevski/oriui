@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-checkbox, .ori-checkbox *),
+    :where(.ori-checkbox, .ori-checkbox *)::before,
+    :where(.ori-checkbox, .ori-checkbox *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-checkbox {
         /* Baked per-axis defaults so a bare `.ori-checkbox` is a valid primary, md-text checkbox.
            Single-class utilities (.ori-color_danger, .ori-font-size_lg) override by layer order. */

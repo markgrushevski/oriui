@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-slider, .ori-slider *),
+    :where(.ori-slider, .ori-slider *)::before,
+    :where(.ori-slider, .ori-slider *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-slider {
         /* Accent default; `.ori-color_*` (ori.utilities) repoints it. The fill uses --ori-color, the
            groove a faint currentcolor mix; --ori-slider-pct (set inline from the value) drives the

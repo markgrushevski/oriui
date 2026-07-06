@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-tooltip, .ori-tooltip *),
+    :where(.ori-tooltip, .ori-tooltip *)::before,
+    :where(.ori-tooltip, .ori-tooltip *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-tooltip {
         /* Default neutral chip: an inverse surface so the tip reads on any page background. A color class
        repoints --ori-color / --ori-color-on, which the bubble below picks up via the fallbacks. */

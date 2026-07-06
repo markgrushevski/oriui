@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-icon, .ori-icon *),
+    :where(.ori-icon, .ori-icon *)::before,
+    :where(.ori-icon, .ori-icon *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-icon {
         --ori-color: currentcolor;
         /* Baked per-axis defaults so a bare `.ori-icon` is a valid `text`-size, unspaced icon.

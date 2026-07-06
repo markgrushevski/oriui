@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-join, .ori-join *),
+    :where(.ori-join, .ori-join *)::before,
+    :where(.ori-join, .ori-join *)::after {
+        box-sizing: border-box;
+    }
+
     /* Collapse adjacent radii + borders so children (buttons, inputs, …) read as one unit. */
     .ori-join {
         display: inline-flex;

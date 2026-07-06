@@ -246,6 +246,13 @@ practical gotchas go here.
   the build inlines them (`dist/components/button.css` = button + icon + spinner). The full bundle
   stays deduped — postcss-import's `skipDuplicates` drops repeated imports while bundling
   `styles.css` — so adding a dep costs the subset consumer bytes, not the bundle.
+- **Components are reset-independent — keep them that way.** Every component block opens with a
+  zero-specificity `:where(.ori-x, .ori-x *)` (+ `::before`/`::after`) border-box subtree rule and
+  declares its own UA neutralization; `tokens.css` + components must render identically to `base.css`.
+  The contract is an e2e computed-style diff in real Chromium (`e2e/reset-independence.spec.ts`) — a
+  new component needs fixture markup there (`data-c="<name>"`; a coverage test fails otherwise).
+- **The UA gives `[popover]` `margin: auto`** — an anchored panel that skips `margin` looks fine with
+  the global reset and drifts without it. Declare margins explicitly on popover-based panels.
 
 ## Build / tests
 

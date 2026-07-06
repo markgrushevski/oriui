@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-tabs, .ori-tabs *),
+    :where(.ori-tabs, .ori-tabs *)::before,
+    :where(.ori-tabs, .ori-tabs *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-tabs {
         /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
            layer) overrides by layer order. Drives the active indicator / focus ring. */
