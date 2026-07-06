@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-dialog, .ori-dialog *),
+    :where(.ori-dialog, .ori-dialog *)::before,
+    :where(.ori-dialog, .ori-dialog *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-dialog {
         width: 100%;
         max-width: 460px;
@@ -41,6 +50,10 @@
     }
 
     .ori-dialog__close {
+        /* Explicit padding: the UA gives a native <button> padding the reset used to zero — without
+           this the close button bloats whenever base.css isn't loaded. */
+        padding: 0;
+
         border: 0;
         opacity: 0.7;
 

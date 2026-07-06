@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-textarea, .ori-textarea *),
+    :where(.ori-textarea, .ori-textarea *)::before,
+    :where(.ori-textarea, .ori-textarea *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-textarea {
         --ori-textarea-border: color-mix(in srgb, currentcolor 28%, transparent);
         --ori-textarea-bg: transparent;

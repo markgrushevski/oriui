@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-link, .ori-link *),
+    :where(.ori-link, .ori-link *)::before,
+    :where(.ori-link, .ori-link *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-link {
         transition:
             opacity 0.15s ease-out,

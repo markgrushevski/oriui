@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-spinner, .ori-spinner *),
+    :where(.ori-spinner, .ori-spinner *)::before,
+    :where(.ori-spinner, .ori-spinner *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-spinner {
         --ori-color: currentcolor;
         /* Baked default for the action-size axis (spinner diameter): the bare `.ori-spinner` is
