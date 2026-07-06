@@ -5,9 +5,12 @@
         --ori-size-radius_zero: 0;
         --ori-size-radius_xs: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 3);
         --ori-size-radius_sm: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 2);
-        --ori-size-radius_md: 8px;
+        /* rem (16px baseline: 0.5rem = 8px) so corners follow the user's browser font-size setting;
+           the calc() steps above/below derive from md, so the whole scale moves together. */
+        --ori-size-radius_md: 0.5rem;
         --ori-size-radius_lg: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 2);
         --ori-size-radius_xl: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 4);
+        /* px on purpose: an "always a pill" cap, not a length on the scale — it must not scale. */
         --ori-size-radius_rounded: 9999px;
 
         --ori-size-radius: var(--ori-size-radius_md);

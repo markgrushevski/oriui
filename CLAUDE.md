@@ -127,7 +127,7 @@ each is a deliberate engineering choice, not legacy to copy blindly.
 
 - Structure via BEM classes: block `ori-button`, element `ori-button__icon`.
 - Variant / size / color via classes (the css layer needs class ergonomics), driven by the
-  **two-tier token pattern**: raw scale tokens in `:root` (`--ori-size-action_md: 40px`) + a
+  **two-tier token pattern**: raw scale tokens in `:root` (`--ori-size-action_md: 2.75rem`) + a
   resolved alias (`--ori-size-action`) that a class repoints; components read only the alias.
   Keep specificity flat with `:where()` and put rules in `@layer` so consumer overrides
   always win — avoid the specificity-stacking of `.a.a_b` selectors.
