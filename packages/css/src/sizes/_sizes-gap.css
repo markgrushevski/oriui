@@ -5,7 +5,9 @@
         --ori-size-gap_zero: 0;
         --ori-size-gap_xs: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 3);
         --ori-size-gap_sm: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 2);
-        --ori-size-gap_md: 8px;
+        /* rem (16px baseline: 0.5rem = 8px) so spacing follows the user's browser font-size setting;
+           the calc() steps above/below derive from md, so the whole scale moves together. */
+        --ori-size-gap_md: 0.5rem;
         --ori-size-gap_lg: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 2);
         --ori-size-gap_xl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 4);
         --ori-size-gap_xxl: calc(var(--ori-size-gap_md) + var(--ori-size-gap-step) * 8);
