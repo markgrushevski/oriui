@@ -129,7 +129,7 @@ The size scales live at `:root` too (`--ori-size-radius_*`, `--ori-font-size_*`)
 unlayered block rebrands them. `--ori-size-radius_md` anchors the whole scale — `xs` / `sm` / `lg` /
 `xl` are `calc()`-derived from it, so one override moves every derived step proportionally (`zero`
 and the `9999px` `rounded` pill stay fixed). The font ladder pivots on `--ori-font-size_md` the same
-way, in fixed ±2px steps:
+way, in fixed ±`0.125rem` (2px at the browser default) steps:
 
 ```css
 :root {

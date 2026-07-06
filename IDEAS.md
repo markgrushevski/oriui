@@ -82,6 +82,13 @@ Roughly by priority.
     `padding-block: 0` + `font-family: inherit` on Button, `padding-block: 0` on the input field,
     `padding: 0` on the Dialog close, `margin: 0` on `.ori-anchored` (the UA gives `[popover]`
     `margin: auto`) — and the `font-size` pin is dropped: the rem base now follows the browser setting.
+12. ⭐ **rem token scales** — **SHIPPED (2026-07-06).** The size/font raw scales were px, so components
+    honored zoom but ignored the user's browser font-size preference — the a11y half the reset-pin
+    removal (item 11) left open. Unit policy: **rem** for the scales (action/gap/radius/font, exact
+    16px-baseline equivalents — 44px → 2.75rem), **em** stays for text-relative values, **px** stays for
+    hairlines/shadows/the `9999px` pill cap and the screen breakpoints (media-query rem resolves against
+    the initial font size, not `html`). Proof pair in `e2e/rem-scaling.spec.ts`: pixel-identical computed
+    dimensions at the 16px default, exactly ×1.25 at a 20px root while a 1px border stays 1px.
 
 ## Idea sources & periodic mining
 

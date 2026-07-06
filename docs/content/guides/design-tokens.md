@@ -182,66 +182,66 @@ class.
 
 ### Action (control height)
 
-`md` is `44px` — it meets the iOS HIG ≥44pt and Android Material ≥48dp touch-target minimums; `xs`
-/ `sm` are compact opt-ins for dense or icon-only UI. The alias `--ori-size-action` defaults to
-`var(--ori-size-action_text)` (`1em`, i.e. font-driven).
+`md` is `2.75rem` — 44px at the browser-default 16px root, meeting the iOS HIG ≥44pt and Android
+Material ≥48dp touch-target minimums; `xs` / `sm` are compact opt-ins for dense or icon-only UI. The
+alias `--ori-size-action` defaults to `var(--ori-size-action_text)` (`1em`, i.e. font-driven).
 
-| Token / step             | Value  |
-| ------------------------ | ------ |
-| `--ori-size-action_text` | `1em`  |
-| `--ori-size-action_xs`   | `20px` |
-| `--ori-size-action_sm`   | `24px` |
-| `--ori-size-action_md`   | `44px` |
-| `--ori-size-action_lg`   | `48px` |
-| `--ori-size-action_xl`   | `60px` |
-| `--ori-size-action_xxl`  | `68px` |
+| Token / step             | Value     |
+| ------------------------ | --------- |
+| `--ori-size-action_text` | `1em`     |
+| `--ori-size-action_xs`   | `1.25rem` |
+| `--ori-size-action_sm`   | `1.5rem`  |
+| `--ori-size-action_md`   | `2.75rem` |
+| `--ori-size-action_lg`   | `3rem`    |
+| `--ori-size-action_xl`   | `3.75rem` |
+| `--ori-size-action_xxl`  | `4.25rem` |
 
 ### Action-space (control padding)
 
 Padding scale paired with action height; alias `--ori-size-action-space` defaults to
 `var(--ori-size-action-space_text)` (`0`).
 
-| Token / step                   | Value  |
-| ------------------------------ | ------ |
-| `--ori-size-action-space_text` | `0`    |
-| `--ori-size-action-space_xs`   | `10px` |
-| `--ori-size-action-space_sm`   | `12px` |
-| `--ori-size-action-space_md`   | `10px` |
-| `--ori-size-action-space_lg`   | `12px` |
-| `--ori-size-action-space_xl`   | `10px` |
-| `--ori-size-action-space_xxl`  | `12px` |
+| Token / step                   | Value      |
+| ------------------------------ | ---------- |
+| `--ori-size-action-space_text` | `0`        |
+| `--ori-size-action-space_xs`   | `0.625rem` |
+| `--ori-size-action-space_sm`   | `0.75rem`  |
+| `--ori-size-action-space_md`   | `0.625rem` |
+| `--ori-size-action-space_lg`   | `0.75rem`  |
+| `--ori-size-action-space_xl`   | `0.625rem` |
+| `--ori-size-action-space_xxl`  | `0.75rem`  |
 
 ### Radius
 
-Corners, computed from `md` (`8px`) by a `2px` step. Alias `--ori-size-radius` defaults to
-`var(--ori-size-radius_md)`. Note this family declares its raw scale on the `.ori-size-radius` base
-class (in `ori.utilities`), not at `:root`. There is no `_xxl`.
+Corners, computed from `md` (`0.5rem`) by a `0.125rem` step. Alias `--ori-size-radius` defaults to
+`var(--ori-size-radius_md)`. Like the other scales, the raw values live at `:root`; the
+`.ori-size-radius_*` utilities (in `ori.utilities`) only repoint the alias. There is no `_xxl`.
 
 | Token / step                | Value (computed) |
 | --------------------------- | ---------------- |
 | `--ori-size-radius_zero`    | `0`              |
-| `--ori-size-radius_xs`      | `2px`            |
-| `--ori-size-radius_sm`      | `4px`            |
-| `--ori-size-radius_md`      | `8px`            |
-| `--ori-size-radius_lg`      | `12px`           |
-| `--ori-size-radius_xl`      | `16px`           |
+| `--ori-size-radius_xs`      | `0.125rem`       |
+| `--ori-size-radius_sm`      | `0.25rem`        |
+| `--ori-size-radius_md`      | `0.5rem`         |
+| `--ori-size-radius_lg`      | `0.75rem`        |
+| `--ori-size-radius_xl`      | `1rem`           |
 | `--ori-size-radius_rounded` | `9999px`         |
 
 ### Gap
 
 Spacing between items, same `md`/step derivation as radius. Alias `--ori-size-gap` defaults to
-`var(--ori-size-gap_md)`. The `_xxl` raw token (`24px`) exists but has **no repointing utility
+`var(--ori-size-gap_md)`. The `_xxl` raw token (`1.5rem`) exists but has **no repointing utility
 class** — it is reachable only by reading the token directly.
 
-| Token / step          | Value (computed)  |
-| --------------------- | ----------------- |
-| `--ori-size-gap_zero` | `0`               |
-| `--ori-size-gap_xs`   | `2px`             |
-| `--ori-size-gap_sm`   | `4px`             |
-| `--ori-size-gap_md`   | `8px`             |
-| `--ori-size-gap_lg`   | `12px`            |
-| `--ori-size-gap_xl`   | `16px`            |
-| `--ori-size-gap_xxl`  | `24px` (no class) |
+| Token / step          | Value (computed)    |
+| --------------------- | ------------------- |
+| `--ori-size-gap_zero` | `0`                 |
+| `--ori-size-gap_xs`   | `0.125rem`          |
+| `--ori-size-gap_sm`   | `0.25rem`           |
+| `--ori-size-gap_md`   | `0.5rem`            |
+| `--ori-size-gap_lg`   | `0.75rem`           |
+| `--ori-size-gap_xl`   | `1rem`              |
+| `--ori-size-gap_xxl`  | `1.5rem` (no class) |
 
 ### Screen (breakpoints)
 
@@ -259,22 +259,22 @@ directly.
 
 ## Fonts — font-size
 
-The type scale follows the same two-tier pattern, derived from `md` (`16px`) by a `2px` step. Like
-radius, the raw scale lives on the `.ori-font-size` base class; the alias `--ori-font-size` defaults
-to `var(--ori-font-size_text)` (`1em`, i.e. inherit).
+The type scale follows the same two-tier pattern, derived from `md` (`1rem`) by a `0.125rem` step. The
+raw scale lives at `:root` and the `.ori-font-size_*` utilities repoint the alias; `--ori-font-size`
+defaults to `var(--ori-font-size_text)` (`1em`, i.e. inherit).
 
 | Token / step           | Value (computed) |
 | ---------------------- | ---------------- |
 | `--ori-font-size_text` | `1em`            |
-| `--ori-font-size_xs`   | `12px`           |
-| `--ori-font-size_sm`   | `14px`           |
-| `--ori-font-size_md`   | `16px`           |
-| `--ori-font-size_lg`   | `18px`           |
-| `--ori-font-size_xl`   | `20px`           |
-| `--ori-font-size_xxl`  | `22px`           |
+| `--ori-font-size_xs`   | `0.75rem`        |
+| `--ori-font-size_sm`   | `0.875rem`       |
+| `--ori-font-size_md`   | `1rem`           |
+| `--ori-font-size_lg`   | `1.125rem`       |
+| `--ori-font-size_xl`   | `1.25rem`        |
+| `--ori-font-size_xxl`  | `1.375rem`       |
 
-The base reset anchors all of this: `html { font-size: 16px }`, which is what the `em`-based aliases
-resolve against.
+Nothing pins the root: the size/font scales are `rem`, so they resolve against the user's browser
+font-size setting (16px by default — at which the scales compute to their historical px values).
 
 ## Elevation — shadow tokens
 

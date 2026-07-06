@@ -1,24 +1,25 @@
 @layer ori.tokens {
     :root {
         --ori-size-action_text: 1em;
-        --ori-size-action_xs: 20px;
-        --ori-size-action_sm: 24px;
-        /* 44px meets the iOS HIG ≥44pt and Android Material ≥48dp touch-target minimums.
-           xs/sm remain compact opt-ins for dense/icon-only UI. */
-        --ori-size-action_md: 44px;
-        --ori-size-action_lg: 48px;
-        --ori-size-action_xl: 60px;
-        --ori-size-action_xxl: 68px;
+        --ori-size-action_xs: 1.25rem;
+        --ori-size-action_sm: 1.5rem;
+        /* The scale is rem (16px baseline) so controls follow the user's browser font-size setting.
+           2.75rem = 44px at the default root — meets the iOS HIG ≥44pt and Android Material ≥48dp
+           touch-target minimums. xs/sm remain compact opt-ins for dense/icon-only UI. */
+        --ori-size-action_md: 2.75rem;
+        --ori-size-action_lg: 3rem;
+        --ori-size-action_xl: 3.75rem;
+        --ori-size-action_xxl: 4.25rem;
 
         --ori-size-action: var(--ori-size-action_text);
 
         --ori-size-action-space_text: 0;
-        --ori-size-action-space_xs: 10px;
-        --ori-size-action-space_sm: 12px;
-        --ori-size-action-space_md: 10px;
-        --ori-size-action-space_lg: 12px;
-        --ori-size-action-space_xl: 10px;
-        --ori-size-action-space_xxl: 12px;
+        --ori-size-action-space_xs: 0.625rem;
+        --ori-size-action-space_sm: 0.75rem;
+        --ori-size-action-space_md: 0.625rem;
+        --ori-size-action-space_lg: 0.75rem;
+        --ori-size-action-space_xl: 0.625rem;
+        --ori-size-action-space_xxl: 0.75rem;
 
         --ori-size-action-space: var(--ori-size-action-space_text);
     }

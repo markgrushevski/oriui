@@ -1,12 +1,14 @@
 @layer ori.tokens {
     :root {
-        --ori-font-size-step_dec: 2px;
-        --ori-font-size-step_inc: 2px;
+        --ori-font-size-step_dec: 0.125rem;
+        --ori-font-size-step_inc: 0.125rem;
 
         --ori-font-size_text: 1em;
         --ori-font-size_xs: calc(var(--ori-font-size_md) - var(--ori-font-size-step_dec) * 2);
         --ori-font-size_sm: calc(var(--ori-font-size_md) - var(--ori-font-size-step_dec) * 1);
-        --ori-font-size_md: 16px;
+        /* rem (16px baseline: 1rem = 16px, steps 0.125rem = 2px) so type follows the user's browser
+           font-size setting; the calc() steps above/below derive from md. */
+        --ori-font-size_md: 1rem;
         --ori-font-size_lg: calc(var(--ori-font-size_md) + var(--ori-font-size-step_inc) * 1);
         --ori-font-size_xl: calc(var(--ori-font-size_md) + var(--ori-font-size-step_inc) * 2);
         --ori-font-size_xxl: calc(var(--ori-font-size_md) + var(--ori-font-size-step_inc) * 3);
