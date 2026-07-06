@@ -10,10 +10,56 @@ a handful of design tokens — a few CSS custom properties in your own styleshee
 This is the **prototype fast, scale without rewriting** payoff: the same `<OriButton>` you shipped on
 day one becomes _on-brand_ by the time you ship to users, and nothing about the component changes.
 
-This page is the tweaking guide — **override a token globally**, **style one instance**, **scope an
-override to a subtree**, and a **5-minute brand walkthrough**. Authoring a complete named skin and
-switching modes is [Theming](/guides/theming); the exhaustive token inventory is
+For **color** there are exactly three levels, ordered from safest to most manual: the **props**
+(semantic roles with a contrast guarantee — the recommended default), a **global brand override**
+(repoint the token sources once, the whole app follows), and **per-instance variables** (the escape
+hatch for a one-off). Around them this page covers **styling one instance**, **scoping an override to
+a subtree**, a **5-minute brand walkthrough**, and how customized color reaches **icons** and
+**JS-painted canvases**. Authoring a complete named skin and switching modes is
+[Theming](/guides/theming); the exhaustive token inventory is
 [Design tokens](/guides/design-tokens); the standalone-class story is [Using the CSS layer](/guides/css).
+
+## 1 · Start with the props — the semantic roles
+
+Before overriding anything, say what you mean. The styled components take a `color` **role** —
+`primary` · `secondary` · `surface` · `background` · `success` · `warn` · `danger` · `info` — and,
+where a surface can be painted more than one way, a `variant` **mapping** that decides _how_ the role
+is painted: `fill` (role as background, its `on-` color as text), `tonal` / `outline` / `text` /
+`plain` (role as tint / border / text). Color is the _role_, variant is the _mapping_ — the
+background-and-text pairing is never yours to hand-assemble.
+
+::example
+:ori-button{text="Save" color="primary" variant="fill"}
+:ori-button{text="Delete" color="danger" variant="outline"}
+:ori-button{text="Done" color="success" variant="tonal"}
+
+#vue
+
+```vue
+<OriButton text="Save" color="primary" variant="fill" />
+<OriButton text="Delete" color="danger" variant="outline" />
+<OriButton text="Done" color="success" variant="tonal" />
+```
+
+#html
+
+```html
+<button class="ori-button ori-variant_fill ori-color_primary">Save</button>
+<button class="ori-button ori-variant_outline ori-color_danger">Delete</button>
+<button class="ori-button ori-variant_tonal ori-color_success">Done</button>
+```
+
+::
+
+Why this is the recommended default: every role ships with a contrast-checked `on-` partner, and that
+pairing is **asserted, not hoped for** — an automated guard (`tests/tokens.contrast.test.ts`) parses
+the token CSS and fails the suite if any role / `on-role` pair drops below **WCAG AA (4.5:1)** for
+body text, across light and dark and every preset skin. Stay on the props and accessible contrast is
+a build-time guarantee, and your palette keeps following every skin and mode switch for free.
+
+The honest trade-off: the props only speak **roles**. There is deliberately no `text-color` or
+`bg-color` prop — when a component must be a color that isn't a role, that's the
+[escape hatch](#_4-the-escape-hatch-per-instance-color-variables) below, and the _why_ lives there too.
 
 ## Why an override just works — the `@layer` cascade
 
@@ -43,22 +89,12 @@ sits outside the layers. Every button, switch, and focus ring that resolves `--o
 reads your green. **That is the whole mechanism.** Override the source token, and the light/dark
 machinery and the per-component aliases resolve on top of your value automatically.
 
-> One sharp caveat about _where_ a token is declared. Layer precedence only breaks ties between
-> declarations on the **same** element — it does **not** make an inherited `:root` value win over a value
-> a class sets directly on an element. That is why a **global** override works from `:root` for **color**
-> (the active alias `--ori-color-primary` is declared _and resolved_ at `:root`, so repointing its
-> `*-light` / `*-dark` source there re-resolves it) but **not** for **radius and font-size** (their scales
-> live on a utility base class, not at `:root`) — see
-> [that section](#radius-and-font-size-not-globally-overridable). A **subtree** override is different
-> again: there you repoint the **resolved alias** on the wrapper, not the source — see
-> [Section 3](#3-scope-an-override-to-a-subtree).
-
 > For a **global** brand color, override the `*-light` / `*-dark` **source** tokens (e.g.
 > `--ori-color-primary-light`) in `:root` — not the resolved alias `--ori-color-primary`, which the mode
 > selectors repoint per mode (overwrite it at `:root` and you flatten dark mode). For a **single element
-> or a region**, it is the reverse — you target the resolved alias (Sections 2 and 3).
+> or a region**, it is the reverse — you target the resolved alias (sections 4 and 5).
 
-## 1 · Override a brand color globally
+## 2 · Rebrand globally — override the token sources
 
 Drop a `:root` block anywhere in your app's CSS (after importing oriUI). A color role is two source
 tokens per mode — the color and its contrast-checked `on-` text color. Set both light and dark so the
@@ -76,68 +112,52 @@ brand holds in either mode:
 ```
 
 The `on-` token is the label/icon color that sits _on_ the filled color — keep the pair at WCAG AA
-(≥ 4.5:1) yourself, the way the built-in skins do.
+(≥ 4.5:1) yourself, the way the built-in skins do. The contrast test guards the palette the library
+_ships_; your own sources are your responsibility, and both modes need their own check because dark
+inverts the pairing.
 
 This works because the active alias `--ori-color-primary` is declared **and resolved at `:root`** — it
 reads `var(--ori-color-primary-light)` there (see
 [`_themes-color-tokens.css`](/guides/design-tokens#colour-three-tiers)). Override the source at `:root`
-and the alias re-resolves, inheriting your value into every component. **Radius and font-size do not work
-this way** — read the next section before you reach for the same pattern on those.
+and the alias re-resolves, inheriting your value into every component. Overriding all four skinnable
+roles (plus their `on-` pairs, per mode) is the same move at scale — at that point consider
+[authoring a named skin](/guides/theming#authoring-a-custom-skin) instead.
 
-## Radius and font-size — _not_ globally overridable from `:root`
+### Radius and font-size — the same pattern
 
-The size scales behave differently from color, and it matters. The raw radius and font-size steps
-(`--ori-size-radius_*`, `--ori-font-size_*`) are **not** declared at `:root`. They are declared directly
-on their utility base classes — `--ori-size-radius_md: 8px` lives on `.ori-size-radius`, and
-`--ori-font-size_md: 16px` lives on `.ori-font-size`.
-
-Every styled control carries that base class. So if you write a top-level `:root { --ori-size-radius_md:
-4px }`, the element's **own** `.ori-size-radius` declaration (`8px`) shadows the value it would otherwise
-inherit from `:root`. A value set directly on an element always beats an inherited value — and `@layer`
-does not change that, because layer precedence only resolves ties between declarations on the _same_
-element, not between an inherited value and a directly-set one. The `:root` override is silently ignored
-on every component.
-
-There are two correct ways to change radius or font-size:
-
-**A · Repoint the step on the base class itself.** Redeclare the scale on `.ori-size-radius` /
-`.ori-font-size`. Because your rule is unlayered, it wins over oriUI's class declaration, and now _that_
-is the value every component reads:
+The size scales live at `:root` too (`--ori-size-radius_*`, `--ori-font-size_*`), so the same
+unlayered block rebrands them. `--ori-size-radius_md` anchors the whole scale — `xs` / `sm` / `lg` /
+`xl` are `calc()`-derived from it, so one override moves every derived step proportionally (`zero`
+and the `9999px` `rounded` pill stay fixed). The font ladder pivots on `--ori-font-size_md` the same
+way, in fixed ±2px steps:
 
 ```css
-/* tighter corners everywhere a component resolves the md radius */
-.ori-size-radius {
-    --ori-size-radius_md: 4px;
-}
-
-/* a roomier default body size */
-.ori-font-size {
-    --ori-font-size_md: 18px;
+:root {
+    --ori-size-radius_md: 4px; /* sm/lg/xl re-derive — cards (lg) tighten along */
+    --ori-font-size_md: 15px; /* the control ladder shifts around the new md */
 }
 ```
 
-**B · Set it per instance** via the utility class or the Vue prop (no override needed) — covered in
-[Section 2](#2-style-one-instance).
+> A repoint only moves components that resolve a **derived** step. Several controls pin a fixed step
+> on purpose — buttons, badges, tags, and avatars default to `rounded` (the `9999px` pill) — so an
+> `_md` repoint doesn't square a default button. Bring such a control onto your house radius per
+> instance: the `radius="md"` prop / `ori-size-radius_md` class.
 
-> Radius caveat worth internalizing: repointing `_md` only moves components that resolve the **md** step.
-> Several controls pin a different step on purpose — **buttons default to `rounded`** (the `9999px` pill),
-> so an `_md` repoint does nothing to a default button. To bring a control onto your house radius, set its
-> `radius` prop / `ori-size-radius_md` class to `md`, or repoint the step it actually uses.
+## 3 · Style one instance
 
-## 2 · Style one instance
+When you want to change _one_ component, not the whole library, reach for the utility classes (CSS) or
+the matching props (Vue) — no token override needed. Every utility is **single-class**: one class
+repoints one token, no paired base class.
 
-When you want to change _one_ component, not the whole library, reach for the utility classes (CSS) or the
-matching props (Vue) — no token override needed. The Vue props map 1:1 to the class pairs.
+| Axis    | Utility class                                 | Vue prop  |
+| ------- | --------------------------------------------- | --------- |
+| Color   | `ori-color_*`                                 | `color`   |
+| Variant | `ori-variant_*`                               | `variant` |
+| Size    | `ori-<name>_*` sugar (or `ori-size-action_*`) | `size`    |
+| Radius  | `ori-size-radius_*`                           | `radius`  |
 
-| Axis    | Utility class pair                      | Vue prop  |
-| ------- | --------------------------------------- | --------- |
-| Color   | `ori-color` + `ori-color_*`             | `color`   |
-| Size    | `ori-size-action` + `ori-size-action_*` | `size`    |
-| Radius  | `ori-size-radius` + `ori-size-radius_*` | `radius`  |
-| Variant | `ori-variant` + `ori-variant_*`         | `variant` |
-
-This table is a quick orientation map; the full per-component class reference lives on each component page
-— see [Button](/components/button) for the canonical list.
+This table is a quick orientation map; the full per-component class reference lives on each component
+page — see [Button](/components/button) for the canonical list.
 
 ::example
 :ori-button{text="Brand" color="primary" variant="fill"}
@@ -157,39 +177,61 @@ This table is a quick orientation map; the full per-component class reference li
 #html
 
 ```html
-<button class="ori-button … ori-variant ori-variant_fill ori-color ori-color_primary">Brand</button>
-<button class="ori-button … ori-variant ori-variant_tonal ori-color ori-color_danger">Danger</button>
-<button class="ori-button … ori-size-radius ori-size-radius_sm ori-variant_outline">Squared</button>
-<button class="ori-button … ori-size-action ori-size-action_lg ori-variant_fill">Large</button>
+<button class="ori-button ori-variant_fill ori-color_primary">Brand</button>
+<button class="ori-button ori-variant_tonal ori-color_danger">Danger</button>
+<button class="ori-button ori-size-radius_sm ori-variant_outline">Squared</button>
+<button class="ori-button ori-button_lg ori-variant_fill">Large</button>
 ```
 
 ::
 
-For a truly one-off tweak, repoint the **resolved alias** on the element itself. `--ori-color` (with its
-`--ori-color-on` partner) is what every variant actually reads, so it recolors just this button:
+## 4 · The escape hatch — per-instance color variables
 
-```html
-<button class="ori-button ori-variant ori-variant_fill" style="--ori-color: #16a34a; --ori-color-on: #ffffff">
-    One green button
-</button>
+When the color you need isn't one of the eight roles — a data-series swatch, a partner logo tint, one
+marketing CTA — repoint the **resolved alias pair** on the element itself. `--ori-color` (the accent)
+and `--ori-color-on` (its legible partner) are what every variant actually reads:
+
+```vue
+<OriButton text="One teal button" style="--ori-color: teal; --ori-color-on: white" />
 ```
 
-Don't set `--ori-color-primary-light` on the element here — nothing on the element reads it. That source
-token only re-resolves into the alias up at `:root` (Section 1); set directly on the button it is inert.
+```html
+<button class="ori-button ori-variant_fill" style="--ori-color: teal; --ori-color-on: white">One teal button</button>
+```
 
-## 3 · Scope an override to a subtree
+Because you repoint the alias the variants are built on, **all the machinery keeps working**:
+
+- every variant maps your accent correctly — `fill` paints it as the background with `--ori-color-on`
+  text, `tonal` / `outline` / `text` derive the tint / border / text from it;
+- hover and active states stay right, because they are `color-mix()` **derivations of the alias**
+  (a filled button hovers to `color-mix(in srgb, var(--ori-color), white 15%)`) — there is no second
+  "hover color" to supply;
+- the focus ring (`outline: 2px solid var(--ori-color)`) follows;
+- state styling is untouched — it keys off real attributes (`disabled`, `aria-busy`, `data-active`),
+  never off the palette.
+
+This channel is _why_ there are no `text-color` / `bg-color` props. A prop pair like that would bypass
+the variant mapping and re-introduce the manual "pick a background AND a matching text" pairing the
+roles abstract away — silently stepping around the AA-asserted pairing from level 1 — and it wouldn't
+stop at two props (`border-color`, `hover-color`, …). The variable pair is strictly more powerful: one
+declaration, every variant, every derived state
+([the recorded decision](https://github.com/markgrushevski/oriui/blob/main/DECISIONS.md)).
+
+The honest trade-off: **contrast responsibility shifts to you.** The contrast test asserts the shipped
+role pairs, not your inline values — always set `--ori-color-on` together with `--ori-color`, and pick
+a pair that clears 4.5:1 (`white` on `teal` above is ~4.8:1). One more sharp edge: don't set
+`--ori-color-primary-light` on the element here — nothing on the element reads it. That source token
+only re-resolves into the alias up at `:root` (section 2); set directly on the element it is inert.
+
+## 5 · Scope an override to a subtree
 
 To restyle a _region_ — a marketing section, a settings panel, an embedded widget — set inherited tokens
-(or a mode class) on a wrapper. Everything inside inherits; everything outside is untouched.
+(or a mode class) on a wrapper. Everything inside inherits; everything outside is untouched. The rule
+for _which_ token to set: a wrapper can only feed tokens its descendants **substitute locally**.
 
-The catch is the same one from the radius section: a wrapper can only change tokens its descendants
-**inherit and read directly**. Components read the **resolved alias** (`--ori-color`, bound from
-`--ori-color-primary` by the color class), so repoint _that_ on the wrapper and every descendant picks it
-up. Repointing a `*-light` / `*-dark` **source** token on the wrapper does nothing — the alias is resolved
-up at `:root`, so the wrapper's source value is never read (the same shadowing that bites radius and
-font-size).
-
-Repoint the **resolved alias** on a wrapper — every descendant that resolves primary inherits it:
+**Color:** components bind the pair per element (`.ori-color_primary` reads
+`var(--ori-color-primary)` right on the component), so repoint the **resolved role alias** on the
+wrapper and every descendant that resolves primary picks it up:
 
 ```html
 <section class="promo" style="--ori-color-primary: #16a34a; --ori-color-on-primary: #ffffff">
@@ -197,14 +239,21 @@ Repoint the **resolved alias** on a wrapper — every descendant that resolves p
 </section>
 ```
 
-Setting the alias directly pins it for the region in **both** modes. To keep a region mode-aware, wrap it
-in `.ori-theme_light` / `.ori-theme_dark` and repoint the `*-light` / `*-dark` source there — that
-re-resolves the alias on the wrapper, per mode.
+Repointing a `*-light` / `*-dark` **source** token on the wrapper does nothing — the alias was already
+resolved up at `:root`, so the wrapper's source value is never read. Setting the alias directly pins it
+for the region in **both** modes; to keep a region mode-aware, wrap it in `.ori-theme_light` /
+`.ori-theme_dark` and repoint the `*-light` / `*-dark` source there — that re-resolves the alias on the
+wrapper, per mode.
 
-> You **cannot** scope radius or font-size by setting `--ori-size-radius_md` / `--ori-font-size_md` on a
-> wrapper — the component's own `.ori-size-radius` / `.ori-font-size` class shadows the inherited value.
-> To vary radius for a region, set the per-instance `radius` prop / `ori-size-radius_*` class on the
-> components in it, or scope a `.ori-size-radius { … }` rule to that region's selector.
+**Radius and font-size** scope the other way around: their alias is substituted **on each component**
+from the raw step (a card reads `var(--ori-size-radius_lg)` on itself), so on a wrapper you repoint
+the **raw step**, not the alias:
+
+```html
+<div style="--ori-size-radius_md: 4px; --ori-font-size_md: 15px">
+    <!-- panels, menus, inputs in here tighten; buttons keep their pinned `rounded` step -->
+</div>
+```
 
 Or scope **mode** to a subtree with `.ori-theme_light` / `.ori-theme_dark` — the same selectors the global
 `html.dark` toggle uses, but on any element:
@@ -221,7 +270,7 @@ concern — see [Theming](/guides/theming#scoping-a-skin-or-mode-to-a-subtree). 
 `:root[data-ori-skin='…']`, so `data-ori-skin` on a non-root wrapper matches nothing today; mode scoping
 via `.ori-theme_*` works anywhere.)
 
-## 4 · Five-minute brand walkthrough
+## 6 · Five-minute brand walkthrough
 
 The entire job, start to finish: **set your primary (light + dark), and a radius if you want one.** Same
 components, no rewrite.
@@ -232,32 +281,63 @@ Import oriUI once (the stylesheet, or the Vue package which includes it):
 import '@oriui/css'; // or: import '@oriui/vue' for the Vue components
 ```
 
-Then add this to your stylesheet. The primary goes in a `:root` block (color is `:root`-declared, so it
-inherits library-wide); the radius goes on the `.ori-size-radius` base class (its scale lives there, not
-at `:root`):
+Then add one `:root` block to your stylesheet:
 
 ```css
-/* your brand primary, both modes, with legible on-colors */
 :root {
+    /* your brand primary, both modes, with legible on-colors */
     --ori-color-primary-light: #7c3aed;
     --ori-color-on-primary-light: #ffffff;
     --ori-color-primary-dark: #a78bfa;
     --ori-color-on-primary-dark: #1e1035;
-}
 
-/* your house radius — for every control that resolves the md step */
-.ori-size-radius {
+    /* your house radius — the derived scale (xs–xl) follows proportionally */
     --ori-size-radius_md: 6px;
 }
 ```
 
 That's it. Every primary button, focus ring, switch, and accent across the library is now your violet, in
 light **and** dark — and it stays accessible, because state is real attributes and the `on-` pairing
-carries the contrast. The radius change reaches every control that resolves the **md** step; controls
-pinned to another step (buttons default to `rounded`) keep theirs until you set their `radius` prop /
-`ori-size-radius_md` class to `md`. No component was edited, no class was added, nothing was forked. Start
-with the defaults to prototype; drop in this block when you're ready to ship — that's _scale without
-rewriting_.
+carries the contrast. The radius change reaches every control on a **derived** step (cards, panels,
+inputs); controls pinned to another step (buttons default to `rounded`) keep theirs until you set their
+`radius` prop / `ori-size-radius_md` class to `md`. No component was edited, no class was added, nothing
+was forked. Start with the defaults to prototype; drop in this block when you're ready to ship — that's
+_scale without rewriting_.
+
+## Icons follow the text color
+
+There is no separate icon-color token — an icon **is text**, as far as color flows. `.ori-icon`
+resolves its color from `currentcolor`, and everything inside it paints along
+(`.ori-icon > * { fill: currentcolor }`), so whatever colors the text colors the icon: a role class, a
+themed button, the escape-hatch pair above, or a plain CSS `color:` on any wrapper. Inside a filled
+button the icon automatically renders in the `on-` color; a standalone icon takes the same `color`
+prop / `ori-color_*` class as everything else:
+
+```html
+<span style="color: teal">
+    <i class="ori-icon" aria-hidden="true"><svg viewBox="0 0 24 24">…</svg></i>
+    teal text, teal icon — one declaration
+</span>
+```
+
+## Reading tokens from JS
+
+CSS variables stop at the canvas edge: Konva, ECharts, WebGL painters draw outside the CSS cascade, and
+`getComputedStyle().getPropertyValue('--x')` only returns the _unresolved_ `var()` chain. The headless
+package ships the bridge — `useToken` / `useThemeColor` from `@oriui/headless/vue` resolve a token to
+its computed value and re-resolve on every skin / mode flip:
+
+```ts
+import { useThemeColor } from '@oriui/headless/vue';
+
+const brand = useThemeColor('primary'); // resolved --ori-color-primary; '' until mounted (SSR-safe)
+watch(brand, (c) => engine.setColor(c || fallback)); // skin/mode flips re-push automatically
+```
+
+Colors-only for now — the probe resolves through the `color` property, so the token must resolve to a
+`<color>`. The full pattern (seeding a canvas engine on mount, the framework-agnostic `resolveToken` /
+`observeTheme` primitives, the Svelte twin) is in the
+[`@oriui/headless` README](https://github.com/markgrushevski/oriui/blob/main/packages/headless/README.md#reading-tokens-from-js).
 
 ## See also
 
