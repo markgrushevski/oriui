@@ -45,6 +45,10 @@ files rely on. What each entry contains:
 | `@oriui/css/reset.css`          |      —      |  yes  |       —        |     —     | —                  |
 | `@oriui/css/components/<n>.css` |      —      |   —   |       —        |     —     | one (deps inlined) |
 
+`reset.css` is border-box + Meyer-style margin/padding/border zeroing for **your page**, nothing more
+(it no longer pins `html { font-size }` — the rem base follows the user's browser setting). The
+components don't need it: each block declares its own box-sizing / UA neutralization.
+
 ```js
 import '@oriui/css/base.css';
 import '@oriui/css/components/button.css';
@@ -59,9 +63,9 @@ gzip eats most of the byte cost.
 
 `import '@oriui/css'` (the full bundle, also `@oriui/css/styles.css`) is unchanged and includes everything.
 
-> Caveat: the components are not yet fully reset-independent — some rely on the global
-> box-sizing/margin zeroing — so skipping `reset.css` may leak UA styles until the self-sufficiency
-> audit lands.
+> The components are **reset-independent**: they render identically with `base.css` or with
+> `tokens.css` alone (bring-your-own-reset), guarded by a computed-style diff over every component in
+> real Chromium (`e2e/reset-independence.spec.ts`).
 
 > TypeScript note: under TypeScript 6's `noUncheckedSideEffectImports`, bare CSS subpath imports
 > (`import '@oriui/css/base.css'`) are errors unless the compiler can type them. Either set

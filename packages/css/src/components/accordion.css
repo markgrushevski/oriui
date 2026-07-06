@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-accordion, .ori-accordion *),
+    :where(.ori-accordion, .ori-accordion *)::before,
+    :where(.ori-accordion, .ori-accordion *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-accordion {
         /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
            (utilities layer) overrides by layer order. Drives the open marker + chevron. */

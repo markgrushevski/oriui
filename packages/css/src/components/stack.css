@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-stack, .ori-cluster, .ori-stack *, .ori-cluster *),
+    :where(.ori-stack, .ori-cluster, .ori-stack *, .ori-cluster *)::before,
+    :where(.ori-stack, .ori-cluster, .ori-stack *, .ori-cluster *)::after {
+        box-sizing: border-box;
+    }
+
     /* Flow layout primitives. Gap is the `--ori-size-gap` alias — repoint it with the single-class
        `.ori-size-gap_*` utilities (or a scoped `--ori-size-gap` override). */
     .ori-stack,

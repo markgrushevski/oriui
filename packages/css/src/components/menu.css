@@ -3,6 +3,15 @@
 @import './anchored.css';
 
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-menu, .ori-menu *),
+    :where(.ori-menu, .ori-menu *)::before,
+    :where(.ori-menu, .ori-menu *)::after {
+        box-sizing: border-box;
+    }
+
     /* The menu surface — a roving-tabindex action list floated by the shared `.ori-anchored` primitive
        (composed alongside this class). Unlike the popover it is not top-layer (no Popover API), so it
        carries a z-index; placement + collision flip come from `.ori-anchored`. */

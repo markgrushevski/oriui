@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-select, .ori-select *),
+    :where(.ori-select, .ori-select *)::before,
+    :where(.ori-select, .ori-select *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-select {
         --ori-select-border: color-mix(in srgb, currentcolor 28%, transparent);
         /* Baked default for the action-size axis: the bare `.ori-select` is already a valid `md`

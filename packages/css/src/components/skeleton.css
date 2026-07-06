@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-skeleton, .ori-skeleton *),
+    :where(.ori-skeleton, .ori-skeleton *)::before,
+    :where(.ori-skeleton, .ori-skeleton *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-skeleton {
         /* Baked radius default so a bare `.ori-skeleton` is valid; `.ori-size-radius_*` repoints it. */
         --ori-size-radius: var(--ori-size-radius_sm);

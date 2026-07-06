@@ -4,6 +4,15 @@
 @import './spinner.css';
 
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-button, .ori-button *),
+    :where(.ori-button, .ori-button *)::before,
+    :where(.ori-button, .ori-button *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-button {
         /* Baked per-axis defaults so a bare `.ori-button` is a valid filled-primary, rounded, md
            button. Single-class utilities (.ori-button_lg, .ori-size-radius_zero, .ori-color_danger,
@@ -26,6 +35,9 @@
 
         height: max(calc(2em + 0.5em), var(--ori-size-action));
 
+        /* Explicit padding-block: the UA gives a native <button> vertical padding the reset used to
+           zero — without this the label drifts off-center whenever base.css isn't loaded. */
+        padding-block: 0;
         padding-inline: 1em;
 
         transition:
@@ -42,6 +54,10 @@
         background-color: var(--ori-variant-bg-color);
         color: var(--ori-variant-text-color);
 
+        /* A native <button> gets the UA system font, not the page font (no reset ever set fonts) —
+           inherit it so the button matches its surroundings and the `as` renders (<a>, router links)
+           to the letter. Size/leading stay component-owned below. */
+        font-family: inherit;
         font-size: var(--ori-font-size);
         line-height: 1;
         /* A button is never underlined — even rendered as a link (`as=NuxtLink` → <a>). */

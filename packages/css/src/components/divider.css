@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-divider, .ori-divider *),
+    :where(.ori-divider, .ori-divider *)::before,
+    :where(.ori-divider, .ori-divider *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-divider {
         /* Subtle line by default; `.ori-color_*` (ori.utilities, wins by layer order) repoints
            --ori-color to a full role color. Deliberately sets the utility-owned alias here for an

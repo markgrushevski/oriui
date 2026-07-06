@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-anchored, .ori-anchored *),
+    :where(.ori-anchored, .ori-anchored *)::before,
+    :where(.ori-anchored, .ori-anchored *)::after {
+        box-sizing: border-box;
+    }
+
     /* Anchored-panel placement primitive — CSS Anchor Positioning (Baseline 2026). A floating element
        (popover, menu, listbox) sets `position-anchor` to the trigger's `anchor-name` (via `--ori-anchor`)
        and picks a placement class; `position-area` places it and `position-try-fallbacks` flips it on
@@ -13,6 +22,11 @@
         --ori-anchored-gap: 0.25rem;
 
         position: fixed;
+
+        /* Explicit margins: the UA gives a `[popover]` element `margin: auto` (it centers a plain
+           popover), which the reset used to zero — an anchored panel must hug its position-area, so
+           zero them here; the placement classes below re-add the gap on the facing side. */
+        margin: 0;
 
         position-anchor: var(--ori-anchor);
         position-try-fallbacks:

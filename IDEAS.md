@@ -71,12 +71,17 @@ Roughly by priority.
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
 10. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
     devtool.
-11. ◽ **Reset-independence audit** — make every `.ori-*` component block self-sufficient (declare its
-    own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` + components works with **no
-    reset at all** — today only 10 of 32 component files set `box-sizing` themselves. Also reconsider
-    `html { font-size: 16px }` in `reset.css`: it's not a reset — it pins the rem base and overrides
-    the user's browser font-size preference (an a11y smell); dropping it would let the rem tokens
-    scale with user settings.
+11. ⭐ **Reset-independence audit** — **SHIPPED (2026-07-06).** Make every `.ori-*` component block
+    self-sufficient (declare its own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` +
+    components works with **no reset at all** — today only 10 of 32 component files set `box-sizing`
+    themselves. Also reconsider `html { font-size: 16px }` in `reset.css`: it's not a reset — it pins
+    the rem base and overrides the user's browser font-size preference (an a11y smell); dropping it
+    would let the rem tokens scale with user settings. Shipped as a computed-style **diff e2e** over
+    all 32 components (`e2e/reset-independence.spec.ts`: one fixture rendered under `tokens.css` alone
+    vs `base.css` in real Chromium) plus the fixes it forced — a border-box subtree rule per block,
+    `padding-block: 0` + `font-family: inherit` on Button, `padding-block: 0` on the input field,
+    `padding: 0` on the Dialog close, `margin: 0` on `.ori-anchored` (the UA gives `[popover]`
+    `margin: auto`) — and the `font-size` pin is dropped: the rem base now follows the browser setting.
 
 ## Idea sources & periodic mining
 

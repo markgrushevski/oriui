@@ -2,6 +2,15 @@
 @import './icon.css';
 
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-toaster, .ori-toast, .ori-toaster *, .ori-toast *),
+    :where(.ori-toaster, .ori-toast, .ori-toaster *, .ori-toast *)::before,
+    :where(.ori-toaster, .ori-toast, .ori-toaster *, .ori-toast *)::after {
+        box-sizing: border-box;
+    }
+
     /* Portal container: fixed to a screen corner, ignores pointer events so it never blocks the
        page; the toasts themselves re-enable pointer events. */
     .ori-toaster {
