@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-avatar, .ori-avatar *),
+    :where(.ori-avatar, .ori-avatar *)::before,
+    :where(.ori-avatar, .ori-avatar *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-avatar {
         --ori-font-size_md: calc(1rem + 2px);
         /* Baked per-axis defaults so a bare `.ori-avatar` is a valid lg, rounded avatar. Single-class

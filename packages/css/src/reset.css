@@ -1,3 +1,8 @@
+/* The global reset — border-box everywhere plus Meyer-style margin/padding/border zeroing, in its own
+   `ori.reset` layer so any author style overrides it. Nothing more: it used to pin `html { font-size:
+   16px }`, but that is not a reset — it overrode the user's browser font-size preference (an a11y
+   smell) and no component relies on it (they are px/em-based; proven by e2e/reset-independence.spec.ts,
+   whose reset-free side never had the pin) — so the rem base now follows the browser setting. */
 @layer ori.reset {
     *,
     *::before,
@@ -9,9 +14,5 @@
         margin: 0;
         padding: 0;
         border: 0;
-    }
-
-    html {
-        font-size: 16px;
     }
 }

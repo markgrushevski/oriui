@@ -2,6 +2,15 @@
 @import './icon.css';
 
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-tag, .ori-tag *),
+    :where(.ori-tag, .ori-tag *)::before,
+    :where(.ori-tag, .ori-tag *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-tag {
         /* Baked per-axis defaults so a bare `.ori-tag` is a valid tonal-primary, rounded, sm chip.
            Single-class utilities (.ori-color_danger, .ori-size-radius_zero, .ori-font-size_lg,

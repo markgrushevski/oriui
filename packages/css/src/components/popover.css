@@ -3,6 +3,15 @@
 @import './anchored.css';
 
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-popover, .ori-popover *),
+    :where(.ori-popover, .ori-popover *)::before,
+    :where(.ori-popover, .ori-popover *)::after {
+        box-sizing: border-box;
+    }
+
     /* The popover surface — a floating panel on the Popover API (`popover` + `popovertarget`: top-layer,
        light-dismiss, Esc, all zero-JS). Placement comes from the shared `.ori-anchored` primitive
        (composed alongside this class); this file owns only the surface: sizing, padding, border,

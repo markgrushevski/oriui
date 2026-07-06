@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-input, .ori-input__field, .ori-input *, .ori-input__field *),
+    :where(.ori-input, .ori-input__field, .ori-input *, .ori-input__field *)::before,
+    :where(.ori-input, .ori-input__field, .ori-input *, .ori-input__field *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-input {
         --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
         --ori-input-bg: transparent;
@@ -71,6 +80,9 @@
         box-sizing: border-box;
         width: 100%;
         height: var(--ori-size-action);
+        /* Explicit padding-block: the UA gives a text field vertical padding the reset used to zero —
+           without this the text drifts off-center whenever base.css isn't loaded. */
+        padding-block: 0;
         padding-inline: 0.75em;
 
         transition:

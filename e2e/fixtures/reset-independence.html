@@ -1,0 +1,413 @@
+<!-- Reset-independence fixture: minimal representative markup for EVERY component css file in
+     packages/css/src/components/ (class structures cribbed from the SFC templates; anchored uses its
+     documented popover-composition markup). Each component instance sits in an inert unclassed
+     <div data-c="<css-file-basename>"> wrapper — the spec labels every element by its nearest data-c
+     ancestor, and asserts each dist/components/*.css basename appears here as a data-c value.
+     Rule: every element with heavy UA defaults (button, input, select, textarea, ul, p, h2, dialog,
+     kbd, a, summary) must carry the component class that claims to style it — that is exactly the
+     contract under test. Bare div/span/svg/i/label carriers are UA-inert and safe. -->
+
+<div data-c="accordion">
+    <div class="ori-accordion">
+        <details class="ori-accordion__item" open>
+            <summary class="ori-accordion__trigger">
+                <span class="ori-accordion__title">Item one</span>
+                <svg class="ori-accordion__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </summary>
+            <div class="ori-accordion__panel">Panel content</div>
+        </details>
+        <details class="ori-accordion__item">
+            <summary class="ori-accordion__trigger">
+                <span class="ori-accordion__title">Item two</span>
+                <svg class="ori-accordion__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </summary>
+            <div class="ori-accordion__panel">More content</div>
+        </details>
+    </div>
+</div>
+
+<div data-c="alert">
+    <div class="ori-alert" role="status">
+        <div class="ori-alert__icon">
+            <i class="ori-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2 2 22h20Z" /></svg>
+            </i>
+        </div>
+        <div class="ori-alert__content">
+            <div class="ori-alert__title">Heads up</div>
+            <div class="ori-alert__body">Something happened.</div>
+            <div class="ori-alert__actions">
+                <button type="button" class="ori-button">Undo</button>
+            </div>
+        </div>
+        <button type="button" class="ori-alert__close" aria-label="Dismiss">
+            <i class="ori-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </i>
+        </button>
+    </div>
+</div>
+
+<!-- anchored — the placement primitive, in its documented composition: a popover surface anchored to
+     a trigger (the panel stays closed; computed styles resolve regardless). -->
+<div data-c="anchored">
+    <button type="button" class="ori-button" popovertarget="anchored-panel" style="anchor-name: --anchored-demo">
+        Anchored
+    </button>
+    <div
+        id="anchored-panel"
+        popover
+        class="ori-popover ori-anchored ori-anchored_top-start"
+        style="--ori-anchor: --anchored-demo"
+        aria-label="Anchored panel"
+    >
+        Floats above the trigger
+    </div>
+</div>
+
+<div data-c="avatar">
+    <div class="ori-avatar ori-avatar_titled">
+        <div class="ori-avatar__backdrop" aria-hidden="true">AB</div>
+        <div class="ori-avatar__text">
+            <div class="ori-avatar__title">Ada Byron</div>
+            <div class="ori-avatar__subtitle">Engineer</div>
+        </div>
+    </div>
+</div>
+
+<div data-c="badge">
+    <span class="ori-badge">3</span>
+    <span class="ori-badge-anchor">
+        <span>Inbox</span>
+        <span class="ori-badge ori-badge_floating">9</span>
+    </span>
+    <span class="ori-badge ori-badge_dot" aria-hidden="true"></span>
+</div>
+
+<div data-c="button">
+    <button type="button" class="ori-button"><span class="ori-button__text">Save</span></button>
+    <a class="ori-button" href="#save">Link button</a>
+    <button type="button" class="ori-button ori-button_icon" aria-label="Add">
+        <i class="ori-icon ori-button__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z" /></svg>
+        </i>
+    </button>
+    <button type="button" class="ori-button" disabled>Disabled</button>
+</div>
+
+<div data-c="card">
+    <div class="ori-card">
+        <div class="ori-card__header">
+            <div class="ori-card__header-prepend"></div>
+            <div class="ori-card__headline">
+                <div class="ori-card__title">Card title</div>
+                <div class="ori-card__subtitle">Subtitle</div>
+            </div>
+            <div class="ori-card__header-append"></div>
+        </div>
+        <div class="ori-card__body">Card body copy.</div>
+        <div class="ori-card__actions">
+            <button type="button" class="ori-button">Go</button>
+        </div>
+    </div>
+</div>
+
+<div data-c="checkbox">
+    <label class="ori-checkbox">
+        <input class="ori-checkbox__input" type="checkbox" checked />
+        <span class="ori-checkbox__box" aria-hidden="true"></span>
+        <span class="ori-checkbox__label">Accept terms</span>
+    </label>
+</div>
+
+<div data-c="combobox">
+    <div class="ori-combobox">
+        <label class="ori-combobox__label" for="cbx-input">
+            Fruit<span class="ori-combobox__required" aria-hidden="true">*</span>
+        </label>
+        <div class="ori-combobox__control" style="anchor-name: --cbx">
+            <input id="cbx-input" class="ori-input__field ori-combobox__input" role="combobox" aria-expanded="false" />
+            <button type="button" class="ori-combobox__clear" aria-label="Clear">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </button>
+            <button type="button" class="ori-combobox__trigger" aria-label="Open">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+            </button>
+            <ul
+                class="ori-combobox__listbox ori-anchored ori-anchored_bottom-start"
+                role="listbox"
+                style="--ori-anchor: --cbx"
+            >
+                <li class="ori-combobox__option ori-combobox__option_selected" role="option" aria-selected="true">
+                    Apple
+                </li>
+                <li class="ori-combobox__option" role="option">Banana</li>
+                <li class="ori-combobox__empty">No results</li>
+            </ul>
+        </div>
+        <p class="ori-combobox__hint">Pick one</p>
+    </div>
+</div>
+
+<div data-c="dialog">
+    <dialog class="ori-dialog" open>
+        <div class="ori-dialog__content">
+            <header class="ori-dialog__header">
+                <h2 class="ori-dialog__title">Dialog title</h2>
+                <button type="button" class="ori-dialog__close" aria-label="Close">&times;</button>
+            </header>
+            <div class="ori-dialog__body">Dialog body copy.</div>
+        </div>
+    </dialog>
+</div>
+
+<div data-c="divider">
+    <div class="ori-divider" role="separator"></div>
+    <div class="ori-divider ori-divider_text" role="separator">
+        <span class="ori-divider__label">or</span>
+    </div>
+</div>
+
+<div data-c="field">
+    <div class="ori-field">
+        <label class="ori-field__label" for="fld">
+            Name<span class="ori-field__required" aria-hidden="true">*</span>
+        </label>
+        <div class="ori-input ori-input_fluid">
+            <input id="fld" class="ori-input__field" type="text" aria-invalid="true" />
+        </div>
+        <p class="ori-field__error" role="alert">Required</p>
+    </div>
+    <div class="ori-field">
+        <label class="ori-field__label" for="fld2">Nickname</label>
+        <div class="ori-input ori-input_fluid">
+            <input id="fld2" class="ori-input__field" type="text" />
+        </div>
+        <p class="ori-field__hint">Optional</p>
+    </div>
+</div>
+
+<div data-c="icon">
+    <i class="ori-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2 2 22h20Z" /></svg>
+    </i>
+</div>
+
+<div data-c="input">
+    <div class="ori-input">
+        <label class="ori-input__label" for="inp">Email</label>
+        <input id="inp" class="ori-input__field" type="text" placeholder="you@example.com" />
+        <p class="ori-input__hint">We never share it</p>
+    </div>
+</div>
+
+<div data-c="join">
+    <div class="ori-join" role="group" aria-label="Pagination">
+        <button type="button" class="ori-button">1</button>
+        <button type="button" class="ori-button">2</button>
+        <button type="button" class="ori-button">3</button>
+    </div>
+</div>
+
+<div data-c="kbd">
+    <kbd class="ori-kbd">Ctrl</kbd>
+</div>
+
+<div data-c="link">
+    <a class="ori-link" href="#docs">Documentation</a>
+    <a class="ori-link ori-link_hover" href="#more">Quiet link</a>
+</div>
+
+<div data-c="menu">
+    <button type="button" class="ori-button" style="anchor-name: --mnu">Actions</button>
+    <div
+        class="ori-menu ori-anchored ori-anchored_bottom-start"
+        role="menu"
+        tabindex="-1"
+        style="--ori-anchor: --mnu"
+        aria-label="Actions"
+    >
+        <div class="ori-menu__item" role="menuitem" tabindex="-1">Rename</div>
+        <div class="ori-menu__item" role="menuitem" tabindex="-1" data-highlighted>Delete</div>
+    </div>
+</div>
+
+<div data-c="popover">
+    <button type="button" class="ori-button" popovertarget="pop-panel" style="anchor-name: --pop">Open</button>
+    <div
+        id="pop-panel"
+        popover
+        class="ori-popover ori-anchored ori-anchored_bottom-start"
+        style="--ori-anchor: --pop"
+        aria-label="Popover panel"
+    >
+        Popover content
+    </div>
+</div>
+
+<div data-c="progress">
+    <div
+        class="ori-progress"
+        role="progressbar"
+        aria-label="Loading"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="40"
+    >
+        <div class="ori-progress__track">
+            <div class="ori-progress__indicator" style="width: 40%"></div>
+        </div>
+    </div>
+</div>
+
+<div data-c="radio">
+    <div class="ori-radio-group" role="radiogroup" aria-label="Plan">
+        <div class="ori-radio-group__label">Plan</div>
+        <div class="ori-radio-group__options">
+            <label class="ori-radio">
+                <input class="ori-radio__input" type="radio" name="plan" value="basic" checked />
+                <span class="ori-radio__circle" aria-hidden="true"></span>
+                <span class="ori-radio__label">Basic</span>
+            </label>
+            <label class="ori-radio">
+                <input class="ori-radio__input" type="radio" name="plan" value="pro" />
+                <span class="ori-radio__circle" aria-hidden="true"></span>
+                <span class="ori-radio__label">Pro</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div data-c="select">
+    <div class="ori-select">
+        <label class="ori-select__label" for="sel">Country</label>
+        <div class="ori-select__control-wrap">
+            <select id="sel" class="ori-select__control">
+                <option value="is">Iceland</option>
+                <option value="no">Norway</option>
+            </select>
+            <span class="ori-select__chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+            </span>
+        </div>
+        <p class="ori-select__hint">Where you live</p>
+    </div>
+</div>
+
+<div data-c="skeleton">
+    <div class="ori-skeleton" aria-hidden="true" style="width: 8rem; height: 1rem"></div>
+</div>
+
+<div data-c="slider">
+    <div class="ori-slider">
+        <label class="ori-slider__label" for="sld">
+            <span>Volume</span>
+            <span class="ori-slider__value">40</span>
+        </label>
+        <input
+            id="sld"
+            class="ori-slider__input"
+            type="range"
+            min="0"
+            max="100"
+            value="40"
+            style="--ori-slider-pct: 40%"
+        />
+    </div>
+</div>
+
+<div data-c="spinner">
+    <div class="ori-spinner" role="status" aria-label="Loading"></div>
+</div>
+
+<div data-c="stack">
+    <div class="ori-stack ori-size-gap_md">
+        <span>First</span>
+        <span>Second</span>
+    </div>
+    <div class="ori-cluster">
+        <span>One</span>
+        <span>Two</span>
+    </div>
+</div>
+
+<div data-c="switch">
+    <label class="ori-switch">
+        <input class="ori-switch__input" type="checkbox" role="switch" checked />
+        <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
+        <span class="ori-switch__label">Notifications</span>
+    </label>
+</div>
+
+<div data-c="tabs">
+    <div class="ori-tabs">
+        <div class="ori-tabs__list" role="tablist" aria-orientation="horizontal">
+            <button
+                id="tab-0"
+                class="ori-tabs__tab"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-0"
+                tabindex="0"
+            >
+                Overview
+            </button>
+            <button
+                id="tab-1"
+                class="ori-tabs__tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-1"
+                tabindex="-1"
+            >
+                Settings
+            </button>
+        </div>
+        <div id="panel-0" class="ori-tabs__panel" role="tabpanel" aria-labelledby="tab-0" tabindex="0">First panel</div>
+        <div id="panel-1" class="ori-tabs__panel" role="tabpanel" aria-labelledby="tab-1" tabindex="0" hidden>
+            Second panel
+        </div>
+    </div>
+</div>
+
+<div data-c="tag">
+    <span class="ori-tag">
+        <span class="ori-tag__text">Vue</span>
+        <button type="button" class="ori-tag__close" aria-label="Remove">
+            <i class="ori-icon ori-tag__close-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            </i>
+        </button>
+    </span>
+</div>
+
+<div data-c="textarea">
+    <div class="ori-textarea">
+        <label class="ori-textarea__label" for="txa">Notes</label>
+        <textarea id="txa" class="ori-textarea__field" rows="3"></textarea>
+        <p class="ori-textarea__hint">Optional details</p>
+    </div>
+</div>
+
+<div data-c="toast">
+    <div class="ori-toaster ori-toaster_bottom-right">
+        <div class="ori-toast" role="status">
+            <div class="ori-toast__body">
+                <div class="ori-toast__title">Saved</div>
+                <div class="ori-toast__text">Your changes are safe.</div>
+            </div>
+            <button type="button" class="ori-toast__close" aria-label="Dismiss notification">&times;</button>
+        </div>
+    </div>
+</div>
+
+<div data-c="tooltip">
+    <span class="ori-tooltip">
+        <span class="ori-tooltip__trigger" aria-describedby="tt-bubble">
+            <button type="button" class="ori-button">Hover me</button>
+        </span>
+        <span id="tt-bubble" class="ori-tooltip__bubble ori-tooltip__bubble_top" role="tooltip">Helpful hint</span>
+    </span>
+</div>

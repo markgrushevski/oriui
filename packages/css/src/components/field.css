@@ -1,4 +1,13 @@
 @layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-field, .ori-field *),
+    :where(.ori-field, .ori-field *)::before,
+    :where(.ori-field, .ori-field *)::after {
+        box-sizing: border-box;
+    }
+
     .ori-field {
         /* Baked default for the font-size axis (text scale): a bare `.ori-field` is already a valid
            `md` field. A `.ori-font-size_*` utility repoints it; the label / hint / error inherit. */
