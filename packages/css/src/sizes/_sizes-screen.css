@@ -1,4 +1,5 @@
 @layer ori.tokens {
+    /* Breakpoints stay px on purpose: rem/em inside @media resolve against the INITIAL font size, never html's. */
     :root {
         --ori-size-screen_xs: 600px;
         --ori-size-screen_sm: 840px;
