@@ -45,6 +45,17 @@ Start here; drop a layer when you need more control, without rewriting — the t
 **[Full docs → oriui.vercel.app](https://oriui.vercel.app)** — a page per component with live demos,
 props, and a11y notes.
 
+## TypeScript & editor support
+
+Every component and composable ships hand-checked `.d.ts` types, so prop names, unions (`variant`,
+`color`, `size`…) and composable signatures autocomplete and type-check out of the box. The package
+also ships its `src`, so **go-to-definition lands on the real, commented source** and sourcemaps
+resolve. Editors need a Vue language service for template prop hints — **VS Code:** the
+[Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) extension;
+**WebStorm:** the bundled Vue plugin. If hints don't appear right after installing/upgrading, the
+editor's dependency index is usually stale — reload the TS server (VS Code) or _Invalidate Caches /
+Restart_ (WebStorm).
+
 > **Alpha** (`1.0.0-alpha.*`, `alpha` dist-tag). `npm i @oriui/vue` works today; APIs may shift before
 > `1.0.0`.
 
