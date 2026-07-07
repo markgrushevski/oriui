@@ -313,6 +313,22 @@ practical gotchas go here.
   first) + raw `.ori-*` markup (no Vue). `reducedMotion: 'reduce'` in the config kills the popover
   open/close opacity transition so `boundingBox()` reads are stable. Vitest ignores them — its `include`
   is `tests/**/*.test.ts` (unit `.test.ts`, e2e `.spec.ts`).
+- **Interaction e2e mount real Vue components via a Vite harness** (`e2e/harness/`): one view per
+  `location.hash` (`#combobox`/`#dialog`/`#menu`), aliasing `@oriui/*` to **source** (mirroring
+  `vitest.config`) + `@oriui/css` to built `dist`. Playwright's `webServer` runs it (`npx vite --config
+e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`); specs `goto('/#…')`.
+  CI needs no extra step — `vite` + `@vitejs/plugin-vue` are root devDeps, source is transpiled on the fly.
+  The harness `.ts`/`.vue` files don't match `*.spec.ts` so they aren't collected as tests.
+- **Native modal `<dialog>` tab-cycle includes `document.body` as the wrap boundary** (Chromium): the
+  forward cycle is `body → first → … → last → body`, NOT last→first like a JS focus-trap. OriDialog is
+  native (`showModal()` in a `watchPostEffect`, no JS trap), so assert the native _containment_ invariant
+  — walk a full forward+reverse cycle and assert focus visits the dialog's controls, wraps, and **never**
+  reaches the trigger or any outside control — do not assert a direct last→first hop.
+- **Combobox keeps DOM focus on the input (`aria-activedescendant`); Menu moves real focus (roving
+  `tabindex`).** Combobox: active option is `[data-highlighted]` and `aria-activedescendant` points at its
+  id; `aria-selected` is the _committed_ value, distinct from the keyboard-active one; it opens on
+  typing / ArrowDown / trigger-click, **not** focus or input-click alone. Menu: the SFC calls `.focus()`
+  on `[data-highlighted]`, so assert `toBeFocused()`. Don't cross-assert the two models.
 - **`.ori-anchored` placement is the 12-value `<side>[-start|-end]` grid.** A **bare side centers** on the
   cross axis (`_bottom` = below-centre); `-start` / `-end` align to the trigger's start / end edge. So
   OriPopover / OriMenu / Combobox default to **`bottom-start`** (below, start-aligned) — a plain `bottom`
