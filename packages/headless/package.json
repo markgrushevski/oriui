@@ -11,7 +11,8 @@
     "type": "module",
     "sideEffects": false,
     "files": [
-        "dist"
+        "dist",
+        "src"
     ],
     "publishConfig": {
         "access": "public"
