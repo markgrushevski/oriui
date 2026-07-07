@@ -1,5 +1,19 @@
 # @oriui/vue
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- 37ebed5: Ship `src` alongside `dist` so the published declaration maps (`.d.ts.map`) and JS sourcemaps
+  (`.js.map`) resolve to real files. Before this, `files` shipped only `dist`, so every map pointed at a
+  `../src/…` source that wasn't in the package — go-to-definition (and JS debugging) dead-ended, and some
+  editors (notably WebStorm) degraded a component's model while chasing the missing source. Now
+  go-to-definition on an `Ori*` component or a headless composable lands on the real, commented source.
+  The `exports` map still routes all imports to `dist`; the extra `src` files are inert.
+- Updated dependencies [37ebed5]
+    - @oriui/headless@1.0.0-alpha.6
+    - @oriui/css@1.0.0-alpha.6
+
 ## 1.0.0-alpha.5
 
 ### Patch Changes
