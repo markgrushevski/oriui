@@ -12,6 +12,7 @@
         "package-restructure",
         "rem-tokens",
         "reset-independence",
+        "ship-sources",
         "svelte-adapter",
         "token-bridge"
     ]
