@@ -65,8 +65,12 @@ Roughly by priority.
    **colors only** (the probe reads through the `color` property). Shipped as `resolveToken` /
    `observeTheme` in core + `useToken` / `useThemeColor` for Vue (`MaybeRefOrGetter`) and Svelte
    (`MaybeReactive`, lazy `readable`); 19 vitest specs; all headless entries stay within their size budgets.
-8. ◽ **Playwright visual + interaction e2e** — keyboard flows (Combobox nav, Dialog focus-trap) and
-   visual regression that jsdom can't assert.
+8. ⭐ **Playwright interaction e2e** — **SHIPPED (2026-07-06).** Real keyboard + focus flows happy-dom
+   can't assert: Combobox `aria-activedescendant` nav + typeahead, Menu roving-focus, and the native
+   `<dialog>` focus-**containment** invariant — 14 specs via a Vite harness (`e2e/harness/`, source-aliased
+   components behind Playwright's `webServer`), green on Linux CI. **Visual regression deferred** by choice:
+   it's the highest-maintenance test type (cross-OS baselines, churn on every intentional restyle) and the
+   library already has behavior / a11y / contract / geometry / contrast coverage — low ROI for a solo lib.
 9. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
 10. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
