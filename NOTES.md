@@ -254,6 +254,17 @@ practical gotchas go here.
 - **The UA gives `[popover]` `margin: auto`** — an anchored panel that skips `margin` looks fine with
   the global reset and drifts without it. Declare margins explicitly on popover-based panels.
 
+## Packaging / editor support
+
+- **Ship `src`, not just `dist`.** vue-tsc (`declarationMap: true`) and tsdown emit `.d.ts.map` /
+  `.js.map` that reference `../src/…`. If `files` ships only `dist`, every map dead-ends at a source
+  that isn't in the package: go-to-definition and JS debugging break, and **WebStorm degrades a
+  component's resolved model** while chasing the missing file (looks like "no prop hints"). `files:
+["dist", "src"]` on all three packages fixes it — go-to-definition lands on the real commented SFC /
+  composable. `exports` still routes imports to `dist`; the `src` files are inert. Types themselves were
+  never missing — a wrong-prop probe (`color="not-a-role"`) errors under vue-tsc, proving resolution;
+  "no hints" is an editor-index/plugin issue, and this map fix removes the packaging half.
+
 ## Build / tests
 
 - Tests live in `tests/` (out of `src`); `vitest.config.ts` aliases `@oriui/*` to package **source**,

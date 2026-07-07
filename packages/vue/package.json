@@ -22,7 +22,8 @@
     },
     "homepage": "https://oriui.vercel.app",
     "files": [
-        "dist"
+        "dist",
+        "src"
     ],
     "publishConfig": {
         "access": "public"
