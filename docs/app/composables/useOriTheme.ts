@@ -1,3 +1,5 @@
+import { flushThemeInvalidation } from '@oriui/headless';
+
 export type Theme = 'light' | 'dark';
 export type SkinId = 'ori' | 'sumi' | 'indigo' | 'tech' | 'health' | 'luxury' | 'neutral' | 'cyber';
 
@@ -56,12 +58,16 @@ export function useOriTheme() {
         theme.value = value;
         localStorage.setItem('ori-theme', value);
         applyTheme(value);
+        // Runtime theme change: re-resolve baked component colours (Chromium invalidation fix).
+        // Not needed in init() — that runs against a fresh render (theme already set pre-paint).
+        flushThemeInvalidation(document.body);
     }
 
     function setSkin(value: SkinId) {
         skin.value = value;
         localStorage.setItem('ori-skin', value);
         applySkin(value);
+        flushThemeInvalidation(document.body); // same invalidation as a runtime mode change
     }
 
     return {
