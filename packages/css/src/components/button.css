@@ -22,6 +22,9 @@
         --ori-font-size: var(--ori-font-size_md);
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        /* AA-safe on-surface tone for the non-fill variants' label (bare block has no color utility to set
+           it; the :root derive can't track a block-baked --ori-color — see _themes-color-tokens.css). */
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
