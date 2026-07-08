@@ -17,7 +17,13 @@
 
        Placement is the standard 12-value `<side>[-<align>]` grid: a bare side (`_bottom`) centers on the
        cross axis; `-start` / `-end` align to the trigger's start / end edge. `position-area` is logical,
-       so the alignment is RTL- and writing-mode-aware. Each class also adds the gap on the facing side. */
+       so the alignment is RTL- and writing-mode-aware. Each class also adds the gap on the facing side.
+
+       Bare sides use a single-keyword area (the cross axis defaults to span-all) + `anchor-center`
+       alignment — NOT `<side> center`, whose containing block is the anchor-width center column and
+       would squeeze a panel wider than its trigger down to the trigger's width. Span-all keeps the
+       full cross-axis room, `anchor-center` centers on the trigger AND shifts the panel back into
+       view when centering would overflow the viewport (free inline clamping at screen edges). */
     .ori-anchored {
         --ori-anchored-gap: 0.25rem;
 
@@ -37,9 +43,11 @@
 
     /* ---- Below the trigger ---- */
     .ori-anchored_bottom {
-        position-area: block-end center;
+        position-area: block-end;
 
         margin-block-start: var(--ori-anchored-gap);
+
+        justify-self: anchor-center;
     }
 
     .ori-anchored_bottom-start {
@@ -56,9 +64,11 @@
 
     /* ---- Above the trigger ---- */
     .ori-anchored_top {
-        position-area: block-start center;
+        position-area: block-start;
 
         margin-block-end: var(--ori-anchored-gap);
+
+        justify-self: anchor-center;
     }
 
     .ori-anchored_top-start {
@@ -75,9 +85,10 @@
 
     /* ---- To the inline-start (left in LTR) ---- */
     .ori-anchored_left {
-        position-area: center inline-start;
+        align-self: anchor-center;
 
         margin-inline-end: var(--ori-anchored-gap);
+        position-area: inline-start;
     }
 
     .ori-anchored_left-start {
@@ -94,9 +105,10 @@
 
     /* ---- To the inline-end (right in LTR) ---- */
     .ori-anchored_right {
-        position-area: center inline-end;
+        align-self: anchor-center;
 
         margin-inline-start: var(--ori-anchored-gap);
+        position-area: inline-end;
     }
 
     .ori-anchored_right-start {

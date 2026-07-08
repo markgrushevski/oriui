@@ -1,5 +1,5 @@
 export type Theme = 'light' | 'dark';
-export type SkinId = 'ori' | 'sumi' | 'indigo' | 'tech' | 'health' | 'luxury' | 'cyber';
+export type SkinId = 'ori' | 'sumi' | 'indigo' | 'tech' | 'health' | 'luxury' | 'neutral' | 'cyber';
 
 // The base skin (no data-ori-skin attribute) is "Ori" — the luminous azure/cyan default.
 const BASE_SKIN: SkinId = 'ori';
@@ -19,6 +19,7 @@ export const SKINS: SkinInfo[] = [
     { id: 'tech', label: 'Tech', swatches: ['#0e7490', '#cffafe', '#eef6f8'] },
     { id: 'health', label: 'Health', swatches: ['#047857', '#d1fae5', '#eef8f2'] },
     { id: 'luxury', label: 'Luxury', swatches: ['#8a6d09', '#efe6cf', '#f6f1e6'] },
+    { id: 'neutral', label: 'Neutral', swatches: ['#17181c', '#e3e5ea', '#ffffff'] },
     { id: 'cyber', label: 'Cyber', swatches: ['#a21caf', '#f5d0fe', '#0d0612'] }
 ];
 

@@ -10,7 +10,7 @@ A **skin** is a named palette — a set of token overrides applied with one attr
 `warn` · `danger` · `info`) stay shared, and every pairing targets **WCAG AA** for body text. Switching
 a skin is a single attribute write — zero runtime, no recompute, no flash.
 
-The default skin is **Ori** (織り) — luminous azure and cyan. Six presets ship alongside it; click any
+The default skin is **Ori** (織り) — luminous azure and cyan. Seven presets ship alongside it; click any
 card below to apply it across this whole site, and toggle light / dark to see both modes.
 
 :skin-gallery

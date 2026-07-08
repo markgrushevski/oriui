@@ -102,8 +102,8 @@ zero-runtime:
 ```
 
 - `class="dark"` → dark mode (omit for light).
-- `data-ori-skin="sumi | indigo | tech | health | luxury | cyber"` → a preset skin (omit for the default
-  **Ori** skin).
+- `data-ori-skin="sumi | indigo | tech | health | luxury | neutral | cyber"` → a preset skin (omit for
+  the default **Ori** skin).
 
 Tokens are two-tier: a raw scale (`--ori-size-action_md`, `--ori-color-primary`) and a resolved alias
 (`--ori-size-action`, `--ori-color`) that a utility repoints and the component reads. Override one token
