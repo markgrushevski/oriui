@@ -106,14 +106,19 @@ Status colours carry their own meaning across every theme. They are **not** repo
 Components never read a role token directly. They read **three** resolved aliases — `--ori-color`
 (the surface), `--ori-color-on` (its legible foreground when the role is painted as a **fill**), and
 `--ori-color-text` (its legible foreground when the role is painted as **text on the surrounding
-surface**, covered next). The first two default to `currentColor` so non-skinned use (an avatar, an
-icon) stays sensible; the third derives from whichever color is active:
+surface**, covered next). All three default to a neutral, role-agnostic value so non-skinned use (an
+avatar, an icon, bare text) stays sensible — `currentColor` for the first two, the on-surface ink for
+the third:
 
 ```css
 --ori-color: currentColor;
 --ori-color-on: currentColor;
---ori-color-text: color-mix(in oklch, var(--ori-color), var(--ori-color-on-surface) 65%);
+--ori-color-text: var(--ori-color-on-surface);
 ```
+
+A role-specific `--ori-color-text` (below) is layered on by the `.ori-color_*` utility, or by a block
+that bakes a role (Button, Tabs, Tag, …) — this `:root` default only ever surfaces for bare,
+un-skinned usage.
 
 A `.ori-color_*` utility class is what binds that triplet to a role — the same **base class plus a
 scale value** pair (`ori-color` + `ori-color_<name>`) that the component pages use. Each sets all
@@ -155,26 +160,40 @@ paired with a legible `--ori-color-on-<role>` ink for text painted **on** that f
 way round — as **text sitting on the surrounding surface** (the non-fill button variants, the
 selected tab, alert, tag) — a light or saturated role can drop below the WCAG AA 4.5:1 body-text bar
 (amber `warn` is the worst case). `--ori-color-<role>-text` is the dedicated on-surface tone for
-exactly that:
+exactly that — a **relative color** that keeps the role's own hue and chroma and clamps only its
+lightness, so the text reads as the _same_ colour as the fill, just darker (light theme) or lighter
+(dark theme) — one hue, only lightness varies, not the muddier, different-looking colour a mix toward
+a neutral ink would give:
 
-| Role      | `--ori-color-<role>-text` (default)                                                |
-| --------- | ---------------------------------------------------------------------------------- |
-| primary   | `color-mix(in oklch, var(--ori-color-primary), var(--ori-color-on-surface) 65%)`   |
-| secondary | `color-mix(in oklch, var(--ori-color-secondary), var(--ori-color-on-surface) 65%)` |
-| success   | `color-mix(in oklch, var(--ori-color-success), var(--ori-color-on-surface) 65%)`   |
-| warn      | `color-mix(in oklch, var(--ori-color-warn), var(--ori-color-on-surface) 65%)`      |
-| danger    | `color-mix(in oklch, var(--ori-color-danger), var(--ori-color-on-surface) 65%)`    |
-| info      | `color-mix(in oklch, var(--ori-color-info), var(--ori-color-on-surface) 65%)`      |
+| Role      | `--ori-color-<role>-text` — light default                 | `--ori-color-<role>-text` — dark override                 |
+| --------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| primary   | `oklch(from var(--ori-color-primary) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-primary) max(l, 0.86) c h)`   |
+| secondary | `oklch(from var(--ori-color-secondary) min(l, 0.42) c h)` | `oklch(from var(--ori-color-secondary) max(l, 0.86) c h)` |
+| success   | `oklch(from var(--ori-color-success) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-success) max(l, 0.86) c h)`   |
+| warn      | `oklch(from var(--ori-color-warn) min(l, 0.42) c h)`      | `oklch(from var(--ori-color-warn) max(l, 0.86) c h)`      |
+| danger    | `oklch(from var(--ori-color-danger) min(l, 0.42) c h)`    | `oklch(from var(--ori-color-danger) max(l, 0.86) c h)`    |
+| info      | `oklch(from var(--ori-color-info) min(l, 0.42) c h)`      | `oklch(from var(--ori-color-info) max(l, 0.86) c h)`      |
+
+`oklch(from <color> L c h)` is CSS relative-color syntax: it derives a new color from an existing one,
+carrying forward whichever channels you name bare. Naming `c` and `h` (chroma, hue) bare keeps them
+exactly as the role's; only `L` (lightness) is replaced — clamped to `min(l, 0.42)` in light (never
+lighter than 0.42) or `max(l, 0.86)` in dark (never darker than 0.86). Those are the tightest bounds
+that clear WCAG AA (≥ 4.5:1) for every role × skin × text kind, including the tonal hover/active tint
+(min ~4.55:1) — verified in real Chromium by `e2e/text-contrast.spec.ts`.
 
 `surface` and `background` don't get their own `-text` token — their `on-` pair already **is** the
 on-surface ink, so `.ori-color_surface` / `.ori-color_background` point `--ori-color-text` straight
 at `--ori-color-on-surface` / `--ori-color-on-background` (see the table above).
 
-Because `var()` resolves at point of use, that single declaration auto-adapts to the **active theme**
-(light/dark) **and** to any skin's role override — a custom skin gets an AA-safe text tone for free,
-no extra work required. It is guaranteed AA (≥ 4.5:1) for every role, across all skins and both
-themes — verified in real Chromium by `e2e/text-contrast.spec.ts` (min observed 4.62:1). _(To
-override it — globally, per skin, or per instance — see [Customization](/guides/customization).)_
+The formula is declared **twice** — once at `:root` (the light default, shown above) and again inside
+the dark theme selectors (`:root.dark`, `.ori-theme_dark`, with the opposite clamp) — so it tracks the
+**active theme** automatically. Because both declarations read `var(--ori-color-<role>)`, the tone
+also tracks any **skin**'s role override, or a brand's own override, at any nesting — a custom skin
+gets an AA-safe text tone for free, no extra work required. _(To override it — globally, per skin, or
+per instance — see [Customization](/guides/customization).)_
+
+The `.ori-variant_outline` border (below) reads this same `-text` tone instead of the raw role, so an
+outline button's border and label read as one colour.
 
 ## Variants
 
@@ -185,18 +204,20 @@ A variant is a small token group — border, opacity, background, text — set f
 The base `.ori-variant` defaults to a transparent, full-opacity surface inheriting `currentColor`.
 Each `.ori-variant_*` repoints the group:
 
-| Variant    | background                                              | text                    | border             | opacity |
-| ---------- | ------------------------------------------------------- | ----------------------- | ------------------ | ------- |
-| `_fill`    | `var(--ori-color)`                                      | `var(--ori-color-on)`   | transparent        | `1`     |
-| `_tonal`   | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color-text)` | transparent        | `1`     |
-| `_outline` | transparent                                             | `var(--ori-color-text)` | `var(--ori-color)` | `1`     |
-| `_text`    | transparent                                             | `var(--ori-color-text)` | transparent        | `1`     |
-| `_plain`   | transparent                                             | `var(--ori-color-text)` | transparent        | `0.5`   |
+| Variant    | background                                              | text                    | border                  | opacity |
+| ---------- | ------------------------------------------------------- | ----------------------- | ----------------------- | ------- |
+| `_fill`    | `var(--ori-color)`                                      | `var(--ori-color-on)`   | transparent             | `1`     |
+| `_tonal`   | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color-text)` | transparent             | `1`     |
+| `_outline` | transparent                                             | `var(--ori-color-text)` | `var(--ori-color-text)` | `1`     |
+| `_text`    | transparent                                             | `var(--ori-color-text)` | transparent             | `1`     |
+| `_plain`   | transparent                                             | `var(--ori-color-text)` | transparent             | `0.5`   |
 
 `fill` keeps `--ori-color-on` — the ink tuned for its own solid background. Every non-fill mapping
-instead reads `--ori-color-text`, the AA-safe on-surface tone from
+instead reads `--ori-color-text` for its label, the AA-safe on-surface tone from
 [Text — the on-surface foreground](#text-the-on-surface-foreground) above, because at those
-opacities/borders the role is painted as **text on the page**, not as a fill.
+opacities/borders the role is painted as **text on the page**, not as a fill. `outline`'s border reads
+that same tone instead of the raw `--ori-color`, so the ring and the label read as one colour, and it
+clears the WCAG 1.4.11 non-text 3:1 minimum for pale roles too.
 
 Interaction state is derived from these same tokens, not stored — hover and `[data-active]` deepen
 the `color-mix` per variant. (See the live behaviour on [Button](/components/button).)
