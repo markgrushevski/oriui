@@ -215,6 +215,27 @@ practical gotchas go here.
   `color(srgb …)` via a 1×1 canvas, composites the tonal tint over surface, asserts >= 4.5:1 for every role × skin
   × theme × text kind + the tonal hover/active tint + the bare-block baked path (`plain`, 0.5 opacity, intentionally
   muted, is exempt). Min observed ~4.55:1.
+- **Runtime theme toggle leaves BAKED component colours stale — a Chromium bug, fixed in JS, not CSS.**
+  Flipping the `ori-theme_dark` class at runtime changes the inherited role tokens, but Chromium MISSES the
+  style invalidation for elements that BAKE a resolved alias into an element-scoped custom property consumed
+  through a `var()` chain — i.e. **every styled component** (`--ori-color` / `--ori-color-text` baked on the
+  element → `--ori-variant-*` → the longhand). The element's cached computed style is never marked dirty, so it
+  AND its paint keep the PREVIOUS theme's colour until the box is rebuilt. Confirmed real in Chromium **148 and
+  149** (not a version artifact / not fixed upstream yet). Scope is broad: fill/tonal BACKGROUNDS and the role
+  text all stale; a bare direct read (`color: var(--ori-color-primary)`, no element-level bake) flips fine — the
+  baking + shadowing is the trigger. NOT caused by the relative-colour `-text` tone (a literal reproduces it),
+  NOT alpha-9-specific; emergent in the FULL cascade WITH a consumer's unlayered brand override (a bare
+  default-skin page does not reproduce). **What does NOT fix it:** `@property` registration (source token, full
+  chain, or every flipping alias — all tested), literal per-theme tones, a plain reflow, re-toggling the class, or
+  a `display:none` flip applied a TICK LATER. **What does:** rebuilding the box in the SAME task as the class flip
+  — a clone / detach+reattach, or a `display:none` round-trip WITH a forced reflow between the two writes. Shipped
+  as `@oriui/headless` **`applyTheme` / `createThemeController` / `useTheme`** (core `theme.ts`
+  `flushThemeInvalidation` = the `display:none` round-trip on `document.body`); consumers must apply the theme via
+  these (or add the flush wherever they flip the class). It CANNOT be fixed in the CSS package. No e2e guard: the
+  bug reproduces only on an HTTP-served page with the full cascade — `file://` / `page.setContent` /
+  `addStyleTag` don't trigger it (verified manually + via Playwright pointed at a served repro); happy-dom has no
+  such cache, so the unit suite (tests/theme.test.ts) guards only the DOM/state contract. Preview screenshot MCP
+  is flaky here (30s hangs) — the same-tick `getComputedStyle` vs fresh-clone comparison is the reliable probe.
 - **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
   box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
   container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is

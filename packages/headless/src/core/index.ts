@@ -1,3 +1,15 @@
+// Theme controller — apply light/dark + defeat the runtime-toggle invalidation bug (see theme.ts)
+export {
+    applyTheme,
+    flushThemeInvalidation,
+    createThemeController,
+    type ThemeMode,
+    type ThemeSetting,
+    type ApplyThemeOptions,
+    type ThemeControllerOptions,
+    type ThemeController
+} from './theme';
+
 // Shared primitives
 export * from './types';
 export * from './anatomy';

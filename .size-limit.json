@@ -27,12 +27,12 @@
         "name": "@oriui/headless/vue (gzip)",
         "path": "packages/headless/dist/vue/index.js",
         "gzip": true,
-        "limit": "4.5 kB"
+        "limit": "4.7 kB"
     },
     {
         "name": "@oriui/headless/svelte (gzip)",
         "path": "packages/headless/dist/svelte/index.js",
         "gzip": true,
-        "limit": "5.5 kB"
+        "limit": "5.7 kB"
     }
 ]
