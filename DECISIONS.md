@@ -4,7 +4,7 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
-## Role-as-text gets a dedicated on-surface tone (`--ori-color-<role>-text`), derived by color-mix
+## Role-as-text gets a dedicated on-surface tone (`--ori-color-<role>-text`) — a darker/lighter shade of the role
 
 Decided 2026-07-08. A role's `--ori-color-<role>` is engineered as a fill **background** (light / saturated,
 paired with dark `--ori-color-on-<role>` ink). The non-fill variants (text / outline / tonal), the selected
@@ -14,19 +14,22 @@ worse). One token can't be both a good light fill-bg (dark ink on it) and dark o
 lightness requirements — so a **third member of the role token family** was added: `--ori-color-<role>-text`,
 the AA-safe on-surface foreground; consumers read it through the `--ori-color-text` alias.
 
-**The default is DERIVED, not hand-authored per skin:**
-`color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)`. Both inputs are `:root` role
-tokens that a **skin** (`:root[data-ori-skin]`) or the light/dark theme blocks override at `:root`, so the derived
-tone re-resolves for a whole-page theme/skin swap — a **custom brand gets an AA text tone for free**, no per-skin
-authoring. `oklch` (not the house `in srgb`) is deliberate: its perceptual uniformity lets ONE 65% ratio clear AA
-across every hue; an `srgb` mix shifts perceived lightness unevenly by hue and would need per-role ratios. The
-token stays fully overridable (`:root`, per-skin, per-instance) as the sanctioned replacement for the
-`.ori-button { --ori-color: … }` hack consumers reached for. 65% clears AA for every role across all skins and
-both themes — resting AND at the tonal hover/active tint (softened 35% → 30% so the darkest case,
-`sumi · dark · primary`, holds ≥ 4.5); 60% is the resting floor.
+**The default is DERIVED, not hand-authored per skin — and it is the SAME hue as the role, only darker/lighter.**
+Relative colour clamps ONLY the lightness of the role, keeping its hue + chroma:
+`oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` in light, `… max(l, 0.86) …` in dark. So the text — and the
+outline border, which now reads the same token — is a darker (light theme) / lighter (dark theme) shade of the
+SAME colour as the fill: "one hue, only lightness varies," not a muddy off-hue. It is declared **in each theme
+block** (`:root` / light default + `.ori-theme_dark`), so it re-resolves for theme, skin, and a brand's role
+override at ANY nesting — a **custom brand gets an AA text tone for free**, no per-skin authoring — and stays fully
+overridable (`:root`, per-skin, per-instance) as the sanctioned replacement for the `.ori-button { --ori-color: … }`
+hack. The light cap 0.42 / dark floor 0.86 are the tightest bounds that clear WCAG AA (>= 4.5:1) for every role ×
+skin × text kind incl. the tonal hover/active tint (min ~4.55:1).
 
 Alternatives considered:
 
+- **`color-mix(role, on-surface 65%)`** (the first cut) — auto-adapting + AA, but mixing toward the neutral ink
+  DESATURATED and hue-shifted the tone into a muddy colour that no longer matched the role's fill / border; replaced
+  by the lightness-only relative-colour clamp above.
 - **Explicit per-role `-text` tones per skin** (~40 hand-tuned values) — best aesthetic control but heavy, and a
   custom skin would have to author its own (no free AA). The derived default subsumes it; a specific hue is still
   available by overriding `--ori-color-<role>-text` directly.
@@ -41,11 +44,12 @@ Alternatives considered:
 derive — it is the neutral `--ori-color-on-surface` ink, because a `var(--ori-color)` written at `:root` freezes to
 `:root`'s value (a custom property's `var()` is substituted where the property is DECLARED, not where it's used),
 so it could never track a block-baked `--ori-color`. This is why baked-role blocks must repoint `--ori-color-text`
-themselves rather than lean on the default. **Limitation (page-level, like skins):** the per-role `-text` tokens
-live at `:root`, so they track a whole-page theme/skin change but not a subtree `.ori-theme_dark` (which would show
-the page's tones) — repoint `--ori-color-<role>-text` in the subtree if you nest themes.
+themselves rather than lean on the default. Declaring the `-text` tokens **in each theme block** (not only `:root`)
+also lets them track a **subtree** `.ori-theme_dark` / `.ori-theme_light`, not just a whole-page swap, and
+re-resolve correctly even when a consumer overrides `--ori-color-<role>` with an **unlayered** theme rule — an
+earlier `:root`-only derive silently froze to the page value there (it bit a real consumer's dark theme in testing).
 
-Guarded by **e2e/text-contrast.spec.ts** in real Chromium (the Node token guard can't evaluate `color-mix`;
+Guarded by **e2e/text-contrast.spec.ts** in real Chromium (the Node token guard can't evaluate `oklch(from …)`;
 happy-dom axe has no layout engine) — covering every role × skin × theme × text kind, the tonal hover/active tint,
 and the bare-block baked path. **Revisit trigger:** if CSS `contrast-color()` reaches Baseline, the derived default
 could become a true auto-contrast pick rather than a fixed mix ratio.

@@ -31,7 +31,10 @@
     }
 
     .ori-variant_outline {
-        --ori-variant-border-color: var(--ori-color);
+        /* Border matches the label's on-surface text tone (not the raw role), so outline reads as one
+           colour — the same hue as the fill, only darker/lighter. Also lifts the border past the 3:1
+           non-text bar for pale roles, which the raw role missed. */
+        --ori-variant-border-color: var(--ori-color-text);
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color-text);
