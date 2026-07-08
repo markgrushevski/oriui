@@ -17,12 +17,14 @@
            .ori-variant_*) override by layer order; the cluster below is the `tonal` default. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        /* AA-safe on-surface tone for the tonal/outline/text label (bare block: no color utility sets it). */
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-font-size: var(--ori-font-size_sm);
         --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
 
         display: inline-flex;
         flex-direction: row;

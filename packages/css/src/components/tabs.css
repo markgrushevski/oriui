@@ -13,6 +13,8 @@
            layer) overrides by layer order. Drives the active indicator / focus ring. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        /* AA-safe on-surface tone for the SELECTED tab label (bare block: no color utility to set it). */
+        --ori-color-text: var(--ori-color-primary-text);
 
         display: flex;
         flex-direction: column;
@@ -87,7 +89,7 @@
     }
 
     .ori-tabs__tab[aria-selected='true'] {
-        color: var(--ori-color, currentcolor);
+        color: var(--ori-color-text, currentcolor);
     }
 
     .ori-tabs__tab[aria-selected='true']::after {

@@ -22,6 +22,9 @@ base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to t
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Baked default accent is primary; override with ori-color_* to change the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label colour shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
 
+The selected tab's label reads the AA-safe `--ori-color-text` tone (not the raw role) — see
+[Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
+
 ## Anatomy
 
 ```
