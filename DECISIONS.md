@@ -4,6 +4,52 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Role-as-text gets a dedicated on-surface tone (`--ori-color-<role>-text`), derived by color-mix
+
+Decided 2026-07-08. A role's `--ori-color-<role>` is engineered as a fill **background** (light / saturated,
+paired with dark `--ori-color-on-<role>` ink). The non-fill variants (text / outline / tonal), the selected
+tab, alert + tag painted that raw role as **foreground text on the surface** — where a saturated or light role
+fails WCAG AA 4.5:1 (default amber `warn` = 2.14:1 on white; the pale `secondary` and the dark-theme status hues
+worse). One token can't be both a good light fill-bg (dark ink on it) and dark on-surface text — opposite
+lightness requirements — so a **third member of the role token family** was added: `--ori-color-<role>-text`,
+the AA-safe on-surface foreground; consumers read it through the `--ori-color-text` alias.
+
+**The default is DERIVED, not hand-authored per skin:**
+`color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)`. Both inputs are `:root` role
+tokens that a **skin** (`:root[data-ori-skin]`) or the light/dark theme blocks override at `:root`, so the derived
+tone re-resolves for a whole-page theme/skin swap — a **custom brand gets an AA text tone for free**, no per-skin
+authoring. `oklch` (not the house `in srgb`) is deliberate: its perceptual uniformity lets ONE 65% ratio clear AA
+across every hue; an `srgb` mix shifts perceived lightness unevenly by hue and would need per-role ratios. The
+token stays fully overridable (`:root`, per-skin, per-instance) as the sanctioned replacement for the
+`.ori-button { --ori-color: … }` hack consumers reached for. 65% clears AA for every role across all skins and
+both themes — resting AND at the tonal hover/active tint (softened 35% → 30% so the darkest case,
+`sumi · dark · primary`, holds ≥ 4.5); 60% is the resting floor.
+
+Alternatives considered:
+
+- **Explicit per-role `-text` tones per skin** (~40 hand-tuned values) — best aesthetic control but heavy, and a
+  custom skin would have to author its own (no free AA). The derived default subsumes it; a specific hue is still
+  available by overriding `--ori-color-<role>-text` directly.
+- **Neutral (on-surface) text for the non-fill variants** — trivially AA but discards the role colour (a danger
+  text button would be plain ink), so rejected.
+- **Darken the role token itself** — breaks the working fill variant (its dark on-ink loses contrast on a
+  darkened fill) and changes the whole palette's character, so rejected.
+
+**Delivery — and a custom-property gotcha.** The tone reaches an element two ways: the `.ori-color_*` utility sets
+`--ori-color-text` on the element, and every block that bakes a role also bakes it (`.ori-button` / `.ori-tabs` /
+`.ori-tag` / `.ori-combobox` → primary, `.ori-alert` → info). The `:root` `--ori-color-text` default is NOT a role
+derive — it is the neutral `--ori-color-on-surface` ink, because a `var(--ori-color)` written at `:root` freezes to
+`:root`'s value (a custom property's `var()` is substituted where the property is DECLARED, not where it's used),
+so it could never track a block-baked `--ori-color`. This is why baked-role blocks must repoint `--ori-color-text`
+themselves rather than lean on the default. **Limitation (page-level, like skins):** the per-role `-text` tokens
+live at `:root`, so they track a whole-page theme/skin change but not a subtree `.ori-theme_dark` (which would show
+the page's tones) — repoint `--ori-color-<role>-text` in the subtree if you nest themes.
+
+Guarded by **e2e/text-contrast.spec.ts** in real Chromium (the Node token guard can't evaluate `color-mix`;
+happy-dom axe has no layout engine) — covering every role × skin × theme × text kind, the tonal hover/active tint,
+and the bare-block baked path. **Revisit trigger:** if CSS `contrast-color()` reaches Baseline, the derived default
+could become a true auto-contrast pick rather than a fixed mix ratio.
+
 ## Tests stay in the root `tests/` directory (not co-located in `src`, not per-package)
 
 Decided 2026-07-05. The suite is **contract / cross-package by nature** — `tokens.contrast` parses the

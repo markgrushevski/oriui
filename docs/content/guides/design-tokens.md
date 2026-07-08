@@ -103,33 +103,36 @@ Status colours carry their own meaning across every theme. They are **not** repo
 
 ### Tier 3 — the per-instance component alias
 
-Components never read a role token directly. They read **one pair** — `--ori-color` (the surface)
-and `--ori-color-on` (its legible foreground) — which default to `currentColor` so non-skinned use
-(an avatar, an icon) stays sensible:
+Components never read a role token directly. They read **three** resolved aliases — `--ori-color`
+(the surface), `--ori-color-on` (its legible foreground when the role is painted as a **fill**), and
+`--ori-color-text` (its legible foreground when the role is painted as **text on the surrounding
+surface**, covered next). The first two default to `currentColor` so non-skinned use (an avatar, an
+icon) stays sensible; the third derives from whichever color is active:
 
 ```css
 --ori-color: currentColor;
 --ori-color-on: currentColor;
+--ori-color-text: color-mix(in oklch, var(--ori-color), var(--ori-color-on-surface) 65%);
 ```
 
-A `.ori-color_*` utility class is what binds that pair to a role — the same **base class plus a scale
-value** pair (`ori-color` + `ori-color_<name>`) that the component pages use. Each sets both aliases
-at once:
+A `.ori-color_*` utility class is what binds that triplet to a role — the same **base class plus a
+scale value** pair (`ori-color` + `ori-color_<name>`) that the component pages use. Each sets all
+three aliases at once:
 
-| Class                   | `--ori-color` →               | `--ori-color-on` →               |
-| ----------------------- | ----------------------------- | -------------------------------- |
-| `.ori-color_primary`    | `var(--ori-color-primary)`    | `var(--ori-color-on-primary)`    |
-| `.ori-color_secondary`  | `var(--ori-color-secondary)`  | `var(--ori-color-on-secondary)`  |
-| `.ori-color_surface`    | `var(--ori-color-surface)`    | `var(--ori-color-on-surface)`    |
-| `.ori-color_background` | `var(--ori-color-background)` | `var(--ori-color-on-background)` |
-| `.ori-color_success`    | `var(--ori-color-success)`    | `var(--ori-color-on-success)`    |
-| `.ori-color_warn`       | `var(--ori-color-warn)`       | `var(--ori-color-on-warn)`       |
-| `.ori-color_danger`     | `var(--ori-color-danger)`     | `var(--ori-color-on-danger)`     |
-| `.ori-color_info`       | `var(--ori-color-info)`       | `var(--ori-color-on-info)`       |
+| Class                   | `--ori-color` →               | `--ori-color-on` →               | `--ori-color-text` →              |
+| ----------------------- | ----------------------------- | -------------------------------- | --------------------------------- |
+| `.ori-color_primary`    | `var(--ori-color-primary)`    | `var(--ori-color-on-primary)`    | `var(--ori-color-primary-text)`   |
+| `.ori-color_secondary`  | `var(--ori-color-secondary)`  | `var(--ori-color-on-secondary)`  | `var(--ori-color-secondary-text)` |
+| `.ori-color_surface`    | `var(--ori-color-surface)`    | `var(--ori-color-on-surface)`    | `var(--ori-color-on-surface)`     |
+| `.ori-color_background` | `var(--ori-color-background)` | `var(--ori-color-on-background)` | `var(--ori-color-on-background)`  |
+| `.ori-color_success`    | `var(--ori-color-success)`    | `var(--ori-color-on-success)`    | `var(--ori-color-success-text)`   |
+| `.ori-color_warn`       | `var(--ori-color-warn)`       | `var(--ori-color-on-warn)`       | `var(--ori-color-warn-text)`      |
+| `.ori-color_danger`     | `var(--ori-color-danger)`     | `var(--ori-color-on-danger)`     | `var(--ori-color-danger-text)`    |
+| `.ori-color_info`       | `var(--ori-color-info)`       | `var(--ori-color-on-info)`       | `var(--ori-color-info-text)`      |
 
-So the full colour chain reads: **neutral ramp / role source → active alias → `--ori-color` →
-the component.** Switching a colour is one class swap — `ori-color_primary` → `ori-color_danger` —
-and every layer above resolves through `var()` with nothing recomputed.
+So the full colour chain reads: **neutral ramp / role source → active alias → `--ori-color` /
+`--ori-color-text` → the component.** Switching a colour is one class swap — `ori-color_primary` →
+`ori-color_danger` — and every layer above resolves through `var()` with nothing recomputed.
 
 All eight role pairs resolving live — each swatch is the same `.ori-color_*` utility, only the role
 changes. _(For the per-component usage of these classes, see [Button](/components/button).)_
@@ -145,22 +148,55 @@ changes. _(For the per-component usage of these classes, see [Button](/component
 :ori-button{text="info" color="info"}
 ::
 
+### Text — the on-surface foreground
+
+A role's `--ori-color-<role>` hue is engineered as a **fill background** — light or saturated,
+paired with a legible `--ori-color-on-<role>` ink for text painted **on** that fill. Used the other
+way round — as **text sitting on the surrounding surface** (the non-fill button variants, the
+selected tab, alert, tag) — a light or saturated role can drop below the WCAG AA 4.5:1 body-text bar
+(amber `warn` is the worst case). `--ori-color-<role>-text` is the dedicated on-surface tone for
+exactly that:
+
+| Role      | `--ori-color-<role>-text` (default)                                                |
+| --------- | ---------------------------------------------------------------------------------- |
+| primary   | `color-mix(in oklch, var(--ori-color-primary), var(--ori-color-on-surface) 65%)`   |
+| secondary | `color-mix(in oklch, var(--ori-color-secondary), var(--ori-color-on-surface) 65%)` |
+| success   | `color-mix(in oklch, var(--ori-color-success), var(--ori-color-on-surface) 65%)`   |
+| warn      | `color-mix(in oklch, var(--ori-color-warn), var(--ori-color-on-surface) 65%)`      |
+| danger    | `color-mix(in oklch, var(--ori-color-danger), var(--ori-color-on-surface) 65%)`    |
+| info      | `color-mix(in oklch, var(--ori-color-info), var(--ori-color-on-surface) 65%)`      |
+
+`surface` and `background` don't get their own `-text` token — their `on-` pair already **is** the
+on-surface ink, so `.ori-color_surface` / `.ori-color_background` point `--ori-color-text` straight
+at `--ori-color-on-surface` / `--ori-color-on-background` (see the table above).
+
+Because `var()` resolves at point of use, that single declaration auto-adapts to the **active theme**
+(light/dark) **and** to any skin's role override — a custom skin gets an AA-safe text tone for free,
+no extra work required. It is guaranteed AA (≥ 4.5:1) for every role, across all skins and both
+themes — verified in real Chromium by `e2e/text-contrast.spec.ts` (min observed 4.62:1). _(To
+override it — globally, per skin, or per instance — see [Customization](/guides/customization).)_
+
 ## Variants
 
 A variant is a small token group — border, opacity, background, text — set from the resolved
-`--ori-color` / `--ori-color-on` pair. Because variants read the alias, **colour and variant compose
-freely**: any colour × any variant, no extra rules.
+`--ori-color` / `--ori-color-on` / `--ori-color-text` triplet. Because variants read the alias,
+**colour and variant compose freely**: any colour × any variant, no extra rules.
 
 The base `.ori-variant` defaults to a transparent, full-opacity surface inheriting `currentColor`.
 Each `.ori-variant_*` repoints the group:
 
-| Variant    | background                                              | text                  | border             | opacity |
-| ---------- | ------------------------------------------------------- | --------------------- | ------------------ | ------- |
-| `_fill`    | `var(--ori-color)`                                      | `var(--ori-color-on)` | transparent        | `1`     |
-| `_tonal`   | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color)`    | transparent        | `1`     |
-| `_outline` | transparent                                             | `var(--ori-color)`    | `var(--ori-color)` | `1`     |
-| `_text`    | transparent                                             | `var(--ori-color)`    | transparent        | `1`     |
-| `_plain`   | transparent                                             | `var(--ori-color)`    | transparent        | `0.5`   |
+| Variant    | background                                              | text                    | border             | opacity |
+| ---------- | ------------------------------------------------------- | ----------------------- | ------------------ | ------- |
+| `_fill`    | `var(--ori-color)`                                      | `var(--ori-color-on)`   | transparent        | `1`     |
+| `_tonal`   | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color-text)` | transparent        | `1`     |
+| `_outline` | transparent                                             | `var(--ori-color-text)` | `var(--ori-color)` | `1`     |
+| `_text`    | transparent                                             | `var(--ori-color-text)` | transparent        | `1`     |
+| `_plain`   | transparent                                             | `var(--ori-color-text)` | transparent        | `0.5`   |
+
+`fill` keeps `--ori-color-on` — the ink tuned for its own solid background. Every non-fill mapping
+instead reads `--ori-color-text`, the AA-safe on-surface tone from
+[Text — the on-surface foreground](#text-the-on-surface-foreground) above, because at those
+opacities/borders the role is painted as **text on the page**, not as a fill.
 
 Interaction state is derived from these same tokens, not stored — hover and `[data-active]` deepen
 the `color-mix` per variant. (See the live behaviour on [Button](/components/button).)
