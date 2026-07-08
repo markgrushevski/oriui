@@ -11,15 +11,34 @@ import { describe, it, expect } from 'vitest';
  */
 
 // ---- WCAG 2.x relative-luminance contrast math ----
-function toRgb(hex: string): [number, number, number] {
+function hexToRgb(hex: string): [number, number, number] {
     const h = hex.replace('#', '').trim();
     const full = h.length === 3 ? [...h].map((c) => c + c).join('') : h;
     const n = parseInt(full.slice(0, 6), 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-function luminance(hex: string): number {
-    const [r, g, b] = toRgb(hex).map((c) => {
+// hsl() → sRGB (CSS Color 4 algorithm). Supports the modern space syntax `hsl(220 10% 15%)` and the
+// legacy comma syntax `hsl(220, 10%, 15%)`; alpha is not expected in token values and is rejected.
+function hslToRgb(hsl: string): [number, number, number] | null {
+    const m = hsl.match(/^hsla?\(\s*([\d.]+)(?:deg)?[,\s]+([\d.]+)%[,\s]+([\d.]+)%\s*\)$/);
+    if (!m) return null;
+    const h = ((parseFloat(m[1]) % 360) + 360) % 360;
+    const s = parseFloat(m[2]) / 100;
+    const l = parseFloat(m[3]) / 100;
+    const f = (n: number) => {
+        const k = (n + h / 30) % 12;
+        return l - s * Math.min(l, 1 - l) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+    };
+    return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+}
+
+function toRgb(color: string): [number, number, number] {
+    return color.startsWith('#') ? hexToRgb(color) : (hslToRgb(color) ?? [0, 0, 0]);
+}
+
+function luminance(color: string): number {
+    const [r, g, b] = toRgb(color).map((c) => {
         const s = c / 255;
         return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
     });
@@ -42,11 +61,12 @@ for (const [, name, hex] of baseCss.matchAll(/(--ori-neutral-\d+)\s*:\s*(#[0-9a-
     neutrals[name] = hex;
 }
 
-// A colour value is usable if it's a literal hex or a var() pointing at the neutral ramp;
-// `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colours).
+// A colour value is usable if it's a literal hex, a literal hsl(), or a var() pointing at the neutral
+// ramp; `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colours).
 function resolveValue(raw: string): string | null {
     const v = raw.trim().replace(/;$/, '');
     if (/^#[0-9a-fA-F]{3,8}$/.test(v)) return v;
+    if (/^hsla?\(/.test(v)) return hslToRgb(v) ? v : null;
     const ref = v.match(/^var\(\s*(--ori-neutral-\d+)\s*\)$/);
     return ref ? (neutrals[ref[1]] ?? null) : null;
 }
@@ -75,6 +95,11 @@ const ROLES = ['primary', 'secondary', 'surface', 'background'] as const;
 const STATUS = ['success', 'warn', 'danger', 'info'] as const;
 const MODES = ['light', 'dark'] as const;
 const AA = 4.5;
+
+// Recorded contrast debt — pairings known to sit below AA, kept visible instead of silently passing.
+// An entry needs a DECISIONS.md rationale; remove it the moment the pairing is fixed (a stale entry
+// fails the guard below). Key: the pair label; value: the accepted minimum ratio.
+const KNOWN_BELOW_AA: Record<string, number> = {};
 
 type Pair = { label: string; fg: string; bg: string };
 const pairs: Pair[] = [];
@@ -108,14 +133,27 @@ for (const css of [baseCss, skinsCss]) {
 
 describe('Design-token contrast (WCAG AA for body text, >= 4.5:1)', () => {
     it('discovers every role/on-role pairing across all skins', () => {
-        // base Ori: 4 roles x 2 modes (8) + 4 status (4); 6 preset skins x 4 roles x 2 modes (48).
-        expect(pairs.length).toBeGreaterThanOrEqual(8 + 4 + 6 * 8);
+        // base Ori: 4 roles x 2 modes (8) + 4 status (4); 7 preset skins x 4 roles x 2 modes (56).
+        expect(pairs.length).toBeGreaterThanOrEqual(8 + 4 + 7 * 8);
+    });
+
+    it('the KNOWN_BELOW_AA exception list carries no stale entries', () => {
+        const labels = new Set(pairs.map((p) => p.label));
+        const stale = Object.keys(KNOWN_BELOW_AA).filter((label) => !labels.has(label));
+        expect(stale, `exceptions for pairings that no longer exist: ${stale.join(', ')}`).toEqual([]);
+        for (const { label, fg, bg } of pairs) {
+            if (label in KNOWN_BELOW_AA && contrast(fg, bg) >= AA) {
+                expect.fail(`${label} now meets AA — remove its KNOWN_BELOW_AA entry`);
+            }
+        }
     });
 
     for (const { label, fg, bg } of pairs) {
-        it(`${label}: ${fg} on ${bg}`, () => {
+        const floor = KNOWN_BELOW_AA[label] ?? AA;
+        const debt = label in KNOWN_BELOW_AA ? ' [recorded contrast debt — below AA]' : '';
+        it(`${label}: ${fg} on ${bg}${debt}`, () => {
             const ratio = contrast(fg, bg);
-            expect(ratio, `${label} -> ${ratio.toFixed(2)}:1 (need >= ${AA})`).toBeGreaterThanOrEqual(AA);
+            expect(ratio, `${label} -> ${ratio.toFixed(2)}:1 (need >= ${floor})`).toBeGreaterThanOrEqual(floor);
         });
     }
 });
