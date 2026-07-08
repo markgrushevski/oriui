@@ -4,6 +4,43 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Runtime theme switching is a headless controller (`applyTheme` / `useTheme`), because the fix can't live in CSS
+
+Decided 2026-07-08. Toggling the `ori-theme_dark` class at runtime leaves every styled component painting
+the PREVIOUS theme's colours until it re-renders — a real Chromium bug (reproduced in **148 and 149**): the
+engine misses the style invalidation for elements that bake a resolved alias into an element-scoped custom
+property consumed through a `var()` chain (oriUI's core mechanism — see NOTES). It is broad (fill/tonal
+backgrounds AND role text), NOT specific to the relative-colour `-text` tone (a literal reproduces it), and
+emergent in the full cascade with a consumer's unlayered brand override. A bare `var(--ori-color-primary)`
+read flips fine; the baking is the trigger.
+
+**It is not fixable in `@oriui/css`.** Tested and ineffective: `@property` registration (source token, the full
+consuming chain, and every flipping alias), literal per-theme tones, a plain reflow, and re-toggling the class.
+The only thing that re-resolves it is rebuilding the box in the SAME task as the class flip. So the fix is
+necessarily JS, and ships in **`@oriui/headless`**: core `applyTheme` (flip the `ori-theme_{light,dark}` class +
+`flushThemeInvalidation`, a `display:none` round-trip on `document.body`) and `createThemeController` (adds
+`auto` / persistence, reusing the matchMedia plumbing), with `useTheme` Vue + Svelte adapters mirroring
+`useToken`.
+
+**Why headless, not `@oriui/vue` or `@oriui/css`:** it's framework-agnostic behaviour with thin framework
+adapters — the exact shape of the existing `observeTheme` / `resolveToken` / `useToken` theme bridge — and a
+CSS-only consumer (no Vue) must still be able to switch themes, which needs the vanilla core in headless `.`.
+`@oriui/vue` is for styled components; theming isn't one. There is no oriUI runtime that can intercept a theme
+change, so the model is always **oriUI provides, the consumer invokes** at its toggle point (justpaint calls
+`applyTheme` from its `useThemeStore`; the class flip is still the consumer's).
+
+Alternatives considered:
+
+- **Vue `:key` remount of the affected subtree** — also works (node re-creation is the bulletproof re-resolve),
+  but it's app-specific, drops component-local state, and can't be shipped from a library as a default. The
+  `display:none` flush is the lighter, framework-neutral default; `:key` stays a valid consumer choice for
+  subtrees that must remount anyway.
+- **A `MutationObserver` auto-fix** (`installThemeInvalidationFix()`) — most decoupled (call once, keep your own
+  toggle), but the fix would run a microtask after the class change; timing vs paint is unverified. Deferred in
+  favour of the explicit `applyTheme` path.
+- **Wait for a browser fix** — rejected: reproduces in current Chromium, and the flush is a cheap, harmless
+  no-op reflow once the browser fixes it.
+
 ## Role-as-text gets a dedicated on-surface tone (`--ori-color-<role>-text`) — a darker/lighter shade of the role
 
 Decided 2026-07-08. A role's `--ori-color-<role>` is engineered as a fill **background** (light / saturated,
