@@ -201,18 +201,20 @@ practical gotchas go here.
   primary tone, alert the info tone). The `:root` `--ori-color-text` default is the neutral `--ori-color-on-surface`
   ink, NOT a role derive: a `var(--ori-color)` at `:root` freezes to `:root`'s currentColor (a custom property's
   `var()` substitutes where DECLARED, not where used), so it can't track a block-baked `--ori-color` — hence baked
-  blocks repoint `--ori-color-text` themselves. The per-role token is DERIVED —
-  `color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)` — and re-resolves on a whole-page
-  theme/skin swap (inputs are `:root` tokens), so a custom brand gets AA text free; it does NOT track a SUBTREE
-  theme (page-level, like skins). **`in oklch` is deliberate** — perceptual uniformity lets one 65% ratio clear AA
-  across every hue; do NOT "consistency-fix" it to the house `in srgb` (that reintroduces per-hue failures). The
-  non-text axes (outline border, focus ring, tab indicator) still use raw `--ori-color` — a SEPARATE, pre-existing
-  axis where pale roles (`secondary` 1.1–1.6:1, `warn` border ~2.15:1) do NOT clear the 3:1 non-text minimum
-  (1.4.11); not fixed here (see the close-button-ring note above for the pattern a fix would follow). Guard:
-  **e2e/text-contrast.spec.ts** (real Chromium — Node can't evaluate `color-mix`, happy-dom axe has no layout
-  engine): resolves the browser's `oklch()` / `color(srgb …)` values via a 1×1 canvas, composites the tonal tint
-  over surface, asserts >= 4.5:1 for every role × skin × theme × text kind, the tonal hover/active tint, and the
-  bare-block baked path (`plain`, 0.5 opacity + intentionally muted, is exempt). Min observed ~4.85:1.
+  blocks repoint `--ori-color-text` themselves. The per-role token is a DARKER/LIGHTER SHADE of the role via
+  relative colour that clamps ONLY lightness: `oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` (light) /
+  `max(l, 0.86)` (dark) — keeps the role's hue + chroma, so the text (and the outline BORDER, which reads the same
+  token) is the same colour as the fill, only darker/lighter ("one hue, only lightness varies") — not the muddy
+  off-hue a `color-mix` toward the neutral ink gave (the first cut, replaced). Declared IN EACH theme block
+  (`:root` / light + `.ori-theme_dark`), NOT only `:root`, so it re-resolves for a SUBTREE theme and under a
+  consumer's UNLAYERED `--ori-color` override too (a `:root`-only derive froze to the page value, breaking a real
+  consumer's dark theme). Non-text axes: the focus ring + tab indicator still use raw `--ori-color`, where pale
+  roles miss the 3:1 minimum (1.4.11) — a SEPARATE, pre-existing axis, unfixed; the outline border now reads the
+  darker `--ori-color-text`, so it clears 3:1 for pale roles too. Guard: **e2e/text-contrast.spec.ts** (real
+  Chromium — Node can't evaluate `oklch(from …)`, happy-dom axe has no layout): resolves computed `oklch()` /
+  `color(srgb …)` via a 1×1 canvas, composites the tonal tint over surface, asserts >= 4.5:1 for every role × skin
+  × theme × text kind + the tonal hover/active tint + the bare-block baked path (`plain`, 0.5 opacity, intentionally
+  muted, is exempt). Min observed ~4.55:1.
 - **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
   box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
   container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is

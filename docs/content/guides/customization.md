@@ -128,20 +128,30 @@ roles (plus their `on-` pairs, per mode) is the same move at scale — at that p
 A role's hue above is engineered as a **fill background** — a component paints it as text (the
 non-fill button variants, the selected tab, alert, tag) through a separate, dedicated token,
 `--ori-color-<role>-text`, so that a light or saturated role never has to double as body text. It
-already derives an AA-safe tone automatically:
+already derives an AA-safe tone automatically — a **relative color** that keeps the role's hue and
+chroma and clamps only its lightness, so the text reads as the same colour as the fill, just darker
+(light theme) or lighter (dark theme):
 
 ```css
---ori-color-primary-text: color-mix(in oklch, var(--ori-color-primary), var(--ori-color-on-surface) 65%);
+/* :root — the light default */
+--ori-color-primary-text: oklch(from var(--ori-color-primary) min(l, 0.42) c h);
+
+/* .ori-theme_dark / :root.dark — re-declared with the opposite clamp */
+--ori-color-primary-text: oklch(from var(--ori-color-primary) max(l, 0.86) c h);
 ```
 
-Because `var()` resolves at point of use, this ONE declaration auto-adapts to the **active theme**
-(light/dark) **and** to any skin's role override — rebrand `primary` above, or
-[author a whole custom skin](/guides/theming#authoring-a-custom-skin), and its non-fill text tone is
-AA-safe **for free**. Override the derived value only to fine-tune the exact hue:
+Because each theme declares its own clamp — light caps lightness at 0.42, dark floors it at 0.86 —
+the tone tracks the **active theme** automatically. And because both formulas read
+`var(--ori-color-primary)`, the tone also tracks any **skin**'s role override, or your own — rebrand
+`primary` above, or [author a whole custom skin](/guides/theming#authoring-a-custom-skin), and its
+non-fill text tone is AA-safe **for free**. Override the derived value only to fine-tune the exact
+hue:
 
-- **Global**, every mode and skin: `:root { --ori-color-warn-text: #b45309 }`. Unlike the role itself,
-  `-text` has no `-light` / `-dark` split, so one declaration covers both modes — nest it inside
-  `.ori-theme_dark` / `:root.dark` too if you want a different dark-mode value.
+- **Global**, every mode and skin: `:root { --ori-color-warn-text: #b45309 }`. A flat override value
+  is theme-agnostic — unlike oriUI's own formula above, it needs no light/dark split — so your
+  unlayered `:root` rule beats both oriUI's light default and its dark re-declaration, and one
+  declaration covers both modes. Nest it inside `.ori-theme_dark` / `:root.dark` too if you want a
+  different dark-mode value.
 - **Per skin**: `[data-ori-skin='brand'] { --ori-color-primary-text: … }` — the same selector shape as
   [authoring a skin](/guides/theming#authoring-a-custom-skin).
 - **Per instance or subtree**: repoint the resolved alias, `--ori-color-text`, on a wrapper — the same
@@ -150,7 +160,8 @@ AA-safe **for free**. Override the derived value only to fine-tune the exact hue
 This replaces the old workaround of targeting a component's fill token directly (e.g.
 `.ori-button { --ori-color: … }`) to patch up text contrast — that also repaints the `fill` variant's
 background, since `--ori-color` feeds both. `--ori-color-text` is the sanctioned point: it only ever
-feeds the non-fill / selected-text axis. _(Full per-role token reference:
+feeds the non-fill / selected-text axis — and now the `outline` variant's border too, so the ring and
+the label match. _(Full per-role token reference:
 [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).)_
 
 ### Radius and font-size — the same pattern
@@ -232,7 +243,8 @@ and `--ori-color-on` (its legible partner) are what every variant actually reads
 Because you repoint the alias the variants are built on, **all the machinery keeps working**:
 
 - every variant maps your accent correctly — `fill` paints it as the background with `--ori-color-on`
-  text; `tonal` / `outline` derive the tint / border from `--ori-color` too;
+  text; `tonal`'s tint derives from `--ori-color`; `outline`'s border reads `--ori-color-text`, the
+  same tone as its label;
 - hover and active states stay right, because they are `color-mix()` **derivations of the alias**
   (a filled button hovers to `color-mix(in srgb, var(--ori-color), white 15%)`) — there is no second
   "hover color" to supply;
@@ -245,13 +257,15 @@ Because you repoint the alias the variants are built on, **all the machinery kee
 [Text — the on-surface foreground](/guides/design-tokens#text-the-on-surface-foreground)). CSS custom
 properties don't re-substitute on inheritance: setting only `--ori-color` here does **not** also
 recompute `--ori-color-text` for you, because nothing on this element redeclares it. Set it alongside
-the pair when you need a non-fill variant on a one-off color, mirroring the derived formula:
+the pair when you need a non-fill variant on a one-off color, mirroring the derived formula (the light
+clamp shown here; nest a `max(l, 0.86)` version under `.ori-theme_dark` / `:root.dark` for a
+dark-safe one-off too):
 
 ```vue
 <OriButton
     text="One teal button"
     variant="tonal"
-    style="--ori-color: teal; --ori-color-on: white; --ori-color-text: color-mix(in oklch, teal, var(--ori-color-on-surface) 65%)"
+    style="--ori-color: teal; --ori-color-on: white; --ori-color-text: oklch(from teal min(l, 0.42) c h)"
 />
 ```
 
@@ -285,7 +299,7 @@ wrapper and every descendant that resolves primary picks it up:
 ```html
 <section
     class="promo"
-    style="--ori-color-primary: #16a34a; --ori-color-on-primary: #ffffff; --ori-color-primary-text: color-mix(in oklch, #16a34a, var(--ori-color-on-surface) 65%)"
+    style="--ori-color-primary: #16a34a; --ori-color-on-primary: #ffffff; --ori-color-primary-text: oklch(from #16a34a min(l, 0.42) c h)"
 >
     <!-- buttons / cards in here render with the green primary; the rest of the page does not -->
 </section>
