@@ -130,6 +130,6 @@
         --ori-color-on-background: var(--ori-color-on-background-dark);
     }
 
-    /* Preset skins (Sumi 墨, Indigo, Tech, Health, Luxury, Cyber) live in
+    /* Preset skins (Sumi 墨, Indigo, Tech, Health, Luxury, Neutral, Cyber) live in
        _themes-skins.css — each overrides these role tokens via data-ori-skin. */
 }

@@ -125,6 +125,31 @@
         --ori-color-on-background-dark: #f5ecd6;
     }
 
+    /* Neutral — pure neutral grays (the vueinjar-era palette), monochrome accent: primary is ink on
+       white (light) / near-white on near-black (dark). Surfaces sit one step off the backgrounds so
+       cards read without borders. For tool-like apps where color belongs to the content, not the chrome. */
+    :root[data-ori-skin='neutral'] {
+        --ori-color-primary-light: #17181c;
+        --ori-color-on-primary-light: #f5f6f8;
+        --ori-color-primary-dark: #eceff3;
+        --ori-color-on-primary-dark: #17181c;
+
+        --ori-color-secondary-light: #e3e5ea;
+        --ori-color-on-secondary-light: #17181c;
+        --ori-color-secondary-dark: #2a2c31;
+        --ori-color-on-secondary-dark: #eceff3;
+
+        --ori-color-surface-light: #f0f2f6;
+        --ori-color-on-surface-light: hsl(220 10% 15%);
+        --ori-color-surface-dark: #191919;
+        --ori-color-on-surface-dark: hsl(0 0% 92%);
+
+        --ori-color-background-light: #ffffff;
+        --ori-color-on-background-light: hsl(220 10% 15%);
+        --ori-color-background-dark: #121212;
+        --ori-color-on-background-dark: hsl(0 0% 92%);
+    }
+
     /* Cyber — neon fuchsia on near-black. Bold / nightlife register. */
     :root[data-ori-skin='cyber'] {
         --ori-color-primary-light: #a21caf;
