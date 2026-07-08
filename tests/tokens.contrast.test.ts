@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
+import { colord, extend } from 'colord';
+import a11yPlugin from 'colord/plugins/a11y';
 
 /**
  * Design-token contrast guard. oriUI promises that every colour role ships a contrast-checked
@@ -10,45 +12,12 @@ import { describe, it, expect } from 'vitest';
  * skin pairing names itself, so a regression points straight at the offending token.
  */
 
-// ---- WCAG 2.x relative-luminance contrast math ----
-function hexToRgb(hex: string): [number, number, number] {
-    const h = hex.replace('#', '').trim();
-    const full = h.length === 3 ? [...h].map((c) => c + c).join('') : h;
-    const n = parseInt(full.slice(0, 6), 16);
-    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
+// The WCAG 2.x contrast math is colord's job (its a11y plugin), so the ratios track a maintained
+// reference implementation instead of a hand-rolled one. colord parses hex, the legacy `hsl(h, s%, l%)`
+// AND the modern space-separated `hsl(h s% l%)` used by some skins, so token values pass through as-is.
+extend([a11yPlugin]);
 
-// hsl() → sRGB (CSS Color 4 algorithm). Supports the modern space syntax `hsl(220 10% 15%)` and the
-// legacy comma syntax `hsl(220, 10%, 15%)`; alpha is not expected in token values and is rejected.
-function hslToRgb(hsl: string): [number, number, number] | null {
-    const m = hsl.match(/^hsla?\(\s*([\d.]+)(?:deg)?[,\s]+([\d.]+)%[,\s]+([\d.]+)%\s*\)$/);
-    if (!m) return null;
-    const h = ((parseFloat(m[1]) % 360) + 360) % 360;
-    const s = parseFloat(m[2]) / 100;
-    const l = parseFloat(m[3]) / 100;
-    const f = (n: number) => {
-        const k = (n + h / 30) % 12;
-        return l - s * Math.min(l, 1 - l) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
-    };
-    return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
-}
-
-function toRgb(color: string): [number, number, number] {
-    return color.startsWith('#') ? hexToRgb(color) : (hslToRgb(color) ?? [0, 0, 0]);
-}
-
-function luminance(color: string): number {
-    const [r, g, b] = toRgb(color).map((c) => {
-        const s = c / 255;
-        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-function contrast(a: string, b: string): number {
-    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-    return (hi + 0.05) / (lo + 0.05);
-}
+const contrast = (fg: string, bg: string): number => colord(fg).contrast(bg);
 
 // ---- Load + parse the token CSS ----
 const themesDir = resolve(process.cwd(), 'packages/css/src/themes');
@@ -66,7 +35,7 @@ for (const [, name, hex] of baseCss.matchAll(/(--ori-neutral-\d+)\s*:\s*(#[0-9a-
 function resolveValue(raw: string): string | null {
     const v = raw.trim().replace(/;$/, '');
     if (/^#[0-9a-fA-F]{3,8}$/.test(v)) return v;
-    if (/^hsla?\(/.test(v)) return hslToRgb(v) ? v : null;
+    if (/^hsla?\(/.test(v)) return colord(v).isValid() ? v : null;
     const ref = v.match(/^var\(\s*(--ori-neutral-\d+)\s*\)$/);
     return ref ? (neutrals[ref[1]] ?? null) : null;
 }

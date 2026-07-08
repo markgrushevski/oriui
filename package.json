@@ -60,6 +60,7 @@
         "@vitest/coverage-v8": "^4.1.9",
         "@vue/test-utils": "^2.4.11",
         "axe-core": "^4.12.1",
+        "colord": "^2.9.3",
         "eslint": "^10.6.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-vue": "^10.9.2",
