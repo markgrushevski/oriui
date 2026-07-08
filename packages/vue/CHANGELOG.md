@@ -1,5 +1,13 @@
 # @oriui/vue
 
+## 1.0.0-alpha.9
+
+### Patch Changes
+
+- Updated dependencies [db83609]
+    - @oriui/css@1.0.0-alpha.9
+    - @oriui/headless@1.0.0-alpha.9
+
 ## 1.0.0-alpha.8
 
 ### Patch Changes
