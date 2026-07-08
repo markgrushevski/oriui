@@ -17,6 +17,7 @@
         "role-text-tone",
         "ship-sources",
         "svelte-adapter",
+        "theme-controller",
         "token-bridge"
     ]
 }
