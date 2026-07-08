@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useId } from 'vue';
-import type { ThemeColor } from '../../types';
+import type { AnchoredPlacement, ThemeColor } from '../../types';
 
 // OriTooltip — a CSS-driven tooltip overlay, native-first: no JS state machine and no positioning
 // engine. The default slot is the trigger; the .ori-tooltip__bubble[role="tooltip"] is always in the
@@ -9,15 +9,18 @@ import type { ThemeColor } from '../../types';
 // wrapper's :focus-within (keyboard) plus :hover wrapped in @media (hover: hover) so a tap on touch
 // doesn't leave it stuck open.
 //
-// Placement is STATIC (top/bottom/left/right via a class) — collision flip / repositioning would need
-// a positioning helper (out of scope here), and Esc-to-dismiss would need JS (also out of scope; the
-// CSS-only model dismisses on blur / pointer-leave).
+// Placement rides the shared `.ori-anchored` primitive (CSS Anchor Positioning): the 12-value
+// `<side>[-start|-end]` grid with zero-JS collision handling — position-try flips the bubble when the
+// preferred side lacks room, and the bare sides anchor-center so the bubble shifts back into view at
+// screen edges. No per-instance anchor wiring is needed: the trigger and bubble pair through a shared
+// default anchor-name in tooltip.css (the trigger always immediately precedes its bubble, so anchor
+// resolution finds the right one); Esc-to-dismiss would need JS (out of scope; the CSS-only model
+// dismisses on blur / pointer-leave).
 //
-// Color: when `color` is set the wrapper gets the ori-color utility, which repoints --ori-color /
-// --ori-color-on; the bubble reads them as its fill + on-color. With no color class the bubble falls
-// back to a neutral inverse surface (dark chip in light mode). We deliberately DON'T set --ori-color
-// in this component's own <style> (it would shadow the ori-color_* utility — a silent no-op); the
-// utility repoints it and the bubble reads it with a no-class fallback via var(--ori-color, …).
+// Color: the bubble defaults to a dedicated neutral inverse chip (neutral-900 on neutral-50) — NOT
+// var(--ori-color)/var(--ori-color-on), which are globally defined (currentColor) and so would pair
+// bg and text from two different sources. When `color` is set the wrapper gets the ori-color utility
+// and tooltip.css repoints the bubble's bg + text as a pair from that one role source.
 const {
     color,
     content,
@@ -26,7 +29,7 @@ const {
     color?: ThemeColor;
     /** Tooltip text. For rich content use the #content slot instead (it takes precedence). */
     content?: string;
-    placement?: 'top' | 'bottom' | 'left' | 'right';
+    placement?: AnchoredPlacement;
 }>();
 
 // SSR-safe id (Vue 3.5) so the trigger's aria-describedby always targets the bubble.
@@ -42,7 +45,11 @@ const bubbleId = useId();
             <slot :bubble-id="bubbleId" />
         </span>
 
-        <span :id="bubbleId" :class="['ori-tooltip__bubble', `ori-tooltip__bubble_${placement}`]" role="tooltip">
+        <span
+            :id="bubbleId"
+            :class="['ori-tooltip__bubble', 'ori-anchored', `ori-anchored_${placement}`]"
+            role="tooltip"
+        >
             <slot name="content">{{ content }}</slot>
         </span>
     </span>
