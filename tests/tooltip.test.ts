@@ -57,32 +57,44 @@ describe('OriTooltip', () => {
     });
 
     // -------------------------------------------------------------------------
-    // Placement modifier classes
+    // Placement — the shared .ori-anchored primitive (12-value grid)
     // -------------------------------------------------------------------------
 
-    it('defaults to placement="top" — bubble carries ori-tooltip__bubble_top', () => {
+    it('bubble composes the .ori-anchored placement primitive', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info' } });
 
-        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-tooltip__bubble_top');
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored');
+    });
+
+    it('defaults to placement="top" — bubble carries ori-anchored_top', () => {
+        const wrapper = mount(OriTooltip, { props: { content: 'Info' } });
+
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored_top');
     });
 
     it('placement="bottom" adds the correct modifier', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info', placement: 'bottom' } });
 
-        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-tooltip__bubble_bottom');
-        expect(wrapper.find('.ori-tooltip__bubble').classes()).not.toContain('ori-tooltip__bubble_top');
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored_bottom');
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).not.toContain('ori-anchored_top');
     });
 
     it('placement="left" adds the correct modifier', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info', placement: 'left' } });
 
-        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-tooltip__bubble_left');
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored_left');
     });
 
     it('placement="right" adds the correct modifier', () => {
         const wrapper = mount(OriTooltip, { props: { content: 'Info', placement: 'right' } });
 
-        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-tooltip__bubble_right');
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored_right');
+    });
+
+    it('accepts the aligned grid values (side-start / side-end)', () => {
+        const wrapper = mount(OriTooltip, { props: { content: 'Info', placement: 'bottom-start' } });
+
+        expect(wrapper.find('.ori-tooltip__bubble').classes()).toContain('ori-anchored_bottom-start');
     });
 
     it('bubble carries only one placement modifier at a time', () => {
@@ -90,9 +102,8 @@ describe('OriTooltip', () => {
         placements.forEach((p) => {
             const wrapper = mount(OriTooltip, { props: { content: 'x', placement: p } });
             const classes = wrapper.find('.ori-tooltip__bubble').classes();
-            const placementClasses = placements.map((pl) => `ori-tooltip__bubble_${pl}`);
 
-            expect(classes.filter((c) => placementClasses.includes(c))).toHaveLength(1);
+            expect(classes.filter((c) => /^ori-anchored_/.test(c))).toHaveLength(1);
         });
     });
 

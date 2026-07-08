@@ -71,8 +71,8 @@ properties, with **no JavaScript**:
 ```
 
 - `class="dark"` → dark mode (omit for light).
-- `data-ori-skin="sumi | indigo | tech | health | luxury | cyber"` → a preset skin (omit for the
-  default **Ori** skin).
+- `data-ori-skin="sumi | indigo | tech | health | luxury | neutral | cyber"` → a preset skin (omit for
+  the default **Ori** skin).
 
 A three-line inline script is enough to persist a user's choice, or the server can set the attributes
 per request. With **htmx**, fragments you swap in are already themed — CSS transitions compose with

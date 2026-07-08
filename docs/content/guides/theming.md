@@ -55,17 +55,18 @@ Switching is a **single attribute** on `<html>` — zero runtime:
 ```
 
 The default skin is **Ori** (luminous azure → glowing cyan) — applied when **no** `data-ori-skin`
-attribute is present. Six presets ship alongside it:
+attribute is present. Seven presets ship alongside it:
 
-| `data-ori-skin` | Skin   | Palette                                                   |
-| --------------- | ------ | --------------------------------------------------------- |
-| _(omitted)_     | Ori    | Luminous azure on ink and cool white — the default.       |
-| `sumi`          | Sumi   | Graphite ink on warm washi paper (墨). Strict WCAG AA.    |
-| `indigo`        | Indigo | Calm indigo on cool grey — oriUI's previous default.      |
-| `tech`          | Tech   | Cool cyan on slate — SaaS / developer-tool register.      |
-| `health`        | Health | Calm emerald on mint — medical / wellness.                |
-| `luxury`        | Luxury | Deep gold on warm paper / charcoal — editorial / premium. |
-| `cyber`         | Cyber  | Neon fuchsia on near-black — bold / nightlife.            |
+| `data-ori-skin` | Skin    | Palette                                                      |
+| --------------- | ------- | ------------------------------------------------------------ |
+| _(omitted)_     | Ori     | Luminous azure on ink and cool white — the default.          |
+| `sumi`          | Sumi    | Graphite ink on warm washi paper (墨). Strict WCAG AA.       |
+| `indigo`        | Indigo  | Calm indigo on cool grey — oriUI's previous default.         |
+| `tech`          | Tech    | Cool cyan on slate — SaaS / developer-tool register.         |
+| `health`        | Health  | Calm emerald on mint — medical / wellness.                   |
+| `luxury`        | Luxury  | Deep gold on warm paper / charcoal — editorial / premium.    |
+| `neutral`       | Neutral | Pure grays, monochrome accent — chrome for colorful content. |
+| `cyber`         | Cyber   | Neon fuchsia on near-black — bold / nightlife.               |
 
 Mode and skin compose — set both at once:
 

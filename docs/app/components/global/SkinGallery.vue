@@ -16,6 +16,7 @@ const INTENT: Record<SkinId, string> = {
     tech: 'Cool, product-UI teal.',
     health: 'Fresh medical green.',
     luxury: 'Warm gold on cream.',
+    neutral: 'Pure grays, monochrome accent.',
     cyber: 'Neon magenta on near-black.'
 };
 </script>

@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
+import { colord, extend } from 'colord';
+import a11yPlugin from 'colord/plugins/a11y';
 
 /**
  * Design-token contrast guard. oriUI promises that every colour role ships a contrast-checked
@@ -10,26 +12,12 @@ import { describe, it, expect } from 'vitest';
  * skin pairing names itself, so a regression points straight at the offending token.
  */
 
-// ---- WCAG 2.x relative-luminance contrast math ----
-function toRgb(hex: string): [number, number, number] {
-    const h = hex.replace('#', '').trim();
-    const full = h.length === 3 ? [...h].map((c) => c + c).join('') : h;
-    const n = parseInt(full.slice(0, 6), 16);
-    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
+// The WCAG 2.x contrast math is colord's job (its a11y plugin), so the ratios track a maintained
+// reference implementation instead of a hand-rolled one. colord parses hex, the legacy `hsl(h, s%, l%)`
+// AND the modern space-separated `hsl(h s% l%)` used by some skins, so token values pass through as-is.
+extend([a11yPlugin]);
 
-function luminance(hex: string): number {
-    const [r, g, b] = toRgb(hex).map((c) => {
-        const s = c / 255;
-        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-
-function contrast(a: string, b: string): number {
-    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-    return (hi + 0.05) / (lo + 0.05);
-}
+const contrast = (fg: string, bg: string): number => colord(fg).contrast(bg);
 
 // ---- Load + parse the token CSS ----
 const themesDir = resolve(process.cwd(), 'packages/css/src/themes');
@@ -42,11 +30,12 @@ for (const [, name, hex] of baseCss.matchAll(/(--ori-neutral-\d+)\s*:\s*(#[0-9a-
     neutrals[name] = hex;
 }
 
-// A colour value is usable if it's a literal hex or a var() pointing at the neutral ramp;
-// `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colours).
+// A colour value is usable if it's a literal hex, a literal hsl(), or a var() pointing at the neutral
+// ramp; `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colours).
 function resolveValue(raw: string): string | null {
     const v = raw.trim().replace(/;$/, '');
     if (/^#[0-9a-fA-F]{3,8}$/.test(v)) return v;
+    if (/^hsla?\(/.test(v)) return colord(v).isValid() ? v : null;
     const ref = v.match(/^var\(\s*(--ori-neutral-\d+)\s*\)$/);
     return ref ? (neutrals[ref[1]] ?? null) : null;
 }
@@ -75,6 +64,11 @@ const ROLES = ['primary', 'secondary', 'surface', 'background'] as const;
 const STATUS = ['success', 'warn', 'danger', 'info'] as const;
 const MODES = ['light', 'dark'] as const;
 const AA = 4.5;
+
+// Recorded contrast debt — pairings known to sit below AA, kept visible instead of silently passing.
+// An entry needs a DECISIONS.md rationale; remove it the moment the pairing is fixed (a stale entry
+// fails the guard below). Key: the pair label; value: the accepted minimum ratio.
+const KNOWN_BELOW_AA: Record<string, number> = {};
 
 type Pair = { label: string; fg: string; bg: string };
 const pairs: Pair[] = [];
@@ -108,14 +102,27 @@ for (const css of [baseCss, skinsCss]) {
 
 describe('Design-token contrast (WCAG AA for body text, >= 4.5:1)', () => {
     it('discovers every role/on-role pairing across all skins', () => {
-        // base Ori: 4 roles x 2 modes (8) + 4 status (4); 6 preset skins x 4 roles x 2 modes (48).
-        expect(pairs.length).toBeGreaterThanOrEqual(8 + 4 + 6 * 8);
+        // base Ori: 4 roles x 2 modes (8) + 4 status (4); 7 preset skins x 4 roles x 2 modes (56).
+        expect(pairs.length).toBeGreaterThanOrEqual(8 + 4 + 7 * 8);
+    });
+
+    it('the KNOWN_BELOW_AA exception list carries no stale entries', () => {
+        const labels = new Set(pairs.map((p) => p.label));
+        const stale = Object.keys(KNOWN_BELOW_AA).filter((label) => !labels.has(label));
+        expect(stale, `exceptions for pairings that no longer exist: ${stale.join(', ')}`).toEqual([]);
+        for (const { label, fg, bg } of pairs) {
+            if (label in KNOWN_BELOW_AA && contrast(fg, bg) >= AA) {
+                expect.fail(`${label} now meets AA — remove its KNOWN_BELOW_AA entry`);
+            }
+        }
     });
 
     for (const { label, fg, bg } of pairs) {
-        it(`${label}: ${fg} on ${bg}`, () => {
+        const floor = KNOWN_BELOW_AA[label] ?? AA;
+        const debt = label in KNOWN_BELOW_AA ? ' [recorded contrast debt — below AA]' : '';
+        it(`${label}: ${fg} on ${bg}${debt}`, () => {
             const ratio = contrast(fg, bg);
-            expect(ratio, `${label} -> ${ratio.toFixed(2)}:1 (need >= ${AA})`).toBeGreaterThanOrEqual(AA);
+            expect(ratio, `${label} -> ${ratio.toFixed(2)}:1 (need >= ${floor})`).toBeGreaterThanOrEqual(floor);
         });
     }
 });

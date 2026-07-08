@@ -190,6 +190,17 @@ practical gotchas go here.
   and override to `currentcolor` only on the **`fill`** variant (there the on-color contrasts the solid
   fill, and `var(--ori-color)` would BE the fill background → invisible ring). Place the `fill` override
   last so stylelint `no-descending-specificity` stays happy.
+- **The contrast guard covers only the FILL pairing, not role-as-foreground (the open P2 gap).**
+  `tests/tokens.contrast.test.ts` asserts `--ori-color-on-<role>` ink on `--ori-color-<role>` fill (the filled
+  Button / Badge / Card case). But the non-fill variants (`_themes-variant.css`: tonal / outline / text set
+  `--ori-variant-text-color: var(--ori-color)`), the selected Tab (`tabs.css` `[aria-selected] { color: var(--ori-color) }`),
+  Alert and Tag paint the **raw role token as FOREGROUND** on surface (or a tonal tint) — an axis the guard never
+  models, and happy-dom axe can't measure it (no layout engine; the Playwright e2e runs no axe at all). Consequence:
+  a role engineered as a background fails body-text 4.5:1 as foreground **even on the default skin** — `warn #f59e0b`
+  = 2.14:1 on white; the 25%-tint `tonal` bg drops nearly every role below 4.5:1 in light, and dark surfaces sink
+  `success` / `danger` / `info` to 2.3–3.1:1. Distinct from the close-button-ring note above (that's non-text 3:1;
+  this is text 4.5:1). A fix needs a variant-aware "on-surface text" role tone (distinct from the fill-safe hue)
+  **and** extending the guard to the foreground axis — tracked as the P2 follow-up.
 - **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
   box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
   container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is
