@@ -11,6 +11,10 @@ export type { MenuItem } from '../core';
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 
+// Theme controller — light/dark + auto + persistence, with the runtime-toggle invalidation fix
+export { useTheme, type ThemeState, type ThemeStore } from './use-theme';
+export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core';
+
 // Adapter selection (Svelte context)
 export { provideHeadless, getHeadless } from './plugin';
 
