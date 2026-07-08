@@ -21,6 +21,10 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-tag","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · <b>sm</b> · md · lg · xl · xxl — drives the label scale"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-tag__icon","type":"Part","description":"icon element (prepend or append)"},{"class":"ori-tag__text","type":"Part","description":"label text element"},{"class":"ori-tag__close · ori-tag__close-icon","type":"Part","description":"close button and its icon (present when closable)"},{"class":"aria-disabled=true","type":"State","description":"real attribute — dims the tag and blocks pointer events"}]'}
 
+Like Button, the non-fill variants (the default `tonal` included) paint the label with the AA-safe
+`--ori-color-text` tone rather than the raw role — see
+[Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
+
 ## Variants
 
 Five visual styles, all driven by the `ori-variant_*` single-class token.
