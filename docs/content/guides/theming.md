@@ -124,7 +124,7 @@ One caveat: **skins are page-level today.** The active color alias resolves at `
 yet a different **skin** per subtree (that needs a `light-dark()` restructure and is planned). Mode
 scoping works anywhere.
 
-## Persistence — no hydration flash
+## Setting the initial theme — no hydration flash
 
 Because theming is just attributes, the **server can set them per request** from a cookie or user
 preference, and the markup arrives already themed — nothing to hydrate, no flash. For a client-only
@@ -137,26 +137,70 @@ choice and sets the attributes synchronously:
     // (the storage keys are yours to choose — these mirror this site's convention)
     var s = localStorage.getItem('ori-skin');
     var m = localStorage.getItem('ori-theme');
-    if (m === 'dark') document.documentElement.classList.add('dark');
+    if (m === 'dark') document.documentElement.classList.add('ori-theme_dark');
     if (s) document.documentElement.setAttribute('data-ori-skin', s);
 </script>
 ```
 
-To switch at runtime, toggle the same attributes — there is nothing else to call:
+Setting the attributes **before** first render is always safe — there is no rendered tree to update
+yet. Runtime switches are the case that needs one small helper (below).
 
-```ts
-document.documentElement.classList.toggle('dark');
-document.documentElement.setAttribute('data-ori-skin', 'tech');
+## Switching the mode at runtime
+
+When a user flips dark mode _after_ the page has rendered, `@oriui/headless` ships `applyTheme` (and
+the `useTheme` composable on top). **Prefer them over a bare `classList.toggle`** — they flip the
+class _and_ work around a browser quirk:
+
+> **Why not just toggle the class?** In current Chromium, changing the theme class at runtime can leave
+> already-rendered components painting the **previous** theme's colours until they next re-render — the
+> engine misses a style invalidation for the element-scoped custom properties every oriUI component
+> bakes. `applyTheme` forces the affected subtree to re-resolve in the same tick, so the switch is
+> correct immediately. (Setting the theme before first paint — server or the inline script above — never
+> hits this: nothing is rendered yet.)
+
+In a **Vue** app, `useTheme` owns the reactive state, persistence, and `auto` (live OS scheme), and
+applies each change through the fix:
+
+```vue
+<script setup lang="ts">
+import { useTheme } from '@oriui/headless/vue';
+
+const { resolvedTheme, setTheme, toggleTheme, cycleTheme } = useTheme({
+    storageKey: 'ori-theme', // persisted to localStorage; null to disable
+    default: 'auto' // 'auto' follows prefers-color-scheme live; or 'light' / 'dark'
+});
+</script>
+
+<template>
+    <button @click="cycleTheme">Theme: {{ resolvedTheme }}</button>
+</template>
 ```
 
-In a reactive app there is still no oriUI runtime to call — you set the same two attributes from your
-theme store or a composable. This very site does exactly that: a small `useOriTheme` composable owns
-the reactive `theme` / `skin` state, persists each change to `localStorage`, and calls
-`classList.toggle('dark', …)` / `setAttribute('data-ori-skin', …)` on `<html>`. Mirror that shape in
-your own app — the composable is just bookkeeping around the two attribute writes above.
+`resolvedTheme` is the applied `'light'` / `'dark'`; `theme` is the setting (`'auto'` included).
+`setTheme(mode)` pins a choice, `toggleTheme()` flips light ⇄ dark, `cycleTheme()` goes
+`auto → light → dark`. A Svelte store twin ships at `@oriui/headless/svelte` (`$theme.resolvedTheme`
 
-With **htmx** or server-rendered fragments, swapped-in HTML inherits the root attributes and is
-themed on arrival — CSS transitions compose with the swap, no JavaScript theming runtime.
+- the same setters). For **SSR** (e.g. Nuxt), keep the inline head script for the first paint — the
+  composable is inert on the server and takes over on the client.
+
+Have your own theme store, or vanilla JS? Call the low-level **`applyTheme`** exactly where you would
+have toggled the class:
+
+```ts
+import { applyTheme } from '@oriui/headless';
+
+// sets ori-theme_{dark,light} on <html> AND re-resolves the components — the drop-in for classList.toggle
+applyTheme(isDark ? 'dark' : 'light');
+```
+
+The same invalidation applies to **any** runtime change of an inherited colour token: if you switch
+`data-ori-skin` at runtime, call `flushThemeInvalidation(document.body)` (also from `@oriui/headless`)
+right after the attribute write, for the same reason. Changing the skin **before** render never needs
+it.
+
+With **htmx** or server-rendered fragments, swapped-in HTML inherits the root attributes and is themed
+on arrival — the fresh nodes resolve correctly on insertion, so there's nothing extra to call there
+either.
 
 ## Authoring a custom skin
 
