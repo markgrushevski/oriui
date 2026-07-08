@@ -1,6 +1,6 @@
 {
     "name": "@oriui/headless",
-    "version": "1.0.0-alpha.7",
+    "version": "1.0.0-alpha.8",
     "description": "Framework-agnostic headless engine for oriUI + adapters (Vue at ./vue, Svelte at ./svelte) — tiny state machines + prop-getters behind a swappable contract",
     "license": "MIT",
     "repository": {
