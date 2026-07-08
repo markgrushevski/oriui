@@ -1,6 +1,6 @@
 {
     "name": "@oriui/css",
-    "version": "1.0.0-alpha.8",
+    "version": "1.0.0-alpha.9",
     "description": "Standalone CSS design tokens + .ori-* utility classes for oriUI — no framework, no build step",
     "license": "MIT",
     "repository": {
