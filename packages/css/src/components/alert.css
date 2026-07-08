@@ -15,10 +15,12 @@
         /* Component defaults (bare .ori-alert is valid): color info, tonal variant, radius/font md. */
         --ori-color: var(--ori-color-info);
         --ori-color-on: var(--ori-color-on-info);
+        /* AA-safe on-surface tone for the tonal/outline/text body text (bare block: no color utility sets it). */
+        --ori-color-text: var(--ori-color-info-text);
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
         --ori-font-size: var(--ori-font-size_md);
         --ori-size-radius: var(--ori-size-radius_md);
 

@@ -21,6 +21,10 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
+The non-fill variants (`tonal` / `outline` / `text` / `plain`) paint the label with the AA-safe
+`--ori-color-text` tone rather than the raw role; `fill` keeps `--ori-color-on` for its solid
+background — see [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
+
 ## Variants
 
 Five visual styles, all driven by the `ori-variant_*` single-class token.

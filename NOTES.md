@@ -190,17 +190,29 @@ practical gotchas go here.
   and override to `currentcolor` only on the **`fill`** variant (there the on-color contrasts the solid
   fill, and `var(--ori-color)` would BE the fill background → invisible ring). Place the `fill` override
   last so stylelint `no-descending-specificity` stays happy.
-- **The contrast guard covers only the FILL pairing, not role-as-foreground (the open P2 gap).**
-  `tests/tokens.contrast.test.ts` asserts `--ori-color-on-<role>` ink on `--ori-color-<role>` fill (the filled
-  Button / Badge / Card case). But the non-fill variants (`_themes-variant.css`: tonal / outline / text set
-  `--ori-variant-text-color: var(--ori-color)`), the selected Tab (`tabs.css` `[aria-selected] { color: var(--ori-color) }`),
-  Alert and Tag paint the **raw role token as FOREGROUND** on surface (or a tonal tint) — an axis the guard never
-  models, and happy-dom axe can't measure it (no layout engine; the Playwright e2e runs no axe at all). Consequence:
-  a role engineered as a background fails body-text 4.5:1 as foreground **even on the default skin** — `warn #f59e0b`
-  = 2.14:1 on white; the 25%-tint `tonal` bg drops nearly every role below 4.5:1 in light, and dark surfaces sink
-  `success` / `danger` / `info` to 2.3–3.1:1. Distinct from the close-button-ring note above (that's non-text 3:1;
-  this is text 4.5:1). A fix needs a variant-aware "on-surface text" role tone (distinct from the fill-safe hue)
-  **and** extending the guard to the foreground axis — tracked as the P2 follow-up.
+- **Role-as-FOREGROUND text uses a dedicated on-surface tone (`--ori-color-<role>-text`), NOT the raw role.**
+  A role's `--ori-color-<role>` is engineered as a fill BACKGROUND (light / saturated, paired with dark
+  `--ori-color-on-<role>` ink); painted directly as TEXT on the surface a saturated / light role fails body-text
+  4.5:1 (raw `warn #f59e0b` = 2.14:1 on white; the tonal tint and the dark-surface status hues are worse). So the
+  non-fill button variants (`_themes-variant.css` tonal / outline / text), the selected Tab, Alert, Tag, Link and
+  the selected Combobox option paint `var(--ori-color-text)`. FILL keeps `--ori-color-on` (unchanged). **Two
+  delivery paths + a custom-property gotcha:** the tone reaches an element via the `.ori-color_*` utility (sets
+  `--ori-color-text` on the element) OR via a block that bakes a role (button / tabs / tag / combobox bake the
+  primary tone, alert the info tone). The `:root` `--ori-color-text` default is the neutral `--ori-color-on-surface`
+  ink, NOT a role derive: a `var(--ori-color)` at `:root` freezes to `:root`'s currentColor (a custom property's
+  `var()` substitutes where DECLARED, not where used), so it can't track a block-baked `--ori-color` — hence baked
+  blocks repoint `--ori-color-text` themselves. The per-role token is DERIVED —
+  `color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)` — and re-resolves on a whole-page
+  theme/skin swap (inputs are `:root` tokens), so a custom brand gets AA text free; it does NOT track a SUBTREE
+  theme (page-level, like skins). **`in oklch` is deliberate** — perceptual uniformity lets one 65% ratio clear AA
+  across every hue; do NOT "consistency-fix" it to the house `in srgb` (that reintroduces per-hue failures). The
+  non-text axes (outline border, focus ring, tab indicator) still use raw `--ori-color` — a SEPARATE, pre-existing
+  axis where pale roles (`secondary` 1.1–1.6:1, `warn` border ~2.15:1) do NOT clear the 3:1 non-text minimum
+  (1.4.11); not fixed here (see the close-button-ring note above for the pattern a fix would follow). Guard:
+  **e2e/text-contrast.spec.ts** (real Chromium — Node can't evaluate `color-mix`, happy-dom axe has no layout
+  engine): resolves the browser's `oklch()` / `color(srgb …)` values via a 1×1 canvas, composites the tonal tint
+  over surface, asserts >= 4.5:1 for every role × skin × theme × text kind, the tonal hover/active tint, and the
+  bare-block baked path (`plain`, 0.5 opacity + intentionally muted, is exempt). Min observed ~4.85:1.
 - **Focus-ring offset polarity is a convention:** **outset** (`outline-offset: +2px`, or a 3px
   box-shadow ring) for free-standing controls; **inset** (`outline-offset: -2px`) for controls flush to a
   container edge where an outset ring would clip — Tabs tab, Accordion summary (but the Tabs _panel_ is

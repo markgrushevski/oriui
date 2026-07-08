@@ -1,49 +1,58 @@
 /* ============================================================
    Color utility classes — layer: ori.utilities
-   Single-class: `.ori-color_primary` sets --ori-color + --ori-color-on (the semantic accent and its
-   contrasting on-color) on its own — no paired `.ori-color` base needed. The variant axis decides how
-   that pair is painted (fill → bg + on-text; tonal / outline / text → the accent). There is
-   deliberately NO separate `bg-color`: color is the ROLE, variant is the MAPPING. The classes sit in
-   ori.utilities (declared last), so they beat a block's baked-in default color by layer order.
+   Single-class: `.ori-color_primary` sets --ori-color + --ori-color-on + --ori-color-text (the semantic
+   accent, its contrasting on-color for FILL, and the AA-safe on-surface tone for TEXT) on its own — no
+   paired `.ori-color` base needed. The variant axis decides how that trio is painted (fill → bg + on-text;
+   tonal / outline / text → the accent as TEXT, so it reads --ori-color-text). There is deliberately NO
+   separate `bg-color`: color is the ROLE, variant is the MAPPING. The classes sit in ori.utilities
+   (declared last), so they beat a block's baked-in default color by layer order.
    ============================================================ */
 @layer ori.utilities {
     .ori-color_primary {
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
     }
 
     .ori-color_secondary {
         --ori-color: var(--ori-color-secondary);
         --ori-color-on: var(--ori-color-on-secondary);
+        --ori-color-text: var(--ori-color-secondary-text);
     }
 
     .ori-color_surface {
         --ori-color: var(--ori-color-surface);
         --ori-color-on: var(--ori-color-on-surface);
+        --ori-color-text: var(--ori-color-on-surface);
     }
 
     .ori-color_background {
         --ori-color: var(--ori-color-background);
         --ori-color-on: var(--ori-color-on-background);
+        --ori-color-text: var(--ori-color-on-background);
     }
 
     .ori-color_success {
         --ori-color: var(--ori-color-success);
         --ori-color-on: var(--ori-color-on-success);
+        --ori-color-text: var(--ori-color-success-text);
     }
 
     .ori-color_warn {
         --ori-color: var(--ori-color-warn);
         --ori-color-on: var(--ori-color-on-warn);
+        --ori-color-text: var(--ori-color-warn-text);
     }
 
     .ori-color_danger {
         --ori-color: var(--ori-color-danger);
         --ori-color-on: var(--ori-color-on-danger);
+        --ori-color-text: var(--ori-color-danger-text);
     }
 
     .ori-color_info {
         --ori-color: var(--ori-color-info);
         --ori-color-on: var(--ori-color-on-info);
+        --ori-color-text: var(--ori-color-info-text);
     }
 }
