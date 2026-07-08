@@ -9,6 +9,7 @@
     "changesets": [
         "css-entry-points",
         "explicit-icon-mode",
+        "neutral-skin-tooltip-fix",
         "package-restructure",
         "rem-tokens",
         "reset-independence",
