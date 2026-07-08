@@ -22,6 +22,8 @@
         --ori-size-action: var(--ori-size-action_md);
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        /* AA-safe on-surface tone for the selected option's label (bare block: no color utility sets it). */
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-font-size: var(--ori-font-size_md);
 
         display: inline-flex;
@@ -180,7 +182,7 @@
     }
 
     .ori-combobox__option_selected {
-        color: var(--ori-color);
+        color: var(--ori-color-text);
         font-weight: 600;
     }
 

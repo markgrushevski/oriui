@@ -27,28 +27,28 @@
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
     }
 
     .ori-variant_outline {
         --ori-variant-border-color: var(--ori-color);
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: transparent;
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
     }
 
     .ori-variant_text {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: transparent;
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
     }
 
     .ori-variant_plain {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 0.5;
         --ori-variant-bg-color: transparent;
-        --ori-variant-text-color: var(--ori-color);
+        --ori-variant-text-color: var(--ori-color-text);
     }
 
     .ori-variant_fill[data-active],
@@ -64,12 +64,12 @@
 
     .ori-variant_tonal[data-active],
     .ori-button.ori-variant_tonal:active {
-        --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
+        --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
     }
 
     @media (hover: hover) {
         .ori-button.ori-variant_tonal:hover {
-            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 65%);
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
         }
     }
 

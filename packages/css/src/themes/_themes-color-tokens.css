@@ -96,10 +96,37 @@
         --ori-color-background: var(--ori-color-background-light);
         --ori-color-on-background: var(--ori-color-on-background-light);
 
+        /* On-surface TEXT tone per role — the AA-safe foreground for the non-fill variants
+           (outline / tonal / text), the selected tab, alert + tag. A role's hue is tuned as a fill
+           BACKGROUND (light / saturated, paired with dark on-ink); used as TEXT on the surface it can
+           fall below the 4.5:1 body-text bar (amber warn is the worst). The default DERIVES the tone by
+           mixing the role toward the surface ink — var() resolves at point of use, so this one line
+           auto-adapts to theme AND to any skin's role override (a brand skin gets an AA text tone for
+           free). A role whose derived tone needs a specific hue can override --ori-color-<role>-text
+           directly (at :root, per skin, or per instance). The 65% mix toward on-surface clears WCAG AA
+           (>= 4.5:1) for every role as text — across all 8 skins, both themes, and every text kind
+           (text / outline / tonal / selected tab / alert / tag), resting AND the tonal hover/active tint —
+           verified in real Chromium by e2e/text-contrast.spec.ts (min observed ~4.85:1, at the tonal
+           hover/active tint). 60% is the floor for the resting states. */
+        --ori-color-primary-text: color-mix(in oklch, var(--ori-color-primary), var(--ori-color-on-surface) 65%);
+        --ori-color-secondary-text: color-mix(in oklch, var(--ori-color-secondary), var(--ori-color-on-surface) 65%);
+        --ori-color-success-text: color-mix(in oklch, var(--ori-color-success), var(--ori-color-on-surface) 65%);
+        --ori-color-warn-text: color-mix(in oklch, var(--ori-color-warn), var(--ori-color-on-surface) 65%);
+        --ori-color-danger-text: color-mix(in oklch, var(--ori-color-danger), var(--ori-color-on-surface) 65%);
+        --ori-color-info-text: color-mix(in oklch, var(--ori-color-info), var(--ori-color-on-surface) 65%);
+
         /* Resolved component aliases — components read these, never the role tokens directly.
            Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
         --ori-color: currentColor;
         --ori-color-on: currentColor;
+        /* Non-fill / selected TEXT foreground. Role tones are delivered by the `.ori-color_*` utility
+           (which sets this on the element) AND by each block that bakes a role — button / tabs / tag /
+           combobox bake `--ori-color-text: var(--ori-color-primary-text)`, alert bakes the info tone. This
+           `:root` default is NOT a role derive: a `var(--ori-color)` here would freeze to :root's
+           currentColor (custom-property substitution resolves where the property is DECLARED, not where
+           it's used), so it can't track a block-baked `--ori-color`. It therefore serves only truly bare
+           usage (no role, no utility) — the neutral surface ink, always AA. */
+        --ori-color-text: var(--ori-color-on-surface);
     }
 
     /* Light theme */
