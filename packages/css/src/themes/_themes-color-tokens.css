@@ -96,24 +96,25 @@
         --ori-color-background: var(--ori-color-background-light);
         --ori-color-on-background: var(--ori-color-on-background-light);
 
-        /* On-surface TEXT tone per role — the AA-safe foreground for the non-fill variants
-           (outline / tonal / text), the selected tab, alert + tag. A role's hue is tuned as a fill
-           BACKGROUND (light / saturated, paired with dark on-ink); used as TEXT on the surface it can
-           fall below the 4.5:1 body-text bar (amber warn is the worst). The default DERIVES the tone by
-           mixing the role toward the surface ink — var() resolves at point of use, so this one line
-           auto-adapts to theme AND to any skin's role override (a brand skin gets an AA text tone for
-           free). A role whose derived tone needs a specific hue can override --ori-color-<role>-text
-           directly (at :root, per skin, or per instance). The 65% mix toward on-surface clears WCAG AA
-           (>= 4.5:1) for every role as text — across all 8 skins, both themes, and every text kind
-           (text / outline / tonal / selected tab / alert / tag), resting AND the tonal hover/active tint —
-           verified in real Chromium by e2e/text-contrast.spec.ts (min observed ~4.85:1, at the tonal
-           hover/active tint). 60% is the floor for the resting states. */
-        --ori-color-primary-text: color-mix(in oklch, var(--ori-color-primary), var(--ori-color-on-surface) 65%);
-        --ori-color-secondary-text: color-mix(in oklch, var(--ori-color-secondary), var(--ori-color-on-surface) 65%);
-        --ori-color-success-text: color-mix(in oklch, var(--ori-color-success), var(--ori-color-on-surface) 65%);
-        --ori-color-warn-text: color-mix(in oklch, var(--ori-color-warn), var(--ori-color-on-surface) 65%);
-        --ori-color-danger-text: color-mix(in oklch, var(--ori-color-danger), var(--ori-color-on-surface) 65%);
-        --ori-color-info-text: color-mix(in oklch, var(--ori-color-info), var(--ori-color-on-surface) 65%);
+        /* On-surface TEXT tone per role — the AA-safe foreground for the non-fill variants (outline /
+           tonal / text), the selected tab, alert, tag, link. A role's hue is tuned as a fill BACKGROUND
+           (bright / saturated + dark on-ink); as TEXT on the surface a bright role fails the 4.5:1 body-
+           text bar. This is a DARKER-BUT-SATURATED shade of the SAME role: relative color keeps the role's
+           hue + chroma and only clamps LIGHTNESS (light theme caps it dark, dark theme floors it light),
+           so the text and the outline border read as the same colour as the fill — one hue, only lightness
+           varying, NOT the muddy desaturation a mix toward the neutral ink gives. Declared per theme (here
+           = light default; the .ori-theme_dark block below re-declares with the dark clamp) so it tracks
+           theme AND skin AND a brand's role override, at any nesting. Light caps L at 0.42, dark floors at
+           0.86 — the tightest bounds that clear WCAG AA (>= 4.5:1) for every role × skin × text kind incl.
+           the tonal hover/active tint (min ~4.55:1); verified in real Chromium by e2e/text-contrast.spec.ts.
+           Retune by
+           overriding --ori-color-<role>-text directly (at :root, per skin, or per instance). */
+        --ori-color-primary-text: oklch(from var(--ori-color-primary) min(l, 0.42) c h);
+        --ori-color-secondary-text: oklch(from var(--ori-color-secondary) min(l, 0.42) c h);
+        --ori-color-success-text: oklch(from var(--ori-color-success) min(l, 0.42) c h);
+        --ori-color-warn-text: oklch(from var(--ori-color-warn) min(l, 0.42) c h);
+        --ori-color-danger-text: oklch(from var(--ori-color-danger) min(l, 0.42) c h);
+        --ori-color-info-text: oklch(from var(--ori-color-info) min(l, 0.42) c h);
 
         /* Resolved component aliases — components read these, never the role tokens directly.
            Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
@@ -155,6 +156,16 @@
         --ori-color-on-surface: var(--ori-color-on-surface-dark);
         --ori-color-background: var(--ori-color-background-dark);
         --ori-color-on-background: var(--ori-color-on-background-dark);
+        /* Dark clamp: floor lightness so the same-hue, same-chroma role tone is light enough for AA on the
+           dark surface (see the :root light default above for the rationale). Re-declared here — not
+           inherited from :root — so it re-resolves against the dark role even under a consumer's unlayered
+           theme override. */
+        --ori-color-primary-text: oklch(from var(--ori-color-primary) max(l, 0.86) c h);
+        --ori-color-secondary-text: oklch(from var(--ori-color-secondary) max(l, 0.86) c h);
+        --ori-color-success-text: oklch(from var(--ori-color-success) max(l, 0.86) c h);
+        --ori-color-warn-text: oklch(from var(--ori-color-warn) max(l, 0.86) c h);
+        --ori-color-danger-text: oklch(from var(--ori-color-danger) max(l, 0.86) c h);
+        --ori-color-info-text: oklch(from var(--ori-color-info) max(l, 0.86) c h);
     }
 
     /* Preset skins (Sumi 墨, Indigo, Tech, Health, Luxury, Neutral, Cyber) live in
