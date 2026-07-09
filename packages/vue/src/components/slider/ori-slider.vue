@@ -20,7 +20,10 @@ const {
     step?: number;
 }>();
 
-const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
+const emit = defineEmits<{
+    'update:modelValue': [value: number];
+    change: [value: number];
+}>();
 
 // Attributes (aria-label, name, id, …) target the real <input>, not the wrapper — the native
 // role/value/keyboard live there, so the accessible name must too (mirrors the other form controls).
@@ -35,6 +38,15 @@ const percent = computed(() => {
 
 function onInput(event: Event) {
     emit('update:modelValue', Number((event.target as HTMLInputElement).value));
+}
+
+// Commit-on-release. The native `change` fires ONCE when the value settles — pointer release after a
+// drag, or a keyboard step — not on every tick like `input`. So a consumer can commit a whole drag as
+// a single undo step (or run a per-release side effect) via `@change`, while `update:modelValue`
+// keeps streaming the live value for `v-model`. (Was reachable only as a raw-Event $attrs fallthrough;
+// declaring it makes it a first-class typed emit carrying the committed number.)
+function onChange(event: Event) {
+    emit('change', Number((event.target as HTMLInputElement).value));
 }
 </script>
 
@@ -57,6 +69,7 @@ function onInput(event: Event) {
             :disabled="disabled"
             :style="{ '--ori-slider-pct': `${percent}%` }"
             @input="onInput"
+            @change="onChange"
         />
     </div>
 </template>

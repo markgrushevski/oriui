@@ -203,6 +203,37 @@ wrapper, which applies 50 % opacity and a `not-allowed` cursor.
 
 ::
 
+## Commit on release
+
+`update:modelValue` fires on every tick of a drag — ideal for a live preview, but it would flood an
+undo history (or re-run an expensive effect) on every intermediate value. `change` fires **once**, when
+the user releases the thumb or commits a keyboard step, carrying the settled `number`. Bind both:
+`v-model` for the live value, `@change` for the commit.
+
+```vue
+<script setup>
+import { ref } from 'vue';
+
+const opacity = ref(100);
+const undoStack = [];
+
+function commit(value) {
+    // record ONE undo step for the whole drag — not one per tick
+    undoStack.push({ opacity: value });
+}
+</script>
+
+<template>
+    <!-- v-model tracks the live drag (thumb + fill); @change commits the settled value -->
+    <OriSlider v-model="opacity" label="Opacity" :show-value="true" :min="0" :max="100" @change="commit" />
+</template>
+```
+
+A drag from 100 → 40 streams `update:modelValue` the whole way, so the fill animates live — but
+`change` emits a single `40` on release, so history gets one entry, not sixty. Keyboard adjustments
+commit per step, though: each arrow-key press is its own `change` (one undo entry per press), since the
+browser settles the value on every keystroke.
+
 ## Common patterns
 
 A settings panel with labelled sliders — the most common real-world composition.
@@ -293,20 +324,23 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Events & attributes
 
-OriSlider emits a single custom event for two-way binding:
-
-| Event               | Payload  | Description                                       |
-| ------------------- | -------- | ------------------------------------------------- |
-| `update:modelValue` | `number` | Fired on every `input` event; use with `v-model`. |
+| Event               | Payload  | Description                                                                                                                                                                                                                 |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `update:modelValue` | `number` | Fired **live** on every `input` (each drag tick / arrow press); drives `v-model`.                                                                                                                                           |
+| `change`            | `number` | Fired once when the value is **committed** — pointer release, or a keyboard step. Use it to record undo history or run a per-release side effect that must not fire per tick (see [Commit on release](#commit-on-release)). |
 
 ```vue
 <OriSlider v-model="volume" label="Volume" :show-value="true" />
 ```
 
-OriSlider sets `inheritAttrs: false`, so undeclared native attributes and listeners (`aria-label`,
-`aria-describedby`, `name`, `id`, `@change`, …) fall through to the **`<input>`**, not the wrapper —
-they name, describe, and submit the real control. `label` auto-generates the input `id` via `useId()`,
-so an explicit `id` is only needed to override it.
+`@change` carries the committed **number**, not a DOM `Event` — it is a declared emit, so it no longer
+falls through to the `<input>`. If you need the raw native event (e.g. `event.target.validity`), attach
+a listener to the underlying `<input>` via a template ref.
+
+OriSlider sets `inheritAttrs: false`, so undeclared native attributes (`aria-label`,
+`aria-describedby`, `name`, `id`, …) fall through to the **`<input>`**, not the wrapper — they name,
+describe, and submit the real control. `label` auto-generates the input `id` via `useId()`, so an
+explicit `id` is only needed to override it.
 
 ### Slots
 
