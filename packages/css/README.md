@@ -87,6 +87,12 @@ class. A bare block is valid; add a class only to override an axis. Dynamic stat
 Theme + skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="…"`), reskinning everything
 through CSS variables with zero runtime.
 
+**Make it yours** — rebrand by repointing a few tokens in your own `:root` (unlayered, so it wins with
+no `!important`); reach for a token or class rather than overriding `.ori-*` rules, which keeps you
+upgrade-safe. Recipes: [Customization](https://oriui.vercel.app/guides/customization) ·
+[Theming & skins](https://oriui.vercel.app/guides/theming) ·
+[Design tokens](https://oriui.vercel.app/guides/design-tokens).
+
 ## Layers
 
 - [`@oriui/vue`](https://npmjs.com/package/@oriui/vue) — styled Vue components on these tokens.
