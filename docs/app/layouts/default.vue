@@ -117,7 +117,8 @@ const sections = [
                 title: 'Vue',
                 links: [
                     { label: 'useDisclosure', to: '/headless/use-disclosure' },
-                    { label: 'useDialog', to: '/headless/use-dialog' }
+                    { label: 'useDialog', to: '/headless/use-dialog' },
+                    { label: 'useTheme', to: '/headless/use-theme' }
                 ]
             }
         ]
