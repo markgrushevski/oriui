@@ -271,6 +271,19 @@ practical gotchas go here.
   click lands on the `<dialog>` itself — no element ref needed). No `<Teleport>`/mounted-gate: a modal
   `<dialog>` is in the top layer and a closed one is hidden, so SSR markup is stable. happy-dom ≥20
   implements `showModal`/`close`/`open`/`close`-event, so this is fully unit-testable.
+- **A controlled boolean prop (`open`) MUST default to `undefined`, or Vue's absent-Boolean→`false`
+  coercion breaks the uncontrolled path.** OriDialog is dual-mode: bind `v-model:open` (controlled) OR
+  use `defaultOpen` + the `#trigger` slot (uncontrolled). The adapter seeds from `open ?? defaultOpen`
+  (a controlled `:open` wins, else the default). The footgun: Vue coerces an **absent** `Boolean` prop
+  to `false`, NOT `undefined` — so an uncontrolled dialog's `open` reads `false`, `false ?? true`
+  collapses the seed to `false`, and `defaultOpen: true` silently stops opening on mount (4 tests went
+  red exactly this way). Fix = an **explicit `open = undefined`** default in the reactive-props
+  destructure; that opts the prop out of the coercion so unbound `open` stays `undefined` (the
+  "uncontrolled" signal). The `= undefined` looks like a no-op — it is load-bearing, keep it (commented
+  in the SFC). Controlled sync is a plain `watch(() => open, v => v !== undefined && dlg.setOpen(v))`;
+  `onOpenChange` emits `update:open` (+ `close` on close). No loop: `setOpen` no-ops on an unchanged
+  value, so emit → v-model → prop → watch settles. `defineModel` would also work but still needs the
+  same coercion opt-out, so a plain prop + `watch` is the smaller footprint here.
 - Read tokens via resolved aliases (`--ori-size-action`, `--ori-color`), never raw scale tokens.
 - **Overriding a token: _where_ it is declared decides where an override works.** Components read the
   resolved alias (`--ori-color`, bound from `--ori-color-primary` by the color class), and the color

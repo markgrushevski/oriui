@@ -170,6 +170,42 @@ page load.
 
 ::
 
+## Controlled open
+
+Bind `v-model:open` to drive the dialog from your own state — a confirmation prompt opened by a host
+action, with no `#trigger` slot. The dialog still emits `update:open` (keeping `v-model` in sync when
+the user closes via `Esc`, the backdrop, or the × button) and `close` for one-shot reactions.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { OriButton, OriDialog } from '@oriui/vue';
+
+const open = ref(false);
+
+function onConfirm() {
+    // …run the destructive action…
+    open.value = false;
+}
+</script>
+
+<template>
+    <OriButton text="Delete account" color="danger" variant="tonal" @click="open = true" />
+
+    <OriDialog v-model:open="open" title="Delete account?">
+        <p>This permanently deletes your account. This cannot be undone.</p>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem">
+            <OriButton text="Cancel" variant="text" @click="open = false" />
+            <OriButton text="Yes, delete" color="danger" @click="onConfirm" />
+        </div>
+    </OriDialog>
+</template>
+```
+
+Reach for the uncontrolled form (`defaultOpen` + the `#trigger` slot, above) when the dialog owns a
+single self-contained flow; reach for `v-model:open` when a host already holds the state — a store, a
+route guard, or a shared "unsaved changes?" prompt.
+
 ## Custom title via slot
 
 Omit the `title` prop and supply markup in the `#title` slot when you need rich heading content.
@@ -280,17 +316,30 @@ no component API — its surface is the [classes](#classes) above, and the behav
 | `closeOnInteractOutside` | `boolean` | `true`  | Whether a click on the `::backdrop` closes the dialog.                     |
 | `defaultOpen`            | `boolean` | `false` | Whether the dialog is open on first mount.                                 |
 | `modal`                  | `boolean` | `true`  | Modal mode: `showModal()` (trap + scroll lock + `::backdrop`) vs `show()`. |
+| `open`                   | `boolean` | —       | Controlled open state for `v-model:open`. Omit for an uncontrolled dialog. |
 | `title`                  | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.               |
 
 ### Events & attributes
 
-`OriDialog` declares **no custom emits**. Open/close state is owned by `useDialog()`. The `#trigger`
-slot exposes `props` and `open` — bind `v-bind="props"` on the trigger element; `open` reflects the
-current open state if you need it in the template.
+| Event         | Payload   | Description                                                                     |
+| ------------- | --------- | ------------------------------------------------------------------------------- |
+| `update:open` | `boolean` | Fires on every open/close transition — enables `v-model:open`.                  |
+| `close`       | —         | Fires whenever the dialog closes (trigger, `Esc`, backdrop, × button, or host). |
 
-Attributes placed directly on `<OriDialog>` fall through to the root element in the template,
-which is the `#trigger` slot's wrapper — for most usages you will not need to add attributes to the
-component itself.
+Bind `v-model:open` to control the dialog from a host ref (see [Controlled open](#controlled-open)).
+Both events fire in the uncontrolled (`defaultOpen` + `#trigger`) mode too, so a host can react to a
+close without owning the state. The `#trigger` slot also exposes `props` and `open` — bind
+`v-bind="props"` on the trigger element; `open` reflects the current state if you need it in the
+template.
+
+Controlled mode is **optimistic**: a user-initiated close (`Esc`, the backdrop, or the × button)
+always closes the dialog and _then_ emits — treat `update:open(false)` / `close` as authoritative and
+mirror them into your state. The dialog can't be held open by ignoring the event (a native `<dialog>`
+closes on `Esc` regardless — set `:closeOnEscape="false"` to disable that one path).
+
+`OriDialog` renders a fragment (the `#trigger` slot _plus_ the `<dialog>`), so stray attributes placed
+directly on `<OriDialog>` are **not** auto-inherited onto a single root — put attributes meant for the
+trigger on the trigger element via the `#trigger` slot's `props` instead.
 
 ### Slots
 

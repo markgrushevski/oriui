@@ -83,7 +83,7 @@ the page for the complete set.
 | [Checkbox](/components/checkbox)   | `<OriCheckbox>`   | `label` `color` `size` `value` `disabled` `invalid` `required` (`v-model`)                           |
 | [Radio](/components/radio)         | `<OriRadioGroup>` | `label` `options` `color` `size` `inline` `disabled` `required` (`v-model`)                          |
 | [Switch](/components/switch)       | `<OriSwitch>`     | `label` `color` `size` `disabled` `invalid` (`v-model` boolean)                                      |
-| [Dialog](/components/dialog)       | `<OriDialog>`     | `open` (`v-model`) — native `<dialog>`, focus-trap + `Esc` for free                                  |
+| [Dialog](/components/dialog)       | `<OriDialog>`     | `open` (`v-model:open`) `defaultOpen` `modal` — native `<dialog>`, focus-trap + `Esc` for free       |
 | [Link](/components/link)           | `<OriLink>`       | `as` `color` `external` `hover` `href` (inline prose link; underline-on-hover)                       |
 | [Skeleton](/components/skeleton)   | `<OriSkeleton>`   | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                    |
 | [Kbd](/components/kbd)             | `<OriKbd>`        | `as` `text` (default slot = key) — keyboard-key chip                                                 |
