@@ -4,6 +4,32 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## OriSlider commit event, and the live-vs-commit event convention for form controls
+
+Decided 2026-07-09. OriSlider gained a `change` event (payload: the committed `number`), fired once when
+the value settles — pointer release after a drag, or a keyboard step — alongside the existing
+`update:modelValue`, which streams live on every `input` tick. A consumer binds both: `v-model` for the
+live value (thumb + fill track the drag), `@change` to commit a whole drag as a single undo entry or run
+a per-release side effect. This reclaims the last native fallback in justpaint — its LayersPanel opacity
+slider stayed a raw `<input type=range>` precisely because commit-on-release wasn't a first-class
+OriSlider event (its author didn't know `@change` already fell through).
+
+**`@change` payload changed (pre-1.0 breaking).** `@change` was previously reachable only as an
+undeclared native-event `$attrs` fallthrough (a raw `Event`). Declaring `change` as an emit removes it
+from `$attrs` and changes the payload to a `number`. Cleanly subsuming the fallthrough beats leaving a
+raw-`Event` shadow next to a coined `commit` (the two-idioms smell); pre-1.0 breaking is acceptable and
+is disclosed in the changeset. A consumer needing the raw event attaches to the inner `<input>` via a ref.
+
+**The convention (so the next control doesn't fork it):** a native-backed form control surfaces the
+platform's commit under its **native name** — `change`, payload = the committed value, mirroring
+`update:modelValue` — while a JS-driven selection widget uses a **semantic name** (`select`, as OriMenu
+does). When a consumer needs BOTH the live stream and the commit at once (drag preview + one history
+entry), the **dual event** (`update:modelValue` + `change`) is the sanctioned primitive — not a
+`v-model.lazy` modifier, which can express only one or the other. This is the event-naming sibling of the
+two-way-binding convergence flagged in the OriDialog entry, and the reference pattern for future
+draggable/continuous controls (e.g. ColorPicker). A `modelModifiers.lazy` binding could be added later as
+a purely additive convenience — tracked in IDEAS.
+
 ## OriDialog controllability is an optimistic dual-mode `v-model:open`, hand-rolled in the SFC
 
 Decided 2026-07-09. `OriDialog` gained host control — a controlled `open` prop (`v-model:open`) plus
