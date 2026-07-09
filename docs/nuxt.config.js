@@ -35,6 +35,8 @@ export default defineNuxtConfig({
                 description: 'What oriUI is, how to install it, get started, and the accessibility contract.',
                 links: [
                     { title: 'Introduction', href: '/overview/introduction' },
+                    { title: 'Applicability', href: '/overview/applicability' },
+                    { title: 'Comparisons', href: '/overview/comparisons' },
                     { title: 'Installation', href: '/overview/installation' },
                     { title: 'Get started', href: '/overview/get-started' },
                     { title: 'Cheat sheet', href: '/overview/cheat-sheet' },
@@ -48,12 +50,13 @@ export default defineNuxtConfig({
                     { title: 'Using the CSS layer', href: '/guides/css' },
                     { title: 'Design tokens', href: '/guides/design-tokens' },
                     { title: 'Theming', href: '/guides/theming' },
+                    { title: 'Skin gallery', href: '/guides/skins' },
                     { title: 'Customization', href: '/guides/customization' }
                 ]
             },
             {
                 title: 'Components',
-                description: 'The 29 styled components — each page has the class table, props, slots, and a11y.',
+                description: 'The 31 styled components — each page has the class table, props, slots, and a11y.',
                 links: [
                     { title: 'Accordion', href: '/components/accordion' },
                     { title: 'Alert', href: '/components/alert' },
@@ -71,6 +74,8 @@ export default defineNuxtConfig({
                     { title: 'Join', href: '/components/join' },
                     { title: 'Kbd', href: '/components/kbd' },
                     { title: 'Link', href: '/components/link' },
+                    { title: 'Menu', href: '/components/menu' },
+                    { title: 'Popover', href: '/components/popover' },
                     { title: 'Progress', href: '/components/progress' },
                     { title: 'Radio', href: '/components/radio' },
                     { title: 'Select', href: '/components/select' },
@@ -92,7 +97,8 @@ export default defineNuxtConfig({
                 links: [
                     { title: 'Core (@oriui/headless)', href: '/headless/core' },
                     { title: 'useDisclosure', href: '/headless/use-disclosure' },
-                    { title: 'useDialog', href: '/headless/use-dialog' }
+                    { title: 'useDialog', href: '/headless/use-dialog' },
+                    { title: 'useTheme', href: '/headless/use-theme' }
                 ]
             }
         ]
