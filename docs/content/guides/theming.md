@@ -135,10 +135,12 @@ choice and sets the attributes synchronously:
 <script>
     // runs before first paint — no flash of the wrong theme
     // (the storage keys are yours to choose — these mirror this site's convention)
-    var s = localStorage.getItem('ori-skin');
-    var m = localStorage.getItem('ori-theme');
-    if (m === 'dark') document.documentElement.classList.add('ori-theme_dark');
-    if (s) document.documentElement.setAttribute('data-ori-skin', s);
+    var skin = localStorage.getItem('ori-skin');
+    var theme = localStorage.getItem('ori-theme'); // 'auto' | 'light' | 'dark' | null
+    // RESOLVE the setting — it may be 'auto' (or unset); don't just test for 'dark'.
+    var dark = theme === 'dark' || ((!theme || theme === 'auto') && matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.add(dark ? 'ori-theme_dark' : 'ori-theme_light');
+    if (skin) document.documentElement.setAttribute('data-ori-skin', skin);
 </script>
 ```
 
