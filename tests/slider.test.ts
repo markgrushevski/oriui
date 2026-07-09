@@ -47,6 +47,30 @@ describe('OriSlider', () => {
         expect(wrapper.emitted('update:modelValue')![0]).toEqual([42]);
     });
 
+    it('emits change as a Number when the native change (commit) event fires', async () => {
+        const wrapper = mount(OriSlider, { props: { min: 0, max: 100 } });
+        const input = wrapper.find('input');
+
+        (input.element as HTMLInputElement).value = '73';
+        await input.trigger('change');
+
+        expect(wrapper.emitted('change')).toBeTruthy();
+        expect(wrapper.emitted('change')![0]).toEqual([73]);
+    });
+
+    it('does not emit change on a live input tick (commit is release-only)', async () => {
+        const wrapper = mount(OriSlider, { props: { min: 0, max: 100 } });
+        const input = wrapper.find('input');
+
+        (input.element as HTMLInputElement).value = '30';
+        await input.trigger('input');
+
+        // A drag tick streams update:modelValue but must NOT commit — that's what keeps a whole drag
+        // out of undo history until release.
+        expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+        expect(wrapper.emitted('change')).toBeFalsy();
+    });
+
     it('applies .ori-color_primary by default', () => {
         const wrapper = mount(OriSlider);
 

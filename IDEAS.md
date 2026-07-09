@@ -121,7 +121,10 @@ report ideas worth pulling into this backlog — _findings land here, nothing is
 ### Forms & input
 
 - ⭐ **Slider / Range** — single + range thumb; token-sized track. Pure-CSS thumb is doable; keyboard
-  step needs a little JS.
+  step needs a little JS. _(shipped, plus a `change` commit event — see DECISIONS.)_
+    - 🧪 **`v-model.lazy` (`modelModifiers.lazy`)** — bind commit-only (update on native `change`, not
+      `input`), the idiomatic Vue shape; purely additive on top of the shipped dual `update:modelValue`
+        - `change` (which already covers "both streams at once"). ~5 lines SFC + a test; defer until asked.
 - ◽ **NumberField / Stepper** — numeric input with +/− and clamping.
 - ◽ **Segmented / ToggleGroup** — single/multi-select button row (pairs with **Join**).
 - ◽ **FileInput / Dropzone** — styled file picker.
