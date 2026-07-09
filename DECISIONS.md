@@ -4,6 +4,36 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## OriDialog controllability is an optimistic dual-mode `v-model:open`, hand-rolled in the SFC
+
+Decided 2026-07-09. `OriDialog` gained host control — a controlled `open` prop (`v-model:open`) plus
+`update:open` / `close` emits, alongside the existing uncontrolled `defaultOpen` + `#trigger` slot.
+This unblocks a consumer that owns the open state in its own ref (justpaint's confirm / shortcuts
+dialogs were hand-rolled precisely because OriDialog couldn't be driven by a `confirmOpen` ref).
+
+**Optimistic (notify-only), not veto-capable.** A user-initiated close (Esc / backdrop / ×) mutates
+state and closes the native `<dialog>` immediately, _then_ emits — the host mirrors it into its ref. A
+host can't keep the dialog open by ignoring the event: a native `<dialog>` can't be held open once the
+browser closes it, and Esc is non-vetoable except via `closeOnEscape=false`. Full React-style control
+(the parent as sole authority over closes) is therefore impossible on the native element — optimistic
+is the only coherent contract, and the component + docs state it. Consumers echo `update:open`/`close`.
+
+**Hand-rolled in the Vue SFC, not the headless contract.** Controllability lives entirely in
+`ori-dialog.vue` — a `watch(() => open)` mirrors the prop into the adapter's `setOpen`, and
+`onOpenChange` emits back. The framework-agnostic `DialogControl` contract is untouched: it already had
+`defaultOpen` (seed), `setOpen`, and `onOpenChange`, so no "controlled prop" concept leaks into the
+core and the swappable-adapter seam is preserved (a swapped `fakeDialog` drives the controlled path in
+tests). The seed is `defaultOpen: open ?? defaultOpen` (a bound `:open` wins the initial value). One
+footgun recorded in NOTES: the `open` prop MUST default to `undefined`, or Vue coerces an absent
+boolean to `false` and the seed collapses.
+
+Deferred (not a blocker): a catalog-wide two-way-binding convention. The catalog now carries three
+idioms — Slider (manual `modelValue` + emit), Combobox (`defineModel` + reconciling watchers), Dialog
+(manual `open` + `watch` + emit). Converging on one — likely `defineModel` plus a shared
+`useControllable` helper, or lifting a reactive `open?` into the headless contract Ark-style — would
+retire the recurring `= undefined` footgun and unify future overlays, but it's a cross-component
+refactor and a convention choice, out of scope here. Left open for a dedicated pass.
+
 ## Runtime theme switching is a headless controller (`applyTheme` / `useTheme`), because the fix can't live in CSS
 
 Decided 2026-07-08. Toggling the `ori-theme_dark` class at runtime leaves every styled component painting
