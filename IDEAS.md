@@ -74,8 +74,15 @@ Roughly by priority.
    library already has behavior / a11y / contract / geometry / contrast coverage — low ROI for a solo lib.
 9. ◽ **Theme / skin gallery** page · **applicability matrix** (Vue / Svelte / htmx / Astro / …) · the
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
-10. 🧪 **Package-export correctness in CI** (`publint` + `@arethetypeswrong/cli`) · a **token-inspector**
-    devtool.
+10. ⭐ **Package-export correctness in CI** — **publint SHIPPED (alpha.13):** a `publint` gate on all three
+    packages in `ci.yml` (node 22, after build) — all three pass clean. A **`docs:build` gate** landed in the
+    same step (catch a broken Nuxt docs build). **`@arethetypeswrong/cli` deferred (pre-beta):** attw surfaced
+    a real interop gap — `@oriui/vue`'s emitted `dist/*.d.ts` use **extensionless** relative imports
+    (`from './types'`, `from './components'`), which fail under strict `moduleResolution: node16` / `nodenext`
+    (🥴 InternalResolutionError); fine under `bundler`/`node` (🟢). Fixing it needs `.js`-extension'd relative
+    imports across `src` (or a post-build `.d.ts` rewrite) — a wide, careful change, so attw is NOT yet a gate.
+    The ESM-only `CJSResolvesToESM` attw warning is expected (the packages are `"type":"module"`). Also still
+    open: a **token-inspector** devtool.
 11. ⭐ **Reset-independence audit** — **SHIPPED (2026-07-06).** Make every `.ori-*` component block
     self-sufficient (declare its own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` +
     components works with **no reset at all** — today only 10 of 32 component files set `box-sizing`

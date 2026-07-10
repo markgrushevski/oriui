@@ -56,6 +56,14 @@ jobs:
               if: matrix.node == '22'
               run: npm run size
 
+            - name: Publish-correctness (publint — package.json exports / files / types map)
+              if: matrix.node == '22'
+              run: npx -y publint@0.3.21 ./packages/css && npx -y publint@0.3.21 ./packages/headless && npx -y publint@0.3.21 ./packages/vue
+
+            - name: Docs build (gate the Nuxt docs site — catch broken content / component usage)
+              if: matrix.node == '22'
+              run: npm run docs:build
+
     e2e:
         name: e2e (Playwright — real Chromium)
         runs-on: ubuntu-latest

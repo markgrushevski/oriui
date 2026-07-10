@@ -1,7 +1,9 @@
-/* OriColorPicker composes OriSlider (hue) + OriInput (hex), so the à-la-carte entry inlines their
-   blocks — a consumer importing only color-picker.css gets a self-contained panel. */
+/* OriColorPicker composes OriSlider (hue / alpha) + OriInput (hex) + OriButton (eyedropper), so the
+   à-la-carte entry inlines their blocks — a consumer importing only color-picker.css gets a
+   self-contained panel. */
 @import './slider.css';
 @import './input.css';
+@import './button.css';
 
 @layer ori.components {
     /* Reset-independent box model (see slider.css) — the block renders identically without base.css. */
@@ -78,15 +80,22 @@
         appearance: none;
     }
 
-    /* ---- controls row: preview swatch + hue slider ---- */
+    /* ---- controls row: preview swatch + hue/alpha sliders + eyedropper ---- */
     .ori-color-picker__controls {
         display: flex;
         align-items: center;
         gap: var(--ori-size-gap);
     }
 
-    .ori-color-picker__controls .ori-slider {
+    .ori-color-picker__sliders {
+        display: flex;
         flex: 1;
+        flex-direction: column;
+        gap: calc(var(--ori-size-gap) / 2);
+    }
+
+    .ori-color-picker__eyedropper {
+        flex: none;
     }
 
     .ori-color-picker__swatch {
@@ -103,6 +112,17 @@
         background: var(--ori-color, #000000);
 
         color: var(--ori-ink, #ffffff);
+    }
+
+    /* When alpha is on, the current color (which carries its alpha) sits over a checkerboard so
+       transparency reads. */
+    .ori-color-picker__swatch_alpha {
+        background-image:
+            linear-gradient(var(--ori-color, #000000), var(--ori-color, #000000)),
+            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+        background-size:
+            auto,
+            8px 8px;
     }
 
     /* ---- hex field (OriInput) ---- */
