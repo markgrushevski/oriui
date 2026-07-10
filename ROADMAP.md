@@ -36,16 +36,16 @@ a11y, tests, strong docs).
    in `@oriui/vue`. **Two framework adapters over the one framework-agnostic core**: `@oriui/headless/vue`
    (Vue `ComputedRef`s) and `@oriui/headless/svelte` (Svelte stores) — `useDisclosure`/`useDialog`/
    `useCombobox`/`useMenu` at full parity, proving the "behavior travels between frameworks" thesis.
-5. 🔄 **Styled components** — **31 shipped** (actions, forms, overlays, layout, feedback, navigation,
+5. 🔄 **Styled components** — **34 shipped** (actions, forms, overlays, layout, feedback, navigation,
    data display), each with state-via-attributes + focus-visible a11y and a Vitest+axe suite. Remaining:
    the `glass` variant; the catalog grows from [IDEAS.md](IDEAS.md) as real screens need it.
-6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (**456 tests**): behavior/a11y
+6. 🔄 **Testing** — Vitest + happy-dom + `@vue/test-utils` + axe (**700+ tests**): behavior/a11y
    contracts, OriDialog on a fake adapter, **executable token-contrast** (every skin's role/on-role pair
    asserted WCAG AA — already caught a real Sumi failure). Chose VTU over Testing Library (DECISIONS.md).
    ✅ **Playwright e2e** (`e2e/`, real Chromium — `.ori-anchored` placement + collision flip + the
    Popover API, asserted against the built CSS layer); remaining: broader visual-regression snapshots.
 7. 🔄 **Docs** — a **Nuxt 4 + Nuxt Content 3** app, its own UI built on oriUI itself (not VitePress).
-   ✅ a full page per component (31 — intro + classes + props/slots + a11y, with live demos on the page,
+   ✅ a full page per component (34 — intro + classes + props/slots + a11y, with live demos on the page,
    so there is no separate `/playground` route); ✅ `nuxt-llms` (`/llms.txt` + `/llms-full.txt`); ✅ a
    one-page consumer cheat-sheet. Remaining:
     - ✅ **framework-switchable examples (Vue ↔ Svelte)** — the Svelte tab now ships real code: the
@@ -65,8 +65,9 @@ a11y, tests, strong docs).
    deploy** — `main` auto-deploys the static docs (`nuxi generate` → `docs/.output/public`). ✅ **Automated
    release** — `changesets` in alpha pre mode (a **fixed** lockstep group of the three packages) + a CI
    publish job (`changesets/action` + OIDC Trusted Publishing); runbook in [RELEASING.md](RELEASING.md). ✅ root
-   **README** with status/coverage badges. Operational note: after the package rename all three packages
-   are live on npm at `1.0.0-alpha.2` (the `alpha` dist-tag).
+   **README** with status/coverage badges. Operational note: all three packages are live on npm on the
+   `1.0.0-alpha.*` line, published to the `latest` tag (changesets pre-mode leaves the `alpha` dist-tag
+   lagging — pin exact versions in consumers).
 
 ## Deferred / out of scope (for now)
 

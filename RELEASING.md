@@ -28,13 +28,12 @@ Publishers → Add → GitHub Actions**, then:
 Needs npm **≥ 11.5.1** + Node **≥ 22.14.0** — the workflow installs a recent npm and requests the OIDC
 token via `id-token: write`. No `NPM_TOKEN` secret, nothing to rotate every 90 days.
 
-> **Bootstrap (once):** a trusted publisher can only be added to a package that **already exists** —
-> npm has no "pending" publishers. `@oriui/css` exists, so configure it now. `@oriui/headless` and
-> `@oriui/vue` aren't on npm yet, so publish the first version **locally** — `npm run version` then
-> `npm run release` (your `npm login` + OTP; see the manual fallback below) — which ships all three at
-> the aligned version. Then add trusted publishers for those two, and every release after that runs
-> through this OIDC workflow with **no token anywhere**. Mind the **24h name-reuse block** on
-> `@oriui/vue`.
+> **Bootstrap (done — historical):** a trusted publisher can only be added to a package that **already
+> exists** — npm has no "pending" publishers. All three packages have been bootstrapped (a first local
+> publish — `npm run version` then `npm run release` with `npm login` + OTP) and now have trusted
+> publishers configured, so every release runs through this OIDC workflow with **no token anywhere**.
+> Kept only for reference if a **new** `@oriui/*` package is ever added: publish its first version
+> locally, then add its trusted publisher (and mind npm's **24h name-reuse block**).
 
 ## Cut a release
 
