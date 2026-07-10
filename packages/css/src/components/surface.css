@@ -1,0 +1,40 @@
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       subtree rule) — components must render identically without base.css; guarded by
+       e2e/reset-independence.spec.ts. */
+    :where(.ori-surface, .ori-surface *),
+    :where(.ori-surface, .ori-surface *)::before,
+    :where(.ori-surface, .ori-surface *)::after {
+        box-sizing: border-box;
+    }
+
+    /* An elevated floating surface — background + radius + a mode-aware shadow. No padding: the caller
+       owns the layout inside (unlike OriCard). The `.ori-size-radius_*` utility repoints --ori-size-radius
+       (default baked to _lg) so `radius` works by layer order. */
+    .ori-surface {
+        --ori-size-radius: var(--ori-size-radius_lg);
+
+        display: block;
+
+        border-radius: var(--ori-size-radius);
+
+        background-color: var(--ori-color-surface);
+        color: var(--ori-color-on-surface);
+    }
+
+    .ori-surface.ori-surface_bordered {
+        border: 1px solid color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
+    }
+
+    .ori-surface.ori-surface_elevation-sm {
+        box-shadow: var(--ori-shadow-sm);
+    }
+
+    .ori-surface.ori-surface_elevation-md {
+        box-shadow: var(--ori-shadow-md);
+    }
+
+    .ori-surface.ori-surface_elevation-lg {
+        box-shadow: var(--ori-shadow-lg);
+    }
+}

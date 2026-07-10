@@ -84,7 +84,8 @@ const sections = [
                 links: [
                     { label: 'Divider', to: '/components/divider' },
                     { label: 'Join', to: '/components/join' },
-                    { label: 'Stack', to: '/components/stack' }
+                    { label: 'Stack', to: '/components/stack' },
+                    { label: 'Surface', to: '/components/surface' }
                 ]
             },
             {
