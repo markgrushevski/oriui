@@ -75,7 +75,7 @@ const color = ref('#3366ff');
 ## Output format
 
 `format` selects the emitted string; the default is `hex`. `rgb` and `hsl` emit function notation. All
-output is **lowercase** (a common validator constraint). Alpha is not emitted in v1.
+output is **lowercase** (a common validator constraint).
 
 ::example
 :ori-color-picker{model-value="#10b981" label="hex (default)"}
@@ -90,6 +90,35 @@ output is **lowercase** (a common validator constraint). Alpha is not emitted in
 ```
 
 ::
+
+## Alpha (transparency)
+
+`alpha` adds an alpha channel — a checkerboard slider and a swatch that shows the transparency, plus
+`#rrggbbaa` output (or `rgba()` / `hsla()` per `format`). The picker also parses 8-digit hex / `rgba()`
+input, so `v-model` round-trips transparency.
+
+::example
+:ori-color-picker{model-value="#3366ff80" :alpha="true" label="Fill color"}
+
+#vue
+
+```vue
+<!-- color round-trips as e.g. "#3366ff80" -->
+<OriColorPicker v-model="color" :alpha="true" label="Fill color" />
+```
+
+::
+
+## Eyedropper
+
+`eyedropper` shows a pick-from-screen trigger built on the
+[EyeDropper API](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper). It is **feature-detected** —
+the trigger is hidden where the browser lacks it (currently Chromium-only), so it is never a dead button.
+A picked color keeps the current alpha.
+
+```vue
+<OriColorPicker v-model="color" :eyedropper="true" label="Brand color" />
+```
 
 ## Commit on release
 
@@ -137,8 +166,10 @@ The props, events, and slots of the **Vue** component. Behaviour comes from `use
 
 | Prop         | Type                      | Default | Description                                                                                  |
 | ------------ | ------------------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `alpha`      | `boolean`                 | —       | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.   |
 | `disabled`   | `boolean`                 | —       | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                |
-| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase; no alpha in v1.                       |
+| `eyedropper` | `boolean`                 | —       | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).    |
+| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase.                                       |
 | `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).           |
 | `modelValue` | `string`                  | —       | Controlled color; bind with `v-model`. Parsed loosely (hex, `rgb()/rgba()`, `hsl()/hsla()`). |
 | `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                            |
@@ -159,5 +190,5 @@ The props, events, and slots of the **Vue** component. Behaviour comes from `use
 
 ## See also
 
-- [useColorPicker](/headless/core) — the framework-agnostic sRGB + 2D-area engine behind this component.
+- [useColorPicker](/headless/use-color-picker) — the headless composable (sRGB + 2D-area engine) behind this component.
 - [OriSlider](/components/slider) · [OriInput](/components/input) · [OriPopover](/components/popover) — the primitives it reuses.

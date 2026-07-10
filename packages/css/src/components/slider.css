@@ -174,4 +174,36 @@
     .ori-slider .ori-slider_hue::-moz-range-thumb {
         background: #ffffff;
     }
+
+    /* ---- alpha channel modifier — a transparent→color gradient over a checkerboard (transparency grid).
+       The color end reads the inline --ori-color (the opaque current color) the consumer sets. ---- */
+    .ori-slider .ori-slider_alpha::-webkit-slider-runnable-track {
+        background-image:
+            linear-gradient(to right, transparent, var(--ori-color, #000000)),
+            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+        background-size:
+            auto,
+            8px 8px;
+    }
+
+    .ori-slider .ori-slider_alpha::-moz-range-track {
+        background-image:
+            linear-gradient(to right, transparent, var(--ori-color, #000000)),
+            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+        background-size:
+            auto,
+            8px 8px;
+    }
+
+    .ori-slider .ori-slider_alpha::-moz-range-progress {
+        background: transparent;
+    }
+
+    .ori-slider .ori-slider_alpha::-webkit-slider-thumb {
+        background: #ffffff;
+    }
+
+    .ori-slider .ori-slider_alpha::-moz-range-thumb {
+        background: #ffffff;
+    }
 }

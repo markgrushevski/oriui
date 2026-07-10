@@ -124,6 +124,7 @@ const sections = [
                     { label: 'useCombobox', to: '/headless/use-combobox' },
                     { label: 'useMenu', to: '/headless/use-menu' },
                     { label: 'useToolbar', to: '/headless/use-toolbar' },
+                    { label: 'useColorPicker', to: '/headless/use-color-picker' },
                     { label: 'useToken', to: '/headless/use-token' },
                     { label: 'useTheme', to: '/headless/use-theme' }
                 ]
