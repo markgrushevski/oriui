@@ -8,11 +8,12 @@ mtp-tg screens we build on oriUI), or is it portfolio-defining. Everything here 
 
 Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-have · 🧪 niche / experimental.
 
-## Shipped today (33) — for reference
+## Shipped today (34) — for reference
 
 Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combobox · Checkbox · Switch · RadioGroup ·
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip · Popover · Menu ·
-Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider · Toolbar (+ ToggleGroup) · Surface.
+Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider · Toolbar (+ ToggleGroup) · Surface ·
+ColorPicker (SV area + hue + hex + presets; alpha/eyedropper/format-switcher deferred to v2).
 
 ## Project improvements (beyond the catalog)
 

@@ -1,0 +1,149 @@
+/* OriColorPicker composes OriSlider (hue) + OriInput (hex), so the à-la-carte entry inlines their
+   blocks — a consumer importing only color-picker.css gets a self-contained panel. */
+@import './slider.css';
+@import './input.css';
+
+@layer ori.components {
+    /* Reset-independent box model (see slider.css) — the block renders identically without base.css. */
+    :where(.ori-color-picker, .ori-color-picker *),
+    :where(.ori-color-picker, .ori-color-picker *)::before,
+    :where(.ori-color-picker, .ori-color-picker *)::after {
+        box-sizing: border-box;
+    }
+
+    .ori-color-picker {
+        --ori-color-picker-size: 15rem;
+
+        display: flex;
+        flex-direction: column;
+        gap: var(--ori-size-gap);
+
+        width: var(--ori-color-picker-size);
+    }
+
+    /* ---- 2D saturation × value area ---- */
+    .ori-color-picker__area {
+        position: relative;
+
+        width: 100%;
+        aspect-ratio: 3 / 2;
+
+        border-radius: var(--ori-size-radius_md);
+
+        /* value (black, bottom) over saturation (white, left) over the pure hue base — the hue is a solid
+           background-COLOR (a bare color is not a valid background-image layer), the SV grid on top. */
+        background-color: var(--ori-hue, #ff0000);
+        background-image:
+            linear-gradient(to top, #000000, transparent), linear-gradient(to right, #ffffff, transparent);
+
+        cursor: crosshair;
+        touch-action: none;
+    }
+
+    .ori-color-picker__area-thumb {
+        position: absolute;
+
+        width: 0.875rem;
+        height: 0.875rem;
+
+        transform: translate(-50%, -50%);
+
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4);
+        pointer-events: none;
+    }
+
+    /* Focus ring on the thumb when either hidden channel input has keyboard focus. */
+    .ori-color-picker__area:has(.ori-color-picker__channel:focus-visible) .ori-color-picker__area-thumb {
+        box-shadow:
+            0 0 0 1px rgb(0 0 0 / 0.4),
+            0 0 0 4px color-mix(in srgb, var(--ori-color-primary) 45%, transparent);
+    }
+
+    /* The two range inputs are the a11y surface: visually hidden but focusable (never display:none). */
+    .ori-color-picker__channel {
+        position: absolute;
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+        margin: 0;
+
+        opacity: 0;
+
+        cursor: crosshair;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    /* ---- controls row: preview swatch + hue slider ---- */
+    .ori-color-picker__controls {
+        display: flex;
+        align-items: center;
+        gap: var(--ori-size-gap);
+    }
+
+    .ori-color-picker__controls .ori-slider {
+        flex: 1;
+    }
+
+    .ori-color-picker__swatch {
+        display: grid;
+        flex: none;
+        place-items: center;
+
+        width: 2rem;
+        height: 2rem;
+
+        border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+        border-radius: var(--ori-size-radius_md);
+
+        background: var(--ori-color, #000000);
+
+        color: var(--ori-ink, #ffffff);
+    }
+
+    /* ---- hex field (OriInput) ---- */
+    .ori-color-picker__hex {
+        width: 100%;
+    }
+
+    /* ---- presets ---- */
+    .ori-color-picker__presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--ori-size-gap) / 2);
+    }
+
+    .ori-color-picker__preset {
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: 0;
+
+        border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+        border-radius: var(--ori-size-radius_sm);
+
+        background: var(--ori-color, #000000);
+
+        cursor: pointer;
+    }
+
+    .ori-color-picker__preset[aria-selected='true'] {
+        box-shadow:
+            0 0 0 2px var(--ori-color-surface),
+            0 0 0 4px var(--ori-color-primary);
+    }
+
+    .ori-color-picker__preset:focus-visible {
+        outline: 2px solid var(--ori-color-primary);
+        outline-offset: 2px;
+    }
+
+    /* ---- disabled ---- */
+    .ori-color-picker[data-disabled] {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}

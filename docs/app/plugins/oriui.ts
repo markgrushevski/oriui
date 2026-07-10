@@ -35,7 +35,8 @@ import {
     OriToolbarButton,
     OriToolbarSeparator,
     OriToolbarToggleGroup,
-    OriToolbarToggleItem
+    OriToolbarToggleItem,
+    OriColorPicker
 } from '@oriui/vue';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
@@ -77,7 +78,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         OriToolbarButton,
         OriToolbarSeparator,
         OriToolbarToggleGroup,
-        OriToolbarToggleItem
+        OriToolbarToggleItem,
+        OriColorPicker
     };
 
     for (const [name, component] of Object.entries(components)) {

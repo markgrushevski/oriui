@@ -133,4 +133,45 @@
     .ori-slider[data-disabled] .ori-slider__input {
         cursor: not-allowed;
     }
+
+    /* ---- hue channel modifier (the class falls onto the <input> via OriSlider's inheritAttrs:false) ----
+       The track IS the full hue spectrum; the fill/progress is suppressed (the thumb marks the value),
+       and the thumb goes neutral so it reads over any hue. Used by OriColorPicker. */
+    .ori-slider .ori-slider_hue::-webkit-slider-runnable-track {
+        background: linear-gradient(
+            to right,
+            #ff0000 0%,
+            #ffff00 17%,
+            #00ff00 33%,
+            #00ffff 50%,
+            #0000ff 67%,
+            #ff00ff 83%,
+            #ff0000 100%
+        );
+    }
+
+    .ori-slider .ori-slider_hue::-moz-range-track {
+        background: linear-gradient(
+            to right,
+            #ff0000 0%,
+            #ffff00 17%,
+            #00ff00 33%,
+            #00ffff 50%,
+            #0000ff 67%,
+            #ff00ff 83%,
+            #ff0000 100%
+        );
+    }
+
+    .ori-slider .ori-slider_hue::-moz-range-progress {
+        background: transparent;
+    }
+
+    .ori-slider .ori-slider_hue::-webkit-slider-thumb {
+        background: #ffffff;
+    }
+
+    .ori-slider .ori-slider_hue::-moz-range-thumb {
+        background: #ffffff;
+    }
 }
