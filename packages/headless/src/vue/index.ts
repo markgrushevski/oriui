@@ -10,6 +10,17 @@ export type { ComboboxItem } from '../core';
 export { useMenu, type UseMenuOptions } from './use-menu';
 export type { MenuItem } from '../core';
 
+// Headless toolbar (WAI-ARIA toolbar — compositional roving tabindex, not a machine)
+export {
+    useToolbar,
+    useToolbarItem,
+    useToolbarOrientation,
+    useToolbarToggleGroup,
+    useToolbarToggleItem,
+    type UseToolbarOptions,
+    type UseToolbarToggleGroupOptions
+} from './use-toolbar';
+
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 

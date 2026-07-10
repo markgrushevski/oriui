@@ -284,6 +284,42 @@ practical gotchas go here.
   `onOpenChange` emits `update:open` (+ `close` on close). No loop: `setOpen` no-ops on an unchanged
   value, so emit → v-model → prop → watch settles. `defineModel` would also work but still needs the
   same coercion opt-out, so a plain prop + `watch` is the smaller footprint here.
+- **The Toolbar is COMPOSITIONAL roving, not a data-driven machine.** Unlike `useMenu` (items array +
+  core machine), a toolbar's items are arbitrary slotted components, so `useToolbar` is a **provide/inject
+  roving context** (`packages/headless/src/vue/use-toolbar.ts`): the root owns orientation/loop/dir + one
+  keydown handler; each item calls `useToolbarItem()` to register and get its roving `tabindex`.
+  Navigation resolves the target by `container.querySelectorAll('[data-ori-toolbar-item]')` in **DOM
+  order** (the OriTabs approach — robust to slot reorder; a v-for ref array is not order-stable). The pure
+  index/key math is in `core/roving.ts` (`rovingIntent` / `resolveRovingIndex`), shared with the Svelte
+  twin. Real DOM focus (not `aria-activedescendant`), per the APG example.
+- **Toolbar disabled = `aria-disabled` + STILL FOCUSABLE — a deliberate divergence from OriTabs** (which
+  uses native `disabled` + skips). The WAI-ARIA toolbar keeps disabled controls discoverable: roving
+  visits them, but activation is blocked via a **capture-phase click guard** (`@click.capture` →
+  `stopImmediatePropagation`), because CSS `pointer-events:none` only covers the mouse — a focused button
+  still fires `click` on Enter/Space. It also makes roving simpler: any item can be the single tab stop,
+  so there's no "first-enabled" seeding.
+- **Toolbar yields arrows to a composite child.** A focused control that owns arrow keys (input / textarea
+  / select / `[role=slider|spinbutton|radiogroup|menu|listbox|combobox|textbox]` / contenteditable) is NOT
+  hijacked by the toolbar keydown — per the APG "include at most one arrow-consuming control, place it
+  last; it keeps its own keys" (how a justpaint-style width slider can live in the bar). OriToolbarButton
+  composes OriButton with `inheritAttrs:false` + explicit `v-bind="$attrs"` on the button, so when a
+  `tooltip` wraps it in `<OriTooltip>` a caller's `@click`/attrs land on the button, not the tooltip span;
+  the `tooltip` prop wires `aria-describedby`→bubble id on the real button. Separator `aria-orientation` is
+  perpendicular (vertical in a horizontal toolbar; implicit-horizontal omitted). ToggleGroup `v-model`
+  round-trips through the parent, so two SYNCHRONOUS toggles in one tick read the stale value — fine per
+  interaction; tests await a tick between clicks.
+- **Toolbar a11y refinements (from the flagship review).** (1) A baked `tooltip` wires `aria-describedby`
+  onto the button ONLY when a `label` also names it — when the accessible NAME itself falls back to the
+  tooltip text (icon-only, no label), describing with the same text double-announces (name == description),
+  so describedby is omitted. (2) The toolbar keeps disabled items **keyboard-focusable** (aria-disabled),
+  which exposed that OriButton's `opacity: 0.45` on `[aria-disabled]` also dimmed the focus RING below 3:1
+  — gated to `:not(:focus-visible)` so the reachable disabled item's ring stays full-strength (native
+  `:disabled` is never focused, so it always dims, unchanged). (3) `ownsArrowKeys` (now shared in
+  `core/roving-dom.ts`, not duplicated per adapter) must check ANCESTORS via `closest`, else a native
+  `<input type=radio>` (role on a `[role=radiogroup]` ancestor) gets its arrows hijacked; it also treats a
+  focused native radio as arrow-owning (only checkbox/button inputs are excluded). (4) `useToolbar`
+  resolves the root from `event.currentTarget` (the keydown is bound only on the root) — no `toolbarRef`
+  to return/wire, matching the Svelte twin and removing a "forgot the ref → dead nav" footgun.
 - Read tokens via resolved aliases (`--ori-size-action`, `--ori-color`), never raw scale tokens.
 - **Overriding a token: _where_ it is declared decides where an override works.** Components read the
   resolved alias (`--ori-color`, bound from `--ori-color-primary` by the color class), and the color
@@ -341,6 +377,14 @@ practical gotchas go here.
       tests so stale teleported nodes don't match.
 - The lib build keeps `@oriui/*` **external**; root `build` runs `build:packages` (tsdown) first so
   `vue-tsc` can resolve the package `.d.ts`.
+- **A raw `element.click()` on a Toolbar button is flaky in tests — use `.trigger('click')` (or preset
+  `_vts`).** OriToolbarButton/ToggleItem attach TWO click listeners to the same `<button>` (the
+  action/toggle handler + the capture-phase disabled-guard). Vue's invoker skips a listener whose
+  `event._vts` (a `Date.now()` stamp) is `<=` the listener's `attached` time — so a raw `.click()` fired
+  in the same millisecond as mount can silently no-op the toggle (value/aria-pressed just don't update).
+  `@vue/test-utils`'s `trigger()` works around it by setting `event._vts = Date.now() + 1`; prefer
+  `wrapper.find(...).trigger('click')`, or a `click(el)` helper that presets `_vts`, when clicking a
+  toolbar button element directly. Keydown-nav tests never flake (they hit only the toolbar-root listener).
 - OriDialog tests run on the **native `<dialog>` default** (no adapter), plus one test that swaps in a
   **fake adapter** (`tests/helpers/fake-dialog.ts`, fixed id) to prove the `OriHeadless` contract still
   swaps — the lib's test graph stays engine-free (no Zag).

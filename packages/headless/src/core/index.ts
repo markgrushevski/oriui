@@ -17,6 +17,8 @@ export * from './merge-props';
 export * from './scope';
 export * from './machine';
 export * from './token';
+export * from './roving';
+export * from './roving-dom';
 
 // Components — namespaced (mirrors Zag's `import * as disclosure from '@zag-js/...'`)
 export * as disclosure from './disclosure';

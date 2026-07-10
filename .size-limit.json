@@ -12,7 +12,7 @@
         "limit": "3 kB"
     },
     {
-        "name": "@oriui/vue — full library, all 31 components (gzip)",
+        "name": "@oriui/vue — full library, all 32 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
         "limit": "44 kB"
@@ -27,12 +27,12 @@
         "name": "@oriui/headless/vue (gzip)",
         "path": "packages/headless/dist/vue/index.js",
         "gzip": true,
-        "limit": "4.7 kB"
+        "limit": "6.6 kB"
     },
     {
         "name": "@oriui/headless/svelte (gzip)",
         "path": "packages/headless/dist/svelte/index.js",
         "gzip": true,
-        "limit": "5.7 kB"
+        "limit": "8 kB"
     }
 ]

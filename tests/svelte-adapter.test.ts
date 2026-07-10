@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import { get, writable } from 'svelte/store';
 import {
     nativeDisclosure,
@@ -7,8 +7,17 @@ import {
     useDialog,
     useCombobox,
     useMenu,
-    normalizeProps
+    useToolbar,
+    useToolbarItem,
+    useToolbarOrientation,
+    useToolbarToggleGroup,
+    normalizeProps,
+    type UseToolbarOptions
 } from '@oriui/headless/svelte';
+
+afterEach(() => {
+    document.body.innerHTML = '';
+});
 
 // The Svelte adapter is pure TS over the shared `../core` engine — it returns Svelte stores, so we can
 // exercise it without rendering a component: `get(store)` reads the current value and a live
@@ -278,5 +287,118 @@ describe('Svelte resolvers fall back to native outside a component', () => {
         const dlg = useDialog({ id: 'rd' });
         expect(get(dlg.open)).toBe(false);
         expect(get(dlg.dialogProps).role).toBe('dialog');
+    });
+});
+
+// The toolbar is compositional (Svelte context + roving tabindex), so the register→activeId wiring and
+// the toggle-group↔item selection only connect through a real component tree — setContext/getContext
+// no-op/return-null outside component init (like getHeadless). What IS exercisable sans a component: the
+// toolbarProps projection, the root keydown handler (it navigates by `event.currentTarget` + the
+// `[data-ori-toolbar-item]` DOM markers, needing no context — happy-dom moves focus on a dispatched
+// arrow key), and the inert no-context fallbacks. Full registration/toggle-integration specs are pending
+// a Svelte component harness (this suite runs composables without rendering components).
+
+/** Build a bare toolbar subtree wired to the root keydown handler, returning the marked focusable items. */
+function buildBar(onkeydown: (event: KeyboardEvent) => void, count = 3) {
+    const root = document.createElement('div');
+    root.addEventListener('keydown', onkeydown as EventListener);
+    const items = Array.from({ length: count }, () => {
+        const button = document.createElement('button');
+        button.setAttribute('data-ori-toolbar-item', '');
+        root.append(button);
+        return button;
+    });
+    document.body.append(root);
+    return { root, items };
+}
+
+const press = (el: HTMLElement, key: string) => el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+
+describe('Svelte useToolbar', () => {
+    it('projects role=toolbar + the accessible name, omitting the implicit-horizontal aria-orientation', () => {
+        const { toolbarProps } = useToolbar({ label: 'Formatting' });
+        const props = get(toolbarProps);
+
+        expect(props.role).toBe('toolbar');
+        expect(props['aria-label']).toBe('Formatting');
+        expect(props['aria-orientation']).toBeUndefined();
+        expect(typeof props.onkeydown).toBe('function');
+    });
+
+    it('sets aria-orientation only when vertical, re-projecting from a reactive options store', () => {
+        const opts = writable<UseToolbarOptions>({ orientation: 'horizontal', label: 'Bar' });
+        const { toolbarProps } = useToolbar(opts);
+        expect(get(toolbarProps)['aria-orientation']).toBeUndefined();
+
+        opts.set({ orientation: 'vertical', label: 'Bar' });
+        expect(get(toolbarProps)['aria-orientation']).toBe('vertical');
+    });
+
+    it('onkeydown roves real focus by DOM order — ArrowRight / End / Home, wrapping when loop', () => {
+        const { toolbarProps } = useToolbar({ label: 'Bar' });
+        const { items } = buildBar(get(toolbarProps).onkeydown);
+        const [a, b, c] = items;
+
+        a.focus();
+        press(a, 'ArrowRight');
+        expect(document.activeElement).toBe(b);
+
+        press(b, 'End');
+        expect(document.activeElement).toBe(c);
+
+        press(c, 'ArrowRight'); // last -> first (loop defaults true)
+        expect(document.activeElement).toBe(a);
+
+        press(a, 'Home');
+        expect(document.activeElement).toBe(a);
+    });
+
+    it('does not wrap when loop is false — ArrowRight on the last item stays put', () => {
+        const { toolbarProps } = useToolbar({ label: 'Bar', loop: false });
+        const { items } = buildBar(get(toolbarProps).onkeydown);
+        const last = items[items.length - 1]!;
+
+        last.focus();
+        press(last, 'ArrowRight');
+        expect(document.activeElement).toBe(last);
+    });
+
+    it('yields arrow keys to a control that owns them (a text input) — focus is not hijacked', () => {
+        const { toolbarProps } = useToolbar({ label: 'Bar' });
+        const { root } = buildBar(get(toolbarProps).onkeydown);
+        const input = document.createElement('input');
+        input.type = 'text';
+        root.append(input);
+
+        input.focus();
+        press(input, 'ArrowRight');
+        expect(document.activeElement).toBe(input);
+    });
+});
+
+describe('Svelte useToolbarItem / orientation (inert outside a toolbar)', () => {
+    it('useToolbarItem is inert without a toolbar context: marked, tabindex -1, not active', () => {
+        const { itemProps, isActive } = useToolbarItem();
+        const props = get(itemProps);
+
+        expect(props['data-ori-toolbar-item']).toBe('');
+        expect(props.tabindex).toBe(-1);
+        expect(typeof props.onfocus).toBe('function');
+        expect(get(isActive)).toBe(false);
+    });
+
+    it('useToolbarOrientation defaults to horizontal outside a toolbar', () => {
+        expect(get(useToolbarOrientation())).toBe('horizontal');
+    });
+});
+
+describe('Svelte useToolbarToggleGroup', () => {
+    it('exposes a role=group prop bag', () => {
+        const { groupProps } = useToolbarToggleGroup({
+            type: 'single',
+            value: writable<string | undefined>(undefined),
+            onChange: () => {}
+        });
+        expect(get(groupProps).role).toBe('group');
     });
 });

@@ -4,6 +4,36 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## Roving-tabindex is a compositional context over shared core helpers — a THIRD headless shape, and when to use which
+
+Decided 2026-07-10 (OriToolbar flagship). The catalog now has **three** ways to implement behavior in the
+headless layer; this records the taxonomy so the next widget picks the right one instead of copying the
+nearest example.
+
+1. **Machine behind the `OriHeadless` adapter contract** — Dialog, Combobox, Menu. Use when the behavior
+   has a **meaningful alternative engine** a consumer might swap (native `<dialog>` / a Zag machine / a
+   custom adapter) and/or real async state (open/close, typeahead, focus-trap). The swap seam earns its keep.
+2. **Compositional roving context over pure core helpers** — **Toolbar** (`useToolbar` = provide/inject in
+   Vue, `setContext` in Svelte; `core/roving.ts` = the pure index/key math; `core/roving-dom.ts` = the
+   arrow-yield predicate). Use when the item set is **open / slotted** (not a closed data array) and the
+   behavior is **just roving tabindex + real DOM focus** — which has NO alternative engine (it's DOM order
+    - `.focus()`), so the adapter-swap seam would be the wrong abstraction. Real focus, `querySelectorAll`
+      by DOM order.
+3. **SFC-hand-rolled roving** — Tabs. A closed, data-driven (`tabs` array) widget whose roving wasn't yet
+   worth extracting.
+
+**Reconciles the OriPopover ADR** ("roving-tabindex is real state → the contract seam is for it → OriMenu
+will re-enter the contract"). That still holds for **Menu**, whose COMPOUND behavior (roving + open +
+typeahead, with a swappable engine) warrants the machine. A **bare toolbar's** roving does not: no
+alternative engine, no async state → shape #2, deliberately outside the adapter contract. The rule is the
+_presence of a swappable engine / real async state_, not the word "roving".
+
+**Convergence intent (YAGNI-gated):** `core/roving.ts` is shared by the toolbar today only. When a SECOND
+roving consumer lands — migrating Tabs onto `rovingIntent`/`resolveRovingIndex` (needs an optional
+`isEnabled` skip predicate, since Tabs SKIPS disabled tabs while the toolbar VISITS them), or a future
+RadioGroup/SegmentedControl (IDEAS) — extract a `useRovingFocus` adapter primitive (the Radix
+RovingFocusGroup factoring) that `useToolbar`/`useTabs` compose. Do NOT build it speculatively.
+
 ## OriSlider commit event, and the live-vs-commit event convention for form controls
 
 Decided 2026-07-09. OriSlider gained a `change` event (payload: the committed `number`), fired once when
