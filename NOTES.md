@@ -485,6 +485,25 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
 - The orchestrator (main session) integrates: role agents write only their own files; the
   orchestrator runs the gates, verifies live, and records findings here / in DECISIONS.md.
 
+## Slots / a11y (the slot-DX retrofit, alpha.12)
+
+- **A slot that renders displayable content must be reflected in DERIVED a11y state, not just the
+  template.** OriField renders its error/hint `<p>` on `prop || $slots.x`, but the `isInvalid` /
+  `describedBy` computeds first tracked only the props — so a slot-only `#error` left `aria-invalid` /
+  `aria-describedby` unset, and `#error`-slot + `hint`-prop pointed `aria-describedby` at a hint `<p>` the
+  error's `v-else-if` suppressed (a **dangling** describedby, which REVIEW.md forbids). Fix: fold
+  `useSlots()` into the computeds — `hasError = error || slots.error`, `hasHint = hint || slots.hint`.
+- **OriBadge's `decorative` (aria-hidden) guard must include `!$slots.content`, GATED ON non-dot.** A
+  slotted glyph with no `content`/`label` prop would otherwise be aria-hidden and dropped from AT — but
+  the `#content` slot only renders when `!dot`, so the guard is
+  `!label && (dot || ((empty displayValue) && !slots.content))`. A dot stays decorative regardless of a
+  (suppressed) content slot, else a `dot` + `#content` renders an empty, unnamed, non-hidden span.
+- **Interactive slot content inside a native `<label>` / `<summary>` inherits click/activation
+  semantics.** The Checkbox/Switch/Radio label slots sit inside `<label>` (a label click forwards to the
+  control); the Accordion title slot sits inside `<summary>` (a click toggles). Fine for text / icons /
+  badges; a nested interactive control (a link in a consent label) is the caller's responsibility — the
+  same limitation the native elements carry.
+
 ## Git / Windows
 
 - Conventional Commits; **no `Co-Authored-By` trailer**; group into reasonably-sized commits.

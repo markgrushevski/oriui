@@ -317,6 +317,23 @@ describe('OriToast component', () => {
         expect(wrapper.find('.ori-toast__text').text()).toBe('slot content');
     });
 
+    it('#title slot renders custom content (no title prop needed)', () => {
+        const wrapper = mount(OriToast, {
+            props: { text: 'body' },
+            slots: { title: '<strong>Custom Title</strong>' }
+        });
+
+        const title = wrapper.find('.ori-toast__title');
+        expect(title.exists()).toBe(true);
+        expect(title.find('strong').text()).toBe('Custom Title');
+    });
+
+    it('title prop still renders when no #title slot is provided', () => {
+        const wrapper = mount(OriToast, { props: { title: 'Prop Title', text: 'body' } });
+
+        expect(wrapper.find('.ori-toast__title').text()).toBe('Prop Title');
+    });
+
     it('has no axe violations (with text, closable)', async () => {
         const wrapper = mount(OriToast, {
             props: { text: 'Operation complete', closable: true },

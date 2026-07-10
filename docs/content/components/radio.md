@@ -363,6 +363,6 @@ pass `aria-label` this way:
 
 ### Slots
 
-| Slot | Description                                                                                 |
-| ---- | ------------------------------------------------------------------------------------------- |
-| —    | OriRadioGroup has no slots. Options are rendered exclusively from the `options` prop array. |
+| Slot     | Props        | Description                                                                                                                                                                            |
+| -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `option` | `{ option }` | Scoped, rendered once per option to customise its label markup — card-style or leading-icon radios. `option` is the `{ label, value, disabled? }` entry; falls back to `option.label`. |

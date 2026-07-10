@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { h } from 'vue';
 import { mount } from '@vue/test-utils';
 import { combobox } from '@oriui/headless';
 import { OriCombobox } from '../packages/vue/src';
@@ -228,6 +229,46 @@ describe('OriCombobox', () => {
         expect(wrapper.classes()).toContain('ori-font-size_lg');
         expect(wrapper.classes()).toContain('ori-combobox_lg');
         expect(wrapper.find('input').classes()).toContain('ori-size-radius_sm');
+    });
+
+    it('chains a caller @input listener with the headless handler (still filters)', async () => {
+        const onInput = vi.fn();
+        const wrapper = mount(OriCombobox, {
+            props: { options: OPTIONS, label: 'Fruit' },
+            attrs: { onInput }
+        });
+
+        await wrapper.find('input').setValue('ap');
+
+        // mergeProps chained the caller's listener onto the headless one rather than dropping it
+        expect(onInput).toHaveBeenCalled();
+        // and the headless filter/open behaviour still runs
+        expect(wrapper.find('input').attributes('aria-expanded')).toBe('true');
+        expect(wrapper.findAll('[role="option"]').map((o) => o.text())).toEqual(['Apple', 'Grape']);
+    });
+
+    it('#option scoped slot renders custom content with item + selected', () => {
+        const wrapper = mount(OriCombobox, {
+            props: { options: OPTIONS, label: 'Fruit', modelValue: 'banana' },
+            slots: {
+                option: (props: { item: { label: string }; selected: boolean }) =>
+                    h('span', { class: 'custom-option' }, `${props.item.label}:${props.selected}`)
+            }
+        });
+
+        const opts = wrapper.findAll('.custom-option');
+        expect(opts).toHaveLength(4);
+        expect(opts[0].text()).toBe('Apple:false');
+        // the selected option receives selected=true through the slot scope
+        expect(opts.find((o) => o.text().startsWith('Banana'))?.text()).toBe('Banana:true');
+    });
+
+    it('falls back to the plain label when no #option slot is given', () => {
+        const wrapper = mountCb();
+        const opts = wrapper.findAll('[role="option"]');
+
+        expect(opts[0].text()).toBe('Apple');
+        expect(wrapper.find('.custom-option').exists()).toBe(false);
     });
 
     it('has no axe violations (labelled, with a hint)', async () => {
