@@ -360,6 +360,19 @@ practical gotchas go here.
   never missing — a wrong-prop probe (`color="not-a-role"`) errors under vue-tsc, proving resolution;
   "no hints" is an editor-index/plugin issue, and this map fix removes the packaging half.
 
+- **`@oriui/vue`'s `.d.ts` are post-processed for node16/nodenext** (`packages/vue/scripts/fix-dts.mjs`,
+  runs after `vue-tsc` in the package `build`). vue-tsc emits **extensionless** relative specifiers
+  (`from './types'`, directory `from './components'`, `.vue` re-exports `from './ori-button.vue'`) that
+  `moduleResolution: node16`/`nodenext` rejects (TS2834; `bundler` is fine). The script rewrites each
+  relative specifier to an explicit path — a sibling file → `<spec>.js` (incl. `foo.vue` → `foo.vue.js`,
+  correct: TS maps the `.js` back to the sibling `.d.ts`), a directory → `<spec>/index.js` — chosen by
+  which `.d.ts` actually exists on disk. Why not api-extractor / rollup-dts (a single bundled `index.d.ts`)?
+  They can't emit **`.vue` SFC** declarations — the reason the build uses `vue-tsc` at all — so a per-file
+  rewrite is the pragmatic fit. Verify with `attw --pack packages/vue --profile node16`: **node16-from-ESM
+  must be 🟢**. attw still exits non-zero on `CJSResolvesToESM`, which is EXPECTED for these ESM-only
+  (`"type":"module"`) packages — a green attw gate would need `--ignore-rules cjs-resolves-to-esm`.
+  `@oriui/headless` is unaffected (tsdown bundles its dts with `.js` specifiers); `@oriui/css` ships no dts.
+
 ## Build / tests
 
 - Tests live in `tests/` (out of `src`); `vitest.config.ts` aliases `@oriui/*` to package **source**,
