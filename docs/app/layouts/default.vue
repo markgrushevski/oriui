@@ -49,7 +49,8 @@ const sections = [
                     { label: 'Button', to: '/components/button' },
                     { label: 'Dialog', to: '/components/dialog' },
                     { label: 'Menu', to: '/components/menu' },
-                    { label: 'Popover', to: '/components/popover' }
+                    { label: 'Popover', to: '/components/popover' },
+                    { label: 'Toolbar', to: '/components/toolbar' }
                 ]
             },
             {
