@@ -76,8 +76,9 @@ function commitHex(): void {
 
 <template>
     <div class="ori-color-picker" role="group" :aria-label="label" :data-disabled="disabled ? '' : undefined">
-        <!-- 2D saturation × value area. The two visually-hidden range inputs are the a11y surface
-             (role=slider, focusable, form value); the area's keydown routes the arrows in 2D. -->
+        <!-- 2D saturation × value area. The two visually-hidden range inputs are the a11y surface: each
+             owns one axis (saturation = horizontal keys, brightness = vertical), so every keystroke
+             announces on the focused slider. Pointer drag on the area moves both axes at once. -->
         <div class="ori-color-picker__area" v-bind="cp.areaProps.value">
             <span class="ori-color-picker__area-thumb" :style="cp.areaThumbStyle.value" aria-hidden="true"></span>
             <input class="ori-color-picker__channel" v-bind="cp.getChannelInputProps('saturation')" />
