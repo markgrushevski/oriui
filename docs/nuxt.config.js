@@ -100,6 +100,10 @@ export default defineNuxtConfig({
                     { title: 'Core (@oriui/headless)', href: '/headless/core' },
                     { title: 'useDisclosure', href: '/headless/use-disclosure' },
                     { title: 'useDialog', href: '/headless/use-dialog' },
+                    { title: 'useCombobox', href: '/headless/use-combobox' },
+                    { title: 'useMenu', href: '/headless/use-menu' },
+                    { title: 'useToolbar', href: '/headless/use-toolbar' },
+                    { title: 'useToken', href: '/headless/use-token' },
                     { title: 'useTheme', href: '/headless/use-theme' }
                 ]
             }
