@@ -61,7 +61,7 @@ shells). A vanilla / htmx headless adapter is still planned.
 
 ## Status
 
-oriUI is in **alpha** (`1.0.0-alpha.2`). The token contract, the CSS layer, and the styled components
+oriUI is in **alpha** (the `1.0.0-alpha.*` line). The token contract, the CSS layer, and the styled components
 under [Components](/components/button) are solid enough to build with; the catalog is still growing and
 the public API may shift before `1.0`.
 

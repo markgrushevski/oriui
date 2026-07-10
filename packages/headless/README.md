@@ -34,8 +34,9 @@ const d = useDisclosure();
 // d.rootProps · d.triggerProps · d.contentProps
 ```
 
-Also ships `useDialog` (native `<dialog>`: focus-trap, `Esc`, `::backdrop`, top-layer), `useCombobox`
-and `useMenu`. Provide your own engine (Zag / custom) through `provideHeadless()` / the `OriHeadless`
+Also ships `useDialog` (native `<dialog>`: focus-trap, `Esc`, `::backdrop`, top-layer), `useCombobox`,
+`useMenu`, `useToolbar`, and `useColorPicker`, plus the `useToken` / `useTheme` bridges. The overlay
+primitives take a swappable engine (Zag / custom) through `provideHeadless()` / the `OriHeadless`
 plugin — the component markup never changes.
 
 ## Use — Svelte

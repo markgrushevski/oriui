@@ -13,7 +13,7 @@ Priority legend: ⭐ high (real-screen / foundational) · ◽ parity nice-to-hav
 Button · Card · Avatar · Icon · Spinner · Dialog · Input · Field · Combobox · Checkbox · Switch · RadioGroup ·
 Accordion · Alert · Badge · Progress · Select · Tabs · Tag · Textarea · Tooltip · Popover · Menu ·
 Divider · Stack (+ Cluster) · Join · Link · Skeleton · Kbd · Toast · Slider · Toolbar (+ ToggleGroup) · Surface ·
-ColorPicker (SV area + hue + hex + presets; alpha/eyedropper/format-switcher deferred to v2).
+ColorPicker (SV area + hue + hex + presets + alpha + eyedropper, shipped alpha.13; format-switcher / recent-colors / color-wheel / Svelte twin deferred to v2).
 
 ## Project improvements (beyond the catalog)
 
@@ -44,7 +44,7 @@ Roughly by priority.
    minzip badge in the README. Guards the zero-runtime / small-bundle promise.
 6. ⭐ **`@oriui/css` à-la-carte entry points** — **SHIPPED (2026-07-05).** Split the
    package exports so direct CSS consumers (htmx / Astro / plain HTML) pay only for what they use — today
-   `.` is the full bundle (~11 kB gzip, all 31 components). Plan: keep `.` (the full `styles.css`); add
+   `.` is the full bundle (~12 kB gzip, all 34 components). Plan: keep `.` (the full `styles.css`); add
    `./base.css` = the foundation (the `@layer` order declaration + reset + size/theme/font tokens +
    positions + utilities — everything except `components/*`); add `./components/*.css` wildcard
    per-component entries. **Pitfall to remember:** the cascade-layer ORDER is declared once

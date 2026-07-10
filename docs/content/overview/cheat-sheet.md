@@ -58,37 +58,42 @@ shape. Full detail: [Using the CSS layer](/guides/css).
 Each links to its full page (class table, props, slots, a11y). Props listed are the common ones — see
 the page for the complete set.
 
-| Component                          | Vue               | Key props                                                                                            |
-| ---------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| [Button](/components/button)       | `<OriButton>`     | `text` `icon` `variant` `color` `size` `radius` `as` `loading` `disabled` `fluid`                    |
-| [Card](/components/card)           | `<OriCard>`       | `variant` `color` `radius` `title` `prependIcon` `row` `fluid` `disabled` `loading`                  |
-| [Avatar](/components/avatar)       | `<OriAvatar>`     | `src` `text` `size` `radius` `color` `title` `subtitle` `inline` `spaced`                            |
-| [Icon](/components/icon)           | `<OriIcon>`       | `icon` `size` `color` `label` `inline` `spaced`                                                      |
-| [Spinner](/components/spinner)     | `<OriSpinner>`    | `size` `color` `inline`                                                                              |
-| [Badge](/components/badge)         | `<OriBadge>`      | `color` `variant` `radius` `dot` (default slot is the anchor)                                        |
-| [Tag](/components/tag)             | `<OriTag>`        | `text` `color` `variant` `radius` `size` `closable` `prependIcon` `disabled`                         |
-| [Alert](/components/alert)         | `<OriAlert>`      | `title` `text` `color` `variant` `radius` `size` `icon` `closable` `live`                            |
-| [Progress](/components/progress)   | `<OriProgress>`   | `value` `color` `radius` `size` `indeterminate` `label`                                              |
-| [Tooltip](/components/tooltip)     | `<OriTooltip>`    | `content` `placement` `color`                                                                        |
-| [Accordion](/components/accordion) | `<OriAccordion>`  | `items` `multiple` `radius` `color`                                                                  |
-| [Tabs](/components/tabs)           | `<OriTabs>`       | `tabs` `color` `orientation` (`v-model` = selected)                                                  |
-| [Divider](/components/divider)     | `<OriDivider>`    | `color` `text` `vertical` (default slot = centered label)                                            |
-| [Stack](/components/stack)         | `<OriStack>`      | `align` `as` `cluster` `gap` `justify` (`.ori-stack` column · `.ori-cluster` wrapping row)           |
-| [Join](/components/join)           | `<OriJoin>`       | `as` `vertical` — collapses children's shared radii/borders (add `aria-label`)                       |
-| [Input](/components/input)         | `<OriInput>`      | `label` `type` `color` `size` `radius` `variant` `hint` `error` `required` `disabled` (`v-model`)    |
-| [Textarea](/components/textarea)   | `<OriTextarea>`   | `label` `color` `size` `radius` `variant` `rows` `hint` `error` `required` (`v-model`)               |
-| [Select](/components/select)       | `<OriSelect>`     | `label` `options` `color` `size` `radius` `hint` `error` `required` (`v-model`)                      |
-| [Field](/components/field)         | `<OriField>`      | `label` `hint` `error` `required` `disabled` `size` — shared form shell; wraps any control           |
-| [Combobox](/components/combobox)   | `<OriCombobox>`   | `options` `label` `color` `size` `radius` `clearable` `hint` `error` `required` `filter` (`v-model`) |
-| [Checkbox](/components/checkbox)   | `<OriCheckbox>`   | `label` `color` `size` `value` `disabled` `invalid` `required` (`v-model`)                           |
-| [Radio](/components/radio)         | `<OriRadioGroup>` | `label` `options` `color` `size` `inline` `disabled` `required` (`v-model`)                          |
-| [Switch](/components/switch)       | `<OriSwitch>`     | `label` `color` `size` `disabled` `invalid` (`v-model` boolean)                                      |
-| [Dialog](/components/dialog)       | `<OriDialog>`     | `open` (`v-model:open`) `defaultOpen` `modal` — native `<dialog>`, focus-trap + `Esc` for free       |
-| [Link](/components/link)           | `<OriLink>`       | `as` `color` `external` `hover` `href` (inline prose link; underline-on-hover)                       |
-| [Skeleton](/components/skeleton)   | `<OriSkeleton>`   | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                    |
-| [Kbd](/components/kbd)             | `<OriKbd>`        | `as` `text` (default slot = key) — keyboard-key chip                                                 |
-| [Toast](/components/toast)         | `<OriToaster>`    | imperative `useToast()` push API + `<OriToaster position>` — transient notifications                 |
-| [Slider](/components/slider)       | `<OriSlider>`     | `color` `disabled` `label` `min` `max` `step` `showValue` (`v-model` number; native range)           |
+| Component                               | Vue                | Key props                                                                                            |
+| --------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
+| [Button](/components/button)            | `<OriButton>`      | `text` `icon` `variant` `color` `size` `radius` `as` `loading` `disabled` `fluid`                    |
+| [Card](/components/card)                | `<OriCard>`        | `variant` `color` `radius` `title` `prependIcon` `row` `fluid` `disabled` `loading`                  |
+| [Avatar](/components/avatar)            | `<OriAvatar>`      | `src` `text` `size` `radius` `color` `title` `subtitle` `inline` `spaced`                            |
+| [Icon](/components/icon)                | `<OriIcon>`        | `icon` `size` `color` `label` `inline` `spaced`                                                      |
+| [Spinner](/components/spinner)          | `<OriSpinner>`     | `size` `color` `inline`                                                                              |
+| [Badge](/components/badge)              | `<OriBadge>`       | `color` `variant` `radius` `dot` (default slot is the anchor)                                        |
+| [Tag](/components/tag)                  | `<OriTag>`         | `text` `color` `variant` `radius` `size` `closable` `prependIcon` `disabled`                         |
+| [Alert](/components/alert)              | `<OriAlert>`       | `title` `text` `color` `variant` `radius` `size` `icon` `closable` `live`                            |
+| [Progress](/components/progress)        | `<OriProgress>`    | `value` `color` `radius` `size` `indeterminate` `label`                                              |
+| [Tooltip](/components/tooltip)          | `<OriTooltip>`     | `content` `placement` `color`                                                                        |
+| [Accordion](/components/accordion)      | `<OriAccordion>`   | `items` `multiple` `radius` `color`                                                                  |
+| [Tabs](/components/tabs)                | `<OriTabs>`        | `tabs` `color` `orientation` (`v-model` = selected)                                                  |
+| [Divider](/components/divider)          | `<OriDivider>`     | `color` `text` `vertical` (default slot = centered label)                                            |
+| [Stack](/components/stack)              | `<OriStack>`       | `align` `as` `cluster` `gap` `justify` (`.ori-stack` column · `.ori-cluster` wrapping row)           |
+| [Join](/components/join)                | `<OriJoin>`        | `as` `vertical` — collapses children's shared radii/borders (add `aria-label`)                       |
+| [Input](/components/input)              | `<OriInput>`       | `label` `type` `color` `size` `radius` `variant` `hint` `error` `required` `disabled` (`v-model`)    |
+| [Textarea](/components/textarea)        | `<OriTextarea>`    | `label` `color` `size` `radius` `variant` `rows` `hint` `error` `required` (`v-model`)               |
+| [Select](/components/select)            | `<OriSelect>`      | `label` `options` `color` `size` `radius` `hint` `error` `required` (`v-model`)                      |
+| [Field](/components/field)              | `<OriField>`       | `label` `hint` `error` `required` `disabled` `size` — shared form shell; wraps any control           |
+| [Combobox](/components/combobox)        | `<OriCombobox>`    | `options` `label` `color` `size` `radius` `clearable` `hint` `error` `required` `filter` (`v-model`) |
+| [Checkbox](/components/checkbox)        | `<OriCheckbox>`    | `label` `color` `size` `value` `disabled` `invalid` `required` (`v-model`)                           |
+| [Radio](/components/radio)              | `<OriRadioGroup>`  | `label` `options` `color` `size` `inline` `disabled` `required` (`v-model`)                          |
+| [Switch](/components/switch)            | `<OriSwitch>`      | `label` `color` `size` `disabled` `invalid` (`v-model` boolean)                                      |
+| [Dialog](/components/dialog)            | `<OriDialog>`      | `open` (`v-model:open`) `defaultOpen` `modal` — native `<dialog>`, focus-trap + `Esc` for free       |
+| [Menu](/components/menu)                | `<OriMenu>`        | `items` `placement` `disabled` — roving menu from a `#trigger`; `useMenu` behavior                   |
+| [Popover](/components/popover)          | `<OriPopover>`     | `placement` `role` — anchored panel; `#trigger` + default slot (the OriPopover ADR)                  |
+| [Link](/components/link)                | `<OriLink>`        | `as` `color` `external` `hover` `href` (inline prose link; underline-on-hover)                       |
+| [Skeleton](/components/skeleton)        | `<OriSkeleton>`    | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                    |
+| [Kbd](/components/kbd)                  | `<OriKbd>`         | `as` `text` (default slot = key) — keyboard-key chip                                                 |
+| [Toast](/components/toast)              | `<OriToaster>`     | imperative `useToast()` push API + `<OriToaster position>` — transient notifications                 |
+| [Slider](/components/slider)            | `<OriSlider>`      | `color` `disabled` `label` `min` `max` `step` `showValue` (`v-model` number; native range)           |
+| [Surface](/components/surface)          | `<OriSurface>`     | `as` `bordered` `elevation` `radius` — elevated surface primitive                                    |
+| [Toolbar](/components/toolbar)          | `<OriToolbar>`     | `label` `orientation` `loop` `dir` — roving toolbar (`<OriToolbarButton/ToggleGroup/Separator>`)     |
+| [ColorPicker](/components/color-picker) | `<OriColorPicker>` | `format` `alpha` `eyedropper` `presets` `label` `disabled` (`v-model` string; `change` commits)      |
 
 ## Theming & tokens
 

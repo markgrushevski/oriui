@@ -24,7 +24,7 @@ non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runb
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` /
 `useCombobox` / `useMenu` behind a swappable adapter, with Vue **and Svelte** adapters), the Vitest +
-axe suite, GitHub Actions CI, and **31 styled components** (e.g. Button, Card, Dialog, Combobox, Menu,
+axe suite, GitHub Actions CI, and **34 styled components** (e.g. Button, Card, Dialog, Combobox, Menu,
 Popover, Toast, Slider — the full list is in [IDEAS.md](IDEAS.md) "Shipped today"). Next — more
 form/overlay components, the docs-template rollout, npm publish.
 
