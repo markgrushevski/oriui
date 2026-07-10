@@ -7,6 +7,7 @@
         "@oriui/vue": "1.0.0-alpha.1"
     },
     "changesets": [
+        "color-picker",
         "component-content-slots",
         "css-entry-points",
         "dialog-managed-open",
@@ -23,6 +24,7 @@
         "svelte-adapter",
         "theme-controller",
         "token-bridge",
+        "toolbar-pressed-fill-and-button-color-transition",
         "toolbar"
     ]
 }
