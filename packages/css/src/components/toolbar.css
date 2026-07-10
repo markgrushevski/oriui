@@ -1,0 +1,81 @@
+/* OriToolbarButton composes OriButton (which renders the icon/spinner) and OriTooltip — inline their
+   blocks so this entry is self-contained (deduped in the full bundle by postcss-import). The dep-map
+   guard (tests/css.entries.test.ts) derives these from the emitted `.ori-button` / `.ori-tooltip__*`. */
+@import './button.css';
+@import './tooltip.css';
+
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       subtree rule) — components must render identically without base.css; guarded by
+       e2e/reset-independence.spec.ts. */
+    :where(.ori-toolbar, .ori-toolbar *),
+    :where(.ori-toolbar, .ori-toolbar *)::before,
+    :where(.ori-toolbar, .ori-toolbar *)::after {
+        box-sizing: border-box;
+    }
+
+    /* The toolbar is an UNSTYLED grouping container (flex row + gap) — the elevated "surface" chrome is
+       a separate concern (OriSurface). It sits inside whatever container the app provides. */
+    .ori-toolbar {
+        /* Single, consumer-overridable gap source (mirrors --ori-popover-gap) — read bare below rather
+           than repeating the raw scale token + literal. */
+        --ori-toolbar-gap: var(--ori-size-gap_xs, 0.25rem);
+
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--ori-toolbar-gap);
+    }
+
+    .ori-toolbar.ori-toolbar_vertical {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* A toggle group is a tighter cluster of related controls. */
+    .ori-toolbar__group {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--ori-toolbar-gap, 0.25rem);
+    }
+
+    .ori-toolbar_vertical .ori-toolbar__group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* Hairline rule, perpendicular to the bar (vertical inside a horizontal toolbar). */
+    .ori-toolbar__separator {
+        flex-shrink: 0;
+        align-self: stretch;
+
+        width: 1px;
+        margin-inline: var(--ori-toolbar-gap, 0.25rem);
+
+        background-color: color-mix(in srgb, var(--ori-color-on-surface) 20%, transparent);
+    }
+
+    .ori-toolbar_vertical .ori-toolbar__separator {
+        width: auto;
+        height: 1px;
+        margin-block: var(--ori-toolbar-gap, 0.25rem);
+        margin-inline: 0;
+    }
+
+    /* Pressed toggle look — a neutral tint PLUS an inset hairline so the "on" state is distinguishable
+       at a glance (not by aria-pressed alone; WCAG 1.4.11), across any color role and skin. Compound
+       selector (0,3,0) beats the ghost variant's baked-transparent default in the same layer. */
+    .ori-toolbar .ori-button[aria-pressed='true'] {
+        --ori-variant-bg-color: color-mix(in srgb, var(--ori-color-on-surface) 18%, transparent);
+
+        background-color: var(--ori-variant-bg-color);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ori-color-on-surface) 28%, transparent);
+    }
+
+    @media (hover: hover) {
+        .ori-toolbar .ori-button[aria-pressed='true']:hover {
+            --ori-variant-bg-color: color-mix(in srgb, var(--ori-color-on-surface) 26%, transparent);
+        }
+    }
+}

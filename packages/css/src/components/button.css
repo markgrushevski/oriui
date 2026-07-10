@@ -78,8 +78,16 @@
 
     .ori-button:disabled,
     .ori-button[aria-disabled='true'] {
-        opacity: 0.45;
         pointer-events: none;
+    }
+
+    /* Dim the disabled surface — but NOT while a focusable disabled control (the WAI-ARIA toolbar keeps
+       its disabled items keyboard-reachable) shows its focus ring: element opacity would dim the outline
+       too, dropping it below the 3:1 non-text minimum. A native `:disabled` button is never focused, so
+       it always dims. */
+    .ori-button:disabled,
+    .ori-button[aria-disabled='true']:not(:focus-visible) {
+        opacity: 0.45;
     }
 
     .ori-button[aria-busy='true'] {
