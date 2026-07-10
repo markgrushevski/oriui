@@ -504,6 +504,26 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   badges; a nested interactive control (a link in a consent label) is the caller's responsibility — the
   same limitation the native elements carry.
 
+## CSS cascade / layers (found via the justpaint FloatingToolbar migration, alpha.13)
+
+- **A component-layer rule CANNOT win a token the variant utilities set — the layer beats specificity.**
+  `@layer` order is `ori.reset, ori.tokens, ori.base, ori.components, ori.utilities` (layers.css) — so
+  `ori.utilities` beats `ori.components` **regardless of selector specificity**. The toolbar's pressed
+  rule set `--ori-variant-bg-color: <tint>` in `ori.components`, but `.ori-variant_text` re-sets that
+  token to `transparent` in `ori.utilities` → the token resolves to transparent everywhere, so
+  `background-color: var(--ori-variant-bg-color)` painted nothing (only the literal box-shadow ring
+  showed). Fix: set the property (`background-color`) as a **literal** in the component rule, NOT via the
+  variant-owned token — the variants set only the token, never `background-color` directly, so a literal
+  wins on specificity within `ori.components`. Rule of thumb: to override a variant-controlled look from a
+  component file, write the final property literally; don't reassign `--ori-variant-*` (utilities owns it).
+- **Do NOT `transition` a property whose value is a relative-color token (`oklch(from <role> …)`).**
+  Browsers don't interpolate relative-color functions in a transition — a runtime `--ori-color` swap
+  makes the value STICK on the old color until a repaint. `.ori-button` dropped `color` from its
+  `transition` (the role-text tokens are relative colors, and no built-in state animates text color
+  anyway), which unblocks consumers who recolor a button/icon by swapping `--ori-color` (justpaint's
+  per-tool icon tint). If a future state must animate a relative-color property, resolve it to a concrete
+  color first.
+
 ## Git / Windows
 
 - Conventional Commits; **no `Co-Authored-By` trailer**; group into reasonably-sized commits.
