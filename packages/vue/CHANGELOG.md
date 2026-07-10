@@ -1,5 +1,26 @@
 # @oriui/vue
 
+## 1.0.0-alpha.11
+
+### Minor Changes
+
+- 9e7f183: OriDialog: managed open state — add `v-model:open` (a controlled `open` prop + an `update:open` emit) and a `close` emit. The dialog now drives both uncontrolled (`defaultOpen` + the `#trigger` slot — unchanged) and host-controlled, so a parent can open/close it from its own ref and react to every close (Esc, backdrop, the × button, or its own state). Backward compatible — omitting `:open` keeps the previous behaviour.
+- 84b6559: OriSlider: add a `change` event — the committed value (a `number`), fired once when the user releases the thumb or commits a keyboard step, unlike `update:modelValue` which streams live on every drag tick. Bind `@change` to collapse a whole drag into a single undo step (or run a per-release side effect) while `v-model` keeps tracking the live value.
+
+    BREAKING (pre-1.0): `@change` on `<OriSlider>` was previously an undeclared native-event `$attrs` fallthrough carrying a raw `Event`; it is now a first-class typed emit carrying the committed `number`. A consumer relying on the old raw-`Event` payload should read the committed number instead, or attach a listener to the underlying `<input>` via a template ref for the raw event.
+
+- b1fcb38: OriSurface — a minimal elevated floating-surface primitive: surface background + optional hairline + radius + a mode-aware `--ori-shadow-*` elevation, with no padding or content semantics of its own (the caller owns the layout inside). The building block for chrome that floats over content — a toolbar island, a panel, a popout — and the elevation counterpart to OriCard (a content card). Props: `as`, `bordered`, `elevation` (`sm` / `md` / `lg`), `radius`.
+- 095aef0: Toolbar — a flagship WAI-ARIA toolbar (https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/).
+
+    - **`@oriui/headless`**: a new compositional roving-tabindex primitive — `useToolbar` / `useToolbarItem` / `useToolbarOrientation` / `useToolbarToggleGroup` / `useToolbarToggleItem` (Vue **and** Svelte adapters), plus framework-agnostic roving helpers (`rovingIntent` / `resolveRovingIndex`) in the core. Real DOM focus, one tab stop, arrow navigation by orientation with wrap, Home/End, RTL, and a composite-child guard (a slotted slider/textbox keeps its own arrows).
+    - **`@oriui/vue`**: five styled components — `OriToolbar` (required accessible name, `orientation` / `loop` / `dir`), `OriToolbarButton` (`pressed`→aria-pressed toggles, focusable-disabled per the APG, and a baked `tooltip` that wires `aria-describedby` onto the real button), `OriToolbarSeparator` (perpendicular), and `OriToolbarToggleGroup` / `OriToolbarToggleItem` (single/multiple, `v-model`).
+
+### Patch Changes
+
+- Updated dependencies [095aef0]
+    - @oriui/headless@1.0.0-alpha.11
+    - @oriui/css@1.0.0-alpha.11
+
 ## 1.0.0-alpha.10
 
 ### Patch Changes
