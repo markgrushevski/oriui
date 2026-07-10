@@ -29,7 +29,12 @@ import {
     OriKbd,
     OriToast,
     OriToaster,
-    OriSlider
+    OriSlider,
+    OriToolbar,
+    OriToolbarButton,
+    OriToolbarSeparator,
+    OriToolbarToggleGroup,
+    OriToolbarToggleItem
 } from '@oriui/vue';
 
 // Register oriUI globally so it is usable in pages, layouts, and markdown (MDC).
@@ -65,7 +70,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         OriKbd,
         OriToast,
         OriToaster,
-        OriSlider
+        OriSlider,
+        OriToolbar,
+        OriToolbarButton,
+        OriToolbarSeparator,
+        OriToolbarToggleGroup,
+        OriToolbarToggleItem
     };
 
     for (const [name, component] of Object.entries(components)) {
