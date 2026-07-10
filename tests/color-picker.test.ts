@@ -14,6 +14,8 @@ const hueInput = (w: ReturnType<typeof mount>) => w.find('input.ori-slider_hue')
 const hexInput = (w: ReturnType<typeof mount>) => w.find('input.ori-color-picker__hex');
 const swatch = (w: ReturnType<typeof mount>) => w.find('.ori-color-picker__swatch');
 const last = (events: unknown[][] | undefined): unknown => events?.at(-1)?.[0];
+const press = (el: Element, key: string): boolean =>
+    el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
 
 describe('OriColorPicker — structure & model', () => {
     it('renders the area (2 hidden range channels), a hue slider, a hex field, and a labelled group', () => {
@@ -45,12 +47,11 @@ describe('OriColorPicker — structure & model', () => {
     });
 });
 
-describe('OriColorPicker — area keyboard (2D, via the hidden range inputs)', () => {
+describe('OriColorPicker — area keyboard (each hidden range owns one axis)', () => {
     it('ArrowRight on the saturation channel raises saturation and emits live + committed color', async () => {
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#808080' } });
-        const sat = channels(wrapper)[0];
 
-        sat.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+        press(channels(wrapper)[0].element, 'ArrowRight');
         await wrapper.vm.$nextTick();
 
         // update:modelValue streams live; change commits (one undo entry) — both carry the new color.
@@ -60,9 +61,40 @@ describe('OriColorPicker — area keyboard (2D, via the hidden range inputs)', (
         expect(last(wrapper.emitted('change'))).toBe(last(wrapper.emitted('update:modelValue')));
     });
 
-    it('a non-navigation key on the area emits nothing', async () => {
+    it('ArrowUp on the brightness channel raises brightness and emits', async () => {
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#808080' } });
-        channels(wrapper)[0].element.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+
+        press(channels(wrapper)[1].element, 'ArrowUp');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+        expect(last(wrapper.emitted('update:modelValue'))).not.toBe('#808080');
+    });
+
+    it('the vertical (brightness) arrows are inert on the saturation channel — each range owns one axis', async () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#808080' } });
+
+        // ArrowUp/Down belong to the brightness slider; on the saturation slider our handler ignores them
+        // (and does not preventDefault), so the picker emits nothing from the custom keyboard path.
+        press(channels(wrapper)[0].element, 'ArrowUp');
+        press(channels(wrapper)[0].element, 'PageUp');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+    });
+
+    it('marks the brightness channel aria-orientation=vertical and announces the resulting color', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff' } });
+
+        expect(channels(wrapper)[0].attributes('aria-orientation')).toBeUndefined(); // saturation: horizontal
+        expect(channels(wrapper)[1].attributes('aria-orientation')).toBe('vertical');
+        // aria-valuetext carries the axis % plus the settled hex (so the colour is spoken, not just "40%")
+        expect(channels(wrapper)[0].attributes('aria-valuetext')).toMatch(/%,\s*#[0-9a-f]{6}/);
+    });
+
+    it('a non-navigation key emits nothing', async () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#808080' } });
+        press(channels(wrapper)[0].element, 'a');
         await wrapper.vm.$nextTick();
 
         expect(wrapper.emitted('update:modelValue')).toBeFalsy();
@@ -186,6 +218,35 @@ describe('OriColorPicker — alpha channel', () => {
     });
 });
 
+describe('OriColorPicker — controlled re-sync', () => {
+    it('reflects an external modelValue change after mount', async () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#000000' } });
+
+        await wrapper.setProps({ modelValue: '#12abef' });
+
+        expect((hexInput(wrapper).element as HTMLInputElement).value).toBe('#12abef');
+        expect(swatch(wrapper).attributes('style')).toContain('#12abef');
+    });
+
+    it('with alpha on, echoing the emitted value straight back keeps the working color (no snap-back)', async () => {
+        // A controlled v-model parent feeds each live emit back as the prop. The echo-guard must format
+        // WITH alpha, or it would treat the alpha-carrying echo as a fresh external value and re-parse.
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff80', alpha: true } });
+
+        press(channels(wrapper)[0].element, 'ArrowRight'); // nudge saturation
+        await wrapper.vm.$nextTick();
+        const emitted = last(wrapper.emitted('update:modelValue')) as string;
+        expect(emitted).toMatch(/^#[0-9a-f]{8}$/); // carries alpha
+        expect(emitted).not.toBe('#3366ff80');
+
+        await wrapper.setProps({ modelValue: emitted }); // parent echoes it back
+        await wrapper.vm.$nextTick();
+
+        // the field shows exactly the echoed value — the guard recognised its own emit and left hsva alone
+        expect((hexInput(wrapper).element as HTMLInputElement).value).toBe(emitted);
+    });
+});
+
 describe('OriColorPicker — eyedropper', () => {
     const eyedropperBtn = (w: ReturnType<typeof mount>) => w.find('.ori-color-picker__eyedropper');
 
@@ -219,6 +280,22 @@ describe('OriColorPicker — disabled & axe', () => {
         expect(wrapper.attributes('data-disabled')).toBe('');
         expect((channels(wrapper)[0].element as HTMLInputElement).disabled).toBe(true);
         expect((hexInput(wrapper).element as HTMLInputElement).disabled).toBe(true);
+    });
+
+    it('disabled makes presets inert to keyboard AND mouse (real `disabled`, guarded handlers)', async () => {
+        const wrapper = mount(OriColorPicker, {
+            props: { modelValue: '#000000', disabled: true, presets: ['#ff0000', '#00ff00'] }
+        });
+        const chips = wrapper.findAll('.ori-color-picker__preset');
+        // pointer-events:none only blocks the mouse — the real fix is a native `disabled` on each chip.
+        expect((chips[0].element as HTMLButtonElement).disabled).toBe(true);
+
+        await chips[0].trigger('click');
+        press(wrapper.find('.ori-color-picker__presets').element, 'ArrowRight');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+        expect(wrapper.emitted('change')).toBeFalsy();
     });
 
     it('has no axe violations (labelled, with presets)', async () => {
