@@ -36,9 +36,12 @@ jobs:
                   node-version: '24'
                   cache: npm
 
-            # OIDC publishing needs npm >= 11.5.1; guarantee it regardless of the runner's bundled npm.
-            - name: Ensure a recent npm
-              run: npm install -g npm@latest
+            # OIDC publishing needs npm >= 11.5.1 for trusted publishing + provenance. PIN it, don't
+            # track `npm@latest`: a later npm (~11.6.x) regressed provenance with
+            # `Cannot find module 'sigstore'`, which broke the alpha.11 publish. 11.5.1 is the OIDC
+            # minimum and predates that regression.
+            - name: Ensure a known-good npm (OIDC + provenance)
+              run: npm install -g npm@11.5.1
 
             - name: Install (npm ci — root + workspaces)
               run: npm ci
