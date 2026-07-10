@@ -21,6 +21,10 @@ export {
     type UseToolbarToggleGroupOptions
 } from './use-toolbar';
 
+// Headless color picker — compositional sRGB + 2D-area helpers (not a machine); Vue binding
+export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
+export type { ColorFormat, HSVA } from '../core/color-picker';
+
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 

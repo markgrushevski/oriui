@@ -796,3 +796,41 @@ collection exposes its per-item content as a **scoped** slot named for the singu
 plus useful derived state (index, selected). This kills the earlier Menu(`#item`)/Combobox(none)
 divergence. Non-collection decorators use `#prepend` / `#append` (Tag), a region name
 (`#header-prepend`, Card), or the part name (`#icon` / `#title` / `#fallback`).
+
+## OriColorPicker: compositional core helpers (not the adapter contract), two hidden range inputs, hand-rolled color engine
+
+The color picker follows the **Toolbar shape** — pure framework-agnostic math in the core + a Vue state
+composable — deliberately **outside** the `OriHeadless` adapter contract. The contract's test (the
+roving-tabindex ADR) is "enter it only for real swappable/async state (focus-trap, typeahead, open/close)."
+A color picker has neither: no native `<color-area>`, no engine a consumer would swap, only deterministic
+synchronous math — sRGB conversion + 2D pointer/keyboard coordinates. Wrapping that in `useDisclosure` / a
+`ColorPickerAdapter` would be the wrong abstraction. But it is more than styled-compose: the math must not
+be hand-rolled in the SFC (that traps it in Vue and forces duplication for a Svelte twin). So, like
+`roving.ts` + `useToolbar`: `core/color-picker/color.ts` + `color-area.ts` (pure) + `use-color-picker.ts`
+(Vue binding). `OriColorPicker` is an **inline** panel, open-state-agnostic — compose it into `OriPopover`
+for a trigger flow (the OriPopover ADR: the widget and the overlay are separate). Three decisions, each
+approved before building (per [[design-to-industry-standard]] — a NEW public component):
+
+**1. The 2D area is two visually-hidden native `<input type="range">`, one per axis (saturation, value).**
+Each is a real `role=slider` with `aria-label` + `aria-valuetext` — the a11y surface, focusable and
+form-associable, exactly the React-Aria de-facto standard and oriUI's "state on real focusable elements"
+rule (the native-`<dialog>` / native-Popover thesis). The 2D coordinate + arrow-step math is
+`core/color-picker/color-area.ts`; the area's keydown routes the arrows in 2D (Left/Right → saturation,
+Up/Down → value) because a single native range can't span two axes.
+
+**2. The color engine is hand-rolled (~180 lines, zero-dependency), NOT colord.** `@oriui/headless` has
+**no runtime dependencies** (a portfolio signal) and its core `.` entry has a 1 kB budget. The lossy
+grayscale round-trips colord guards against are avoided by design — the picker keeps its own **HSVA** object
+across interaction, so hue survives when saturation/value hit 0. **Guardrail:** `core/color-picker/*` is
+imported ONLY by the `./vue` composable and is **never re-exported from the core `.` barrel**, so it stays
+out of the 1 kB core budget (verified via `npm run size`). Echoes the "hand-roll the tiny core, copy Zag's
+anatomy" call.
+
+**3. v-model is a lowercase color STRING (dual event), and v1 is hex6 — alpha is deferred to v2.**
+`update:modelValue` streams live per tick; `change` commits once on pointer-release / keyboard-settle (one
+undo entry) — the OriSlider commit convention verbatim (which named ColorPicker as its reference consumer).
+Output is lowercased before emit (justpaint's validator is lowercase-only). The internal HSVA already carries
+`a`, so the v2 alpha slider + `#rrggbbaa` is additive, not a rewrite. Also deferred to v2 (parameterized-not-
+rewritten): the EyeDropper trigger (Chromium-only, feature-detected + hidden when absent), a format switcher,
+per-channel numeric inputs, a built-in recent-colors buffer (v1 takes a consumer-supplied `presets` roving
+listbox instead), a color wheel, and wide-gamut / CSS-Color-4.

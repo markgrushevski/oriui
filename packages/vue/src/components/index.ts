@@ -31,3 +31,4 @@ export * from './toast';
 export * from './slider';
 export * from './surface';
 export * from './toolbar';
+export * from './color-picker';
