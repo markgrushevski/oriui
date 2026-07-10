@@ -163,6 +163,32 @@ describe('OriBadge', () => {
     });
 
     // -------------------------------------------------------------------------
+    // #content slot
+    // -------------------------------------------------------------------------
+
+    it('renders the #content slot as custom badge content', () => {
+        const wrapper = mount(OriBadge, {
+            slots: { content: '<i class="star">*</i>' }
+        });
+
+        expect(wrapper.find('.star').exists()).toBe(true);
+        expect(wrapper.text()).toBe('*');
+    });
+
+    it('falls back to the value when no #content slot is provided', () => {
+        const wrapper = mount(OriBadge, { props: { content: 7 } });
+        expect(wrapper.text()).toBe('7');
+    });
+
+    it('a badge with a #content slot and no content/label is NOT aria-hidden', () => {
+        const wrapper = mount(OriBadge, {
+            slots: { content: '<i class="star">*</i>' }
+        });
+
+        expect(wrapper.attributes('aria-hidden')).toBeUndefined();
+    });
+
+    // -------------------------------------------------------------------------
     // Accessible name (label) and aria-hidden (decorative)
     // -------------------------------------------------------------------------
 

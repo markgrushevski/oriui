@@ -67,7 +67,9 @@ const labelId = computed(() => `${uid}-label`);
                     :required="required"
                 />
                 <span class="ori-radio__circle" aria-hidden="true"></span>
-                <span class="ori-radio__label">{{ opt.label }}</span>
+                <span class="ori-radio__label"
+                    ><slot name="option" :option="opt">{{ opt.label }}</slot></span
+                >
             </label>
         </div>
     </div>

@@ -92,9 +92,16 @@ function onClickCapture(event: MouseEvent): void {
                 v-bind="mergeProps(buttonBindings, $attrs)"
                 :aria-describedby="describedBy(bubbleId)"
                 @click.capture="onClickCapture"
-            />
+            >
+                <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
+                     falls back to the `icon`/`text` props. The `v-if` keeps that fallback working — an
+                     always-present (even empty) slot would suppress it. -->
+                <template v-if="$slots.default" #default><slot></slot></template>
+            </OriButton>
         </template>
     </OriTooltip>
 
-    <OriButton v-else v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture" />
+    <OriButton v-else v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
+        <template v-if="$slots.default" #default><slot></slot></template>
+    </OriButton>
 </template>

@@ -47,6 +47,8 @@ const fieldId = computed(() => id ?? uid);
         <span class="ori-switch__track" aria-hidden="true">
             <span class="ori-switch__thumb"></span>
         </span>
-        <span v-if="label" class="ori-switch__label">{{ label }}</span>
+        <span v-if="label || $slots.default" class="ori-switch__label"
+            ><slot>{{ label }}</slot></span
+        >
     </label>
 </template>

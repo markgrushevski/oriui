@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { nextTick, h } from 'vue';
 import { mount } from '@vue/test-utils';
 import { OriMenu } from '../packages/vue/src';
@@ -256,6 +256,73 @@ describe('OriMenu', () => {
         await nextTick();
         expect(items[0]!.attributes('data-highlighted')).toBeDefined();
         expect(document.activeElement).toBe(items[0]!.element);
+        wrapper.unmount();
+    });
+
+    // -------------------------------------------------------------------------
+    // Attribute fall-through: caller listeners chain via mergeProps (not clobbered)
+    // -------------------------------------------------------------------------
+
+    it("a caller's @keydown on the menu content still fires (chained with the machine's own), and roving still works", async () => {
+        const onKeydown = vi.fn();
+        const wrapper = mount(OriMenu, {
+            props: { items: ITEMS },
+            attrs: { onKeydown },
+            slots: {
+                trigger: (scope: { props: Record<string, unknown> }) => h('button', { ...scope.props }, 'Actions')
+            },
+            attachTo: document.body
+        });
+
+        await wrapper.find('button').trigger('click'); // open, nothing highlighted yet
+        await nextTick();
+
+        const panel = wrapper.find('[role="menu"]');
+        await panel.trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        // The caller's listener fired despite contentProps carrying its own onKeydown...
+        expect(onKeydown).toHaveBeenCalledTimes(1);
+        // ...and the machine's roving still advanced to the first enabled item.
+        const first = wrapper.findAll('[role="menuitem"]')[0]!;
+        expect(first.attributes('data-highlighted')).toBeDefined();
+        expect(document.activeElement).toBe(first.element);
+        wrapper.unmount();
+    });
+
+    it('with a caller @keydown attached, Arrow/Home/End roving navigation still works end-to-end', async () => {
+        const onKeydown = vi.fn();
+        const wrapper = mount(OriMenu, {
+            props: { items: ITEMS },
+            attrs: { onKeydown },
+            slots: {
+                trigger: (scope: { props: Record<string, unknown> }) => h('button', { ...scope.props }, 'Actions')
+            },
+            attachTo: document.body
+        });
+
+        await wrapper.find('button').trigger('click');
+        await nextTick();
+
+        const panel = wrapper.find('[role="menu"]');
+        const items = wrapper.findAll('[role="menuitem"]');
+
+        await panel.trigger('keydown', { key: 'End' }); // Archive (last enabled)
+        await nextTick();
+        expect(items[3]!.attributes('data-highlighted')).toBeDefined();
+        expect(document.activeElement).toBe(items[3]!.element);
+
+        await panel.trigger('keydown', { key: 'Home' }); // Edit (first enabled)
+        await nextTick();
+        expect(items[0]!.attributes('data-highlighted')).toBeDefined();
+        expect(document.activeElement).toBe(items[0]!.element);
+
+        await panel.trigger('keydown', { key: 'ArrowDown' }); // Duplicate
+        await nextTick();
+        expect(items[1]!.attributes('data-highlighted')).toBeDefined();
+        expect(document.activeElement).toBe(items[1]!.element);
+
+        expect(onKeydown).toHaveBeenCalledTimes(3); // fired on every keydown, never clobbered
         wrapper.unmount();
     });
 

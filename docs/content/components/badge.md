@@ -334,6 +334,7 @@ land on the badge element regardless of whether a default slot (the anchor wrapp
 
 ### Slots
 
-| Slot      | Description                                                                                                                                                                         |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default` | The element the badge floats over. When provided, the component wraps both the slot content and the badge in an `ori-badge-anchor` span. When absent, the badge renders standalone. |
+| Slot      | Description                                                                                                                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | The element the badge floats over. When provided, the component wraps both the slot content and the badge in an `ori-badge-anchor` span. When absent, the badge renders standalone.                  |
+| `content` | Custom badge content, replacing the capped `content` value (`{max}+`) that renders by default. Only renders when not a `dot`. A badge that uses this slot is kept in the a11y tree (not decorative). |
