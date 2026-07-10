@@ -15,10 +15,14 @@ defineEmits<{ close: [] }>();
 
 <template>
     <div :class="['ori-toast', { [`ori-color_${color}`]: color }]" :role="color === 'danger' ? 'alert' : 'status'">
-        <ori-icon v-if="icon" :icon="icon" class="ori-toast__icon" />
+        <slot name="icon">
+            <ori-icon v-if="icon" :icon="icon" class="ori-toast__icon" />
+        </slot>
 
         <div class="ori-toast__body">
-            <div v-if="title" class="ori-toast__title">{{ title }}</div>
+            <div v-if="title || $slots.title" class="ori-toast__title">
+                <slot name="title">{{ title }}</slot>
+            </div>
             <div v-if="text || $slots.default" class="ori-toast__text">
                 <slot>{{ text }}</slot>
             </div>

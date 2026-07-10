@@ -53,6 +53,22 @@ describe('OriSwitch', () => {
         expect(c).toContain('ori-color_success');
     });
 
+    it('renders rich default-slot content as the label', () => {
+        const wrapper = mount(OriSwitch, {
+            slots: { default: '<strong>Wi-Fi</strong>' }
+        });
+
+        const label = wrapper.find('.ori-switch__label');
+        expect(label.exists()).toBe(true);
+        expect(label.find('strong').text()).toBe('Wi-Fi');
+    });
+
+    it('falls back to the label prop when no slot is provided', () => {
+        const wrapper = mount(OriSwitch, { props: { label: 'Wi-Fi' } });
+
+        expect(wrapper.find('.ori-switch__label').text()).toBe('Wi-Fi');
+    });
+
     it('has no axe violations (labeled)', async () => {
         const wrapper = mount(OriSwitch, { props: { label: 'Enable notifications' }, attachTo: document.body });
         await expectNoA11yViolations(wrapper.element);

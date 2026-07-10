@@ -385,7 +385,8 @@ to the root `div.ori-tabs`.
 
 ### Slots
 
-| Slot      | Scope                                                                     | Description                                                                                                                                                            |
-| --------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot by the tab's value (e.g. `#account` for value `'account'`). Numeric values are stringified for the slot name.      |
-| `default` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered for any tab that has no matching named slot — one shared template for uniform content. Read the per-panel tab from scope. |
+| Slot      | Scope                                                                     | Description                                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tab`     | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Tab trigger.** Custom content for the tab button — icon, count badge, and the like. Applies to every tab; read the per-tab item from scope. Falls back to `tab.label`. |
+| `<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot by the tab's value (e.g. `#account` for value `'account'`). Numeric values are stringified for the slot name.        |
+| `default` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered for any tab that has no matching named slot — one shared template for uniform content. Read the per-panel tab from scope.   |

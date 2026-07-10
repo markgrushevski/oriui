@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, useId, useTemplateRef, watch } from 'vue';
+import { computed, mergeProps, nextTick, onBeforeUnmount, useId, useTemplateRef, watch } from 'vue';
 import { useMenu, type MenuItem } from '@oriui/headless/vue';
 import type { AnchoredPlacement } from '../../types';
 
@@ -76,7 +76,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutsidePoint
     <slot name="trigger" :props="triggerProps" />
 
     <div
-        v-bind="{ ...$attrs, ...m.contentProps.value }"
+        v-bind="mergeProps($attrs, m.contentProps.value)"
         ref="content"
         :class="['ori-menu', 'ori-anchored', `ori-anchored_${placement}`]"
         :style="{ '--ori-anchor': anchorName }"

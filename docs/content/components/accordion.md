@@ -325,6 +325,7 @@ planned.)
 
 ### Slots
 
-| Slot      | Scope                                                                      | Description                                                                                                                                         |
-| --------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused. |
+| Slot      | Scope                                                                      | Description                                                                                                                                             |
+| --------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`   | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.title` string. |
+| `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused.     |

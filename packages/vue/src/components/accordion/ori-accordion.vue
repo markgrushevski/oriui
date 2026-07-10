@@ -59,7 +59,9 @@ function blockDisabled(event: Event, disabled?: boolean): void {
                 @keydown.enter="blockDisabled($event, item.disabled)"
                 @keydown.space="blockDisabled($event, item.disabled)"
             >
-                <span class="ori-accordion__title">{{ item.title }}</span>
+                <span class="ori-accordion__title"
+                    ><slot name="title" :item="item">{{ item.title }}</slot></span
+                >
                 <svg
                     class="ori-accordion__icon"
                     viewBox="0 0 24 24"

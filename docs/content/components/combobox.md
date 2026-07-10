@@ -268,3 +268,10 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
 
 `v-model` binds the selected option's `value` (`string | null`) via `defineModel`. Selecting an
 option emits `update:modelValue`; clearing emits `null`.
+
+### Slots
+
+| Slot     | Scope                       | Description                                                                                                                           |
+| -------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `option` | `{ item, index, selected }` | Per-option content — rich options such as an avatar + email or a leading icon. Rendered for every option. Falls back to `item.label`. |
+| `empty`  | none                        | No-results content, shown when the filter matches nothing. Falls back to the `noResultsText` prop.                                    |

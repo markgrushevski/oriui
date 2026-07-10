@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, provide, useId } from 'vue';
+import { computed, provide, useId, useSlots } from 'vue';
 import type { ActionSize } from '../../types';
 import { oriFieldKey } from './context';
 
@@ -43,12 +43,17 @@ const uid = useId();
 const fieldId = computed(() => id ?? uid);
 const hintId = computed(() => `${fieldId.value}-hint`);
 const errorId = computed(() => `${fieldId.value}-error`);
-const isInvalid = computed(() => invalid || Boolean(error));
+// error / hint can come from a prop OR a slot; the a11y wiring must track whichever actually renders
+// a `<p>` (the template renders error/hint on `prop || $slots.<name>`), else aria-describedby dangles.
+const slots = useSlots();
+const hasError = computed(() => Boolean(error) || Boolean(slots.error));
+const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint));
+const isInvalid = computed(() => invalid || hasError.value);
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
 // id — never reference an element that isn't in the DOM.
 const describedBy = computed(() => {
-    const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean);
+    const ids = [hasError.value ? errorId.value : hasHint.value ? hintId.value : '', describedby].filter(Boolean);
     return ids.length ? ids.join(' ') : undefined;
 });
 
@@ -80,13 +85,18 @@ const slotProps = computed(() => ({
 
 <template>
     <div :class="['ori-field', `ori-font-size_${size}`, { 'ori-field_fluid': fluid }]">
-        <label v-if="label" :for="fieldId" class="ori-field__label">
-            {{ label }}<span v-if="required" class="ori-field__required" aria-hidden="true">*</span>
+        <label v-if="label || $slots.label" :for="fieldId" class="ori-field__label">
+            <slot name="label">{{ label }}</slot
+            ><span v-if="required" class="ori-field__required" aria-hidden="true">*</span>
         </label>
 
         <slot v-bind="slotProps" />
 
-        <p v-if="error" :id="errorId" class="ori-field__error" role="alert">{{ error }}</p>
-        <p v-else-if="hint" :id="hintId" class="ori-field__hint">{{ hint }}</p>
+        <p v-if="error || $slots.error" :id="errorId" class="ori-field__error" role="alert">
+            <slot name="error">{{ error }}</slot>
+        </p>
+        <p v-else-if="hint || $slots.hint" :id="hintId" class="ori-field__hint">
+            <slot name="hint">{{ hint }}</slot>
+        </p>
     </div>
 </template>

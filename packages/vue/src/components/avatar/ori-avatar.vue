@@ -43,7 +43,7 @@ const name = computed(() => {
             {
                 'ori-avatar_reverse': reverse,
                 'ori-avatar_inline': inline,
-                'ori-avatar_titled': title || subtitle,
+                'ori-avatar_titled': title || subtitle || $slots.title || $slots.subtitle,
                 [`ori-avatar_${size}`]: size,
                 [`ori-size-action-space_${size}`]: size && spaced,
                 [`ori-size-radius_${radius}`]: radius,
@@ -60,10 +60,16 @@ const name = computed(() => {
             :alt="text || ''"
             @load="loaded = true"
         />
-        <div v-if="!$attrs.src || !loaded" aria-hidden="true" class="ori-avatar__backdrop">{{ name }}</div>
-        <div v-if="title || subtitle" class="ori-avatar__text">
-            <div class="ori-avatar__title">{{ title }}</div>
-            <div class="ori-avatar__subtitle">{{ subtitle }}</div>
+        <div v-if="!$attrs.src || !loaded" aria-hidden="true" class="ori-avatar__backdrop">
+            <slot name="fallback">{{ name }}</slot>
+        </div>
+        <div v-if="title || subtitle || $slots.title || $slots.subtitle" class="ori-avatar__text">
+            <div class="ori-avatar__title">
+                <slot name="title">{{ title }}</slot>
+            </div>
+            <div class="ori-avatar__subtitle">
+                <slot name="subtitle">{{ subtitle }}</slot>
+            </div>
         </div>
     </div>
 </template>

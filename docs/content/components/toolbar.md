@@ -748,8 +748,9 @@ computed bindings onto the real `OriButton` (and, in turn, the `<button>`), so a
 
 **Slots**
 
-None — unlike the base `OriButton`, content is driven entirely by the `icon` / `text` props; there is
-no default slot.
+| Slot      | Scope | Description                                                                                                                                                                                                           |
+| --------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —     | Custom button content, forwarded to the underlying `OriButton`. Falls back to the `icon` / `text` props when omitted — slot in a multi-path SVG or a custom icon component in place of the single-path `icon` string. |
 
 ### OriToolbarSeparator
 
@@ -831,7 +832,9 @@ never omitted.
 
 **Slots**
 
-None.
+| Slot      | Scope | Description                                                                                                                                                                                                            |
+| --------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —     | Custom item content, forwarded to the underlying `OriButton` — same as `OriToolbarButton`. Falls back to the `icon` / `text` props when omitted — slot in a multi-path SVG or a custom icon component if you need one. |
 
 ## Headless (`useToolbar`)
 
