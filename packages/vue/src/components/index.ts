@@ -29,4 +29,5 @@ export * from './skeleton';
 export * from './kbd';
 export * from './toast';
 export * from './slider';
+export * from './surface';
 export * from './toolbar';

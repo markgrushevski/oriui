@@ -12,7 +12,7 @@
         "limit": "3 kB"
     },
     {
-        "name": "@oriui/vue — full library, all 32 components (gzip)",
+        "name": "@oriui/vue — full library, all 33 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
         "limit": "44 kB"
