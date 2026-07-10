@@ -43,10 +43,15 @@
         padding-block: 0;
         padding-inline: 1em;
 
+        /* NB: `color` is deliberately NOT transitioned. The label/text color resolves through
+           --ori-variant-text-color → --ori-color-text, a RELATIVE-color token (`oklch(from <role> …)`),
+           which browsers do not interpolate in a transition — a consumer that swaps --ori-color at
+           runtime (e.g. to tint an icon) would see the color STICK on the old value until a repaint.
+           No built-in button state changes the text color anyway (hover/active/pressed move
+           background/opacity), so excluding `color` costs no animation and unblocks dynamic recoloring. */
         transition:
             opacity 0.15s ease-out,
             background-color 0.15s ease-out,
-            color 0.15s ease-out,
             border-color 0.15s ease-out;
 
         border: 1px solid var(--ori-variant-border-color);
