@@ -8,6 +8,7 @@
     },
     "changesets": [
         "css-entry-points",
+        "dialog-managed-open",
         "explicit-icon-mode",
         "neutral-skin-tooltip-fix",
         "package-restructure",
@@ -16,8 +17,11 @@
         "role-text-one-hue",
         "role-text-tone",
         "ship-sources",
+        "slider-commit-event",
+        "surface",
         "svelte-adapter",
         "theme-controller",
-        "token-bridge"
+        "token-bridge",
+        "toolbar"
     ]
 }
