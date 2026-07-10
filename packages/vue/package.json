@@ -42,7 +42,7 @@
         "**/*.css"
     ],
     "scripts": {
-        "build": "vite build && vue-tsc -p tsconfig.build.json",
+        "build": "vite build && vue-tsc -p tsconfig.build.json && node scripts/fix-dts.mjs",
         "types": "vue-tsc --noEmit"
     },
     "dependencies": {

@@ -76,12 +76,14 @@ Roughly by priority.
    **`glass`** variant — the ROADMAP phase 5/7 remainders.
 10. ⭐ **Package-export correctness in CI** — **publint SHIPPED (alpha.13):** a `publint` gate on all three
     packages in `ci.yml` (node 22, after build) — all three pass clean. A **`docs:build` gate** landed in the
-    same step (catch a broken Nuxt docs build). **`@arethetypeswrong/cli` deferred (pre-beta):** attw surfaced
-    a real interop gap — `@oriui/vue`'s emitted `dist/*.d.ts` use **extensionless** relative imports
-    (`from './types'`, `from './components'`), which fail under strict `moduleResolution: node16` / `nodenext`
-    (🥴 InternalResolutionError); fine under `bundler`/`node` (🟢). Fixing it needs `.js`-extension'd relative
-    imports across `src` (or a post-build `.d.ts` rewrite) — a wide, careful change, so attw is NOT yet a gate.
-    The ESM-only `CJSResolvesToESM` attw warning is expected (the packages are `"type":"module"`). Also still
+    same step (catch a broken Nuxt docs build). **node16/nodenext `.d.ts` gap — FIXED:** attw had surfaced a
+    real interop gap — `@oriui/vue`'s emitted `dist/*.d.ts` used **extensionless** relative imports
+    (`from './types'`, directory `from './components'`, `.vue` re-exports), which failed under strict
+    `moduleResolution: node16` / `nodenext` (🥴); fine under `bundler`. Fixed via a post-build rewrite
+    (`packages/vue/scripts/fix-dts.mjs`, appends `.js` / `/index.js` per file-vs-dir) — attw now reports
+    **node16-from-ESM 🟢** (verified 3 ways: attw, a nodenext consumer typecheck, a negative test). **`attw` as
+    a CI gate still deferred:** the only remaining attw flag is the expected ESM-only `CJSResolvesToESM` (the
+    packages are `"type":"module"`), so a green gate needs `--ignore-rules cjs-resolves-to-esm`. Also still
     open: a **token-inspector** devtool.
 11. ⭐ **Reset-independence audit** — **SHIPPED (2026-07-06).** Make every `.ori-*` component block
     self-sufficient (declare its own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` +
