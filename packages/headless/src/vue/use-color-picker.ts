@@ -45,6 +45,12 @@ export interface UseColorPickerOptions {
 
 const DEFAULT: HSVA = { h: 0, s: 0, v: 0, a: 1 };
 
+// Each hidden range owns ONE axis of the SV area: the saturation input takes the horizontal keys, the
+// brightness input the vertical ones. This is what makes every keystroke change the focused slider's own
+// value (so a screen reader announces it) rather than routing all arrows in 2D from a single input.
+const SATURATION_KEYS = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+const VALUE_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'];
+
 export function useColorPicker(options: () => UseColorPickerOptions) {
     const opts = () => options();
     const fmt = (): ColorFormat => opts().format ?? 'hex';
@@ -58,7 +64,11 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         () => opts().value,
         (value) => {
             const parsed = parseColor(value ?? '', hsva.value.h);
-            if (parsed && formatColor(hsva.value, fmt()) !== (value ?? '')) {
+            // Echo-guard: skip re-sync when the incoming value is our own last emit. It MUST format with
+            // the same alpha flag we emit with — otherwise, with alpha on, the guard string (no alpha)
+            // never matches the alpha-carrying echo, so hsva is re-parsed every tick, re-quantizing s/v
+            // through 8-bit RGB (a visible ~1% grid for rgb()/hsl()) and defeating "HSVA is the truth".
+            if (parsed && formatColor(hsva.value, fmt(), alphaOn()) !== (value ?? '')) {
                 hsva.value = parsed;
             }
         },
@@ -131,22 +141,12 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         el.addEventListener('pointerup', onUp);
     }
 
-    function onAreaKeydown(event: KeyboardEvent): void {
-        if (disabled()) return;
-        const next = stepAreaPosition({ x: hsva.value.s, y: hsva.value.v }, event.key, { shift: event.shiftKey });
-        if (!next) return;
-        event.preventDefault();
-        setSaturationValue(next.x, next.y);
-        commit(); // discrete keyboard step → one undo entry, matching a native range's per-key change
-    }
-
     const areaProps = computed(() => ({
         role: 'group' as const,
         'aria-label': 'Saturation and brightness',
         'aria-disabled': disabled() || undefined,
         style: { '--ori-hue': hueColor.value },
-        onPointerdown: onAreaPointerdown,
-        onKeydown: onAreaKeydown
+        onPointerdown: onAreaPointerdown
     }));
 
     /** Inline position for the area thumb: left = saturation, top = inverted value (1 = top). */
@@ -156,10 +156,14 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     }));
 
     // The two visually-hidden native range inputs — the a11y surface (role=slider, focusable, form
-    // value). Keyboard is routed in 2D by the area's onKeydown (it bubbles); onInput covers an AT that
-    // sets a channel value directly.
+    // value). Each input owns one axis: its onKeydown handles only that axis's keys (preventing the
+    // native range's own arrow handling), so the focused slider's aria-valuenow/valuetext changes on
+    // every keystroke and a screen reader announces it (an APG ColorArea requirement — Up/Down on the
+    // "Saturation" slider must NOT silently move brightness). onInput covers an AT setting a value
+    // directly, and a real browser's native arrow on the non-owned axis (a harmless same-axis nudge).
     function getChannelInputProps(channel: 'saturation' | 'value') {
         const pct = channel === 'saturation' ? Math.round(hsva.value.s * 100) : Math.round(hsva.value.v * 100);
+        const keys = channel === 'saturation' ? SATURATION_KEYS : VALUE_KEYS;
         return {
             type: 'range' as const,
             min: 0,
@@ -168,7 +172,19 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
             value: pct,
             disabled: disabled() || undefined,
             'aria-label': channel === 'saturation' ? 'Saturation' : 'Brightness',
-            'aria-valuetext': `${pct}%`,
+            'aria-orientation': channel === 'value' ? ('vertical' as const) : undefined,
+            // Announce the axis value AND the resulting opaque color, so the settled colour is spoken too.
+            'aria-valuetext': `${pct}%, ${opaqueColor.value}`,
+            onKeydown: (event: KeyboardEvent): void => {
+                if (disabled() || !keys.includes(event.key)) return;
+                const next = stepAreaPosition({ x: hsva.value.s, y: hsva.value.v }, event.key, {
+                    shift: event.shiftKey
+                });
+                if (!next) return;
+                event.preventDefault();
+                setSaturationValue(next.x, next.y);
+                commit(); // discrete keyboard step → one undo entry, matching a native range's per-key change
+            },
             onInput: (event: Event): void => {
                 const n = Number((event.target as HTMLInputElement).value) / 100;
                 if (channel === 'saturation') setSaturationValue(n, hsva.value.v);
@@ -193,6 +209,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     }));
 
     function onPresetKeydown(event: KeyboardEvent): void {
+        if (disabled()) return;
         const list = presets();
         const intent = rovingIntent(event.key, 'horizontal');
         if (!intent || list.length === 0) return;
@@ -210,9 +227,15 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
             role: 'option' as const,
             'aria-label': color,
             'aria-selected': isPresetSelected(color),
+            // A disabled picker must be inert to the KEYBOARD too: pointer-events:none on the wrapper only
+            // stops the mouse, so without a real `disabled` a keyboard user could Tab to a chip and Enter
+            // to mutate the value. The native `disabled` blocks focus + activation; the onClick guard is
+            // defense-in-depth for a slotted control that ignores it.
+            disabled: disabled() || undefined,
             tabindex: index === activePreset.value ? 0 : -1,
             style: { '--ori-color': color },
             onClick: (): void => {
+                if (disabled()) return;
                 activePreset.value = index;
                 setColor(color);
             },
