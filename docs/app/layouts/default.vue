@@ -120,6 +120,10 @@ const sections = [
                 links: [
                     { label: 'useDisclosure', to: '/headless/use-disclosure' },
                     { label: 'useDialog', to: '/headless/use-dialog' },
+                    { label: 'useCombobox', to: '/headless/use-combobox' },
+                    { label: 'useMenu', to: '/headless/use-menu' },
+                    { label: 'useToolbar', to: '/headless/use-toolbar' },
+                    { label: 'useToken', to: '/headless/use-token' },
                     { label: 'useTheme', to: '/headless/use-theme' }
                 ]
             }
