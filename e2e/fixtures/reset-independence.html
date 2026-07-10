@@ -120,6 +120,69 @@
     </label>
 </div>
 
+<div data-c="color-picker">
+    <div class="ori-color-picker" role="group" aria-label="Color">
+        <div class="ori-color-picker__area" role="group" aria-label="Saturation and brightness" style="--ori-hue: #f00">
+            <span class="ori-color-picker__area-thumb" aria-hidden="true" style="left: 80%; top: 0%"></span>
+            <input
+                class="ori-color-picker__channel"
+                type="range"
+                min="0"
+                max="100"
+                value="80"
+                aria-label="Saturation"
+            />
+            <input
+                class="ori-color-picker__channel"
+                type="range"
+                min="0"
+                max="100"
+                value="100"
+                aria-label="Brightness"
+            />
+        </div>
+        <div class="ori-color-picker__controls">
+            <span
+                class="ori-color-picker__swatch"
+                role="img"
+                aria-label="#3366ff"
+                style="--ori-color: #3366ff; --ori-ink: #fff"
+            ></span>
+            <div class="ori-slider">
+                <input
+                    class="ori-slider__input ori-slider_hue ori-color-picker__hue"
+                    type="range"
+                    min="0"
+                    max="360"
+                    value="225"
+                    aria-label="Hue"
+                />
+            </div>
+        </div>
+        <div class="ori-input">
+            <input class="ori-input__field ori-color-picker__hex" type="text" value="#3366ff" aria-label="Hex color" />
+        </div>
+        <div class="ori-color-picker__presets" role="listbox" aria-label="Preset colors">
+            <button
+                type="button"
+                class="ori-color-picker__preset"
+                role="option"
+                aria-selected="false"
+                tabindex="0"
+                style="--ori-color: #ff0000"
+            ></button>
+            <button
+                type="button"
+                class="ori-color-picker__preset"
+                role="option"
+                aria-selected="true"
+                tabindex="-1"
+                style="--ori-color: #3366ff"
+            ></button>
+        </div>
+    </div>
+</div>
+
 <div data-c="combobox">
     <div class="ori-combobox">
         <label class="ori-combobox__label" for="cbx-input">
