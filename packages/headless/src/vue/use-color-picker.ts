@@ -26,8 +26,12 @@ import { resolveRovingIndex, rovingIntent } from '../core';
 export interface UseColorPickerOptions {
     /** The controlled color string (v-model). Parsed loosely: hex, `rgb()/rgba()`, `hsl()/hsla()`. */
     value: string | undefined;
-    /** Output format for the emitted string (default `'hex'`). v1 emits without alpha. */
+    /** Output format for the emitted string (default `'hex'`). */
     format?: ColorFormat;
+    /** Include an alpha channel — the emitted string carries it (`#rrggbbaa` / `rgba()` / `hsla()`). */
+    alpha?: boolean;
+    /** Expose an eyedropper trigger (the EyeDropper API; `eyedropperSupported` is false where absent). */
+    eyedropper?: boolean;
     /** Accessible name for the whole control (→ `aria-label` on the root group). */
     label?: string;
     disabled?: boolean;
@@ -44,6 +48,7 @@ const DEFAULT: HSVA = { h: 0, s: 0, v: 0, a: 1 };
 export function useColorPicker(options: () => UseColorPickerOptions) {
     const opts = () => options();
     const fmt = (): ColorFormat => opts().format ?? 'hex';
+    const alphaOn = (): boolean => opts().alpha ?? false;
 
     // The working color. Internal HSVA is the source of truth during interaction; it re-syncs from the
     // external `value` only on a genuine external change (preserving the current hue as prevHue).
@@ -61,16 +66,19 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     );
 
     const rgb = computed(() => hsvToRgb(hsva.value.h, hsva.value.s, hsva.value.v));
-    const hex = computed(() => formatColor(hsva.value, 'hex'));
-    /** The current color as a CSS string (for the preview swatch background). */
-    const swatchColor = computed(() => rgbToHex(rgb.value));
+    /** The hex the field shows — `#rrggbbaa` when alpha is on, else `#rrggbb`. */
+    const hex = computed(() => formatColor(hsva.value, 'hex', alphaOn()));
+    /** The current color for the preview swatch — carries alpha so a checkerboard shows through. */
+    const swatchColor = computed(() => rgbToHex(rgb.value, hsva.value.a, alphaOn()));
+    /** The opaque current color (for the alpha slider's transparent→color track). */
+    const opaqueColor = computed(() => rgbToHex(rgb.value));
     /** Readable ink (black/white) over the current color, per WCAG luminance. */
     const ink = computed(() => readableInk(rgb.value));
     /** The fully-saturated hue color — the area's `--ori-hue` gradient anchor. */
     const hueColor = computed(() => rgbToHex(hsvToRgb(hsva.value.h, 1, 1)));
 
-    const emitInput = (): void => opts().onInput(formatColor(hsva.value, fmt()));
-    const emitChange = (): void => opts().onChange(formatColor(hsva.value, fmt()));
+    const emitInput = (): void => opts().onInput(formatColor(hsva.value, fmt(), alphaOn()));
+    const emitChange = (): void => opts().onChange(formatColor(hsva.value, fmt(), alphaOn()));
 
     // --- setters -------------------------------------------------------------------------------------
     function setSaturationValue(s: number, v: number): void {
@@ -79,6 +87,11 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     }
     function setHue(h: number): void {
         hsva.value = { ...hsva.value, h: wrapHue(h) };
+        emitInput();
+    }
+    /** Set alpha (0–1). */
+    function setAlpha(a: number): void {
+        hsva.value = { ...hsva.value, a: a < 0 ? 0 : a > 1 ? 1 : a };
         emitInput();
     }
     /** Commit the current color (pointer-release / keyboard settle). */
@@ -209,15 +222,37 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         };
     }
 
+    // --- eyedropper (progressive enhancement; Chromium-only, feature-detected) ------------------------
+    const eyedropperSupported = typeof window !== 'undefined' && 'EyeDropper' in window;
+    async function openEyeDropper(): Promise<void> {
+        if (!eyedropperSupported || disabled()) return;
+        try {
+            const Ctor = (window as unknown as { EyeDropper: new () => { open(): Promise<{ sRGBHex: string }> } })
+                .EyeDropper;
+            const { sRGBHex } = await new Ctor().open();
+            const parsed = parseColor(sRGBHex, hsva.value.h);
+            if (!parsed) return;
+            // EyeDropper returns an opaque sRGB color — keep the current alpha.
+            hsva.value = { ...parsed, a: hsva.value.a };
+            emitInput();
+            emitChange();
+        } catch {
+            // user dismissed the eyedropper (AbortError) — no-op
+        }
+    }
+
     return {
         // reactive state
         hsva: computed(() => hsva.value),
         rgb,
         hex,
         hue: computed(() => hsva.value.h),
+        alpha: computed(() => hsva.value.a),
         swatchColor,
+        opaqueColor,
         ink,
         hueColor,
+        eyedropperSupported,
         // prop-getters
         areaProps,
         areaThumbStyle,
@@ -225,11 +260,13 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         presetGroupProps,
         getPresetProps,
         onPresetKeydown,
-        // setters
+        // setters / actions
         setHue,
+        setAlpha,
         setColor,
         setHex: setColor,
         setSaturationValue,
+        openEyeDropper,
         commit
     };
 }

@@ -829,8 +829,14 @@ anatomy" call.
 **3. v-model is a lowercase color STRING (dual event), and v1 is hex6 — alpha is deferred to v2.**
 `update:modelValue` streams live per tick; `change` commits once on pointer-release / keyboard-settle (one
 undo entry) — the OriSlider commit convention verbatim (which named ColorPicker as its reference consumer).
-Output is lowercased before emit (justpaint's validator is lowercase-only). The internal HSVA already carries
-`a`, so the v2 alpha slider + `#rrggbbaa` is additive, not a rewrite. Also deferred to v2 (parameterized-not-
-rewritten): the EyeDropper trigger (Chromium-only, feature-detected + hidden when absent), a format switcher,
-per-channel numeric inputs, a built-in recent-colors buffer (v1 takes a consumer-supplied `presets` roving
-listbox instead), a color wheel, and wide-gamut / CSS-Color-4.
+Output is lowercased before emit (justpaint's validator is lowercase-only).
+
+**Update (alpha.13, still unreleased): alpha + eyedropper landed in v1 after all.** Both were designed-for
+and cheap, so they went in before the ColorPicker's first publish rather than a v2: `alpha` (opt-in) adds a
+checkerboard `.ori-slider_alpha` track + a checkerboard swatch and emits `#rrggbbaa` / `rgba()` / `hsla()`
+(the internal HSVA always carried `a`; `parseColor` already read 8-digit hex / `rgba()`); `eyedropper`
+(opt-in) is the EyeDropper API behind a **feature-detected** trigger — `eyedropperSupported` is false where
+`window.EyeDropper` is absent, so the styled button is hidden, never dead (a picked color keeps the current
+alpha). **Still deferred to v2** (all additive): a user-facing format switcher, per-channel numeric inputs,
+a built-in recent-colors buffer (v1 stays consumer-supplied `presets`), a color wheel, wide-gamut /
+CSS-Color-4, and the Svelte twin.

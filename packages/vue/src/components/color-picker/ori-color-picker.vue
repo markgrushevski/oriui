@@ -4,19 +4,27 @@ import { useColorPicker } from '@oriui/headless/vue';
 import type { ColorFormat } from '@oriui/headless/vue';
 import { OriSlider } from '../slider';
 import { OriInput } from '../input';
+import { OriButton } from '../button';
 
-// OriColorPicker — an INLINE saturation/value + hue + hex + presets panel. It is open-state-agnostic:
-// to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger (the widget and the
-// overlay are separate — the OriPopover ADR). Behaviour lives in the framework-agnostic `useColorPicker`
-// (sRGB + 2D-area math, no adapter/machine); this SFC renders the parts and reuses OriSlider (hue) and
-// OriInput (hex). v-model is a lowercase color STRING; `change` commits once per interaction (one undo).
+// OriColorPicker — an INLINE saturation/value + hue (+ optional alpha) + hex + presets panel. It is
+// open-state-agnostic: to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger
+// (the widget and the overlay are separate — the OriPopover ADR). Behaviour lives in the
+// framework-agnostic `useColorPicker` (sRGB + 2D-area math, no adapter/machine); this SFC renders the
+// parts and reuses OriSlider (hue/alpha) and OriInput (hex). v-model is a lowercase color STRING;
+// `change` commits once per interaction (one undo).
 const {
+    alpha = false,
     disabled = false,
+    eyedropper = false,
     format = 'hex',
     label,
     presets
 } = defineProps<{
+    /** Add an alpha channel — a checkerboard slider and `#rrggbbaa` / `rgba()` / `hsla()` output. */
+    alpha?: boolean;
     disabled?: boolean;
+    /** Show an eyedropper trigger (EyeDropper API; auto-hidden where the browser lacks it). */
+    eyedropper?: boolean;
     /** Output format for the emitted string (default `'hex'`). */
     format?: ColorFormat;
     /** Accessible name for the whole control (→ `aria-label`). */
@@ -31,6 +39,8 @@ const emit = defineEmits<{ change: [value: string] }>();
 const cp = useColorPicker(() => ({
     value: model.value,
     format,
+    alpha,
+    eyedropper,
     label,
     disabled,
     presets,
@@ -39,6 +49,10 @@ const cp = useColorPicker(() => ({
     },
     onChange: (next) => emit('change', next)
 }));
+
+// A single-path eyedropper glyph (MDI-style) for the pick-from-screen trigger.
+const EYEDROPPER_ICON =
+    'M19.35 11.72 17.22 13.85 15.81 12.43 8.1 20.14 3.5 22 2 20.5 3.86 15.9 11.57 8.19 10.15 6.78 12.28 4.65 19.35 11.72M16.76 3C17.93 1.83 19.83 1.83 21 3 22.17 4.17 22.17 6.07 21 7.24L19.08 9.16 14.84 4.92 16.76 3Z';
 
 // The hex field holds a local draft so a partial entry isn't reformatted mid-type; it commits on
 // blur / Enter. cp.hex changes (drag, hue, preset) re-seed the draft.
@@ -73,6 +87,7 @@ function commitHex(): void {
         <div class="ori-color-picker__controls">
             <span
                 class="ori-color-picker__swatch"
+                :class="{ 'ori-color-picker__swatch_alpha': alpha }"
                 role="img"
                 :aria-label="cp.hex.value"
                 :style="{ '--ori-color': cp.swatchColor.value, '--ori-ink': cp.ink.value }"
@@ -80,16 +95,42 @@ function commitHex(): void {
                 <slot name="swatch" :color="cp.swatchColor.value" :ink="cp.ink.value"></slot>
             </span>
 
-            <OriSlider
-                class="ori-slider_hue ori-color-picker__hue"
-                :model-value="cp.hue.value"
-                :min="0"
-                :max="360"
-                :step="1"
+            <div class="ori-color-picker__sliders">
+                <OriSlider
+                    class="ori-slider_hue ori-color-picker__hue"
+                    :model-value="cp.hue.value"
+                    :min="0"
+                    :max="360"
+                    :step="1"
+                    :disabled="disabled"
+                    aria-label="Hue"
+                    @update:model-value="cp.setHue"
+                    @change="cp.commit"
+                />
+
+                <OriSlider
+                    v-if="alpha"
+                    class="ori-slider_alpha ori-color-picker__alpha"
+                    :model-value="Math.round(cp.alpha.value * 100)"
+                    :min="0"
+                    :max="100"
+                    :step="1"
+                    :disabled="disabled"
+                    :style="{ '--ori-color': cp.opaqueColor.value }"
+                    aria-label="Alpha"
+                    @update:model-value="(v) => cp.setAlpha(v / 100)"
+                    @change="cp.commit"
+                />
+            </div>
+
+            <OriButton
+                v-if="eyedropper && cp.eyedropperSupported"
+                class="ori-color-picker__eyedropper"
+                variant="outline"
+                :icon="EYEDROPPER_ICON"
                 :disabled="disabled"
-                aria-label="Hue"
-                @update:model-value="cp.setHue"
-                @change="cp.commit"
+                aria-label="Pick a color from the screen"
+                @click="cp.openEyeDropper"
             />
         </div>
 

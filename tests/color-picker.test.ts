@@ -1,10 +1,11 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import { OriColorPicker } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 afterEach(() => {
     document.body.innerHTML = '';
+    delete (window as unknown as { EyeDropper?: unknown }).EyeDropper;
 });
 
 const area = (w: ReturnType<typeof mount>) => w.find('.ori-color-picker__area');
@@ -146,6 +147,68 @@ describe('OriColorPicker — presets', () => {
         expect(chips[1].attributes('tabindex')).toBe('0');
         expect(chips[0].attributes('tabindex')).toBe('-1');
         wrapper.unmount();
+    });
+});
+
+describe('OriColorPicker — alpha channel', () => {
+    const alphaSlider = (w: ReturnType<typeof mount>) => w.find('input.ori-slider_alpha');
+
+    it('adds an alpha slider only when `alpha` is set', () => {
+        expect(alphaSlider(mount(OriColorPicker, { props: { modelValue: '#3366ff' } })).exists()).toBe(false);
+        expect(alphaSlider(mount(OriColorPicker, { props: { modelValue: '#3366ff', alpha: true } })).exists()).toBe(
+            true
+        );
+    });
+
+    it('seeds alpha from an 8-digit hex and shows #rrggbbaa in the field', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff80', alpha: true } });
+
+        expect((hexInput(wrapper).element as HTMLInputElement).value).toBe('#3366ff80');
+        expect((alphaSlider(wrapper).element as HTMLInputElement).value).toBe('50'); // 0x80 ≈ 50%
+        expect(swatch(wrapper).classes()).toContain('ori-color-picker__swatch_alpha');
+    });
+
+    it('moving the alpha slider re-emits an #rrggbbaa string with the new alpha', async () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', alpha: true } });
+        const a = alphaSlider(wrapper);
+
+        (a.element as HTMLInputElement).value = '25';
+        await a.trigger('input');
+        await a.trigger('change');
+
+        expect(last(wrapper.emitted('update:modelValue'))).toBe('#3366ff40'); // 25% ≈ 0x40
+        expect(wrapper.emitted('change')).toBeTruthy();
+    });
+
+    it('with alpha off, output stays #rrggbb even from an 8-digit input', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff80' } });
+        expect((hexInput(wrapper).element as HTMLInputElement).value).toBe('#3366ff');
+    });
+});
+
+describe('OriColorPicker — eyedropper', () => {
+    const eyedropperBtn = (w: ReturnType<typeof mount>) => w.find('.ori-color-picker__eyedropper');
+
+    it('is hidden when the browser has no EyeDropper (never a dead button)', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#000000', eyedropper: true } });
+        expect(eyedropperBtn(wrapper).exists()).toBe(false);
+    });
+
+    it('shows and picks a color when the EyeDropper API is present', async () => {
+        (window as unknown as { EyeDropper: unknown }).EyeDropper = class {
+            open() {
+                return Promise.resolve({ sRGBHex: '#12abef' });
+            }
+        };
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#000000', eyedropper: true } });
+        const btn = eyedropperBtn(wrapper);
+
+        expect(btn.exists()).toBe(true);
+        await btn.trigger('click');
+        await flushPromises();
+
+        expect(last(wrapper.emitted('update:modelValue'))).toBe('#12abef');
+        expect(last(wrapper.emitted('change'))).toBe('#12abef');
     });
 });
 
