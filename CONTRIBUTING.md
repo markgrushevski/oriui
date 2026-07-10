@@ -44,8 +44,8 @@ to `main` and every PR: `lint:ci → types → test → build` across Node 22 an
 
 ## Versioning
 
-oriUI follows **SemVer**. The line is currently **`1.0.0-alpha.0`** — alpha, so the public API
-may shift before `1.0`.
+oriUI follows **SemVer**. The line is currently on the **`1.0.0-alpha.*`** series — alpha, so the
+public API may shift before `1.0`.
 
 The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headless`, and `@oriui/css`
 always share one version, and their internal dependencies are pinned to that exact

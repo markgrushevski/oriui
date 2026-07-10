@@ -110,14 +110,15 @@ app.use(OriHeadless, { dialog: myDialog });
 
 The same core powers each binding, so a primitive behaves the same everywhere.
 
-- **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges.
+- **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
 - **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behaviour is re-implemented.
 
 ## See also
 
 - The Vue composables — [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
   [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) ·
-  [useToolbar](/headless/use-toolbar) · [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
+  [useToolbar](/headless/use-toolbar) · [useColorPicker](/headless/use-color-picker) ·
+  [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
 - [Dialog](/components/dialog) — a styled component that consumes a headless contract (every component
   page shows the same pattern).
 - [CSS layer](/guides/css) — the other framework-agnostic layer: standalone `.ori-*` classes + tokens.
