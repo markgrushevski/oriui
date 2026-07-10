@@ -9,20 +9,21 @@ The framework-agnostic heart of the headless layer: a **behaviour contract** plu
 so a primitive behaves identically wherever it runs — and the behaviour stays swappable per primitive,
 without touching markup.
 
-This is the **agnostic** layer. It has no Vue, no Svelte, no CSS — for the concrete composable API
-see the binding pages ([useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog));
-for the standalone styling layer see the [CSS guide](/guides/css).
+This is the **agnostic** layer. It has no Vue, no Svelte, no CSS. For the concrete composable API, see
+the Vue binding pages — [useDisclosure](/headless/use-disclosure) and [useDialog](/headless/use-dialog),
+with the rest linked from [The core toolkit](#the-core-toolkit) below; for the standalone styling layer
+see the [CSS guide](/guides/css).
 
 ## The layered idea
 
 The headless layer is split along a framework axis. The behaviour lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
-| Package                  | What it is                                                                                | Framework    |
-| ------------------------ | ----------------------------------------------------------------------------------------- | ------------ |
-| `@oriui/headless`        | Behaviour contract + native engine                                                        | **agnostic** |
-| `@oriui/headless/vue`    | Vue bindings — `useDisclosure` / `useDialog` / `useCombobox` / `useMenu` (`ComputedRef`s) | Vue          |
-| `@oriui/headless/svelte` | The same four as Svelte stores                                                            | Svelte       |
+| Package                  | What it is                                                                                                                                                                  | Framework    |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `@oriui/headless`        | Behaviour contract + native engine                                                                                                                                          | **agnostic** |
+| `@oriui/headless/vue`    | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
+| `@oriui/headless/svelte` | The same composables as Svelte stores                                                                                                                                       | Svelte       |
 
 ## The contract
 
@@ -65,6 +66,25 @@ Three small building blocks back every primitive:
 | `createAnatomy` | Names a component's parts and emits the `data-scope` / `data-part` attrs + matching selectors |
 | `mergeProps`    | Type-aware left-to-right merge so a consumer can layer a handler / `class` / `style` on a bag |
 
+## The core toolkit
+
+Beyond the disclosure engine above, `@oriui/headless` ships the behaviour every binding composes —
+state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue
+and Svelte adapters consume them without re-implementing anything.
+
+| Export                                                            | What it is                                                                                                                                                                      | Vue binding                                                                                                       |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `disclosure` · `combobox` · `menu`                                | Namespaced state machines — each a `{ machine, connect, anatomy }` (mirroring Zag's `import * as disclosure`): the reducer plus the pure prop-getter projection for the widget. | [useDisclosure](/headless/use-disclosure) · [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) |
+| `rovingIntent` · `resolveRovingIndex` · `ownsArrowKeys`           | Roving-tabindex toolkit — pure key→intent and intent→index math (`roving`), plus the "yield the arrows to a composite child" DOM predicate (`roving-dom`). **Not a machine.**   | [useToolbar](/headless/use-toolbar)                                                                               |
+| `resolveToken` · `observeTheme`                                   | Token bridge — resolve an `--ori-*` token to its computed value from JS (`''` when unresolvable or on the server) and subscribe to skin / mode changes.                         | [useToken](/headless/use-token)                                                                                   |
+| `applyTheme` · `createThemeController` · `flushThemeInvalidation` | Theme controller — apply + persist light / dark, and the workaround for the Chromium runtime-toggle invalidation bug.                                                           | [useTheme](/headless/use-theme)                                                                                   |
+
+Only the top row is a state machine — disclosure, combobox, and menu follow the `machine` + `connect`
+projection shown above. The other three rows are deliberately **not** machines: the roving helpers are
+pure functions a widget composes itself (the toolbar is a `provide` / `inject` roving **context**, not a
+machine behind an adapter — see [useToolbar](/headless/use-toolbar)), and the token / theme bridges read
+and react to the DOM cascade rather than projecting reducer state.
+
 ## Adapters
 
 Behaviour is chosen per primitive — provided once at the app root, never threaded through markup.
@@ -90,12 +110,14 @@ app.use(OriHeadless, { dialog: myDialog });
 
 The same core powers each binding, so a primitive behaves the same everywhere.
 
-- **Vue** — [useDisclosure](/headless/use-disclosure) and [useDialog](/headless/use-dialog) (plus `useCombobox` / `useMenu`).
+- **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges.
 - **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behaviour is re-implemented.
 
 ## See also
 
-- [useDisclosure](/headless/use-disclosure) — the Vue binding of the native disclosure engine.
-- [useDialog](/headless/use-dialog) — the Vue binding for the native `<dialog>` primitive.
-- [Dialog](/components/dialog) — the styled component that consumes the dialog contract.
+- The Vue composables — [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
+  [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) ·
+  [useToolbar](/headless/use-toolbar) · [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
+- [Dialog](/components/dialog) — a styled component that consumes a headless contract (every component
+  page shows the same pattern).
 - [CSS layer](/guides/css) — the other framework-agnostic layer: standalone `.ori-*` classes + tokens.
