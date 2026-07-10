@@ -24,6 +24,23 @@ describe('OriAvatar', () => {
         expect(wrapper.find('.ori-avatar__subtitle').text()).toBe('Admin');
     });
 
+    it('renders custom #fallback slot content when imageless', () => {
+        const wrapper = mount(OriAvatar, {
+            props: { text: 'John Doe' },
+            slots: { fallback: '<span class="custom">JD!</span>' }
+        });
+
+        const backdrop = wrapper.find('.ori-avatar__backdrop');
+        expect(backdrop.find('.custom').exists()).toBe(true);
+        expect(backdrop.text()).toBe('JD!');
+    });
+
+    it('falls back to the computed initials when no #fallback slot is given', () => {
+        const wrapper = mount(OriAvatar, { props: { text: 'John Doe' } });
+
+        expect(wrapper.find('.ori-avatar__backdrop').text()).toBe('JD');
+    });
+
     it('maps size / radius / inline / reverse to classes', () => {
         const c = mount(OriAvatar, {
             props: { text: 'A', size: 'xl', radius: 'sm', inline: true, reverse: true }

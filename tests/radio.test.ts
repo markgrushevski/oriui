@@ -72,6 +72,38 @@ describe('OriRadioGroup', () => {
         expect(c).toContain('ori-color_success');
     });
 
+    it('renders custom per-option content via the #option scoped slot, receiving the option', () => {
+        const wrapper = mount(OriRadioGroup, {
+            props: { options: OPTIONS },
+            slots: {
+                option: ({ option }) => `${option.label} (${option.value})`
+            }
+        });
+        const labels = wrapper.findAll('.ori-radio__label').map((l) => l.text());
+
+        expect(labels).toEqual(['Free (free)', 'Pro (pro)', 'Team (team)']);
+    });
+
+    it('falls back to the option label when no #option slot is given', () => {
+        const wrapper = mount(OriRadioGroup, { props: { options: OPTIONS } });
+        const labels = wrapper.findAll('.ori-radio__label').map((l) => l.text());
+
+        expect(labels).toEqual(['Free', 'Pro', 'Team']);
+    });
+
+    it('keeps radio selection working with a custom #option slot', async () => {
+        const wrapper = mount(OriRadioGroup, {
+            props: { options: OPTIONS, modelValue: 'pro' },
+            slots: { option: ({ option }) => option.label }
+        });
+        const radios = wrapper.findAll('input');
+
+        expect((radios[1].element as HTMLInputElement).checked).toBe(true);
+
+        await radios[0].setValue();
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['free']);
+    });
+
     it('has no axe violations (labeled group)', async () => {
         const wrapper = mount(OriRadioGroup, { props: { options: OPTIONS, label: 'Plan' }, attachTo: document.body });
         await expectNoA11yViolations(wrapper.element);

@@ -141,6 +141,42 @@ describe('OriAccordion', () => {
         expect(wrapper.find('.slot-content').text()).toBe('Alpha');
     });
 
+    // ----- scoped title slot -----
+
+    it('exposes a scoped #title slot that renders custom header content and receives the item', () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: [{ value: 'a', title: 'Alpha' }] },
+            slots: {
+                title: `<template #title="{ item }"><span class="slot-title">Custom {{ item.title }}</span></template>`
+            }
+        });
+
+        expect(wrapper.find('.slot-title').text()).toBe('Custom Alpha');
+        // custom content still lives inside the block title element
+        expect(wrapper.find('.ori-accordion__title .slot-title').exists()).toBe(true);
+    });
+
+    it('falls back to the item title when no #title slot is provided', () => {
+        const wrapper = mount(OriAccordion, { props: { items: [{ value: 'a', title: 'Alpha' }] } });
+
+        expect(wrapper.find('.ori-accordion__title').text()).toBe('Alpha');
+    });
+
+    it('expand/collapse still works with a #title slot present', async () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: [{ value: 'a', title: 'Alpha' }] },
+            slots: {
+                title: `<template #title="{ item }"><span class="slot-title">{{ item.title }}</span></template>`
+            }
+        });
+        const details = wrapper.find('details').element as HTMLDetailsElement;
+
+        expect(details.open).toBe(false);
+        details.open = true;
+        await wrapper.vm.$nextTick();
+        expect(details.open).toBe(true);
+    });
+
     // ----- native disclosure semantics -----
 
     it('<details> is closed by default (no open attribute)', () => {

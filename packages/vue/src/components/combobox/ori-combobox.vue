@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useId, watch } from 'vue';
+import { computed, mergeProps, useId, watch } from 'vue';
 import { useCombobox, type ComboboxItem } from '@oriui/headless/vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 
@@ -128,7 +128,7 @@ const describedBy = computed(() => {
 
         <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
             <input
-                v-bind="{ ...$attrs, ...inputProps }"
+                v-bind="mergeProps($attrs, inputProps)"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
                 :placeholder="placeholder"
                 :required="required"
@@ -183,9 +183,13 @@ const describedBy = computed(() => {
                     ]"
                     @mousedown.prevent
                 >
-                    {{ item.label }}
+                    <slot name="option" :item="item" :index="index" :selected="getOptionState(item).selected">{{
+                        item.label
+                    }}</slot>
                 </li>
-                <li v-if="items.length === 0" class="ori-combobox__empty">{{ noResultsText }}</li>
+                <li v-if="items.length === 0" class="ori-combobox__empty">
+                    <slot name="empty">{{ noResultsText }}</slot>
+                </li>
             </ul>
         </div>
 

@@ -277,6 +277,6 @@ native input attributes and listeners fall through to the real control:
 
 ### Slots
 
-| Slot | Description                                                                                                                           |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| —    | OriSwitch exposes no slots. Use the `label` prop for visible text, or place external elements and connect them via `aria-labelledby`. |
+| Slot      | Falls back to | Description                                                                                                     |
+| --------- | ------------- | --------------------------------------------------------------------------------------------------------------- |
+| `default` | `label` prop  | Visible text label rendered inside the native `<label>`, beside the track. Omit both to render the track alone. |

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { h } from 'vue';
 import { mount } from '@vue/test-utils';
 import { OriTabs } from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
@@ -331,6 +332,33 @@ describe('OriTabs', () => {
         await wrapper.vm.$nextTick();
 
         expect(wrapper.find('.fallback').exists()).toBe(true);
+    });
+
+    it('renders custom trigger content via the #tab scoped slot and receives the tab object', () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'account' },
+            slots: {
+                tab: ({ tab }) => h('span', { class: 'custom-tab', 'data-value': String(tab.value) }, `★ ${tab.label}`)
+            }
+        });
+
+        const tabButtons = wrapper.findAll('.ori-tabs__tab');
+        // The scoped slot replaces the default label rendering for every trigger...
+        expect(tabButtons[0].find('.custom-tab').exists()).toBe(true);
+        expect(tabButtons[0].text()).toBe('★ Account');
+        expect(tabButtons[1].text()).toBe('★ Billing');
+        // ...and the slot receives the corresponding tab object.
+        expect(tabButtons[0].find('.custom-tab').attributes('data-value')).toBe('account');
+        expect(tabButtons[2].find('.custom-tab').attributes('data-value')).toBe('security');
+    });
+
+    it('falls back to the tab label when no #tab slot is provided', () => {
+        const wrapper = mount(OriTabs, { props: { tabs: TABS, modelValue: 'account' } });
+
+        const tabButtons = wrapper.findAll('.ori-tabs__tab');
+        expect(tabButtons[0].text()).toBe('Account');
+        expect(tabButtons[1].text()).toBe('Billing');
+        expect(tabButtons[2].text()).toBe('Security');
     });
 
     it('only the active panel is shown — inactive panels carry the hidden attribute', async () => {

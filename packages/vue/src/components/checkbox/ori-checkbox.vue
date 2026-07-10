@@ -48,6 +48,8 @@ const fieldId = computed(() => id ?? uid);
             :aria-invalid="invalid ? 'true' : undefined"
         />
         <span class="ori-checkbox__box" aria-hidden="true"></span>
-        <span v-if="label" class="ori-checkbox__label">{{ label }}</span>
+        <span v-if="label || $slots.default" class="ori-checkbox__label"
+            ><slot>{{ label }}</slot></span
+        >
     </label>
 </template>

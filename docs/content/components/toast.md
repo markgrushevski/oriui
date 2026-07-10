@@ -375,6 +375,8 @@ fall through to the root `<div role="status/alert">`.
 
 ### Slots
 
-| Slot      | Description                                                                |
-| --------- | -------------------------------------------------------------------------- |
-| `default` | Body content. Replaces the `text` prop; renders inside `.ori-toast__text`. |
+| Slot      | Description                                                                        |
+| --------- | ---------------------------------------------------------------------------------- |
+| `default` | Body content. Replaces the `text` prop; renders inside `.ori-toast__text`.         |
+| `icon`    | Leading icon. Replaces the `icon` prop render; falls back to it when not provided. |
+| `title`   | Title content. Replaces the `title` prop; renders inside `.ori-toast__title`.      |

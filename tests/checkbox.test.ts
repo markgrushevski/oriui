@@ -53,6 +53,31 @@ describe('OriCheckbox', () => {
         expect(c).toContain('ori-color_success');
     });
 
+    it('renders rich default-slot content as the label', () => {
+        const wrapper = mount(OriCheckbox, {
+            slots: { default: '<a href="/terms">Terms</a>' }
+        });
+        const label = wrapper.find('.ori-checkbox__label');
+
+        expect(label.exists()).toBe(true);
+        expect(label.find('a').attributes('href')).toBe('/terms');
+        expect(label.text()).toBe('Terms');
+    });
+
+    it('falls back to the label prop when no slot is given', () => {
+        const wrapper = mount(OriCheckbox, { props: { label: 'Accept' } });
+
+        expect(wrapper.find('.ori-checkbox__label').text()).toBe('Accept');
+    });
+
+    it('keeps the input associated with the label when using a slot', () => {
+        const wrapper = mount(OriCheckbox, { slots: { default: 'Accept' } });
+        const fieldId = wrapper.find('input').attributes('id');
+
+        expect(fieldId).toBeTruthy();
+        expect(wrapper.find('label').attributes('for')).toBe(fieldId);
+    });
+
     it('has no axe violations (labeled)', async () => {
         const wrapper = mount(OriCheckbox, { props: { label: 'Accept terms' }, attachTo: document.body });
         await expectNoA11yViolations(wrapper.element);

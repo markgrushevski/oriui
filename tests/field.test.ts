@@ -36,6 +36,35 @@ describe('OriField', () => {
         expect((wrapper.find('input').element as HTMLInputElement).required).toBe(true);
     });
 
+    it('the #label slot renders rich content while keeping for/id and the required asterisk', () => {
+        const wrapper = mount(OriField, {
+            props: { required: true },
+            slots: {
+                label: `<span class="rich">Email <em>*</em></span>`,
+                default: `<template #default="f"><input v-bind="f.controlAttrs" /></template>`
+            }
+        });
+        const label = wrapper.find('label.ori-field__label');
+        const inputId = wrapper.find('input').attributes('id');
+
+        expect(label.find('.rich').exists()).toBe(true);
+        expect(label.text()).toContain('Email');
+        expect(label.attributes('for')).toBe(inputId);
+        expect(inputId).toBeTruthy();
+        expect(label.find('.ori-field__required').exists()).toBe(true);
+    });
+
+    it('the label prop renders as the #label fallback', () => {
+        const wrapper = mount(OriField, {
+            props: { label: 'Fallback' },
+            slots: { default: `<template #default="f"><input v-bind="f.controlAttrs" /></template>` }
+        });
+        const label = wrapper.find('label.ori-field__label');
+
+        expect(label.text()).toContain('Fallback');
+        expect(label.attributes('for')).toBe(wrapper.find('input').attributes('id'));
+    });
+
     it('hint is rendered and wired via aria-describedby (no error)', () => {
         const wrapper = mount(OriField, {
             props: { hint: 'We never share it' },
@@ -71,6 +100,39 @@ describe('OriField', () => {
 
         expect(describedby).toContain('form-note');
         expect(describedby).toContain(wrapper.find('.ori-field__hint').attributes('id'));
+    });
+
+    it('a #error slot (no error prop) still flips aria-invalid and wires aria-describedby', () => {
+        const wrapper = mount(OriField, {
+            slots: {
+                error: `<span class="rich">Required</span>`,
+                default: `<template #default="f"><input v-bind="f.controlAttrs" /></template>`
+            }
+        });
+        const error = wrapper.find('.ori-field__error');
+        const input = wrapper.find('input');
+
+        expect(error.exists()).toBe(true);
+        expect(error.find('.rich').exists()).toBe(true);
+        expect(input.attributes('aria-invalid')).toBe('true');
+        expect(input.attributes('aria-describedby')).toBe(error.attributes('id'));
+    });
+
+    it('a #error slot alongside a hint prop points aria-describedby at the rendered error, never a suppressed hint', () => {
+        const wrapper = mount(OriField, {
+            props: { hint: 'helper' },
+            slots: {
+                error: `Required`,
+                default: `<template #default="f"><input v-bind="f.controlAttrs" /></template>`
+            }
+        });
+        const error = wrapper.find('.ori-field__error');
+        const input = wrapper.find('input');
+
+        // The error <p> renders and the hint <p> is suppressed — aria-describedby must not dangle.
+        expect(error.exists()).toBe(true);
+        expect(wrapper.find('.ori-field__hint').exists()).toBe(false);
+        expect(input.attributes('aria-describedby')).toBe(error.attributes('id'));
     });
 
     // ----- integration: an Ori control nested in the field adopts its wiring -----

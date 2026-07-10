@@ -39,13 +39,17 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
         ]"
         :aria-disabled="disabled ? 'true' : undefined"
     >
-        <ori-icon v-if="prependIcon" :icon="prependIcon" class="ori-tag__icon" />
+        <slot name="prepend">
+            <ori-icon v-if="prependIcon" :icon="prependIcon" class="ori-tag__icon" />
+        </slot>
 
         <span class="ori-tag__text">
             <slot>{{ text }}</slot>
         </span>
 
-        <ori-icon v-if="appendIcon" :icon="appendIcon" class="ori-tag__icon" />
+        <slot name="append">
+            <ori-icon v-if="appendIcon" :icon="appendIcon" class="ori-tag__icon" />
+        </slot>
 
         <button
             v-if="closable"

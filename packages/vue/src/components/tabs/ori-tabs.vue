@@ -143,7 +143,7 @@ const onKeydown = (event: KeyboardEvent, index: number) => {
                 @click="select(tab)"
                 @keydown="onKeydown($event, index)"
             >
-                {{ tab.label }}
+                <slot name="tab" :tab="tab">{{ tab.label }}</slot>
             </button>
         </div>
 

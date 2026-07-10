@@ -80,6 +80,32 @@ describe('OriTag', () => {
         ).toBeTruthy();
     });
 
+    it('renders custom #prepend slot content in place of the prepend icon', () => {
+        const wrapper = mount(OriTag, {
+            props: { text: 'x' },
+            slots: { prepend: '<span class="custom-prepend">P</span>' }
+        });
+
+        expect(wrapper.find('.custom-prepend').exists()).toBe(true);
+        expect(wrapper.find('.custom-prepend').text()).toBe('P');
+    });
+
+    it('renders custom #append slot content in place of the append icon', () => {
+        const wrapper = mount(OriTag, {
+            props: { text: 'x' },
+            slots: { append: '<span class="custom-append">A</span>' }
+        });
+
+        expect(wrapper.find('.custom-append').exists()).toBe(true);
+        expect(wrapper.find('.custom-append').text()).toBe('A');
+    });
+
+    it('falls back to the prependIcon prop when no #prepend slot is given', () => {
+        const wrapper = mount(OriTag, { props: { text: 'x', prependIcon: 'M0 0h24v24H0z' } });
+
+        expect(wrapper.find('.ori-tag__icon').exists()).toBe(true);
+    });
+
     it('does not render a close button when closable is not set', () => {
         const wrapper = mount(OriTag, { props: { text: 'x' } });
 

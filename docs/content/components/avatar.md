@@ -364,5 +364,15 @@ so there is a single source of truth for the accessible name.
 
 ### Slots
 
-OriAvatar exposes **no slots**. All content (image, initials backdrop, title, subtitle) is driven by
-props and `$attrs`.
+Each slot overrides the content it names; leave it out and the component falls back to the derived
+value or prop. The image itself is not slotted — it comes through `$attrs` (see above).
+
+| Slot       | Falls back to                    | Description                                                                                                   |
+| ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `fallback` | the initials derived from `text` | Imageless fallback content — e.g. a person icon or monogram — shown when there is no image or while it loads. |
+| `title`    | `title` prop                     | Primary line in the text column.                                                                              |
+| `subtitle` | `subtitle` prop                  | Secondary line in the text column.                                                                            |
+
+The text column appears when any of `title` / `subtitle` (prop **or** slot) is set. The `#fallback`
+slot fills the `aria-hidden` backdrop, so keep its content decorative — the accessible name still
+comes from the image `alt`.

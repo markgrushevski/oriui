@@ -693,6 +693,87 @@ describe('OriToolbarToggleGroup + OriToolbarToggleItem', () => {
     });
 });
 
+describe('OriToolbarButton — slot (custom icon content)', () => {
+    it('renders slotted children in place of the icon prop (slot beats icon)', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () =>
+                    h(
+                        OriToolbarButton,
+                        { label: 'Bold', icon: 'x' },
+                        { default: () => h('svg', { class: 'custom-icon' }) }
+                    )
+            },
+            attachTo: document.body
+        });
+        const btn = wrapper.find('.ori-button');
+
+        // The slotted SVG renders...
+        expect(btn.find('svg.custom-icon').exists()).toBe(true);
+        // ...and the `icon` prop's fallback OriIcon does NOT (a provided slot replaces OriButton's default).
+        expect(btn.find('.ori-button__icon').exists()).toBe(false);
+    });
+
+    it('falls back to the icon prop when no slot is provided (the conditional forward keeps the fallback)', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x' }) },
+            attachTo: document.body
+        });
+
+        expect(wrapper.find('.ori-button .ori-button__icon').exists()).toBe(true);
+    });
+
+    it('forwards the slot through the tooltip branch too', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () =>
+                    h(
+                        OriToolbarButton,
+                        { label: 'Bold', tooltip: 'Bold (Ctrl+B)' },
+                        { default: () => h('svg', { class: 'custom-icon' }) }
+                    )
+            },
+            attachTo: document.body
+        });
+
+        expect(wrapper.find('.ori-tooltip__bubble').exists()).toBe(true);
+        expect(wrapper.find('.ori-button svg.custom-icon').exists()).toBe(true);
+    });
+});
+
+describe('OriToolbarToggleItem — slot (custom icon content)', () => {
+    it('renders slotted children and still toggles v-model', async () => {
+        const value = ref<string | undefined>(undefined);
+        const Host = defineComponent({
+            components: { OriToolbar, OriToolbarToggleGroup, OriToolbarToggleItem },
+            setup: () => ({ value }),
+            template: `
+                <OriToolbar label="Style">
+                    <OriToolbarToggleGroup v-model="value" type="single" label="Style">
+                        <OriToolbarToggleItem value="bold" label="Bold">
+                            <svg class="custom-icon" />
+                        </OriToolbarToggleItem>
+                    </OriToolbarToggleGroup>
+                </OriToolbar>
+            `
+        });
+        mount(Host, { attachTo: document.body });
+        await nextTick();
+
+        const [bold] = buttons();
+        expect(bold.querySelector('svg.custom-icon')).not.toBeNull();
+        expect(bold.querySelector('.ori-button__icon')).toBeNull();
+
+        click(bold);
+        await nextTick();
+        expect(value.value).toBe('bold');
+        expect(bold.getAttribute('aria-pressed')).toBe('true');
+    });
+});
+
 describe('OriToolbar — axe', () => {
     it('has no axe violations for a labelled toolbar of buttons + a separator', async () => {
         const wrapper = mount(OriToolbar, {

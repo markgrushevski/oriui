@@ -229,8 +229,20 @@ surface is the [classes](#classes) above. (Svelte bindings are planned.)
 
 ### Slots
 
-The default slot is the control. It receives scoped props for wiring a non-Ori control — Ori controls
-ignore them and read the context directly.
+The `label`, `hint`, and `error` slots each override the matching prop with custom content while
+keeping the full wiring — the `label` slot preserves the `for` / `id` association and the trailing
+required asterisk, and a slot-only `#error` still sets `role="alert"` and flips the field to
+`aria-invalid` (exactly as the prop does). The default slot is the control.
+
+| Slot      | Falls back to | Description                                                                                  |
+| --------- | ------------- | -------------------------------------------------------------------------------------------- |
+| `default` | —             | The control. Receives the scoped props below for wiring a non-Ori control.                   |
+| `label`   | `label` prop  | Label content, inside the `<label>` — keeps the `for` / `id` link and the required asterisk. |
+| `hint`    | `hint` prop   | Helper text below the control; hidden while an error is shown.                               |
+| `error`   | `error` prop  | Error message below the control; sets `aria-invalid` and `role="alert"`, superseding `hint`. |
+
+The default slot receives scoped props for wiring a non-Ori control — Ori controls ignore them and
+read the context directly.
 
 | Slot prop      | Type      | Description                                                                     |
 | -------------- | --------- | ------------------------------------------------------------------------------- |

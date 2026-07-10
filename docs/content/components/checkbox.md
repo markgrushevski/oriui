@@ -315,6 +315,6 @@ The two-way binding is handled by `defineModel` — use `v-model` for boolean (s
 
 ### Slots
 
-| Slot      | Description                                                                                                |
-| --------- | ---------------------------------------------------------------------------------------------------------- |
-| `default` | The component renders its label via the `label` prop, not a slot. There is no default slot on OriCheckbox. |
+| Slot      | Description                                                                                                                                                                                               |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | Rich label content, rendered in place of the `label` prop (which is the fallback). It stays inside the native `<label>`, so the `for`/`id` association holds — use it for an inline link or other markup. |

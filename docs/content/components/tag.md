@@ -378,6 +378,8 @@ OriTag does not set `inheritAttrs: false`, so any extra attributes (`class`, `da
 
 ### Slots
 
-| Slot      | Description                                                                           |
-| --------- | ------------------------------------------------------------------------------------- |
-| `default` | Replaces the text prop content. Rendered inside `ori-tag__text`; use for rich labels. |
+| Slot      | Description                                                                                 |
+| --------- | ------------------------------------------------------------------------------------------- |
+| `prepend` | Decorator before the label. Falls back to the `prependIcon` `<ori-icon>` when not provided. |
+| `default` | Replaces the text prop content. Rendered inside `ori-tag__text`; use for rich labels.       |
+| `append`  | Decorator after the label. Falls back to the `appendIcon` `<ori-icon>` when not provided.   |

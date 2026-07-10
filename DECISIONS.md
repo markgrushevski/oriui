@@ -769,3 +769,30 @@ OriCombobox use older static placement and are **legacy to retrofit** onto it. P
 extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating `positions/positions.css`),
 retrofit Combobox/Tooltip collision-flip, and lock the shared `placement` enum to the 12-value
 `<side>-<align>` grid before Menu consumes it.
+
+## Slots: prop-backed content also ships a slot (prop = fallback); per-item slots are the collection's singular
+
+Two conventions the catalog now follows, from the slot-DX retrofit pass (alpha.12, ~12 components).
+
+**(1) Prop-backed displayable content is ALSO a slot, with the prop render as the slot fallback.** A
+styled component may take a string prop for ergonomics (`label`, `title`, `text`, an `icon` path, an
+option `label`), but any such _displayable_ content must also be reachable as a slot so a consumer can
+pass rich children — an inline Terms link in a checkbox label, an icon+count in a tab trigger, an
+avatar+email row in a combobox option. The shape is `<slot name="x">{{ prop }}</slot>`: the slot's
+**fallback IS the current prop rendering**, so the prop path is unchanged and the addition is
+non-breaking. When the content was conditionally rendered (`v-if="prop"`), broaden to
+`v-if="prop || $slots.x"` so the slot works with the prop empty. OriCard / OriAlert were the reference;
+Tag/Toast/Checkbox/Switch/Tabs/Combobox/Radio/Accordion/Badge/Field/Avatar were retrofitted. A styled
+**wrapper** that composes a slot-capable Ori child forwards the child's slot the same way, guarded so the
+child's own prop fallback survives: `<template v-if="$slots.default" #default><slot/></template>`
+(OriToolbarButton → OriButton). **Corollary (a11y — do not skip):** when slotted content participates in
+an a11y relationship (a Field error/hint driving `aria-describedby`/`aria-invalid`, a Badge deciding
+`aria-hidden`), the DERIVED state must track `$slots.x` too, not just the prop — else the attribute
+dangles or the element is wrongly hidden. See [NOTES.md] (this bit the first Field/Badge cut).
+
+**(2) A per-item slot is named for the SINGULAR of its collection prop.** A component rendering a
+collection exposes its per-item content as a **scoped** slot named for the singular: `items → #item`
+(OriMenu), `options → #option` (OriCombobox, OriRadioGroup), `tabs → #tab` (OriTabs) — exposing the item
+plus useful derived state (index, selected). This kills the earlier Menu(`#item`)/Combobox(none)
+divergence. Non-collection decorators use `#prepend` / `#append` (Tag), a region name
+(`#header-prepend`, Card), or the part name (`#icon` / `#title` / `#fallback`).
