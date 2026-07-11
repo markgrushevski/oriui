@@ -216,6 +216,36 @@ describe('OriCombobox', () => {
         expect((wrapper.find('.ori-combobox__trigger').element as HTMLButtonElement).disabled).toBe(true);
     });
 
+    it('submits the selected VALUE (not the label) via a hidden input under `name`', () => {
+        const wrapper = mountCb({ name: 'fruit', modelValue: 'banana' });
+
+        const hidden = wrapper.find('input[type="hidden"]');
+        expect(hidden.exists()).toBe(true);
+        expect(hidden.attributes('name')).toBe('fruit');
+        expect((hidden.element as HTMLInputElement).value).toBe('banana');
+
+        // the visible combobox input shows the label and must NOT carry the form name (else it would
+        // submit the label text under the same field)
+        const visible = wrapper.find('input[role="combobox"]');
+        expect((visible.element as HTMLInputElement).value).toBe('Banana');
+        expect(visible.attributes('name')).toBeUndefined();
+    });
+
+    it('emits an empty hidden value while nothing is selected', () => {
+        const wrapper = mountCb({ name: 'fruit' });
+        expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).value).toBe('');
+    });
+
+    it('renders no hidden input when `name` is omitted', () => {
+        const wrapper = mountCb({ modelValue: 'banana' });
+        expect(wrapper.find('input[type="hidden"]').exists()).toBe(false);
+    });
+
+    it('a disabled combobox is excluded from submission (hidden input disabled)', () => {
+        const wrapper = mountCb({ name: 'fruit', modelValue: 'banana', disabled: true });
+        expect((wrapper.find('input[type="hidden"]').element as HTMLInputElement).disabled).toBe(true);
+    });
+
     it('hint wires aria-describedby; error flips aria-invalid + role=alert', async () => {
         const hintW = mountCb({ hint: 'Pick a fruit' });
         const hint = hintW.find('.ori-combobox__hint');

@@ -8,8 +8,10 @@ import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 // owns behaviour (open/close, filter, highlight, selection, Arrow/Home/End/Enter/Escape); this SFC
 // renders the styled shell and layers the form contract (label/hint/error/required + aria) on top of
 // the headless prop bags. State lives on real elements/attributes (role=combobox, aria-expanded,
-// aria-activedescendant, aria-selected) so it stays a11y-correct and zero-runtime to theme. Native
-// attributes (name, autocomplete, …) fall through to the <input> via inheritAttrs:false + $attrs.
+// aria-activedescendant, aria-selected) so it stays a11y-correct and zero-runtime to theme. Arbitrary
+// native attributes (autocomplete, …) fall through to the visible <input> via inheritAttrs:false +
+// $attrs; `name` is a real prop instead, so the form submits the selected VALUE through a hidden input
+// (the visible input only carries the label text) — see the hidden <input> below.
 defineOptions({ inheritAttrs: false });
 
 const {
@@ -41,11 +43,15 @@ const {
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean;
     fluid?: boolean;
+    /** Associate the submitted value's hidden input with a form by id (when not a descendant of it). */
+    form?: string;
     /** Helper text below the control; hidden while an error is shown. */
     hint?: string;
     id?: string;
     invalid?: boolean;
     label?: string;
+    /** Submit the selected value under this field name via a hidden input; the visible input is text-only. */
+    name?: string;
     /** Text shown when the filter matches nothing. */
     noResultsText?: string;
     options: ComboboxItem[];
@@ -192,6 +198,17 @@ const describedBy = computed(() => {
                     <slot name="empty">{{ noResultsText }}</slot>
                 </li>
             </ul>
+
+            <!-- Form submission carries the selected VALUE (the visible input shows the label). Disabled
+                 excludes it from FormData, matching a native disabled control. -->
+            <input
+                v-if="name"
+                type="hidden"
+                :name="name"
+                :form="form"
+                :value="selectedValue ?? ''"
+                :disabled="disabled || undefined"
+            />
         </div>
 
         <p v-if="error" :id="errorId" class="ori-combobox__error" role="alert">{{ error }}</p>
