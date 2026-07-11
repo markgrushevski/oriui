@@ -36,7 +36,7 @@ export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core';
 export { provideHeadless, OriHeadless } from './plugin';
 
 // Built-in native adapters (defaults) + the low-level bridge for writing your own
-export { nativeDisclosure, nativeDialog } from './native';
+export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native';
 export { useService } from './use-machine';
 export { normalizeProps, type VuePropTypes } from './normalize-props';
 
@@ -49,5 +49,9 @@ export {
     type UseDialogOptions,
     type DialogControl,
     type DialogAdapter,
+    type ComboboxControl,
+    type ComboboxAdapter,
+    type MenuControl,
+    type MenuAdapter,
     type HeadlessAdapters
 } from './contract';

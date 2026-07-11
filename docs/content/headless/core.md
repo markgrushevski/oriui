@@ -94,16 +94,19 @@ Behaviour is chosen per primitive — provided once at the app root, never threa
 - **Dialog** — runs on the native `<dialog>` element (`showModal()`), so the focus trap, scroll lock,
   focus return, `::backdrop` and `aria-modal` come from the platform. It is the **default**, with no
   adapter or dependency required. See [useDialog](/headless/use-dialog).
+- **Combobox** / **Menu** — no native platform primitive, so the default is the in-house `core` state
+  machine (the WAI-ARIA listbox / menu keyboard). Swappable through the same contract. See
+  [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu).
 
-Both default to a zero-dependency engine. The `OriHeadless` plugin (from `@oriui/headless/vue`) is the hedge for
+Each defaults to a zero-dependency engine. The `OriHeadless` plugin (from `@oriui/headless/vue`) is the hedge for
 swapping an engine per primitive — e.g. a custom or Zag-backed adapter for a genuinely hard widget —
 without changing a component's template:
 
 ```ts
 import { OriHeadless } from '@oriui/headless/vue';
 
-// Both primitives default to native; register an adapter only to override one.
-app.use(OriHeadless, { dialog: myDialog });
+// Each defaults to native; register an adapter only to override the one you want.
+app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox });
 ```
 
 ## Frameworks

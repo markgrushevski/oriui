@@ -11,10 +11,11 @@ prop bags; **you own the markup, the styles, and the DOM focus** (roving needs r
 click-outside / focus-return are host concerns a state projection can't reach).
 
 This is the **Vue** binding; the framework-agnostic core lives in [`@oriui/headless`](/headless/core), and
-the styled [`OriMenu`](/components/menu) is built on it. Unlike [`useDialog`](/headless/use-dialog) /
-[`useDisclosure`](/headless/use-disclosure) — native-first primitives with a swappable adapter — `useMenu`
-is a thin projection of the core menu **state machine**: there is no adapter to register, and the
-composable hands you `open` / `highlightedValue` to watch so the UI can move real DOM focus itself.
+the styled [`OriMenu`](/components/menu) is built on it. Like [`useDialog`](/headless/use-dialog) /
+[`useDisclosure`](/headless/use-disclosure), `useMenu` resolves through the swappable
+[`OriHeadless`](/headless/core) contract — its default is a thin projection of the core menu **state
+machine** (no adapter to register unless you want to swap one), and the composable hands you `open` /
+`highlightedValue` to watch so the UI can move real DOM focus itself.
 
 ## Import
 

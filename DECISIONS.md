@@ -22,6 +22,15 @@ nearest example.
 3. **SFC-hand-rolled roving** — Tabs. A closed, data-driven (`tabs` array) widget whose roving wasn't yet
    worth extracting.
 
+**Wired for real (2026-07-11).** The 2026-07-11 review caught that shape #1 was _aspirational_ for
+Combobox/Menu: `useCombobox`/`useMenu` imported the core machine directly with **no `inject(ORI_HEADLESS)`
+seam**, so "swappable" was true only for Dialog/Disclosure — the docs over-promised. Closed it (option "B"):
+both now resolve through the contract like `useDialog` (`inject(ORI_HEADLESS)?.combobox ?? nativeCombobox`),
+with `ComboboxControl`/`MenuControl` + `ComboboxAdapter`/`MenuAdapter` in `contract.ts`, `combobox?`/`menu?`
+in `HeadlessAdapters`, and `nativeCombobox`/`nativeMenu` moved into `native.ts`. A `fakeCombobox`/`fakeMenu`
+swap is asserted in `tests/headless-adapter-swap.test.ts`. Shape #1 is now real for **all four** machine
+widgets, not just the overlays — the behavior is identical (native is the default), the seam is the addition.
+
 **Reconciles the OriPopover ADR** ("roving-tabindex is real state → the contract seam is for it → OriMenu
 will re-enter the contract"). That still holds for **Menu**, whose COMPOUND behavior (roving + open +
 typeahead, with a swappable engine) warrants the machine. A **bare toolbar's** roving does not: no
