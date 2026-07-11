@@ -12,10 +12,12 @@ the markup and styles**.
 
 This is the **Vue** binding; the framework-agnostic core lives in [`@oriui/headless`](/headless/core),
 and the styled [`OriCombobox`](/components/combobox) is built on it. Unlike
-[`useDialog`](/headless/use-dialog) / [`useDisclosure`](/headless/use-disclosure) — which lean on a
-zero-dependency native platform default — a combobox has no native primitive, so `useCombobox` consumes
-the core **state machine + prop-getters** directly (there is no swappable adapter): it is the first
-behavior to fully exercise the [`@oriui/headless`](/headless/core) engine.
+[`useDialog`](/headless/use-dialog) / [`useDisclosure`](/headless/use-disclosure) lean on a
+zero-dependency native platform default; a combobox has no native primitive, so `useCombobox`'s
+**default** is the core **state machine + prop-getters**. Like the overlays it still resolves through the
+[`OriHeadless`](/headless/core) contract, so an app can swap a custom / Zag-backed engine — the native
+core adapter is simply the default. It is the first behavior to fully exercise the
+[`@oriui/headless`](/headless/core) engine.
 
 ## Import
 
