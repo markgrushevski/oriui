@@ -1,8 +1,17 @@
-import { computed, ref, toValue, useId, type MaybeRefOrGetter } from 'vue';
-import { disclosure } from '../core';
+import { computed, ref, toValue, useId, watch, type MaybeRefOrGetter } from 'vue';
+import { combobox, disclosure, menu, type ComboboxItem } from '../core';
 import { normalizeProps } from './normalize-props';
 import { useService } from './use-machine';
-import type { DialogControl, DisclosureControl, UseDialogOptions, UseDisclosureOptions } from './contract';
+import type {
+    ComboboxControl,
+    DialogControl,
+    DisclosureControl,
+    MenuControl,
+    UseComboboxOptions,
+    UseDialogOptions,
+    UseDisclosureOptions,
+    UseMenuOptions
+} from './contract';
 
 /**
  * Native oriUI Disclosure adapter — built on the in-house `../core` machine. The default behind
@@ -86,5 +95,114 @@ export const nativeDialog = (options: MaybeRefOrGetter<UseDialogOptions> = () =>
         titleProps: computed(() => ({ id: titleId })),
         descriptionProps: computed(() => ({ id: descriptionId })),
         closeTriggerProps: computed(() => ({ onClick: () => setOpen(false) }))
+    };
+};
+
+const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
+    item.label.toLowerCase().includes(query.trim().toLowerCase());
+
+/**
+ * Native oriUI Combobox adapter — the WAI-ARIA listbox-combobox on the in-house `../core` state machine
+ * (prop-getters + the full keyboard contract). The default behind `useCombobox`; the OriHeadless contract
+ * lets an app swap a custom / Zag-backed one per project without touching the component markup.
+ */
+export const nativeCombobox = (options: MaybeRefOrGetter<UseComboboxOptions>): ComboboxControl => {
+    const opts = computed(() => toValue(options));
+    const init = opts.value;
+
+    const service = combobox.machine({
+        id: init.id ?? useId() ?? 'combobox',
+        defaultValue: init.value ?? null,
+        defaultInputValue: init.inputValue ?? '',
+        disabled: init.disabled
+    });
+    const version = useService(service);
+
+    // Keep `disabled` reactive past the initial render.
+    watch(
+        () => opts.value.disabled ?? false,
+        (disabled) => service.send({ type: 'SET_DISABLED', disabled })
+    );
+
+    // Visible items: filter by the current input — but show the whole list when the input is empty or
+    // still equals the committed selection's label (so picking an option doesn't collapse the list to
+    // one). The collection drives both navigation and the active-descendant id.
+    const items = computed<ComboboxItem[]>(() => {
+        void version.value;
+        const { inputValue, value } = service.getState();
+        const all = opts.value.options;
+        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined;
+        if (inputValue.trim() === '' || inputValue === selectedLabel) return all;
+        const filter = opts.value.filter ?? defaultComboboxFilter;
+        return all.filter((item) => filter(item, inputValue));
+    });
+
+    const api = computed(() => {
+        void version.value;
+        return combobox.connect(service, normalizeProps, items.value);
+    });
+
+    return {
+        open: computed(() => api.value.open),
+        value: computed(() => api.value.value),
+        inputValue: computed(() => api.value.inputValue),
+        highlightedValue: computed(() => api.value.highlightedValue),
+        items,
+        rootProps: computed(() => api.value.getRootProps()),
+        labelProps: computed(() => api.value.getLabelProps()),
+        controlProps: computed(() => api.value.getControlProps()),
+        inputProps: computed(() => api.value.getInputProps()),
+        triggerProps: computed(() => api.value.getTriggerProps()),
+        clearTriggerProps: computed(() => api.value.getClearTriggerProps()),
+        listboxProps: computed(() => api.value.getListboxProps()),
+        getOptionProps: (item: ComboboxItem, index: number) => api.value.getOptionProps(item, index),
+        getOptionState: (item: ComboboxItem) => api.value.getOptionState(item),
+        setOpen: (open: boolean) => api.value.setOpen(open),
+        setInputValue: (next: string) => api.value.setInputValue(next),
+        select: (item: ComboboxItem) => api.value.select(item),
+        clear: () => api.value.clear()
+    };
+};
+
+/**
+ * Native oriUI Menu adapter — the WAI-ARIA menu-button + roving tabindex on the `../core` machine. The
+ * default behind `useMenu`; swappable via the OriHeadless contract like the others.
+ */
+export const nativeMenu = (options: MaybeRefOrGetter<UseMenuOptions>): MenuControl => {
+    const opts = computed(() => toValue(options));
+    const init = opts.value;
+
+    const service = menu.machine({
+        id: init.id ?? useId() ?? 'menu',
+        disabled: init.disabled
+    });
+    const version = useService(service);
+
+    // Keep `disabled` reactive past the initial render.
+    watch(
+        () => opts.value.disabled ?? false,
+        (disabled) => service.send({ type: 'SET_DISABLED', disabled })
+    );
+
+    const items = computed(() => opts.value.items);
+
+    const api = computed(() => {
+        void version.value;
+        return menu.connect(service, normalizeProps, items.value, opts.value.onSelect);
+    });
+
+    return {
+        open: computed(() => api.value.open),
+        highlightedValue: computed(() => api.value.highlightedValue),
+        items,
+        triggerProps: computed(() => api.value.getTriggerProps()),
+        contentProps: computed(() => api.value.getContentProps()),
+        separatorProps: computed(() => api.value.getSeparatorProps()),
+        getItemProps: (item, index) => api.value.getItemProps(item, index),
+        getItemState: (item) => api.value.getItemState(item),
+        setOpen: (open: boolean) => api.value.setOpen(open),
+        highlight: (value: string | null) => api.value.highlight(value),
+        highlightFirst: () => api.value.highlightFirst(),
+        highlightLast: () => api.value.highlightLast()
     };
 };
