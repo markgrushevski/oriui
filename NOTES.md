@@ -370,8 +370,16 @@ practical gotchas go here.
   They can't emit **`.vue` SFC** declarations — the reason the build uses `vue-tsc` at all — so a per-file
   rewrite is the pragmatic fit. Verify with `attw --pack packages/vue --profile node16`: **node16-from-ESM
   must be 🟢**. attw still exits non-zero on `CJSResolvesToESM`, which is EXPECTED for these ESM-only
-  (`"type":"module"`) packages — a green attw gate would need `--ignore-rules cjs-resolves-to-esm`.
+  (`"type":"module"`) packages — a green attw gate needs `--ignore-rules cjs-resolves-to-esm`.
   `@oriui/headless` is unaffected (tsdown bundles its dts with `.js` specifiers); `@oriui/css` ships no dts.
+  **The gate is now live** (`ci.yml`, after publint): `attw --pack {headless,vue} --profile node16
+--ignore-rules cjs-resolves-to-esm`, both exit 0. **Why `--profile node16` (not the full check):** the
+  packages don't target node10 (classic resolution) — it ignores `exports`, so _every_ entry, incl. the
+  subpath `@oriui/headless/{vue,svelte}`, reports `node10: 💀 Resolution failed`. Supporting it would mean
+  shipping `typesVersions` fallbacks; instead the profile is scoped to node16/nodenext + bundler, which is
+  what an ESM-only Node≥22 library actually serves. **Pin the attw version** (`@0.18.5`): 0.18.2 crashes
+  (`Cannot read properties of undefined (reading 'filename')`), and the `alpha` npm dist-tag drift lesson
+  applies to `@latest` too.
 
 ## Build / tests
 
