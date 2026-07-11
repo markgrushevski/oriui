@@ -287,6 +287,11 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         hsva: computed(() => hsva.value),
         rgb,
         hex,
+        // The canonical current color in the EMITTED format — the value a form submits, and the next
+        // onInput/onChange payload. Unlike `hex` (always hex) or `swatchColor`, it honours the `format` +
+        // `alpha` options; it is never empty (a color control always has a value), so before the first emit
+        // it can differ from an initial `value` supplied in a different format (or an undefined one).
+        value: computed(() => formatColor(hsva.value, fmt(), alphaOn())),
         hue: computed(() => hsva.value.h),
         alpha: computed(() => hsva.value.a),
         swatchColor,
