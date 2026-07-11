@@ -1,5 +1,83 @@
 # @oriui/vue
 
+## 1.0.0-alpha.14
+
+### Patch Changes
+
+- 5e28b7c: Catalog consistency polish:
+
+    - **OriSlider** and **OriCombobox** gain a `#label` slot (the `label` prop is the fallback), matching
+      OriField — so a standalone control can take a rich label (an icon + text) while keeping the label
+      `for`/`id` and the combobox listbox `aria-labelledby` wiring intact.
+    - The combobox listbox and the toast card now read a baked `--ori-size-radius` alias (two-tier) rather
+      than the raw scale token, so a consumer `.ori-size-radius_*` utility can retune their corners — matching
+      menu / popover / card. Defaults are unchanged.
+
+- 36a5dcc: **OriColorPicker** — accessibility + correctness fixes:
+
+    - The saturation/value area's two visually-hidden range inputs each own one axis now
+      (saturation = horizontal keys, brightness = vertical + `aria-orientation`), so every
+      arrow keystroke changes the focused slider's own value and a screen reader announces it —
+      Up/Down on the saturation slider no longer silently moves brightness. `aria-valuetext`
+      now carries the resulting colour, not just the bare axis percentage.
+    - The external-value echo-guard formats with the alpha flag, so with `alpha` on the working
+      colour is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
+      ~1% grid on `rgb()`/`hsl()` output is gone.
+    - A disabled picker's preset swatches are inert to the keyboard too now (a real `disabled`
+      attribute plus guarded click/keydown handlers); `pointer-events: none` had only blocked
+      the mouse, leaving them Tab-focusable and Enter-activatable.
+
+- 080571c: OriColorPicker polish + SSR-safety:
+
+    - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
+      colour changes, instead of always starting at index 0.
+    - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
+      alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
+    - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
+      silent `aria-invalid` flip.
+    - The eyedropper trigger is **SSR-safe** — feature-detected after mount, so it no longer causes a
+      hydration mismatch — and is sized to match the 2rem preview swatch.
+    - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
+      the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
+      more gap so the selected ring clears its neighbour.
+    - Panel corners now read component-local radius aliases; dropped the inert `label` option from
+      `useColorPicker`.
+
+- bf4b762: `OriDialog` now has a robust accessible name. The title `<h2>` renders only when a `title` prop or
+  `#title` slot is supplied — previously a titleless dialog was "labelled" by an empty heading, giving it
+  an empty accessible name. Stray attributes (including `aria-label`) are now forwarded to the `<dialog>`
+  element (`inheritAttrs: false`), so a titleless dialog can be named with `aria-label`; the adapter's own
+  a11y props are still applied verbatim. A dev-only warning fires when a dialog opens with no accessible
+  name (title / `#title` / `aria-label`).
+- 924018a: `resolveRovingIndex` (core) gains an optional `isEnabled(index)` predicate: when supplied it **skips**
+  indices it rejects, scanning on in the intent's direction — the Tabs / RadioGroup model — while the
+  default (no predicate) keeps the toolbar's single-step behavior that **visits** disabled items. `OriTabs`
+  now composes the shared `rovingIntent` / `resolveRovingIndex` core helpers instead of hand-rolling its
+  roving math; behavior is unchanged and the flagship Toolbar is untouched.
+- a661654: `@oriui/vue`'s shipped type declarations now resolve under `moduleResolution: node16` / `nodenext`, not
+  just `bundler`. `vue-tsc` emits extensionless relative specifiers (`from './types'`, directory
+  `from './components'`, `.vue` re-exports) that strict node16/nodenext consumers reject (TS2834); a
+  post-build step (`scripts/fix-dts.mjs`) now rewrites them to explicit `.js` / `/index.js` paths. Verified
+  with a nodenext consumer typecheck and `@arethetypeswrong/cli` (node16-from-ESM is green). No runtime or
+  API change. (`@oriui/headless` was already node16-clean; `@oriui/css` ships no declarations.)
+- c76d76b: Packaging hygiene for `@oriui/vue`:
+
+    - `sideEffects` is now `false` (was `["**/*.css"]`, which matched nothing — the package ships no CSS, it
+      comes from `@oriui/css`), giving bundlers a clean tree-shaking signal so importing one component pulls
+      no others.
+    - The `vue` peer range is raised to `^3.5` to match the actual API floor (the SFCs use reactive props
+      destructure) and `@oriui/headless`'s peer, so a Vue 3.4 consumer gets a correct peer warning instead of
+      an unsupported runtime.
+
+- Updated dependencies [5e28b7c]
+- Updated dependencies [36a5dcc]
+- Updated dependencies [080571c]
+- Updated dependencies [0b377dc]
+- Updated dependencies [55a7579]
+- Updated dependencies [924018a]
+    - @oriui/css@1.0.0-alpha.14
+    - @oriui/headless@1.0.0-alpha.14
+
 ## 1.0.0-alpha.13
 
 ### Minor Changes
