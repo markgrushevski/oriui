@@ -143,6 +143,10 @@
        fixed + anchored under the control, with a collision flip on overflow. `min-width` matches the
        control; `hidden` (from the prop-getter when closed) wins via the attribute selector. */
     .ori-combobox__listbox {
+        /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the alias (two-tier);
+           the option radius derives from it. Mirrors menu.css / popover.css / card.css. */
+        --ori-size-radius: var(--ori-size-radius_md);
+
         z-index: 50;
 
         min-width: anchor-size(width);
@@ -152,7 +156,7 @@
         overflow-y: auto;
 
         border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
-        border-radius: var(--ori-size-radius_md);
+        border-radius: var(--ori-size-radius);
 
         background: var(--ori-color-surface);
 
@@ -169,7 +173,7 @@
     .ori-combobox__option {
         padding: 0.4em 0.6em;
 
-        border-radius: calc(var(--ori-size-radius_md) - 0.15em);
+        border-radius: calc(var(--ori-size-radius) - 0.15em);
 
         font-size: var(--ori-font-size);
         line-height: 1.3;

@@ -273,5 +273,6 @@ option emits `update:modelValue`; clearing emits `null`.
 
 | Slot     | Scope                       | Description                                                                                                                           |
 | -------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`  | none                        | Rich label content (an icon + text, markup). Falls back to the `label` prop; keeps the for/id + listbox `aria-labelledby` wiring.     |
 | `option` | `{ item, index, selected }` | Per-option content — rich options such as an avatar + email or a leading icon. Rendered for every option. Falls back to `item.label`. |
 | `empty`  | none                        | No-results content, shown when the filter matches nothing. Falls back to the `noResultsText` prop.                                    |

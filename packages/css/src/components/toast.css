@@ -76,6 +76,9 @@
            --ori-color to drive the accent border + icon; the body stays on the surface pair so
            text contrast holds WCAG AA on every skin. */
         --ori-color: var(--ori-color-surface);
+        /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the card radius
+           (two-tier alias); mirrors menu.css / popover.css / card.css. */
+        --ori-size-radius: var(--ori-size-radius_md);
 
         display: flex;
         align-items: flex-start;
@@ -85,7 +88,7 @@
         padding: calc(var(--ori-size-gap) * 1.5) calc(var(--ori-size-gap) * 2);
 
         border: 1px solid color-mix(in srgb, var(--ori-color) 30%, transparent);
-        border-radius: var(--ori-size-radius_md);
+        border-radius: var(--ori-size-radius);
 
         background-color: var(--ori-color-surface);
 
@@ -125,6 +128,7 @@
         padding: 0;
 
         border: 0;
+        /* Deliberate fixed small radius for the tiny close chip — independent of the card alias. */
         border-radius: var(--ori-size-radius_sm);
         opacity: 0.6;
 

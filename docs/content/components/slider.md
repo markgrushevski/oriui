@@ -344,8 +344,6 @@ explicit `id` is only needed to override it.
 
 ### Slots
 
-OriSlider exposes no slots.
-
-| Slot   | Description           |
-| ------ | --------------------- |
-| (none) | No slots are defined. |
+| Slot    | Description                                                                                                |
+| ------- | ---------------------------------------------------------------------------------------------------------- |
+| `label` | Rich label content (an icon + text, markup). Falls back to the `label` prop; keeps the for/id a11y wiring. |

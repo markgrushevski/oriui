@@ -122,8 +122,9 @@ const describedBy = computed(() => {
             { 'ori-combobox_fluid': fluid }
         ]"
     >
-        <label v-if="label" v-bind="labelProps" class="ori-combobox__label">
-            {{ label }}<span v-if="required" class="ori-combobox__required" aria-hidden="true">*</span>
+        <label v-if="label || $slots.label" v-bind="labelProps" class="ori-combobox__label">
+            <slot name="label">{{ label }}</slot
+            ><span v-if="required" class="ori-combobox__required" aria-hidden="true">*</span>
         </label>
 
         <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
@@ -171,7 +172,7 @@ const describedBy = computed(() => {
                 v-bind="listboxProps"
                 :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom-start']"
                 :style="{ '--ori-anchor': anchorName }"
-                :aria-labelledby="label ? labelId : undefined"
+                :aria-labelledby="label || $slots.label ? labelId : undefined"
             >
                 <li
                     v-for="(item, index) in items"

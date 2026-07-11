@@ -106,6 +106,20 @@ describe('OriCombobox', () => {
         expect(label.attributes('for')).toBe(inputId);
     });
 
+    it('renders a #label slot (prop as fallback) and still labels the listbox', () => {
+        const wrapper = mount(OriCombobox, {
+            props: { options: OPTIONS },
+            slots: { label: '<b class="rich-label">Fruit</b>' }
+        });
+        const label = wrapper.find('label.ori-combobox__label');
+        const listbox = wrapper.find('[role="listbox"]');
+
+        expect(label.find('.rich-label').exists()).toBe(true);
+        expect(label.attributes('for')).toBe(wrapper.find('input').attributes('id'));
+        // the listbox stays labelled by the (slotted) label
+        expect(listbox.attributes('aria-labelledby')).toBe(label.attributes('id'));
+    });
+
     it('renders all options with role=option (disabled marked)', () => {
         const wrapper = mountCb();
         const opts = wrapper.findAll('[role="option"]');

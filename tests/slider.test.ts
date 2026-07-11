@@ -95,7 +95,16 @@ describe('OriSlider', () => {
         expect(label.attributes('for')).toBe(inputId);
     });
 
-    it('renders no label element when neither label nor showValue is provided', () => {
+    it('renders a #label slot (the prop is the fallback), keeping the for/id association', () => {
+        const wrapper = mount(OriSlider, { slots: { label: '<b class="rich-label">Volume</b>' } });
+        const label = wrapper.find('label.ori-slider__label');
+
+        expect(label.exists()).toBe(true);
+        expect(label.find('.rich-label').exists()).toBe(true);
+        expect(label.attributes('for')).toBe(wrapper.find('input').attributes('id'));
+    });
+
+    it('renders no label element when neither label nor showValue nor a #label slot is provided', () => {
         const wrapper = mount(OriSlider);
 
         expect(wrapper.find('label').exists()).toBe(false);
