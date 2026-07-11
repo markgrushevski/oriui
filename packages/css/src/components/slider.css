@@ -180,7 +180,12 @@
     .ori-slider .ori-slider_alpha::-webkit-slider-runnable-track {
         background-image:
             linear-gradient(to right, transparent, var(--ori-color, #000000)),
-            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+            conic-gradient(
+                var(--ori-checker-1, #c8c8c8) 25%,
+                var(--ori-checker-2, #ffffff) 0 50%,
+                var(--ori-checker-1, #c8c8c8) 0 75%,
+                var(--ori-checker-2, #ffffff) 0
+            );
         background-size:
             auto,
             8px 8px;
@@ -189,7 +194,12 @@
     .ori-slider .ori-slider_alpha::-moz-range-track {
         background-image:
             linear-gradient(to right, transparent, var(--ori-color, #000000)),
-            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+            conic-gradient(
+                var(--ori-checker-1, #c8c8c8) 25%,
+                var(--ori-checker-2, #ffffff) 0 50%,
+                var(--ori-checker-1, #c8c8c8) 0 75%,
+                var(--ori-checker-2, #ffffff) 0
+            );
         background-size:
             auto,
             8px 8px;
@@ -205,5 +215,25 @@
 
     .ori-slider .ori-slider_alpha::-moz-range-thumb {
         background: #ffffff;
+    }
+
+    /* Hue / alpha thumbs are white over a coloured track, so the base accent color-mix focus ring can
+       vanish (on the alpha slider the track fill IS the current colour). Use a neutral white+dark ring
+       that clears 3:1 over any track. These come after the base focus rules → equal specificity, later
+       wins. */
+    .ori-slider .ori-slider_hue:focus-visible::-webkit-slider-thumb,
+    .ori-slider .ori-slider_alpha:focus-visible::-webkit-slider-thumb {
+        box-shadow:
+            0 1px 3px rgb(0 0 0 / 0.3),
+            0 0 0 2px #ffffff,
+            0 0 0 4px rgb(0 0 0 / 0.6);
+    }
+
+    .ori-slider .ori-slider_hue:focus-visible::-moz-range-thumb,
+    .ori-slider .ori-slider_alpha:focus-visible::-moz-range-thumb {
+        box-shadow:
+            0 1px 3px rgb(0 0 0 / 0.3),
+            0 0 0 2px #ffffff,
+            0 0 0 4px rgb(0 0 0 / 0.6);
     }
 }
