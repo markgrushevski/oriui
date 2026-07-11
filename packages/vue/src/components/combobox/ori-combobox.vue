@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useId, watch } from 'vue';
+import { computed, mergeProps, ref, useId, watch, watchEffect } from 'vue';
 import { useCombobox, type ComboboxItem } from '@oriui/headless/vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 
@@ -115,6 +115,17 @@ const describedBy = computed(() => {
     const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean);
     return ids.length ? ids.join(' ') : undefined;
 });
+
+// `required` must guard the SELECTION, not the visible input's label text. Typing a non-matching query
+// never commits a value, so a native `required` on the text field would report VALID while the form
+// submits an empty value (and, conversely, a bound value absent from `options` clears the text and would
+// wrongly BLOCK a form that does hold a value). A `type=hidden` input can't participate in constraint
+// validation, so mirror the rule onto the visible input via setCustomValidity — invalid iff required and
+// nothing is selected, regardless of the typed text.
+const inputEl = ref<HTMLInputElement>();
+watchEffect(() => {
+    inputEl.value?.setCustomValidity(required && !selectedValue.value ? 'Please select an option.' : '');
+});
 </script>
 
 <template>
@@ -135,10 +146,12 @@ const describedBy = computed(() => {
 
         <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
             <input
+                ref="inputEl"
                 v-bind="mergeProps($attrs, inputProps)"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
                 :placeholder="placeholder"
-                :required="required"
+                :form="form"
+                :aria-required="required || undefined"
                 :aria-invalid="isInvalid ? 'true' : undefined"
                 :aria-describedby="describedBy"
                 @blur="setOpen(false)"

@@ -134,7 +134,8 @@ const options = [
 ## States
 
 `disabled` blocks the control; `error` renders a `role="alert"` message and flips `aria-invalid`;
-`required` adds the asterisk and the native attribute. A disabled option is skipped during keyboard
+`required` adds the asterisk and guards the _selection_ — via `aria-required` plus custom validity, so
+typing an unmatched query can't satisfy it and the form is blocked until a real option is chosen. A disabled option is skipped during keyboard
 navigation and can't be selected.
 
 ::example
@@ -228,7 +229,7 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
 - Options are `role="option"` with `aria-selected`; the popup is `role="listbox"` labelled by the
   field label. A disabled option carries `aria-disabled` and is skipped by navigation.
 - `hint` / `error` are wired through `aria-describedby` (error supersedes hint); `error` also sets
-  `aria-invalid="true"` and `role="alert"`. `required` sets the native attribute.
+  `aria-invalid="true"` and `role="alert"`. `required` sets `aria-required` and blocks submission until a value is selected.
 - The list dismisses on blur and on `Escape`; selecting an option returns focus context to the input.
 
 | Key            | Action                                        |
@@ -244,27 +245,27 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
 
 ### Props
 
-| Prop            | Type                       | Default        | Description                                                         |
-| --------------- | -------------------------- | -------------- | ------------------------------------------------------------------- |
-| `clearable`     | `boolean`                  | `false`        | Show a clear button while there is a selection.                     |
-| `color`         | `ThemeColor`               | `'primary'`    | Accent for the focus ring, highlight, and selected option.          |
-| `describedby`   | `string`                   | —              | Extra id(s) appended to `aria-describedby`.                         |
-| `disabled`      | `boolean`                  | `false`        | Disable the control.                                                |
-| `error`         | `string`                   | —              | Error message (`role="alert"`); sets `aria-invalid="true"`.         |
-| `filter`        | `(item, query) => boolean` | substring      | Override the default case-insensitive label filter.                 |
-| `fluid`         | `boolean`                  | `false`        | Full-width.                                                         |
-| `form`          | `string`                   | —              | Associate the hidden value input with a form by `id`.               |
-| `hint`          | `string`                   | —              | Helper text; hidden while `error` is shown.                         |
-| `id`            | `string`                   | —              | Explicit base id; auto-generated via `useId` when omitted.          |
-| `invalid`       | `boolean`                  | `false`        | Set `aria-invalid` without a message.                               |
-| `label`         | `string`                   | —              | Visible label, wired to the input via `for` / `id`.                 |
-| `name`          | `string`                   | —              | Submit the selected **value** under this field name (hidden input). |
-| `noResultsText` | `string`                   | `'No results'` | Shown when the filter matches nothing.                              |
-| `options`       | `ComboboxItem[]`           | **required**   | `{ label, value, disabled? }[]`.                                    |
-| `placeholder`   | `string`                   | —              | Native placeholder.                                                 |
-| `radius`        | `RadiusSize`               | `'md'`         | Field + popup corner radius.                                        |
-| `required`      | `boolean`                  | `false`        | Asterisk + native `required`.                                       |
-| `size`          | `ActionSize`               | `'md'`         | Field height + text scale.                                          |
+| Prop            | Type                       | Default        | Description                                                          |
+| --------------- | -------------------------- | -------------- | -------------------------------------------------------------------- |
+| `clearable`     | `boolean`                  | `false`        | Show a clear button while there is a selection.                      |
+| `color`         | `ThemeColor`               | `'primary'`    | Accent for the focus ring, highlight, and selected option.           |
+| `describedby`   | `string`                   | —              | Extra id(s) appended to `aria-describedby`.                          |
+| `disabled`      | `boolean`                  | `false`        | Disable the control.                                                 |
+| `error`         | `string`                   | —              | Error message (`role="alert"`); sets `aria-invalid="true"`.          |
+| `filter`        | `(item, query) => boolean` | substring      | Override the default case-insensitive label filter.                  |
+| `fluid`         | `boolean`                  | `false`        | Full-width.                                                          |
+| `form`          | `string`                   | —              | Associate the hidden value input with a form by `id`.                |
+| `hint`          | `string`                   | —              | Helper text; hidden while `error` is shown.                          |
+| `id`            | `string`                   | —              | Explicit base id; auto-generated via `useId` when omitted.           |
+| `invalid`       | `boolean`                  | `false`        | Set `aria-invalid` without a message.                                |
+| `label`         | `string`                   | —              | Visible label, wired to the input via `for` / `id`.                  |
+| `name`          | `string`                   | —              | Submit the selected **value** under this field name (hidden input).  |
+| `noResultsText` | `string`                   | `'No results'` | Shown when the filter matches nothing.                               |
+| `options`       | `ComboboxItem[]`           | **required**   | `{ label, value, disabled? }[]`.                                     |
+| `placeholder`   | `string`                   | —              | Native placeholder.                                                  |
+| `radius`        | `RadiusSize`               | `'md'`         | Field + popup corner radius.                                         |
+| `required`      | `boolean`                  | `false`        | Asterisk + `aria-required`; blocks submit until a value is selected. |
+| `size`          | `ActionSize`               | `'md'`         | Field height + text scale.                                           |
 
 ### v-model
 
