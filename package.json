@@ -59,6 +59,8 @@
         "@vitejs/plugin-vue": "^6.0.7",
         "@vitest/coverage-v8": "^4.1.9",
         "@vue/test-utils": "^2.4.11",
+        "@zag-js/combobox": "^1.42.0",
+        "@zag-js/vue": "^1.42.0",
         "axe-core": "^4.12.1",
         "colord": "^2.9.3",
         "eslint": "^10.6.0",
