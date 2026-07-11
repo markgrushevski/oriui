@@ -7,9 +7,13 @@
         "@oriui/vue": "1.0.0-alpha.1"
     },
     "changesets": [
+        "catalog-consistency-polish",
         "color-picker",
+        "colorpicker-a11y-correctness",
+        "colorpicker-polish",
         "component-content-slots",
         "css-entry-points",
+        "dialog-accessible-name",
         "dialog-managed-open",
         "explicit-icon-mode",
         "neutral-skin-tooltip-fix",
@@ -22,9 +26,14 @@
         "slider-commit-event",
         "surface",
         "svelte-adapter",
+        "swappable-combobox-menu-svelte",
+        "swappable-combobox-menu",
+        "tabs-shared-roving",
         "theme-controller",
         "token-bridge",
         "toolbar-pressed-fill-and-button-color-transition",
-        "toolbar"
+        "toolbar",
+        "vue-dts-node16",
+        "vue-packaging-hygiene"
     ]
 }
