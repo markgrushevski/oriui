@@ -41,7 +41,6 @@ const cp = useColorPicker(() => ({
     format,
     alpha,
     eyedropper,
-    label,
     disabled,
     presets,
     onInput: (next) => {
@@ -101,10 +100,11 @@ function commitHex(): void {
                     class="ori-slider_hue ori-color-picker__hue"
                     :model-value="cp.hue.value"
                     :min="0"
-                    :max="360"
+                    :max="359"
                     :step="1"
                     :disabled="disabled"
                     aria-label="Hue"
+                    :aria-valuetext="`${Math.round(cp.hue.value)}°`"
                     @update:model-value="cp.setHue"
                     @change="cp.commit"
                 />
@@ -119,13 +119,14 @@ function commitHex(): void {
                     :disabled="disabled"
                     :style="{ '--ori-color': cp.opaqueColor.value }"
                     aria-label="Alpha"
+                    :aria-valuetext="`${Math.round(cp.alpha.value * 100)}%`"
                     @update:model-value="(v) => cp.setAlpha(v / 100)"
                     @change="cp.commit"
                 />
             </div>
 
             <OriButton
-                v-if="eyedropper && cp.eyedropperSupported"
+                v-if="eyedropper && cp.eyedropperSupported.value"
                 class="ori-color-picker__eyedropper"
                 variant="outline"
                 :icon="EYEDROPPER_ICON"
@@ -139,7 +140,7 @@ function commitHex(): void {
             class="ori-color-picker__hex"
             :model-value="hexDraft"
             :disabled="disabled"
-            :invalid="hexInvalid"
+            :error="hexInvalid ? 'Enter a valid hex color' : undefined"
             aria-label="Hex color"
             autocapitalize="none"
             autocomplete="off"
