@@ -73,7 +73,11 @@
             0 0 0 4px rgb(0 0 0 / 0.7);
     }
 
-    /* The two range inputs are the a11y surface: visually hidden but focusable (never display:none). */
+    /* The two range inputs are the a11y surface: visually hidden but focusable (never display:none). They
+       cover the area, so `pointer-events: none` is REQUIRED — the pointer belongs to the area <div>'s 2D
+       drag handler (commit-on-release, one undo). Without it a press lands on the native range too, whose
+       own `input` commits, so a single click/drag double-commits (area pointerup + range input). The
+       channels stay the KEYBOARD/AT surface; the area <div> is the sole pointer surface. */
     .ori-color-picker__channel {
         position: absolute;
         inset: 0;
@@ -84,7 +88,7 @@
 
         opacity: 0;
 
-        cursor: crosshair;
+        pointer-events: none;
         -webkit-appearance: none;
         appearance: none;
     }
