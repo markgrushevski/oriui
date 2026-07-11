@@ -37,11 +37,14 @@ typeahead, with a swappable engine) warrants the machine. A **bare toolbar's** r
 alternative engine, no async state → shape #2, deliberately outside the adapter contract. The rule is the
 _presence of a swappable engine / real async state_, not the word "roving".
 
-**Convergence intent (YAGNI-gated):** `core/roving.ts` is shared by the toolbar today only. When a SECOND
-roving consumer lands — migrating Tabs onto `rovingIntent`/`resolveRovingIndex` (needs an optional
-`isEnabled` skip predicate, since Tabs SKIPS disabled tabs while the toolbar VISITS them), or a future
-RadioGroup/SegmentedControl (IDEAS) — extract a `useRovingFocus` adapter primitive (the Radix
-RovingFocusGroup factoring) that `useToolbar`/`useTabs` compose. Do NOT build it speculatively.
+**Convergence intent (YAGNI-gated).** First step DONE (2026-07-11): **OriTabs now composes the shared
+`rovingIntent` / `resolveRovingIndex` core helpers** instead of hand-rolling its roving math — the second
+consumer landed, so this is no longer speculative. `resolveRovingIndex` grew the optional `isEnabled(index)`
+skip predicate the note anticipated (Tabs SKIPS disabled tabs; the toolbar, calling without it, still VISITS
+them — its path is byte-identical). Tabs still owns its own DOM focus + automatic activation; only the index
+math is shared. **Still deferred:** extracting a full `useRovingFocus` **adapter primitive** (the Radix
+RovingFocusGroup factoring) that `useToolbar`/`useTabs` compose — that touches the flagship toolbar, so it
+waits for a 3rd consumer (RadioGroup/SegmentedControl) or a concrete need. Do NOT build it speculatively.
 
 ## OriSlider commit event, and the live-vs-commit event convention for form controls
 
