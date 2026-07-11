@@ -82,9 +82,12 @@ Roughly by priority.
     `moduleResolution: node16` / `nodenext` (🥴); fine under `bundler`. Fixed via a post-build rewrite
     (`packages/vue/scripts/fix-dts.mjs`, appends `.js` / `/index.js` per file-vs-dir) — attw now reports
     **node16-from-ESM 🟢** (verified 3 ways: attw, a nodenext consumer typecheck, a negative test). **`attw` as
-    a CI gate still deferred:** the only remaining attw flag is the expected ESM-only `CJSResolvesToESM` (the
-    packages are `"type":"module"`), so a green gate needs `--ignore-rules cjs-resolves-to-esm`. Also still
-    open: a **token-inspector** devtool.
+    a CI gate — SHIPPED:** an `arethetypeswrong` step in `ci.yml` (node 22, after publint) packs
+    `@oriui/headless` + `@oriui/vue` with `--profile node16 --ignore-rules cjs-resolves-to-esm` — the profile
+    the packages actually target (they are ESM-only `"type":"module"`, so the CJS→ESM flag is expected and
+    ignored; there is no CJS build). **node10 (classic resolution) is intentionally out of scope:** it ignores
+    `exports`, so the subpath entries (`@oriui/headless/{vue,svelte}`) 💀-fail without the `typesVersions` hacks
+    we don't ship. `@oriui/css` ships no types (publint covers its exports). Still open: a **token-inspector** devtool.
 11. ⭐ **Reset-independence audit** — **SHIPPED (2026-07-06).** Make every `.ori-*` component block
     self-sufficient (declare its own `box-sizing` / margin zeroing / `font: inherit`) so `tokens.css` +
     components works with **no reset at all** — today only 10 of 32 component files set `box-sizing`
