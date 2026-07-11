@@ -336,8 +336,9 @@ Vertical orientation, a non-default color, and named panel slots — a common se
 The accessibility contract holds across every layer — the standalone classes and the Vue component
 render the same attributes and keyboard behaviour.
 
-- Full WAI-ARIA Tabs pattern, hand-rolled (no behaviour engine). `role="tablist"` on the list with
-  `aria-orientation` reflecting the `orientation` prop.
+- Full WAI-ARIA Tabs pattern, driven by the headless [`useTabs`](/headless/use-tabs) composable (the
+  shared Vue + Svelte behaviour). `role="tablist"` on the list with `aria-orientation` reflecting the
+  `orientation` prop.
 - Each tab is a real `<button role="tab">` with a `useId()`-derived stable id, `aria-selected`
   (`"true"` / `"false"`), `aria-controls` pointing at its panel id, and a **roving tabindex**
   (selected = `0`, others = `-1`) so `Tab` / `Shift+Tab` enter and leave the group as a single stop.
