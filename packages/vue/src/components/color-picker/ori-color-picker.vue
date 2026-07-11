@@ -17,8 +17,10 @@ const {
     alpha = false,
     disabled = false,
     eyedropper = false,
+    form,
     format = 'hex',
     label,
+    name,
     presets
 } = defineProps<{
     /** Add an alpha channel — a checkerboard slider and `#rrggbbaa` / `rgba()` / `hsla()` output. */
@@ -26,10 +28,14 @@ const {
     disabled?: boolean;
     /** Show an eyedropper trigger (EyeDropper API; auto-hidden where the browser lacks it). */
     eyedropper?: boolean;
+    /** Associate the submitted value's hidden input with a form by id (when not a descendant of it). */
+    form?: string;
     /** Output format for the emitted string (default `'hex'`). */
     format?: ColorFormat;
     /** Accessible name for the whole control (→ `aria-label`). */
     label?: string;
+    /** Submit the current color under this field name via a hidden input (a color always has a value). */
+    name?: string;
     /** Preset swatches — a `string[]` of colors, rendered as a single-select roving listbox. */
     presets?: string[];
 }>();
@@ -67,6 +73,12 @@ const cp = useColorPicker(() => ({
     },
     onChange: (next) => emit('change', next)
 }));
+
+// Form submission. A color control always carries a value (like a native <input type=color>), so the
+// hidden input submits the current color in the emitted format — never empty, even before interaction
+// (whereas the v-model can start undefined). `isDisabled` excludes it from FormData, matching a native
+// disabled control. Rendered only when `name` is set.
+const submittedColor = computed(() => cp.value.value);
 
 // A single-path eyedropper glyph (MDI-style) for the pick-from-screen trigger.
 const EYEDROPPER_ICON =
@@ -197,5 +209,16 @@ function commitHex(): void {
                 ></slot>
             </button>
         </div>
+
+        <!-- Submit the current color under `name` (a color control has no empty state — mirrors a native
+             <input type=color>). Disabled excludes it from FormData. -->
+        <input
+            v-if="name"
+            type="hidden"
+            :name="name"
+            :form="form"
+            :value="submittedColor"
+            :disabled="isDisabled || undefined"
+        />
     </div>
 </template>

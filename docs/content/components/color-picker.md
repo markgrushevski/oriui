@@ -141,6 +141,23 @@ the commit.
 </template>
 ```
 
+## Form submission
+
+Set `name` to submit the picker in a native form: it renders a hidden input carrying the current color, so
+the picker joins form submission like `<input type="color">`. Unlike a [combobox](/components/combobox), a
+color control has **no empty state** — it always submits a color (its current one, default black), even
+before the user interacts. The submitted string uses the emitted [`format`](#output-format); a disabled
+picker is excluded from submission (matching a native disabled control). Pass `form` to associate the
+hidden input with a `<form>` by id when the picker sits outside it.
+
+```vue
+<template>
+    <form>
+        <OriColorPicker v-model="color" name="brand" label="Brand color" />
+    </form>
+</template>
+```
+
 ## Accessibility
 
 - The 2D area is **two visually-hidden native `<input type="range">`** (saturation, brightness), each a
@@ -171,15 +188,17 @@ The props, events, and slots of the **Vue** component. Behaviour comes from `use
 
 ### Props
 
-| Prop         | Type                      | Default | Description                                                                                  |
-| ------------ | ------------------------- | ------- | -------------------------------------------------------------------------------------------- |
-| `alpha`      | `boolean`                 | —       | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.   |
-| `disabled`   | `boolean`                 | —       | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                |
-| `eyedropper` | `boolean`                 | —       | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).    |
-| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase.                                       |
-| `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).           |
-| `modelValue` | `string`                  | —       | Controlled color; bind with `v-model`. Parsed loosely (hex, `rgb()/rgba()`, `hsl()/hsla()`). |
-| `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                            |
+| Prop         | Type                      | Default | Description                                                                                     |
+| ------------ | ------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `alpha`      | `boolean`                 | —       | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.      |
+| `disabled`   | `boolean`                 | —       | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                   |
+| `eyedropper` | `boolean`                 | —       | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).       |
+| `form`       | `string`                  | —       | Associate the hidden value input with a `<form>` by id (when the picker sits outside it).       |
+| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase.                                          |
+| `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).              |
+| `modelValue` | `string`                  | —       | Controlled color; bind with `v-model`. Parsed loosely (hex, `rgb()/rgba()`, `hsl()/hsla()`).    |
+| `name`       | `string`                  | —       | Submit the current color under this field name via a hidden input (a color always has a value). |
+| `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                               |
 
 ### Events
 
