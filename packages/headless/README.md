@@ -56,6 +56,10 @@ stores instead of `ComputedRef`s and lowercased event handlers (`onclick`). Item
 store of a function — `$getOptionProps(item, i)`. `useCombobox` / `useMenu` take a plain options object
 **or a store** (`MaybeReactive`) — pass a store to react to a changing option list / `disabled`.
 
+**SSR note:** the Vue adapter's ids come from `useId()` (SSR-stable); Svelte has no framework `useId()`
+callable outside component init, so it falls back to a module counter. Under SSR, pass an explicit `id`
+to the composable so the server and client markup match.
+
 ## Use — the engine directly
 
 The core is framework-agnostic building blocks, so you can write an adapter for any framework:
