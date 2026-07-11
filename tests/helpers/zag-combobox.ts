@@ -1,4 +1,4 @@
-import { computed, ref, toValue, useId, type MaybeRefOrGetter } from 'vue';
+import { computed, ref, toValue, useId, watch, type MaybeRefOrGetter } from 'vue';
 import * as combobox from '@zag-js/combobox';
 import { normalizeProps, useMachine } from '@zag-js/vue';
 import type { ComboboxItem } from '@oriui/headless';
@@ -16,7 +16,15 @@ import type { ComboboxControl, UseComboboxOptions } from '@oriui/headless/vue';
 //    so Zag's popper positioner is unused (the machine/keyboard/ARIA still drive everything).
 //  - Zag keys items by the item object (`getItemProps({ item })`), ignoring our `index`.
 //  - External filtering is Zag's documented pattern: keep a `collection` of the *visible* items and
-//    refilter on `onInputValueChange`.
+//    refilter on `onInputValueChange` (and, per the contract's "reactive options" invariant, on any
+//    change to the source `options` — an async-suggestions caller replaces `options` after the keystroke).
+//
+// Known divergences a *production* Zag adapter would still need to close (out of scope for a seam proof):
+//  - Post-select list: native shows the FULL list when the input text equals the selected label
+//    (native.ts) so reopening after a choice doesn't collapse; here `visible` tracks the raw query, so a
+//    reopened Zag combobox can show a collapsed list. Documented, not replicated.
+//  - Dropping `getPositionerProps` means Zag's floating-ui positioning + interact-outside run against a
+//    null positioner element. Harmless under happy-dom (no layout); UNVERIFIED in a real browser.
 
 const defaultFilter = (item: ComboboxItem, query: string) => item.label.toLowerCase().includes(query.toLowerCase());
 
@@ -31,8 +39,16 @@ export function zagCombobox(options: MaybeRefOrGetter<UseComboboxOptions>): Comb
     const all = () => toValue(options).options;
     const filterFn = () => toValue(options).filter ?? defaultFilter;
 
-    // Zag owns a collection of the *visible* (already-filtered) items; we filter externally.
+    // Zag owns a collection of the *visible* (already-filtered) items; we filter externally, tracking the
+    // current query so we can also re-derive when the source `options` change (not only on keystrokes).
+    const query = ref(initial.inputValue ?? '');
     const visible = ref<ComboboxItem[]>(all());
+    const refilter = () => {
+        const q = query.value.trim();
+        visible.value = q ? all().filter((i) => filterFn()(i, q)) : all();
+    };
+    watch(() => toValue(options).options, refilter);
+
     const collection = computed(() =>
         combobox.collection({
             items: visible.value,
@@ -53,8 +69,8 @@ export function zagCombobox(options: MaybeRefOrGetter<UseComboboxOptions>): Comb
         defaultValue: initial.value != null ? [initial.value] : [],
         defaultInputValue: initial.inputValue ?? '',
         onInputValueChange({ inputValue }) {
-            const q = inputValue.trim();
-            visible.value = q ? all().filter((i) => filterFn()(i, q)) : all();
+            query.value = inputValue;
+            refilter();
         }
     });
 
@@ -84,7 +100,11 @@ export function zagCombobox(options: MaybeRefOrGetter<UseComboboxOptions>): Comb
         },
         setOpen: (open) => api.value.setOpen(open),
         setInputValue: (next) => api.value.setInputValue(next),
-        select: (item) => api.value.selectValue(item.value),
+        // guard disabled to match native's `select` (Zag's low-level selectValue does not check it)
+        select: (item) => {
+            if (item.disabled) return;
+            api.value.selectValue(item.value);
+        },
         clear: () => api.value.clearValue()
     };
 }
