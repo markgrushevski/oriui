@@ -56,6 +56,20 @@ describe('OriDialog (native <dialog> engine)', () => {
         expect(title?.textContent).toContain('Confirm');
     });
 
+    it('renders no empty title node and names a titleless dialog via a forwarded aria-label', async () => {
+        const wrapper = mount(OriDialog, {
+            props: { defaultOpen: true },
+            attrs: { 'aria-label': 'Settings' },
+            attachTo: document.body
+        });
+        await nextTick();
+
+        // No empty <h2> to be "labelled" by, and the consumer aria-label reaches the <dialog> (inheritAttrs:false).
+        expect(document.querySelector('.ori-dialog__title')).toBeNull();
+        expect(dialogEl()?.getAttribute('aria-label')).toBe('Settings');
+        wrapper.unmount();
+    });
+
     it('projects the default slot as the dialog body', async () => {
         mountDialog({ title: 'Confirm', defaultOpen: true }, { default: () => 'Delete this item?' });
         await nextTick();
