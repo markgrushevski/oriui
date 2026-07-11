@@ -52,8 +52,10 @@ function onChange(event: Event) {
 
 <template>
     <div :class="['ori-slider', { [`ori-color_${color}`]: color }]" :data-disabled="disabled ? '' : undefined">
-        <label v-if="label || showValue" :for="id" class="ori-slider__label">
-            <span v-if="label">{{ label }}</span>
+        <label v-if="label || showValue || $slots.label" :for="id" class="ori-slider__label">
+            <span v-if="label || $slots.label"
+                ><slot name="label">{{ label }}</slot></span
+            >
             <span v-if="showValue" class="ori-slider__value">{{ current }}</span>
         </label>
 
