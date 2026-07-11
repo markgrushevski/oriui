@@ -178,7 +178,7 @@ function commitHex(): void {
         <OriInput
             class="ori-color-picker__hex"
             :model-value="hexDraft"
-            :disabled="disabled"
+            :disabled="isDisabled"
             :error="hexInvalid ? 'Enter a valid hex color' : undefined"
             aria-label="Hex color"
             autocapitalize="none"
