@@ -1,5 +1,52 @@
 # @oriui/vue
 
+## 1.0.0-alpha.15
+
+### Minor Changes
+
+- 9d2cc42: **OriColorPicker now submits its color in a form.** A new `name` prop (with an optional `form`) renders
+  a hidden input carrying the current color, so a color picker joins native form submission like
+  `<input type="color">` — and, unlike a combobox, it always has a value (a color control has no empty
+  state), so it submits its current color even before the user interacts. The submitted string uses the
+  picker's emitted `format` (hex / rgb / hsl, with alpha when enabled); a disabled picker is excluded from
+  submission, matching a native disabled control. `useColorPicker` gains a `value` accessor — the canonical
+  current color in the emitted format — to back it. Purely additive: behavior is unchanged unless you pass `name`.
+- db9ffee: **Combobox, Slider, RadioGroup, and ColorPicker now compose with `OriField`** — like Input / Select /
+  Textarea already did. Nested in an `OriField`, each adopts the field's id and `aria-describedby` /
+  `aria-invalid` / `disabled` (plus `required` + `size` where the control has them) and stops rendering
+  its own label / hint / error, so there is one wired-once label and helper. Group and composite controls
+  (RadioGroup, ColorPicker, and the Combobox listbox) name themselves via `aria-labelledby` pointing at
+  the field's label — for which `OriField` now exposes a `labelId` on its context. Standalone behavior is
+  unchanged (field integration is opt-in by nesting).
+
+### Patch Changes
+
+- df3e253: **Fix: a disabled OriColorPicker now also disables its hex field.** The hex `OriInput` bound only the
+  local `disabled` prop, not the composed `isDisabled` (local **or** field-disabled) the sliders,
+  eyedropper, and hidden input already use — so inside a disabled `OriField` (or any field-driven disable)
+  the hex text field stayed enabled and a keyboard user could type a color, blur, and mutate the picker
+  while it was meant to be disabled. It now binds `isDisabled`, matching the other controls.
+- aeddf1a: **OriCombobox now submits the selected value, not the visible label.** The visible `<input>` shows the
+  option label, so a native form previously submitted that label text under the field name. `name` (and
+  an optional `form`) is now a real prop that renders a hidden input carrying the selected **value**; the
+  visible input no longer receives `name`. A disabled combobox is excluded from submission, matching a
+  native disabled control. Purely additive — behavior is unchanged unless you pass `name`.
+- 377160d: **OriCombobox: keyboard users can now clear a selection.** The `clearable` clear button is a pointer
+  affordance (`tabindex="-1"`), leaving keyboard-only users with no way to remove a committed selection
+  (WCAG 2.1.1). Pressing **Escape** while the listbox is closed now clears the selection when `clearable`
+  is set; Escape while the listbox is open still just closes it.
+- 78cc170: **OriCombobox `required` now guards the selection, not the typed text.** `required` was set as the
+  native attribute on the visible input, whose value is the option label/query — so typing a non-matching
+  query satisfied `required` while the form submitted an empty value (and a bound value absent from
+  `options` wrongly blocked submission). `required` now drives `aria-required` + custom validity keyed to
+  whether a value is committed, so the field is invalid until a real option is selected. The optional
+  `form` prop is also applied to the visible (validation) input, not only the hidden value input, so a
+  combobox rendered outside its target form still participates in that form's validation.
+- Updated dependencies [7ddfb16]
+- Updated dependencies [9d2cc42]
+    - @oriui/css@1.0.0-alpha.15
+    - @oriui/headless@1.0.0-alpha.15
+
 ## 1.0.0-alpha.14
 
 ### Patch Changes
