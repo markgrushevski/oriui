@@ -209,6 +209,33 @@ describe('OriCombobox', () => {
         expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([null]);
     });
 
+    it('Escape clears the selection for keyboard users when the listbox is closed (clearable)', async () => {
+        const wrapper = mountCb({ modelValue: 'banana', clearable: true });
+        const input = wrapper.find('input[role="combobox"]');
+
+        // listbox is closed on mount; the clear button is tabindex=-1, so Escape is the keyboard path
+        expect(input.attributes('aria-expanded')).toBe('false');
+        await input.trigger('keydown', { key: 'Escape' });
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([null]);
+    });
+
+    it('Escape only closes the open listbox — it does not clear', async () => {
+        const wrapper = mountCb({ modelValue: 'banana', clearable: true });
+        const input = wrapper.find('input[role="combobox"]');
+
+        await input.trigger('keydown', { key: 'ArrowDown' }); // open
+        expect(input.attributes('aria-expanded')).toBe('true');
+        await input.trigger('keydown', { key: 'Escape' }); // closes only
+        expect(input.attributes('aria-expanded')).toBe('false');
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+    });
+
+    it('Escape does not clear when there is no selection', async () => {
+        const wrapper = mountCb({ clearable: true });
+        await wrapper.find('input[role="combobox"]').trigger('keydown', { key: 'Escape' });
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+    });
+
     it('disabled sets the real disabled attribute and blocks the trigger', () => {
         const wrapper = mountCb({ disabled: true });
 

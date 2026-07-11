@@ -67,6 +67,7 @@ const model = defineModel<string | null>();
 const anchorName = `--ori-combobox-${useId()}`;
 
 const {
+    open,
     value: selectedValue,
     items,
     rootProps,
@@ -126,6 +127,16 @@ const inputEl = ref<HTMLInputElement>();
 watchEffect(() => {
     inputEl.value?.setCustomValidity(required && !selectedValue.value ? 'Please select an option.' : '');
 });
+
+// Keyboard clear path (WCAG 2.1.1): the clear button is a pointer affordance (tabindex -1), so give
+// keyboard users an equivalent — Escape clears the committed selection when the listbox is already
+// closed (while open, the headless handler uses Escape to close). Only active while `clearable`.
+const onInputKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && clearable && !open.value && selectedValue.value) {
+        event.preventDefault();
+        clear();
+    }
+};
 </script>
 
 <template>
@@ -147,7 +158,7 @@ watchEffect(() => {
         <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
             <input
                 ref="inputEl"
-                v-bind="mergeProps($attrs, inputProps)"
+                v-bind="mergeProps($attrs, { onKeydown: onInputKeydown }, inputProps)"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
                 :placeholder="placeholder"
                 :form="form"
