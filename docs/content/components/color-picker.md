@@ -116,9 +116,16 @@ input, so `v-model` round-trips transparency.
 the trigger is hidden where the browser lacks it (currently Chromium-only), so it is never a dead button.
 A picked color keeps the current alpha.
 
+::example
+:ori-color-picker{model-value="#3366ff" :eyedropper="true" label="Brand color"}
+
+#vue
+
 ```vue
 <OriColorPicker v-model="color" :eyedropper="true" label="Brand color" />
 ```
+
+::
 
 ## Commit on release
 

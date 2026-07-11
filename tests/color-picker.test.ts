@@ -115,6 +115,11 @@ describe('OriColorPicker — hue slider', () => {
         expect(last(wrapper.emitted('update:modelValue'))).toBe('#00ff00');
         expect(wrapper.emitted('change')).toBeTruthy();
     });
+
+    it('caps the hue slider at 359 so dragging to the end does not wrap the thumb back to 0', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#ff0000' } });
+        expect(hueInput(wrapper).attributes('max')).toBe('359');
+    });
 });
 
 describe('OriColorPicker — hex field', () => {
@@ -138,6 +143,9 @@ describe('OriColorPicker — hex field', () => {
         await hex.trigger('blur');
 
         expect(hex.attributes('aria-invalid')).toBe('true');
+        // the reason is announced (role=alert), not just a silent aria-invalid flip
+        expect(wrapper.find('.ori-input__error').exists()).toBe(true);
+        expect(wrapper.find('.ori-input__error').text().toLowerCase()).toContain('valid hex');
         expect(wrapper.emitted('change')).toBeFalsy();
     });
 });
@@ -153,8 +161,10 @@ describe('OriColorPicker — presets', () => {
         expect(group.attributes('role')).toBe('listbox');
         expect(chips).toHaveLength(3);
         expect(chips.every((c) => c.attributes('role') === 'option')).toBe(true);
-        // exactly one roving tab stop
+        // exactly one roving tab stop — and it sits on the SELECTED swatch (APG), not index 0
         expect(chips.filter((c) => c.attributes('tabindex') === '0')).toHaveLength(1);
+        expect(chips[1].attributes('tabindex')).toBe('0');
+        expect(chips[0].attributes('tabindex')).toBe('-1');
         // the green preset matches the current color
         expect(chips[1].attributes('aria-selected')).toBe('true');
         expect(chips[0].attributes('aria-selected')).toBe('false');
@@ -262,6 +272,7 @@ describe('OriColorPicker — eyedropper', () => {
             }
         };
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#000000', eyedropper: true } });
+        await wrapper.vm.$nextTick(); // support is detected in onMounted (SSR-safe), so the trigger renders post-mount
         const btn = eyedropperBtn(wrapper);
 
         expect(btn.exists()).toBe(true);

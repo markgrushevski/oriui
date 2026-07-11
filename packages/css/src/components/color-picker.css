@@ -15,6 +15,14 @@
 
     .ori-color-picker {
         --ori-color-picker-size: 15rem;
+        /* Component-local radius knobs (aliases, not raw scale tokens) — a consumer can retune the
+           panel / preset corners without reaching into the scale. */
+        --ori-color-picker-radius: var(--ori-size-radius_md);
+        --ori-color-picker-preset-radius: var(--ori-size-radius_sm);
+        /* Transparency-grid tones, derived from the theme so the alpha checkerboard stays a mid-neutral
+           in dark mode instead of glaring light (was hard-coded #c8c8c8 / #fff). */
+        --ori-checker-1: color-mix(in srgb, var(--ori-color-on-surface) 12%, var(--ori-color-surface));
+        --ori-checker-2: var(--ori-color-surface);
 
         display: flex;
         flex-direction: column;
@@ -30,7 +38,7 @@
         width: 100%;
         aspect-ratio: 3 / 2;
 
-        border-radius: var(--ori-size-radius_md);
+        border-radius: var(--ori-color-picker-radius);
 
         /* value (black, bottom) over saturation (white, left) over the pure hue base — the hue is a solid
            background-COLOR (a bare color is not a valid background-image layer), the SV grid on top. */
@@ -57,11 +65,12 @@
         pointer-events: none;
     }
 
-    /* Focus ring on the thumb when either hidden channel input has keyboard focus. */
+    /* Focus ring on the thumb when either hidden channel input has keyboard focus. A neutral white+dark
+       double ring (not a translucent accent) so it clears WCAG 3:1 over ANY user-chosen SV colour. */
     .ori-color-picker__area:has(.ori-color-picker__channel:focus-visible) .ori-color-picker__area-thumb {
         box-shadow:
-            0 0 0 1px rgb(0 0 0 / 0.4),
-            0 0 0 4px color-mix(in srgb, var(--ori-color-primary) 45%, transparent);
+            0 0 0 2px #ffffff,
+            0 0 0 4px rgb(0 0 0 / 0.7);
     }
 
     /* The two range inputs are the a11y surface: visually hidden but focusable (never display:none). */
@@ -94,8 +103,13 @@
         gap: calc(var(--ori-size-gap) / 2);
     }
 
-    .ori-color-picker__eyedropper {
+    /* Two classes (0,2,0) so it reliably beats `.ori-button`'s own `--ori-size-action` regardless of
+       import order in the bundle. Match the 2rem preview swatch across the controls row (OriButton
+       defaults to the 2.75rem md action height, which would tower over the swatch). */
+    .ori-color-picker .ori-color-picker__eyedropper {
         flex: none;
+
+        --ori-size-action: 2rem;
     }
 
     .ori-color-picker__swatch {
@@ -107,7 +121,7 @@
         height: 2rem;
 
         border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
-        border-radius: var(--ori-size-radius_md);
+        border-radius: var(--ori-color-picker-radius);
 
         background: var(--ori-color, #000000);
 
@@ -119,7 +133,12 @@
     .ori-color-picker__swatch_alpha {
         background-image:
             linear-gradient(var(--ori-color, #000000), var(--ori-color, #000000)),
-            conic-gradient(#c8c8c8 25%, #ffffff 0 50%, #c8c8c8 0 75%, #ffffff 0);
+            conic-gradient(
+                var(--ori-checker-1, #c8c8c8) 25%,
+                var(--ori-checker-2, #ffffff) 0 50%,
+                var(--ori-checker-1, #c8c8c8) 0 75%,
+                var(--ori-checker-2, #ffffff) 0
+            );
         background-size:
             auto,
             8px 8px;
@@ -134,7 +153,9 @@
     .ori-color-picker__presets {
         display: flex;
         flex-wrap: wrap;
-        gap: calc(var(--ori-size-gap) / 2);
+        /* Full gap (not half): the selected/focus ring extends ~4px, so a tighter gap let the ring touch
+           the neighbouring chip. */
+        gap: var(--ori-size-gap);
     }
 
     .ori-color-picker__preset {
@@ -143,7 +164,7 @@
         padding: 0;
 
         border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
-        border-radius: var(--ori-size-radius_sm);
+        border-radius: var(--ori-color-picker-preset-radius);
 
         background: var(--ori-color, #000000);
 
