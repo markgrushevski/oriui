@@ -542,3 +542,12 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
 - Conventional Commits; **no `Co-Authored-By` trailer**; group into reasonably-sized commits.
 - Pre-commit (husky + lint-staged) runs `npm run build` + lint-staged on staged files.
 - `LF will be replaced by CRLF` warnings on commit are normal on Windows — harmless.
+
+## axe (happy-dom) does NOT catch duplicate ids
+
+`axe-core` 4.8+ dropped the `duplicate-id` and `duplicate-id-active` rules; only `duplicate-id-aria`
+survives (this repo runs 4.12.1). So `expectNoA11yViolations` will **not** flag two elements sharing an
+`id` unless that id is referenced by an ARIA attribute. When a change can produce id collisions — a
+field-aware control nested in `OriField`, or any composite that re-uses an id — assert uniqueness
+explicitly (`new Set([...root.querySelectorAll('[id]')].map((e) => e.id)).size === count`) instead of
+trusting the axe pass. This exact gap let a 3-way `id` collision in ColorPicker-in-Field slip through green.
