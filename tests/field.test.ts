@@ -366,7 +366,7 @@ describe('OriField', () => {
             { attachTo: document.body }
         );
 
-        const ids = Array.from(wrapper.element.querySelectorAll('[id]')).map((el) => el.id);
+        const ids = Array.from((wrapper.element as HTMLElement).querySelectorAll('[id]')).map((el) => el.id);
         expect(new Set(ids).size).toBe(ids.length); // all ids unique
         expect(ids.filter((v) => v === 'cpf')).toHaveLength(0); // no internal part took the field id
 
