@@ -38,9 +38,7 @@
         },
         "./package.json": "./package.json"
     },
-    "sideEffects": [
-        "**/*.css"
-    ],
+    "sideEffects": false,
     "scripts": {
         "build": "vite build && vue-tsc -p tsconfig.build.json && node scripts/fix-dts.mjs",
         "types": "vue-tsc --noEmit"
@@ -50,6 +48,6 @@
         "@oriui/headless": "1.0.0-alpha.13"
     },
     "peerDependencies": {
-        "vue": "^3"
+        "vue": "^3.5"
     }
 }
