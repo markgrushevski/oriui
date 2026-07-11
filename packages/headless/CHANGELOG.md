@@ -1,5 +1,65 @@
 # @oriui/headless
 
+## 1.0.0-alpha.14
+
+### Minor Changes
+
+- 0b377dc: The **Svelte adapter** (`@oriui/headless/svelte`) now mirrors the Vue seam: `useCombobox` / `useMenu`
+  resolve through the OriHeadless context (`getHeadless()?.combobox ?? nativeCombobox`) with the native
+  `core` adapter as the default — so a Svelte app can swap a custom / Zag-backed combobox / menu engine via
+  `provideHeadless()`, at parity with the Vue side. Adds `ComboboxControl` / `ComboboxAdapter` /
+  `MenuControl` / `MenuAdapter` (Svelte `Readable` shapes), `combobox?` / `menu?` on the Svelte
+  `HeadlessAdapters`, and `nativeCombobox` / `nativeMenu` exports. Behavior is unchanged when no adapter is
+  registered.
+- 55a7579: **Combobox and Menu are now genuinely swappable** behind the `OriHeadless` contract, matching Dialog and
+  Disclosure. `useCombobox` / `useMenu` previously imported the core state machine directly (no swap seam),
+  so the "swappable adapters" promise was true only for the overlays. They now resolve through
+  `inject(ORI_HEADLESS)` with the in-house `core` adapter as the default — so an app can provide a custom /
+  Zag-backed `combobox` / `menu` engine via `provideHeadless()` / the `OriHeadless` plugin without touching
+  component markup.
+
+    Adds to the public contract: `ComboboxControl` / `ComboboxAdapter` / `MenuControl` / `MenuAdapter` types,
+    `combobox?` / `menu?` on `HeadlessAdapters`, and `nativeCombobox` / `nativeMenu` (the default adapters).
+    Behavior is unchanged when no adapter is registered — native is the default.
+
+- 924018a: `resolveRovingIndex` (core) gains an optional `isEnabled(index)` predicate: when supplied it **skips**
+  indices it rejects, scanning on in the intent's direction — the Tabs / RadioGroup model — while the
+  default (no predicate) keeps the toolbar's single-step behavior that **visits** disabled items. `OriTabs`
+  now composes the shared `rovingIntent` / `resolveRovingIndex` core helpers instead of hand-rolling its
+  roving math; behavior is unchanged and the flagship Toolbar is untouched.
+
+### Patch Changes
+
+- 36a5dcc: **OriColorPicker** — accessibility + correctness fixes:
+
+    - The saturation/value area's two visually-hidden range inputs each own one axis now
+      (saturation = horizontal keys, brightness = vertical + `aria-orientation`), so every
+      arrow keystroke changes the focused slider's own value and a screen reader announces it —
+      Up/Down on the saturation slider no longer silently moves brightness. `aria-valuetext`
+      now carries the resulting colour, not just the bare axis percentage.
+    - The external-value echo-guard formats with the alpha flag, so with `alpha` on the working
+      colour is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
+      ~1% grid on `rgb()`/`hsl()` output is gone.
+    - A disabled picker's preset swatches are inert to the keyboard too now (a real `disabled`
+      attribute plus guarded click/keydown handlers); `pointer-events: none` had only blocked
+      the mouse, leaving them Tab-focusable and Enter-activatable.
+
+- 080571c: OriColorPicker polish + SSR-safety:
+
+    - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
+      colour changes, instead of always starting at index 0.
+    - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
+      alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
+    - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
+      silent `aria-invalid` flip.
+    - The eyedropper trigger is **SSR-safe** — feature-detected after mount, so it no longer causes a
+      hydration mismatch — and is sized to match the 2rem preview swatch.
+    - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
+      the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
+      more gap so the selected ring clears its neighbour.
+    - Panel corners now read component-local radius aliases; dropped the inert `label` option from
+      `useColorPicker`.
+
 ## 1.0.0-alpha.13
 
 ### Minor Changes

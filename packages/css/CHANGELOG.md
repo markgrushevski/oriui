@@ -1,5 +1,34 @@
 # @oriui/css
 
+## 1.0.0-alpha.14
+
+### Patch Changes
+
+- 5e28b7c: Catalog consistency polish:
+
+    - **OriSlider** and **OriCombobox** gain a `#label` slot (the `label` prop is the fallback), matching
+      OriField — so a standalone control can take a rich label (an icon + text) while keeping the label
+      `for`/`id` and the combobox listbox `aria-labelledby` wiring intact.
+    - The combobox listbox and the toast card now read a baked `--ori-size-radius` alias (two-tier) rather
+      than the raw scale token, so a consumer `.ori-size-radius_*` utility can retune their corners — matching
+      menu / popover / card. Defaults are unchanged.
+
+- 080571c: OriColorPicker polish + SSR-safety:
+
+    - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
+      colour changes, instead of always starting at index 0.
+    - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
+      alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
+    - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
+      silent `aria-invalid` flip.
+    - The eyedropper trigger is **SSR-safe** — feature-detected after mount, so it no longer causes a
+      hydration mismatch — and is sized to match the 2rem preview swatch.
+    - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
+      the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
+      more gap so the selected ring clears its neighbour.
+    - Panel corners now read component-local radius aliases; dropped the inert `label` option from
+      `useColorPicker`.
+
 ## 1.0.0-alpha.13
 
 ### Patch Changes
