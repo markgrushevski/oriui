@@ -101,7 +101,9 @@ const options = [
 
 ## Clearable
 
-`clearable` shows a clear button while there is a selection.
+`clearable` shows a clear button while there is a selection. Keyboard users clear with **Escape** when
+the listbox is closed (the button itself is a pointer affordance) — so the selection is always removable
+without a mouse.
 
 ::example
 :ori-combobox{:options='[{"label":"Apple","value":"apple"},{"label":"Banana","value":"banana"},{"label":"Grape","value":"grape"}]' label="Fruit" :clearable="true" placeholder="Pick one"}
