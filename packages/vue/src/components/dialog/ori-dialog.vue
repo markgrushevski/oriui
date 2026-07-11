@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { useTemplateRef, watch, watchPostEffect } from 'vue';
+import { computed, mergeProps, useAttrs, useSlots, useTemplateRef, watch, watchPostEffect } from 'vue';
 import { useDialog } from '@oriui/headless/vue';
+
+// Forward stray attributes (aria-label, data-*, @click, …) to the <dialog>, not the multi-root
+// fragment — the dialog is the meaningful element, matching the other controls. (Without this, a
+// consumer's aria-label would warn + be dropped, so a titleless dialog could never be named.)
+defineOptions({ inheritAttrs: false });
 
 // OriDialog — the library's first behavioral styled component: styled markup + tokens over the
 // engine-agnostic useDialog() contract, rendered on the native <dialog> element. The focus trap,
@@ -79,15 +84,36 @@ watchPostEffect(() => {
         el.close();
     }
 });
+
+// Accessible name. The adapter's `aria-labelledby` points at the <h2>, but that <h2> would be EMPTY
+// when no `title` / `#title` is given — a dialog "labelled" by an empty node (an AT announces an empty
+// name). So render the <h2> only when there IS a title; without one the labelledby becomes a dangling
+// reference the browser ignores, and a consumer `aria-label` (merged from $attrs) names the dialog
+// instead. The adapter's props are still applied verbatim (adapter transparency), just merged after
+// $attrs so the dialog's own a11y wins.
+const slots = useSlots();
+const attrs = useAttrs();
+const hasTitle = computed(() => Boolean(title) || Boolean(slots.title));
+const dialogBindings = computed(() => mergeProps(attrs, dlg.dialogProps.value));
+
+if (import.meta.env.DEV) {
+    watchPostEffect(() => {
+        if (dlg.open.value && !hasTitle.value && !attrs['aria-label'] && !attrs['aria-labelledby']) {
+            console.warn(
+                '[OriDialog] opened without an accessible name — pass a `title`, a #title slot, or an `aria-label`.'
+            );
+        }
+    });
+}
 </script>
 
 <template>
     <slot name="trigger" :props="dlg.triggerProps.value" :open="dlg.open.value"></slot>
 
-    <dialog ref="dialog" v-bind="dlg.dialogProps.value" class="ori-dialog">
+    <dialog ref="dialog" v-bind="dialogBindings" class="ori-dialog">
         <div class="ori-dialog__content">
             <header class="ori-dialog__header">
-                <h2 v-bind="dlg.titleProps.value" class="ori-dialog__title">
+                <h2 v-if="hasTitle" v-bind="dlg.titleProps.value" class="ori-dialog__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
                 <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-dialog__close" aria-label="Close">
