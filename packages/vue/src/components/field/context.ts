@@ -7,6 +7,10 @@ import type { ActionSize } from '../../types';
 export interface OriFieldContext {
     /** The id shared by the field's `<label for>` and the control. */
     id: ComputedRef<string>;
+    /** The `<label>` element's own id — for group/composite controls that name themselves via
+     *  `aria-labelledby` (radiogroup, combobox listbox, color-picker) rather than `<label for>`.
+     *  `undefined` when the field renders no label, so consumers omit a dangling `aria-labelledby`. */
+    labelId: ComputedRef<string | undefined>;
     /** `aria-describedby` pointing at the rendered hint or error (or undefined when neither shows). */
     describedBy: ComputedRef<string | undefined>;
     /** Whether the field is invalid (an `error` is set, or `invalid` was passed). */
@@ -19,7 +23,9 @@ export interface OriFieldContext {
     size: ComputedRef<ActionSize>;
 }
 
-export const oriFieldKey: InjectionKey<OriFieldContext> = Symbol('ori-field');
+// Value may be `undefined` — a composite control (e.g. OriColorPicker) provides `undefined` to shield
+// its own field-aware children from an ancestor field.
+export const oriFieldKey: InjectionKey<OriFieldContext | undefined> = Symbol('ori-field');
 
 /**
  * Read the surrounding `OriField` context, if any. Text controls (OriInput / OriSelect / OriTextarea)

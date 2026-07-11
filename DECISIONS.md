@@ -852,3 +852,27 @@ checkerboard `.ori-slider_alpha` track + a checkerboard swatch and emits `#rrggb
 alpha). **Still deferred to v2** (all additive): a user-facing format switcher, per-channel numeric inputs,
 a built-in recent-colors buffer (v1 stays consumer-supplied `presets`), a color wheel, wide-gamut /
 CSS-Color-4, and the Svelte twin.
+
+## OriField composes group/composite controls, not just single text inputs
+
+`OriField` now provides its label / hint / error / id / required / disabled / size context to
+**Combobox, Slider, RadioGroup, ColorPicker** (on top of Input / Select / Textarea). Decisions from the
+integration (an adversarial a11y + correctness review shaped these):
+
+- **Checkbox / Switch stay out.** A single boolean uses an inline label _after_ the box, not the field's
+  label-above layout; wrapping one in a field would render two labels. Grouped boolean sets are a
+  `fieldset` story, not this one.
+- **Group / composite controls name themselves via `aria-labelledby`**, not `<label for>` — `for` can
+  only target a labelable element, and a `role=radiogroup` / `role=group` div is not one. `OriField`
+  gained `labelId` on its context for this; it is **`undefined` when the field renders no label**, so
+  the `aria-labelledby` is omitted rather than dangling (mirrors `describedBy`). The field's
+  `<label for=fieldId>` is therefore **inert for group controls** (nothing owns that id) — a known,
+  harmless conformance nit, not a bug to "fix" by pointing `for` at an inner element.
+- **A composite built from field-aware children must shield them.** `OriColorPicker` embeds
+  `OriSlider` ×2 + `OriInput`; the field context flows via `provide`/`inject` to the whole subtree, so
+  those children would each adopt `field.id` (duplicate ids — WCAG 4.1.1) and the hex `OriInput` would
+  suppress its own validation error. Fix: the picker calls `provide(oriFieldKey, undefined)` to reset
+  the context for its subtree and forwards its own resolved `isDisabled` to the children explicitly.
+  Any future composite made of Ori form controls must do the same.
+- **Size-less controls don't scale.** Slider and ColorPicker have no `size` variant, so a field's
+  `size` scales only its label + helper for them (documented on the field page).

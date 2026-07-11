@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { useColorPicker } from '@oriui/headless/vue';
 import type { ColorFormat } from '@oriui/headless/vue';
 import { OriSlider } from '../slider';
 import { OriInput } from '../input';
 import { OriButton } from '../button';
+import { oriFieldKey, useOriField } from '../field/context';
 
 // OriColorPicker — an INLINE saturation/value + hue (+ optional alpha) + hex + presets panel. It is
 // open-state-agnostic: to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger
@@ -36,12 +37,30 @@ const {
 const model = defineModel<string>();
 const emit = defineEmits<{ change: [value: string] }>();
 
+// A color-picker names itself via aria-label(ledby), so inside an OriField it points at the field's
+// label id + adopts its describedby / disabled; standalone it keeps its own `label` → aria-label. It has
+// no size / required / invalid concept, so those field bits don't apply. `isDisabled` feeds the engine.
+const field = useOriField();
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
+const isInvalid = computed(() => field?.invalid.value ?? false);
+const labelledBy = computed(() => field?.labelId.value);
+const describedBy = computed(() => field?.describedBy.value);
+// Keep the own aria-label unless the field actually supplies a labelledby (a label-less field must not
+// blank the picker's name).
+const ariaLabel = computed(() => (labelledBy.value ? undefined : label));
+
+// This picker COMPOSES field-aware children (OriSlider ×2, OriInput hex, OriButton eyedropper). Since
+// the field context flows via provide/inject to the whole subtree, shield the children so they render
+// standalone — otherwise each adopts field.id (duplicate ids) and the hex error is suppressed. The
+// picker's OWN isDisabled is forwarded to them explicitly below so field-disabled still propagates.
+provide(oriFieldKey, undefined);
+
 const cp = useColorPicker(() => ({
     value: model.value,
     format,
     alpha,
     eyedropper,
-    disabled,
+    disabled: isDisabled.value,
     presets,
     onInput: (next) => {
         model.value = next;
@@ -74,7 +93,15 @@ function commitHex(): void {
 </script>
 
 <template>
-    <div class="ori-color-picker" role="group" :aria-label="label" :data-disabled="disabled ? '' : undefined">
+    <div
+        class="ori-color-picker"
+        role="group"
+        :aria-label="ariaLabel"
+        :aria-labelledby="labelledBy"
+        :aria-describedby="describedBy"
+        :aria-invalid="isInvalid ? 'true' : undefined"
+        :data-disabled="isDisabled ? '' : undefined"
+    >
         <!-- 2D saturation × value area. The two visually-hidden range inputs are the a11y surface: each
              owns one axis (saturation = horizontal keys, brightness = vertical), so every keystroke
              announces on the focused slider. Pointer drag on the area moves both axes at once. -->
@@ -102,7 +129,7 @@ function commitHex(): void {
                     :min="0"
                     :max="359"
                     :step="1"
-                    :disabled="disabled"
+                    :disabled="isDisabled"
                     aria-label="Hue"
                     :aria-valuetext="`${Math.round(cp.hue.value)}°`"
                     @update:model-value="cp.setHue"
@@ -116,7 +143,7 @@ function commitHex(): void {
                     :min="0"
                     :max="100"
                     :step="1"
-                    :disabled="disabled"
+                    :disabled="isDisabled"
                     :style="{ '--ori-color': cp.opaqueColor.value }"
                     aria-label="Alpha"
                     :aria-valuetext="`${Math.round(cp.alpha.value * 100)}%`"
@@ -130,7 +157,7 @@ function commitHex(): void {
                 class="ori-color-picker__eyedropper"
                 variant="outline"
                 :icon="EYEDROPPER_ICON"
-                :disabled="disabled"
+                :disabled="isDisabled"
                 aria-label="Pick a color from the screen"
                 @click="cp.openEyeDropper"
             />
