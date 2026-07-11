@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useId, watch } from 'vue';
+import { rovingIntent, resolveRovingIndex } from '@oriui/headless';
 import type { ThemeColor } from '../../types';
 
 interface TabItem {
@@ -69,59 +70,20 @@ const select = (tab: TabItem) => {
     model.value = tab.value;
 };
 
-// Move selection (automatic activation) to the next non-disabled tab in `direction`, wrapping around,
-// then focus it. `from` is the index to start scanning from.
-const moveTo = (from: number, direction: 1 | -1) => {
-    const count = tabs.length;
-    if (count === 0) return;
-
-    for (let step = 1; step <= count; step += 1) {
-        const index = (from + direction * step + count * step) % count;
-        const tab = tabs[index];
-        if (tab && !tab.disabled) {
-            select(tab);
-            focusTab(index);
-            return;
-        }
-    }
-};
-
-// Jump to the first / last non-disabled tab (Home / End).
-const moveToEdge = (edge: 'first' | 'last') => {
-    const start = edge === 'first' ? 0 : tabs.length - 1;
-    const direction = edge === 'first' ? 1 : -1;
-
-    for (let index = start; index >= 0 && index < tabs.length; index += direction) {
-        const tab = tabs[index];
-        if (tab && !tab.disabled) {
-            select(tab);
-            focusTab(index);
-            return;
-        }
-    }
-};
-
+// Automatic-activation roving: map the key to an intent (orientation-aware), resolve the target tab via
+// the shared core helpers — skipping disabled tabs, wrapping — then select + focus it. The index math is
+// the same `core/roving.ts` the toolbar uses (an `isEnabled` predicate makes it step OVER disabled tabs,
+// which the toolbar doesn't); this SFC still owns the DOM (real focus by live document order).
 const onKeydown = (event: KeyboardEvent, index: number) => {
-    const next = orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight';
-    const prev = orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft';
+    const intent = rovingIntent(event.key, orientation);
+    if (!intent) return;
+    event.preventDefault();
 
-    switch (event.key) {
-        case next:
-            event.preventDefault();
-            moveTo(index, 1);
-            break;
-        case prev:
-            event.preventDefault();
-            moveTo(index, -1);
-            break;
-        case 'Home':
-            event.preventDefault();
-            moveToEdge('first');
-            break;
-        case 'End':
-            event.preventDefault();
-            moveToEdge('last');
-            break;
+    const to = resolveRovingIndex(intent, index, tabs.length, true, (i) => !tabs[i]?.disabled);
+    const tab = to >= 0 ? tabs[to] : undefined;
+    if (tab) {
+        select(tab);
+        focusTab(to);
     }
 };
 </script>
