@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import {
     formatColor,
     hsvToRgb,
@@ -32,8 +32,6 @@ export interface UseColorPickerOptions {
     alpha?: boolean;
     /** Expose an eyedropper trigger (the EyeDropper API; `eyedropperSupported` is false where absent). */
     eyedropper?: boolean;
-    /** Accessible name for the whole control (→ `aria-label` on the root group). */
-    label?: string;
     disabled?: boolean;
     /** Preset swatches (a `string[]` of colors) rendered as a single-select roving listbox. */
     presets?: string[];
@@ -196,11 +194,24 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
 
     // --- preset swatches (single-select roving listbox) ----------------------------------------------
     const presets = (): string[] => opts().presets ?? [];
-    const activePreset = ref(0);
     const isPresetSelected = (color: string): boolean => {
         const parsed = parseColor(color, hsva.value.h);
         return parsed ? formatColor(parsed, 'hex') === formatColor(hsva.value, 'hex') : false;
     };
+    const selectedIndex = computed(() => presets().findIndex((color) => isPresetSelected(color)));
+
+    // The single roving Tab stop. APG: it should sit on the SELECTED swatch — seed it on mount and let
+    // it follow external colour changes. No focus-guard is needed: the selection only changes via a
+    // preset click (which sets `activePreset` itself) or via the area/hue/hex (focus is outside the
+    // listbox) — never while arrowing within it, so `activePreset` is never yanked from under the user.
+    const activePreset = ref(0);
+    watch(
+        selectedIndex,
+        (i) => {
+            if (i >= 0) activePreset.value = i;
+        },
+        { immediate: true }
+    );
 
     const presetGroupProps = computed(() => ({
         role: 'listbox' as const,
@@ -246,9 +257,16 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     }
 
     // --- eyedropper (progressive enhancement; Chromium-only, feature-detected) ------------------------
-    const eyedropperSupported = typeof window !== 'undefined' && 'EyeDropper' in window;
+    // Detect AFTER mount, not at setup: on the server `window` is absent (→ false) while the client has
+    // it (→ true), so a setup-time const would render the trigger only on the client and trip an SSR
+    // hydration mismatch. Gating on mount makes the server and the first client render agree (no button),
+    // then the trigger appears post-mount where supported.
+    const eyedropperSupported = ref(false);
+    onMounted(() => {
+        eyedropperSupported.value = typeof window !== 'undefined' && 'EyeDropper' in window;
+    });
     async function openEyeDropper(): Promise<void> {
-        if (!eyedropperSupported || disabled()) return;
+        if (!eyedropperSupported.value || disabled()) return;
         try {
             const Ctor = (window as unknown as { EyeDropper: new () => { open(): Promise<{ sRGBHex: string }> } })
                 .EyeDropper;
