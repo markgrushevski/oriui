@@ -74,12 +74,6 @@ const cp = useColorPicker(() => ({
     onChange: (next) => emit('change', next)
 }));
 
-// Form submission. A color control always carries a value (like a native <input type=color>), so the
-// hidden input submits the current color in the emitted format — never empty, even before interaction
-// (whereas the v-model can start undefined). `isDisabled` excludes it from FormData, matching a native
-// disabled control. Rendered only when `name` is set.
-const submittedColor = computed(() => cp.value.value);
-
 // A single-path eyedropper glyph (MDI-style) for the pick-from-screen trigger.
 const EYEDROPPER_ICON =
     'M19.35 11.72 17.22 13.85 15.81 12.43 8.1 20.14 3.5 22 2 20.5 3.86 15.9 11.57 8.19 10.15 6.78 12.28 4.65 19.35 11.72M16.76 3C17.93 1.83 19.83 1.83 21 3 22.17 4.17 22.17 6.07 21 7.24L19.08 9.16 14.84 4.92 16.76 3Z';
@@ -211,13 +205,14 @@ function commitHex(): void {
         </div>
 
         <!-- Submit the current color under `name` (a color control has no empty state — mirrors a native
-             <input type=color>). Disabled excludes it from FormData. -->
+             <input type=color>, so it submits the current color even before interaction). `cp.value` is
+             the color in the emitted format; `isDisabled` excludes it from FormData like a native control. -->
         <input
             v-if="name"
             type="hidden"
             :name="name"
             :form="form"
-            :value="submittedColor"
+            :value="cp.value.value"
             :disabled="isDisabled || undefined"
         />
     </div>
