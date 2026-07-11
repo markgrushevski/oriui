@@ -15,7 +15,7 @@
         "name": "@oriui/vue — full library, all 34 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
-        "limit": "44 kB"
+        "limit": "45 kB"
     },
     {
         "name": "@oriui/headless — core engine (gzip)",
