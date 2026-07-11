@@ -259,11 +259,36 @@ describe('OriCombobox', () => {
         expect(errW.find('.ori-combobox__hint').exists()).toBe(false);
     });
 
-    it('required renders the asterisk and the native required', () => {
+    it('required renders the asterisk + aria-required and guards the SELECTION (not the typed text)', async () => {
         const wrapper = mountCb({ required: true });
+        await wrapper.vm.$nextTick();
+        const input = wrapper.find('input[role="combobox"]');
+        const el = input.element as HTMLInputElement;
 
         expect(wrapper.find('.ori-combobox__required').exists()).toBe(true);
-        expect((wrapper.find('input').element as HTMLInputElement).required).toBe(true);
+        expect(input.attributes('aria-required')).toBe('true');
+        // native `required` is NOT set on the visible input (it would validate the label text, not the
+        // selection); validity is driven by whether a value is committed
+        expect(el.required).toBe(false);
+        expect(el.validity.valid).toBe(false);
+        expect(el.validationMessage).toBeTruthy();
+
+        // typing a non-matching query must NOT satisfy required (no value is committed)
+        await input.setValue('zzz');
+        await wrapper.vm.$nextTick();
+        expect(el.validity.valid).toBe(false);
+
+        // committing a real selection clears the custom validity
+        await wrapper.setProps({ modelValue: 'apple' });
+        await wrapper.vm.$nextTick();
+        expect(el.validity.valid).toBe(true);
+    });
+
+    it('associates both the value (hidden) and validation (visible) inputs with an out-of-tree form', () => {
+        const wrapper = mountCb({ name: 'fruit', form: 'checkout', required: true });
+
+        expect(wrapper.find('input[type="hidden"]').attributes('form')).toBe('checkout');
+        expect(wrapper.find('input[role="combobox"]').attributes('form')).toBe('checkout');
     });
 
     it('maps color / size / radius to classes', () => {
