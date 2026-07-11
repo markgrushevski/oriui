@@ -1,9 +1,18 @@
 import { derived, get, readable, writable } from 'svelte/store';
-import { disclosure } from '../core';
+import { combobox, disclosure, menu, type ComboboxItem, type MenuItem } from '../core';
 import { uid } from './id';
 import { normalizeProps } from './normalize-props';
-import { connectStore } from './use-store';
-import type { DialogControl, DisclosureControl, UseDialogOptions, UseDisclosureOptions } from './contract';
+import { connectStore, safeOnDestroy, serviceVersion, toReadable, type MaybeReactive } from './use-store';
+import type {
+    ComboboxControl,
+    DialogControl,
+    DisclosureControl,
+    MenuControl,
+    UseComboboxOptions,
+    UseDialogOptions,
+    UseDisclosureOptions,
+    UseMenuOptions
+} from './contract';
 
 /**
  * Native oriUI Disclosure adapter — built on the in-house `../core` machine, the same one the Vue
@@ -82,5 +91,115 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
         titleProps: readable({ id: titleId }),
         descriptionProps: readable({ id: descriptionId }),
         closeTriggerProps: readable({ onclick: () => setOpen(false) })
+    };
+};
+
+const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
+    item.label.toLowerCase().includes(query.trim().toLowerCase());
+
+/**
+ * Native oriUI Combobox adapter (Svelte) — the WAI-ARIA listbox-combobox on the shared `../core` state
+ * machine, same engine as the Vue adapter; only the reactive wrapper (Svelte stores) differs. Default
+ * behind `useCombobox`; the OriHeadless contract lets an app swap a custom / Zag-backed one.
+ */
+export const nativeCombobox = (options: MaybeReactive<UseComboboxOptions>): ComboboxControl => {
+    const opts$ = toReadable(options);
+    const initial = get(opts$);
+
+    const service = combobox.machine({
+        id: initial.id ?? uid('combobox'),
+        defaultValue: initial.value ?? null,
+        defaultInputValue: initial.inputValue ?? '',
+        disabled: initial.disabled
+    });
+
+    // Keep `disabled` in sync past creation. A store input drives it; a plain object emits once → no-op.
+    let lastDisabled = initial.disabled ?? false;
+    safeOnDestroy(
+        opts$.subscribe((o) => {
+            const next = o.disabled ?? false;
+            if (next === lastDisabled) return;
+            lastDisabled = next;
+            service.send({ type: 'SET_DISABLED', disabled: next });
+        })
+    );
+
+    const version$ = serviceVersion(service);
+
+    // Visible items: filter by the current input — but show the whole list when the input is empty or
+    // still equals the committed selection's label (so picking an option doesn't collapse the list).
+    const visibleItems = (o: UseComboboxOptions): ComboboxItem[] => {
+        const { inputValue, value } = service.getState();
+        const all = o.options;
+        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined;
+        if (inputValue.trim() === '' || inputValue === selectedLabel) return all;
+        const filter = o.filter ?? defaultComboboxFilter;
+        return all.filter((item) => filter(item, inputValue));
+    };
+
+    const api = derived([version$, opts$], ([, o]) => combobox.connect(service, normalizeProps, visibleItems(o)));
+
+    return {
+        open: derived(api, (a) => a.open),
+        value: derived(api, (a) => a.value),
+        inputValue: derived(api, (a) => a.inputValue),
+        highlightedValue: derived(api, (a) => a.highlightedValue),
+        items: derived([version$, opts$], ([, o]) => visibleItems(o)),
+        rootProps: derived(api, (a) => a.getRootProps()),
+        labelProps: derived(api, (a) => a.getLabelProps()),
+        controlProps: derived(api, (a) => a.getControlProps()),
+        inputProps: derived(api, (a) => a.getInputProps()),
+        triggerProps: derived(api, (a) => a.getTriggerProps()),
+        clearTriggerProps: derived(api, (a) => a.getClearTriggerProps()),
+        listboxProps: derived(api, (a) => a.getListboxProps()),
+        getOptionProps: derived(api, (a) => (item: ComboboxItem, index: number) => a.getOptionProps(item, index)),
+        getOptionState: derived(api, (a) => (item: ComboboxItem) => a.getOptionState(item)),
+        setOpen: (open: boolean) => get(api).setOpen(open),
+        setInputValue: (next: string) => get(api).setInputValue(next),
+        select: (item: ComboboxItem) => get(api).select(item),
+        clear: () => get(api).clear()
+    };
+};
+
+/**
+ * Native oriUI Menu adapter (Svelte) — the WAI-ARIA menu-button + roving tabindex on `../core`. Default
+ * behind `useMenu`; swappable through the OriHeadless contract like the others.
+ */
+export const nativeMenu = (options: MaybeReactive<UseMenuOptions>): MenuControl => {
+    const opts$ = toReadable(options);
+    const initial = get(opts$);
+
+    const service = menu.machine({
+        id: initial.id ?? uid('menu'),
+        disabled: initial.disabled
+    });
+
+    let lastDisabled = initial.disabled ?? false;
+    safeOnDestroy(
+        opts$.subscribe((o) => {
+            const next = o.disabled ?? false;
+            if (next === lastDisabled) return;
+            lastDisabled = next;
+            service.send({ type: 'SET_DISABLED', disabled: next });
+        })
+    );
+
+    const version$ = serviceVersion(service);
+
+    const api = derived([version$, opts$], ([, o]) => menu.connect(service, normalizeProps, o.items, o.onSelect));
+
+    return {
+        open: derived(api, (a) => a.open),
+        highlightedValue: derived(api, (a) => a.highlightedValue),
+        items: derived(opts$, (o) => o.items),
+        triggerProps: derived(api, (a) => a.getTriggerProps()),
+        contentProps: derived(api, (a) => a.getContentProps()),
+        separatorProps: derived(api, (a) => a.getSeparatorProps()),
+        getItemProps: derived(api, (a) => (item: MenuItem, index: number) => a.getItemProps(item, index)),
+        getItemState: derived(api, (a) => (item: MenuItem) => a.getItemState(item)),
+        setOpen: (open: boolean) => get(api).setOpen(open),
+        highlight: (value: string | null) => get(api).highlight(value),
+        highlightFirst: () => get(api).highlightFirst(),
+        highlightLast: () => get(api).highlightLast()
     };
 };
