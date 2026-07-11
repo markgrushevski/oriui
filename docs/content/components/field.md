@@ -132,8 +132,9 @@ its own label and helper and reads the field's wiring instead.
 
 ## Sizes
 
-`size` lives on the field and propagates to the nested control, so the label, helper, and control
-share one scale. `xs` → `xxl`.
+`size` lives on the field and propagates to controls that have a size scale (Input, Select, Textarea,
+Combobox, RadioGroup), so the label, helper, and control share one scale. `xs` → `xxl`. Size-less
+controls (Slider, ColorPicker) keep their fixed dimensions — only the label + helper scale.
 
 ::example
 ::ori-field{label="Small" size="sm" hint="size = sm"}
@@ -195,8 +196,11 @@ the same values from the scoped-slot `controlAttrs`.
 The contract holds across every layer — the standalone classes and the Vue component render the same
 attributes and ARIA wiring.
 
-- The `label` is tied to the control by `for` / `id`; the id is auto-generated (`useId`) when you
-  don't pass one, and a nested Ori control adopts it so the association always holds.
+- **Labelable controls** (Input, Select, Textarea, the Combobox input, the Slider range) are tied to
+  the `label` by `for` / `id`; the id is auto-generated (`useId`) when you don't pass one, and the
+  nested control adopts it. **Group / composite controls** (RadioGroup, ColorPicker, the Combobox
+  listbox) can't be targeted by `for`, so they name themselves via `aria-labelledby` pointing at the
+  field's label instead.
 - `hint` and `error` are wired through `aria-describedby`, referencing only the element actually
   rendered (`error` supersedes `hint`). Pass extra ids with `describedby` for a shared note.
 - `error` sets `aria-invalid="true"` and announces via `role="alert"`; `invalid` flips

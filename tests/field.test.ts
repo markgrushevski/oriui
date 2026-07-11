@@ -355,6 +355,55 @@ describe('OriField', () => {
         expect(wrapper.find('.ori-color-picker').attributes('data-disabled')).toBe('');
     });
 
+    it('a nested OriColorPicker shields its internal Ori controls from the field (unique ids)', () => {
+        // ColorPicker composes OriSlider ×2 + OriInput; without an injection boundary they would each
+        // adopt field.id and collide (axe 4.12 no longer flags duplicate ids, so assert it directly).
+        const wrapper = mount(
+            {
+                components: { OriField, OriColorPicker },
+                template: `<OriField id="cpf" label="Brand"><OriColorPicker :alpha="true" model-value="#3366ff" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        const ids = Array.from(wrapper.element.querySelectorAll('[id]')).map((el) => el.id);
+        expect(new Set(ids).size).toBe(ids.length); // all ids unique
+        expect(ids.filter((v) => v === 'cpf')).toHaveLength(0); // no internal part took the field id
+
+        wrapper.unmount();
+    });
+
+    it('a nested OriColorPicker still surfaces its own hex validation (field does not suppress it)', async () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriColorPicker },
+                template: `<OriField label="Brand"><OriColorPicker model-value="#3366ff" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        const hex = wrapper.find('input[aria-label="Hex color"]');
+        await hex.setValue('nothex');
+        await hex.trigger('blur');
+        await wrapper.vm.$nextTick();
+        expect(hex.attributes('aria-invalid')).toBe('true');
+
+        wrapper.unmount();
+    });
+
+    it('a label-less field leaves a nested group with no dangling aria-labelledby', () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriRadioGroup },
+                template: `<OriField hint="Pick one"><OriRadioGroup :options="[{ label: 'S', value: 's' }]" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+        // no label renders → labelId is undefined → aria-labelledby omitted, not pointed at a ghost id
+        expect(wrapper.find('[role="radiogroup"]').attributes('aria-labelledby')).toBeUndefined();
+        wrapper.unmount();
+    });
+
     // ----- a control used standalone keeps owning its label (no regression) -----
 
     it('a standalone OriInput still renders its own label (field is opt-in)', () => {

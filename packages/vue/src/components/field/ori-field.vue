@@ -41,7 +41,6 @@ const {
 // explicit id.
 const uid = useId();
 const fieldId = computed(() => id ?? uid);
-const labelId = computed(() => `${fieldId.value}-label`);
 const hintId = computed(() => `${fieldId.value}-hint`);
 const errorId = computed(() => `${fieldId.value}-error`);
 // error / hint can come from a prop OR a slot; the a11y wiring must track whichever actually renders
@@ -49,7 +48,11 @@ const errorId = computed(() => `${fieldId.value}-error`);
 const slots = useSlots();
 const hasError = computed(() => Boolean(error) || Boolean(slots.error));
 const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint));
+const hasLabel = computed(() => Boolean(label) || Boolean(slots.label));
 const isInvalid = computed(() => invalid || hasError.value);
+// Only expose a labelId when a label actually renders (mirrors describedBy) — else a group/composite
+// control's aria-labelledby would dangle at a non-existent element.
+const labelId = computed(() => (hasLabel.value ? `${fieldId.value}-label` : undefined));
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
 // id — never reference an element that isn't in the DOM.
