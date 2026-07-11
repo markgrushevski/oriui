@@ -7,6 +7,9 @@ import type { ActionSize } from '../../types';
 export interface OriFieldContext {
     /** The id shared by the field's `<label for>` and the control. */
     id: ComputedRef<string>;
+    /** The `<label>` element's own id — for group/composite controls that name themselves via
+     *  `aria-labelledby` (radiogroup, combobox listbox, color-picker) rather than `<label for>`. */
+    labelId: ComputedRef<string>;
     /** `aria-describedby` pointing at the rendered hint or error (or undefined when neither shows). */
     describedBy: ComputedRef<string | undefined>;
     /** Whether the field is invalid (an `error` is set, or `invalid` was passed). */

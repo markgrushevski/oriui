@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { OriField, OriInput, OriSelect, OriTextarea } from '../packages/vue/src';
+import {
+    OriField,
+    OriInput,
+    OriSelect,
+    OriTextarea,
+    OriCombobox,
+    OriSlider,
+    OriRadioGroup,
+    OriColorPicker
+} from '../packages/vue/src';
 import { expectNoA11yViolations } from './helpers/axe';
 
 describe('OriField', () => {
@@ -219,6 +228,131 @@ describe('OriField', () => {
         const textarea = wrapper.find('textarea');
         expect(wrapper.find('label').attributes('for')).toBe(textarea.attributes('id'));
         expect(textarea.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'));
+    });
+
+    it('wires a nested OriCombobox (shared id, listbox labelled by the field, no duplicate label)', () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriCombobox },
+                template: `<OriField label="Fruit" hint="Pick one"><OriCombobox :options="[{ label: 'Apple', value: 'a' }]" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        expect(wrapper.find('.ori-combobox__label').exists()).toBe(false);
+        const input = wrapper.find('input[role="combobox"]');
+        const fieldLabel = wrapper.find('label.ori-field__label');
+        // the field's <label for> targets the combobox input; the listbox is named by the field label
+        expect(fieldLabel.attributes('for')).toBe(input.attributes('id'));
+        expect(wrapper.find('[role="listbox"]').attributes('aria-labelledby')).toBe(fieldLabel.attributes('id'));
+        expect(input.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'));
+
+        wrapper.unmount();
+    });
+
+    it('field error/required/disabled drive a nested OriCombobox (required guards the selection)', async () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriCombobox },
+                template: `<OriField label="Fruit" error="Required" required disabled><OriCombobox :options="[{ label: 'Apple', value: 'a' }]" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+        await wrapper.vm.$nextTick();
+        const input = wrapper.find('input[role="combobox"]').element as HTMLInputElement;
+
+        expect(input.getAttribute('aria-invalid')).toBe('true');
+        expect(input.getAttribute('aria-required')).toBe('true');
+        expect(input.disabled).toBe(true);
+        expect(input.validity.valid).toBe(false); // required + no selection
+
+        wrapper.unmount();
+    });
+
+    it('wires a nested OriSlider (shared id, no duplicate label)', () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriSlider },
+                template: `<OriField label="Volume" hint="0–100"><OriSlider :model-value="50" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        expect(wrapper.findAll('label')).toHaveLength(1);
+        expect(wrapper.find('.ori-slider__label').exists()).toBe(false);
+        const range = wrapper.find('input[type="range"]');
+        expect(wrapper.find('label').attributes('for')).toBe(range.attributes('id'));
+        expect(range.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'));
+
+        wrapper.unmount();
+    });
+
+    it('field disabled drives a nested OriSlider', () => {
+        const wrapper = mount({
+            components: { OriField, OriSlider },
+            template: `<OriField label="Volume" disabled><OriSlider :model-value="50" /></OriField>`
+        });
+        expect((wrapper.find('input[type="range"]').element as HTMLInputElement).disabled).toBe(true);
+    });
+
+    it('wires a nested OriRadioGroup (group named by the field, no duplicate group label)', async () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriRadioGroup },
+                template: `<OriField label="Size" hint="Pick one"><OriRadioGroup :options="[{ label: 'S', value: 's' }, { label: 'M', value: 'm' }]" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        expect(wrapper.find('.ori-radio-group__label').exists()).toBe(false);
+        const group = wrapper.find('[role="radiogroup"]');
+        const fieldLabel = wrapper.find('label.ori-field__label');
+        expect(group.attributes('aria-labelledby')).toBe(fieldLabel.attributes('id'));
+        expect(group.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'));
+
+        await expectNoA11yViolations(wrapper.element);
+        wrapper.unmount();
+    });
+
+    it('field required/disabled/invalid drive a nested OriRadioGroup', () => {
+        const wrapper = mount({
+            components: { OriField, OriRadioGroup },
+            template: `<OriField label="Size" error="Required" required disabled><OriRadioGroup :options="[{ label: 'S', value: 's' }]" /></OriField>`
+        });
+        const group = wrapper.find('[role="radiogroup"]');
+
+        expect(group.attributes('aria-required')).toBe('true');
+        expect(group.attributes('aria-invalid')).toBe('true');
+        const radio = wrapper.find('input[type="radio"]').element as HTMLInputElement;
+        expect(radio.disabled).toBe(true);
+        expect(radio.required).toBe(true);
+    });
+
+    it('wires a nested OriColorPicker (group named by the field, drops its own aria-label)', async () => {
+        const wrapper = mount(
+            {
+                components: { OriField, OriColorPicker },
+                template: `<OriField label="Brand color" hint="Pick"><OriColorPicker model-value="#3366ff" /></OriField>`
+            },
+            { attachTo: document.body }
+        );
+
+        const group = wrapper.find('.ori-color-picker');
+        const fieldLabel = wrapper.find('label.ori-field__label');
+        expect(group.attributes('aria-labelledby')).toBe(fieldLabel.attributes('id'));
+        expect(group.attributes('aria-label')).toBeUndefined();
+        expect(group.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'));
+
+        await expectNoA11yViolations(wrapper.element);
+        wrapper.unmount();
+    });
+
+    it('field disabled drives a nested OriColorPicker', () => {
+        const wrapper = mount({
+            components: { OriField, OriColorPicker },
+            template: `<OriField label="Color" disabled><OriColorPicker model-value="#3366ff" /></OriField>`
+        });
+        expect(wrapper.find('.ori-color-picker').attributes('data-disabled')).toBe('');
     });
 
     // ----- a control used standalone keeps owning its label (no regression) -----
