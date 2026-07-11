@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, mergeProps, ref, useId, watch, watchEffect } from 'vue';
+import { computed, mergeProps, ref, useId, useSlots, watch, watchEffect } from 'vue';
 import { useCombobox, type ComboboxItem } from '@oriui/headless/vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
+import { useOriField } from '../field/context';
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
@@ -66,6 +67,13 @@ const model = defineModel<string | null>();
 // Per-instance anchor-name tethers the fixed listbox to the control (CSS Anchor Positioning + flip).
 const anchorName = `--ori-combobox-${useId()}`;
 
+// When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
+// label / hint / error; standalone the control wires its own (behaviour unchanged). `isDisabled` is
+// read by the composable below, so it is declared before useCombobox.
+const field = useOriField();
+const inField = Boolean(field);
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
+
 const {
     open,
     value: selectedValue,
@@ -87,7 +95,7 @@ const {
     options,
     value: model.value ?? null,
     inputValue: model.value != null ? (options.find((o) => o.value === model.value)?.label ?? '') : '',
-    disabled,
+    disabled: isDisabled.value,
     filter
 }));
 
@@ -106,13 +114,21 @@ watch(
 );
 
 // hint / error live in this SFC (the machine doesn't know about validation); wire aria-describedby +
-// aria-invalid onto the headless input, and label the listbox only when a visible label exists.
-const inputId = computed(() => inputProps.value.id as string);
+// aria-invalid onto the headless input, and label the listbox only when a visible label exists. Inside a
+// field, the field owns the id / label / hint / error / required / invalid / size wiring instead.
+const slots = useSlots();
+const ownInputId = computed(() => inputProps.value.id as string);
+const inputElId = computed(() => field?.id.value ?? ownInputId.value);
 const labelId = computed(() => labelProps.value.id as string);
-const hintId = computed(() => `${inputId.value}-hint`);
-const errorId = computed(() => `${inputId.value}-error`);
-const isInvalid = computed(() => invalid || Boolean(error));
+const hasLabel = computed(() => Boolean(label) || Boolean(slots.label));
+const listboxLabelledBy = computed(() => (field ? field.labelId.value : hasLabel.value ? labelId.value : undefined));
+const hintId = computed(() => `${ownInputId.value}-hint`);
+const errorId = computed(() => `${ownInputId.value}-error`);
+const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)));
+const isRequired = computed(() => required || (field?.required.value ?? false));
+const fieldSize = computed(() => field?.size.value ?? size);
 const describedBy = computed(() => {
+    if (field) return field.describedBy.value;
     const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean);
     return ids.length ? ids.join(' ') : undefined;
 });
@@ -125,7 +141,7 @@ const describedBy = computed(() => {
 // nothing is selected, regardless of the typed text.
 const inputEl = ref<HTMLInputElement>();
 watchEffect(() => {
-    inputEl.value?.setCustomValidity(required && !selectedValue.value ? 'Please select an option.' : '');
+    inputEl.value?.setCustomValidity(isRequired.value && !selectedValue.value ? 'Please select an option.' : '');
 });
 
 // Keyboard clear path (WCAG 2.1.1): the clear button is a pointer affordance (tabindex -1), so give
@@ -145,24 +161,25 @@ const onInputKeydown = (event: KeyboardEvent) => {
         :class="[
             'ori-combobox',
             `ori-color_${color}`,
-            `ori-font-size_${size}`,
-            `ori-combobox_${size}`,
+            `ori-font-size_${fieldSize}`,
+            `ori-combobox_${fieldSize}`,
             { 'ori-combobox_fluid': fluid }
         ]"
     >
-        <label v-if="label || $slots.label" v-bind="labelProps" class="ori-combobox__label">
+        <label v-if="(label || $slots.label) && !inField" v-bind="labelProps" class="ori-combobox__label">
             <slot name="label">{{ label }}</slot
             ><span v-if="required" class="ori-combobox__required" aria-hidden="true">*</span>
         </label>
 
         <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
             <input
-                ref="inputEl"
                 v-bind="mergeProps($attrs, { onKeydown: onInputKeydown }, inputProps)"
+                :id="inputElId"
+                ref="inputEl"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
                 :placeholder="placeholder"
                 :form="form"
-                :aria-required="required || undefined"
+                :aria-required="isRequired || undefined"
                 :aria-invalid="isInvalid ? 'true' : undefined"
                 :aria-describedby="describedBy"
                 @blur="setOpen(false)"
@@ -202,7 +219,7 @@ const onInputKeydown = (event: KeyboardEvent) => {
                 v-bind="listboxProps"
                 :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom-start']"
                 :style="{ '--ori-anchor': anchorName }"
-                :aria-labelledby="label || $slots.label ? labelId : undefined"
+                :aria-labelledby="listboxLabelledBy"
             >
                 <li
                     v-for="(item, index) in items"
@@ -231,11 +248,11 @@ const onInputKeydown = (event: KeyboardEvent) => {
                 :name="name"
                 :form="form"
                 :value="selectedValue ?? ''"
-                :disabled="disabled || undefined"
+                :disabled="isDisabled || undefined"
             />
         </div>
 
-        <p v-if="error" :id="errorId" class="ori-combobox__error" role="alert">{{ error }}</p>
-        <p v-else-if="hint" :id="hintId" class="ori-combobox__hint">{{ hint }}</p>
+        <p v-if="error && !inField" :id="errorId" class="ori-combobox__error" role="alert">{{ error }}</p>
+        <p v-else-if="hint && !inField" :id="hintId" class="ori-combobox__hint">{{ hint }}</p>
     </div>
 </template>

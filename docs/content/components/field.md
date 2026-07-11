@@ -5,11 +5,13 @@ title: Field
 # Field
 
 The shared shell for form controls — **one source of truth** for the `label` / `hint` / `error` /
-`required` contract that [Input](/components/input), [Select](/components/select), and
-[Textarea](/components/textarea) otherwise each wire by hand. Wrap a control in `OriField` and it
-adopts the field's id, `aria-describedby`, `aria-invalid`, `required`, `disabled`, and `size` — and
-stops rendering its own label and helper, so there is exactly one of each, wired identically every
-time.
+`required` contract that [Input](/components/input), [Select](/components/select),
+[Textarea](/components/textarea), [Combobox](/components/combobox), [Slider](/components/slider),
+[RadioGroup](/components/radio), and [ColorPicker](/components/color-picker) otherwise each wire
+by hand. Wrap a control in `OriField` and it adopts the field's id, `aria-describedby`,
+`aria-invalid`, `required`, `disabled`, and `size` — and stops rendering its own label and helper, so
+there is exactly one of each, wired identically every time. Group and composite controls (RadioGroup,
+Combobox's listbox, ColorPicker) name themselves via `aria-labelledby` pointing at the field's label.
 
 Any control works: an Ori control nested inside wires up automatically (via `provide`/`inject`); a
 raw `<input>` or htmx markup wires up through the scoped-slot `controlAttrs`. The standalone
@@ -130,8 +132,9 @@ its own label and helper and reads the field's wiring instead.
 
 ## Sizes
 
-`size` lives on the field and propagates to the nested control, so the label, helper, and control
-share one scale. `xs` → `xxl`.
+`size` lives on the field and propagates to controls that have a size scale (Input, Select, Textarea,
+Combobox, RadioGroup), so the label, helper, and control share one scale. `xs` → `xxl`. Size-less
+controls (Slider, ColorPicker) keep their fixed dimensions — only the label + helper scale.
 
 ::example
 ::ori-field{label="Small" size="sm" hint="size = sm"}
@@ -193,8 +196,11 @@ the same values from the scoped-slot `controlAttrs`.
 The contract holds across every layer — the standalone classes and the Vue component render the same
 attributes and ARIA wiring.
 
-- The `label` is tied to the control by `for` / `id`; the id is auto-generated (`useId`) when you
-  don't pass one, and a nested Ori control adopts it so the association always holds.
+- **Labelable controls** (Input, Select, Textarea, the Combobox input, the Slider range) are tied to
+  the `label` by `for` / `id`; the id is auto-generated (`useId`) when you don't pass one, and the
+  nested control adopts it. **Group / composite controls** (RadioGroup, ColorPicker, the Combobox
+  listbox) can't be targeted by `for`, so they name themselves via `aria-labelledby` pointing at the
+  field's label instead.
 - `hint` and `error` are wired through `aria-describedby`, referencing only the element actually
   rendered (`error` supersedes `hint`). Pass extra ids with `describedby` for a shared note.
 - `error` sets `aria-invalid="true"` and announces via `role="alert"`; `invalid` flips

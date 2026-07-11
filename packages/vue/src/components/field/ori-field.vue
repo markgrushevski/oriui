@@ -48,7 +48,11 @@ const errorId = computed(() => `${fieldId.value}-error`);
 const slots = useSlots();
 const hasError = computed(() => Boolean(error) || Boolean(slots.error));
 const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint));
+const hasLabel = computed(() => Boolean(label) || Boolean(slots.label));
 const isInvalid = computed(() => invalid || hasError.value);
+// Only expose a labelId when a label actually renders (mirrors describedBy) — else a group/composite
+// control's aria-labelledby would dangle at a non-existent element.
+const labelId = computed(() => (hasLabel.value ? `${fieldId.value}-label` : undefined));
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
 // id — never reference an element that isn't in the DOM.
@@ -60,6 +64,7 @@ const describedBy = computed(() => {
 // Hand the contract to a nested Ori control.
 provide(oriFieldKey, {
     id: fieldId,
+    labelId,
     describedBy,
     invalid: isInvalid,
     required: computed(() => required),
@@ -85,7 +90,7 @@ const slotProps = computed(() => ({
 
 <template>
     <div :class="['ori-field', `ori-font-size_${size}`, { 'ori-field_fluid': fluid }]">
-        <label v-if="label || $slots.label" :for="fieldId" class="ori-field__label">
+        <label v-if="label || $slots.label" :id="labelId" :for="fieldId" class="ori-field__label">
             <slot name="label">{{ label }}</slot
             ><span v-if="required" class="ori-field__required" aria-hidden="true">*</span>
         </label>
