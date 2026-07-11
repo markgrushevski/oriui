@@ -30,7 +30,7 @@ export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core';
 export { provideHeadless, getHeadless } from './plugin';
 
 // Built-in native adapters (defaults) + the low-level bridge for writing your own
-export { nativeDisclosure, nativeDialog } from './native';
+export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native';
 export { connectStore } from './use-store';
 export { normalizeProps, type SveltePropTypes } from './normalize-props';
 export { uid } from './id';
@@ -44,5 +44,9 @@ export {
     type UseDialogOptions,
     type DialogControl,
     type DialogAdapter,
+    type ComboboxControl,
+    type ComboboxAdapter,
+    type MenuControl,
+    type MenuAdapter,
     type HeadlessAdapters
 } from './contract';

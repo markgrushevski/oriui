@@ -277,9 +277,10 @@ describe('Svelte useMenu', () => {
 });
 
 describe('Svelte resolvers fall back to native outside a component', () => {
-    it('useDisclosure / useDialog resolve the native adapter when no context is provided', () => {
+    it('useDisclosure / useDialog / useCombobox / useMenu resolve the native adapter when no context is provided', () => {
         // Called outside Svelte component init, getContext would throw — getHeadless swallows that and
-        // returns null, so the native default is used.
+        // returns null, so the native default is used. (The swap-WITH-context path needs a real component
+        // tree, like the toolbar registration below — see the note there.)
         const d = useDisclosure({ id: 'r' });
         expect(get(d.open)).toBe(false);
         expect(get(d.triggerProps).id).toBe('ori-r-trigger');
@@ -287,6 +288,14 @@ describe('Svelte resolvers fall back to native outside a component', () => {
         const dlg = useDialog({ id: 'rd' });
         expect(get(dlg.open)).toBe(false);
         expect(get(dlg.dialogProps).role).toBe('dialog');
+
+        const cb = useCombobox({ id: 'rc', options: [{ label: 'A', value: 'a' }] });
+        expect(get(cb.open)).toBe(false);
+        expect(get(cb.items)).toHaveLength(1);
+
+        const mn = useMenu({ id: 'rm', items: [{ label: 'X', value: 'x' }] });
+        expect(get(mn.open)).toBe(false);
+        expect(get(mn.items)).toHaveLength(1);
     });
 });
 
