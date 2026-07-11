@@ -41,6 +41,7 @@ const {
 // explicit id.
 const uid = useId();
 const fieldId = computed(() => id ?? uid);
+const labelId = computed(() => `${fieldId.value}-label`);
 const hintId = computed(() => `${fieldId.value}-hint`);
 const errorId = computed(() => `${fieldId.value}-error`);
 // error / hint can come from a prop OR a slot; the a11y wiring must track whichever actually renders
@@ -60,6 +61,7 @@ const describedBy = computed(() => {
 // Hand the contract to a nested Ori control.
 provide(oriFieldKey, {
     id: fieldId,
+    labelId,
     describedBy,
     invalid: isInvalid,
     required: computed(() => required),
@@ -85,7 +87,7 @@ const slotProps = computed(() => ({
 
 <template>
     <div :class="['ori-field', `ori-font-size_${size}`, { 'ori-field_fluid': fluid }]">
-        <label v-if="label || $slots.label" :for="fieldId" class="ori-field__label">
+        <label v-if="label || $slots.label" :id="labelId" :for="fieldId" class="ori-field__label">
             <slot name="label">{{ label }}</slot
             ><span v-if="required" class="ori-field__required" aria-hidden="true">*</span>
         </label>

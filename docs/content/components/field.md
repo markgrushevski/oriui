@@ -5,11 +5,13 @@ title: Field
 # Field
 
 The shared shell for form controls — **one source of truth** for the `label` / `hint` / `error` /
-`required` contract that [Input](/components/input), [Select](/components/select), and
-[Textarea](/components/textarea) otherwise each wire by hand. Wrap a control in `OriField` and it
-adopts the field's id, `aria-describedby`, `aria-invalid`, `required`, `disabled`, and `size` — and
-stops rendering its own label and helper, so there is exactly one of each, wired identically every
-time.
+`required` contract that [Input](/components/input), [Select](/components/select),
+[Textarea](/components/textarea), [Combobox](/components/combobox), [Slider](/components/slider),
+[RadioGroup](/components/radio), and [ColorPicker](/components/color-picker) otherwise each wire
+by hand. Wrap a control in `OriField` and it adopts the field's id, `aria-describedby`,
+`aria-invalid`, `required`, `disabled`, and `size` — and stops rendering its own label and helper, so
+there is exactly one of each, wired identically every time. Group and composite controls (RadioGroup,
+Combobox's listbox, ColorPicker) name themselves via `aria-labelledby` pointing at the field's label.
 
 Any control works: an Ori control nested inside wires up automatically (via `provide`/`inject`); a
 raw `<input>` or htmx markup wires up through the scoped-slot `controlAttrs`. The standalone
