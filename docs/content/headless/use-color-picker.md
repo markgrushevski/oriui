@@ -55,18 +55,19 @@ Reactive state, prop-getters (spread with `v-bind`), and imperative setters. `HS
 
 ### Reactive state
 
-| Property              | Type                                  | Description                                                                                              |
-| --------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `hsva`                | `ComputedRef<HSVA>`                   | The working color — the source of truth during interaction (hue preserved across a grayscale trip).      |
-| `rgb`                 | `ComputedRef<RGB>`                    | The working color as RGB (0–255), derived from `hsva`.                                                   |
-| `hex`                 | `ComputedRef<string>`                 | The hex the field shows: `#rrggbbaa` when `alpha` is on, else `#rrggbb`.                                 |
-| `hue`                 | `ComputedRef<number>`                 | The current hue, 0–360 (bind to the hue slider).                                                         |
-| `alpha`               | `ComputedRef<number>`                 | The current alpha, 0–1 (bind to the alpha slider).                                                       |
-| `swatchColor`         | `ComputedRef<string>`                 | The preview color — carries alpha, so a checkerboard shows through.                                      |
-| `opaqueColor`         | `ComputedRef<string>`                 | The opaque current color, for the alpha slider's transparent → color track.                              |
-| `ink`                 | `ComputedRef<'#000000' \| '#ffffff'>` | Readable ink over the current color, per WCAG luminance (`readableInk`).                                 |
-| `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-hue` gradient anchor.                                  |
-| `eyedropperSupported` | `boolean`                             | Whether the `EyeDropper` API exists (a plain, non-reactive boolean — gate the eyedropper trigger on it). |
+| Property              | Type                                  | Description                                                                                                                                                                         |
+| --------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hsva`                | `ComputedRef<HSVA>`                   | The working color — the source of truth during interaction (hue preserved across a grayscale trip).                                                                                 |
+| `rgb`                 | `ComputedRef<RGB>`                    | The working color as RGB (0–255), derived from `hsva`.                                                                                                                              |
+| `hex`                 | `ComputedRef<string>`                 | The hex the field shows: `#rrggbbaa` when `alpha` is on, else `#rrggbb`.                                                                                                            |
+| `value`               | `ComputedRef<string>`                 | The current color in the emitted `format` — the value a form submits; matches `v-model` after any emit (an initial value in another format still reports in `format`). Never empty. |
+| `hue`                 | `ComputedRef<number>`                 | The current hue, 0–360 (bind to the hue slider).                                                                                                                                    |
+| `alpha`               | `ComputedRef<number>`                 | The current alpha, 0–1 (bind to the alpha slider).                                                                                                                                  |
+| `swatchColor`         | `ComputedRef<string>`                 | The preview color — carries alpha, so a checkerboard shows through.                                                                                                                 |
+| `opaqueColor`         | `ComputedRef<string>`                 | The opaque current color, for the alpha slider's transparent → color track.                                                                                                         |
+| `ink`                 | `ComputedRef<'#000000' \| '#ffffff'>` | Readable ink over the current color, per WCAG luminance (`readableInk`).                                                                                                            |
+| `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-hue` gradient anchor.                                                                                                             |
+| `eyedropperSupported` | `boolean`                             | Whether the `EyeDropper` API exists (a plain, non-reactive boolean — gate the eyedropper trigger on it).                                                                            |
 
 ### Prop-getters
 

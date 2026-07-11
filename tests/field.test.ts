@@ -347,12 +347,17 @@ describe('OriField', () => {
         wrapper.unmount();
     });
 
-    it('field disabled drives a nested OriColorPicker', () => {
+    it('field disabled drives a nested OriColorPicker (group + every composed control)', () => {
         const wrapper = mount({
             components: { OriField, OriColorPicker },
             template: `<OriField label="Color" disabled><OriColorPicker model-value="#3366ff" /></OriField>`
         });
         expect(wrapper.find('.ori-color-picker').attributes('data-disabled')).toBe('');
+        // field-disabled must reach EVERY control the picker composes — the hex field included, or a
+        // keyboard user could type a hex, blur, and mutate the color while the field is disabled.
+        expect((wrapper.find('input.ori-color-picker__hex').element as HTMLInputElement).disabled).toBe(true);
+        expect((wrapper.find('input.ori-color-picker__channel').element as HTMLInputElement).disabled).toBe(true);
+        expect((wrapper.find('input.ori-slider_hue').element as HTMLInputElement).disabled).toBe(true);
     });
 
     it('a nested OriColorPicker shields its internal Ori controls from the field (unique ids)', () => {

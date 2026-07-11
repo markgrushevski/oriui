@@ -284,6 +284,67 @@ describe('OriColorPicker — eyedropper', () => {
     });
 });
 
+describe('OriColorPicker — form submission', () => {
+    const hidden = (w: ReturnType<typeof mount>) => w.find('input[type="hidden"]');
+
+    it('submits the current color via a hidden input under `name`', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', name: 'stroke' } });
+
+        expect(hidden(wrapper).exists()).toBe(true);
+        expect(hidden(wrapper).attributes('name')).toBe('stroke');
+        expect((hidden(wrapper).element as HTMLInputElement).value).toBe('#3366ff');
+    });
+
+    it('always carries a value — a color control has no empty state (unlike Combobox)', () => {
+        // No v-model: the combobox would submit '' here, but a color picker mirrors a native
+        // <input type=color> and submits its current (default black) color.
+        const wrapper = mount(OriColorPicker, { props: { name: 'stroke' } });
+        expect((hidden(wrapper).element as HTMLInputElement).value).toBe('#000000');
+    });
+
+    it('submits in the emitted format (rgb/hsl), not always hex', () => {
+        const rgb = mount(OriColorPicker, { props: { modelValue: '#3366ff', name: 'c', format: 'rgb' } });
+        expect((hidden(rgb).element as HTMLInputElement).value).toBe('rgb(51, 102, 255)');
+
+        const withAlpha = mount(OriColorPicker, { props: { modelValue: '#3366ff80', name: 'c', alpha: true } });
+        expect((hidden(withAlpha).element as HTMLInputElement).value).toBe('#3366ff80');
+    });
+
+    it('the hidden value tracks a live edit (hex commit)', async () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#000000', name: 'c' } });
+
+        await hexInput(wrapper).setValue('#12abef');
+        await hexInput(wrapper).trigger('blur');
+
+        expect((hidden(wrapper).element as HTMLInputElement).value).toBe('#12abef');
+    });
+
+    it('renders no hidden input when `name` is omitted', () => {
+        expect(hidden(mount(OriColorPicker, { props: { modelValue: '#3366ff' } })).exists()).toBe(false);
+    });
+
+    it('a disabled picker is excluded from submission (hidden input disabled)', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', name: 'stroke', disabled: true } });
+        expect((hidden(wrapper).element as HTMLInputElement).disabled).toBe(true);
+    });
+
+    it('associates the hidden input with an out-of-tree form by id', () => {
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', name: 'stroke', form: 'checkout' } });
+        expect(hidden(wrapper).attributes('form')).toBe('checkout');
+    });
+
+    it('a real <form> serializes the current color under the field name', () => {
+        const formEl = document.createElement('form');
+        document.body.appendChild(formEl);
+        const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', name: 'stroke' }, attachTo: formEl });
+
+        expect(new FormData(formEl).get('stroke')).toBe('#3366ff');
+
+        wrapper.unmount();
+        formEl.remove();
+    });
+});
+
 describe('OriColorPicker — disabled & axe', () => {
     it('disabled marks the group and disables the channels + hex', () => {
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', disabled: true } });

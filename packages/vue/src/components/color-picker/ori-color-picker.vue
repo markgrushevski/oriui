@@ -17,8 +17,10 @@ const {
     alpha = false,
     disabled = false,
     eyedropper = false,
+    form,
     format = 'hex',
     label,
+    name,
     presets
 } = defineProps<{
     /** Add an alpha channel — a checkerboard slider and `#rrggbbaa` / `rgba()` / `hsla()` output. */
@@ -26,10 +28,14 @@ const {
     disabled?: boolean;
     /** Show an eyedropper trigger (EyeDropper API; auto-hidden where the browser lacks it). */
     eyedropper?: boolean;
+    /** Associate the submitted value's hidden input with a form by id (when not a descendant of it). */
+    form?: string;
     /** Output format for the emitted string (default `'hex'`). */
     format?: ColorFormat;
     /** Accessible name for the whole control (→ `aria-label`). */
     label?: string;
+    /** Submit the current color under this field name via a hidden input (a color always has a value). */
+    name?: string;
     /** Preset swatches — a `string[]` of colors, rendered as a single-select roving listbox. */
     presets?: string[];
 }>();
@@ -166,7 +172,7 @@ function commitHex(): void {
         <OriInput
             class="ori-color-picker__hex"
             :model-value="hexDraft"
-            :disabled="disabled"
+            :disabled="isDisabled"
             :error="hexInvalid ? 'Enter a valid hex color' : undefined"
             aria-label="Hex color"
             autocapitalize="none"
@@ -197,5 +203,17 @@ function commitHex(): void {
                 ></slot>
             </button>
         </div>
+
+        <!-- Submit the current color under `name` (a color control has no empty state — mirrors a native
+             <input type=color>, so it submits the current color even before interaction). `cp.value` is
+             the color in the emitted format; `isDisabled` excludes it from FormData like a native control. -->
+        <input
+            v-if="name"
+            type="hidden"
+            :name="name"
+            :form="form"
+            :value="cp.value.value"
+            :disabled="isDisabled || undefined"
+        />
     </div>
 </template>
