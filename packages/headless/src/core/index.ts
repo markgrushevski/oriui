@@ -19,6 +19,7 @@ export * from './machine';
 export * from './token';
 export * from './roving';
 export * from './roving-dom';
+export * from './dismiss';
 
 // Components — namespaced (mirrors Zag's `import * as disclosure from '@zag-js/...'`)
 export * as disclosure from './disclosure';
