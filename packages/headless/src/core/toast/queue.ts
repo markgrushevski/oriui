@@ -106,3 +106,20 @@ export function createToastQueue(): ToastQueue {
         }
     };
 }
+
+/**
+ * The imperative action surface shared by BOTH adapters — `toast()` + the severity shortcuts +
+ * `dismiss`/`clear`. Only the reactive `toasts` projection differs per framework, so keep the actions
+ * (and the severity → color mapping) in one place: each adapter spreads this and adds its own `toasts`.
+ */
+export function createToastActions(queue: ToastQueue) {
+    return {
+        toast: (options: ToastOptions | string) => queue.push(options),
+        success: (options: ToastOptions | string) => queue.push(options, 'success'),
+        error: (options: ToastOptions | string) => queue.push(options, 'danger'),
+        warn: (options: ToastOptions | string) => queue.push(options, 'warn'),
+        info: (options: ToastOptions | string) => queue.push(options, 'info'),
+        dismiss: (id: number) => queue.dismiss(id),
+        clear: () => queue.clear()
+    };
+}

@@ -1,5 +1,5 @@
 import { readable, type Readable } from 'svelte/store';
-import { createToastQueue, type ToastItem, type ToastOptions } from '../core/toast';
+import { createToastActions, createToastQueue, type ToastItem } from '../core/toast';
 
 export type { ToastColor, ToastItem, ToastOptions } from '../core/toast';
 
@@ -22,12 +22,6 @@ export function useToast() {
     return {
         /** A readable store of the queue — subscribe with `$toasts`. */
         toasts,
-        toast: (options: ToastOptions | string) => queue.push(options),
-        success: (options: ToastOptions | string) => queue.push(options, 'success'),
-        error: (options: ToastOptions | string) => queue.push(options, 'danger'),
-        warn: (options: ToastOptions | string) => queue.push(options, 'warn'),
-        info: (options: ToastOptions | string) => queue.push(options, 'info'),
-        dismiss: (id: number) => queue.dismiss(id),
-        clear: () => queue.clear()
+        ...createToastActions(queue)
     };
 }
