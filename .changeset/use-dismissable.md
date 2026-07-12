@@ -10,7 +10,7 @@ overlay's elements; each overlay picks its strategy — `pointerDownOutside` (a 
 combobox). Built on a new pure `isTargetOutside(target, elements)` predicate exported from `@oriui/headless`.
 
 `OriMenu` now uses it for outside-pointerdown (replacing a hand-rolled `document` listener) and `OriCombobox`
-for focus-out (replacing the input's `@blur`) — **behaviour-preserving**, and it moves the dismiss glue out of
+for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behaviour-preserving**, and it moves the dismiss glue out of
 the styled SFCs into the headless layer so a Svelte consumer of `useMenu` / `useCombobox` can wire the same
 close behaviour. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
 the core connects.)

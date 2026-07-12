@@ -98,7 +98,7 @@ describe('useDismissable (Vue)', () => {
 });
 
 describe('useDismissable (Svelte)', () => {
-    it('focusin outside dismisses; inside does not; toggling enabled attaches/detaches', () => {
+    it('focusin outside dismisses; inside does not; toggling enabled attaches/detaches', async () => {
         const inside = document.createElement('div');
         const outside = document.createElement('div');
         document.body.append(inside, outside);
@@ -108,6 +108,7 @@ describe('useDismissable (Svelte)', () => {
         useDismissableSvelte(
             derived(enabled, (e) => ({ enabled: e, elements: () => [inside], onDismiss, focusOutside: true }))
         );
+        await Promise.resolve(); // the attach is deferred a microtask (parity with the Vue flush: 'post')
 
         inside.dispatchEvent(new Event('focusin', { bubbles: true }));
         expect(onDismiss).not.toHaveBeenCalled();
@@ -115,7 +116,7 @@ describe('useDismissable (Svelte)', () => {
         outside.dispatchEvent(new Event('focusin', { bubbles: true }));
         expect(onDismiss).toHaveBeenCalledTimes(1);
 
-        enabled.set(false);
+        enabled.set(false); // stop() is synchronous
         outside.dispatchEvent(new Event('focusin', { bubbles: true }));
         expect(onDismiss).toHaveBeenCalledTimes(1); // detached
     });

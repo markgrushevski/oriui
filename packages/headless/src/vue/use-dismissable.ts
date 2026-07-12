@@ -39,8 +39,10 @@ export function useDismissable(options: () => UseDismissableOptions): void {
         const types: string[] = [];
         if (o.pointerDownOutside) types.push('pointerdown');
         if (o.focusOutside) types.push('focusin');
-        types.forEach((type) => document.addEventListener(type, handler));
-        teardown = () => types.forEach((type) => document.removeEventListener(type, handler));
+        // Capture phase (like Radix DismissableLayer / Floating-UI useDismiss) so an outside handler that
+        // `stopPropagation()`s the event before it bubbles can't defeat the dismiss.
+        types.forEach((type) => document.addEventListener(type, handler, true));
+        teardown = () => types.forEach((type) => document.removeEventListener(type, handler, true));
     };
 
     // Attach after the flush (flush: 'post') so the overlay has rendered and the interaction that opened it
