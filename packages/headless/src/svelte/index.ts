@@ -25,6 +25,9 @@ export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs';
 // Headless toast queue — a framework-agnostic singleton projected into a Svelte readable store
 export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast';
 
+// Headless color picker — sRGB + 2D-area helpers projected into Svelte stores (twin of the Vue binding)
+export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
+
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 
