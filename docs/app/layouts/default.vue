@@ -126,6 +126,7 @@ const sections = [
                     { label: 'useToolbar', to: '/headless/use-toolbar' },
                     { label: 'useTabs', to: '/headless/use-tabs' },
                     { label: 'useToast', to: '/headless/use-toast' },
+                    { label: 'useDismissable', to: '/headless/use-dismissable' },
                     { label: 'useColorPicker', to: '/headless/use-color-picker' },
                     { label: 'useToken', to: '/headless/use-token' },
                     { label: 'useTheme', to: '/headless/use-theme' }

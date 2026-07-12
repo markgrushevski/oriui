@@ -28,6 +28,9 @@ export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './
 // Headless color picker — sRGB + 2D-area helpers projected into Svelte stores (twin of the Vue binding)
 export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
 
+// Headless dismiss layer — outside-pointerdown / focus-out close for non-platform overlays (twin of Vue)
+export { useDismissable, type UseDismissableOptions } from './use-dismissable';
+
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 

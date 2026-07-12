@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { h } from 'vue';
+import { h, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { combobox } from '@oriui/headless';
 import { OriCombobox } from '../packages/vue/src';
@@ -192,6 +192,25 @@ describe('OriCombobox', () => {
         expect(input.attributes('aria-expanded')).toBe('true');
         await input.trigger('keydown', { key: 'Escape' });
         expect(input.attributes('aria-expanded')).toBe('false');
+    });
+
+    it('focus leaving the combobox closes the open listbox (focus-out dismiss)', async () => {
+        const outside = document.createElement('button');
+        document.body.appendChild(outside);
+        const wrapper = mount(OriCombobox, { props: { options: OPTIONS, label: 'Fruit' }, attachTo: document.body });
+        const input = wrapper.find('input[role="combobox"]');
+
+        await input.trigger('keydown', { key: 'ArrowDown' }); // open
+        expect(input.attributes('aria-expanded')).toBe('true');
+
+        // Focus moving to an element OUTSIDE the combobox closes it (the useDismissable focus-out strategy
+        // that replaced the input's @blur).
+        outside.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+        await nextTick();
+        expect(input.attributes('aria-expanded')).toBe('false');
+
+        wrapper.unmount();
+        outside.remove();
     });
 
     it('the selected option carries aria-selected=true', async () => {

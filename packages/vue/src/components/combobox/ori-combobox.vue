@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, mergeProps, ref, useId, useSlots, watch, watchEffect } from 'vue';
-import { useCombobox, type ComboboxItem } from '@oriui/headless/vue';
+import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue';
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
 import { useOriField } from '../field/context';
 
@@ -153,6 +153,18 @@ const onInputKeydown = (event: KeyboardEvent) => {
         clear();
     }
 };
+
+// Focus-out dismissal via the shared headless dismiss layer (replaces the input's @blur). A combobox keeps
+// focus on its input (aria-activedescendant), so focus leaving the whole control closes it — more robust
+// than input-blur (focus moving to the trigger no longer closes). The @mousedown.prevent guards on the
+// trigger / clear / options hold focus on the input during in-widget clicks, independent of this.
+const controlEl = ref<HTMLElement>();
+useDismissable(() => ({
+    enabled: open.value,
+    elements: () => [controlEl.value],
+    onDismiss: () => setOpen(false),
+    focusOutside: true
+}));
 </script>
 
 <template>
@@ -171,7 +183,7 @@ const onInputKeydown = (event: KeyboardEvent) => {
             ><span v-if="required" class="ori-combobox__required" aria-hidden="true">*</span>
         </label>
 
-        <div v-bind="controlProps" class="ori-combobox__control" :style="{ anchorName }">
+        <div v-bind="controlProps" ref="controlEl" class="ori-combobox__control" :style="{ anchorName }">
             <input
                 v-bind="mergeProps($attrs, { onKeydown: onInputKeydown }, inputProps)"
                 :id="inputElId"
@@ -182,7 +194,6 @@ const onInputKeydown = (event: KeyboardEvent) => {
                 :aria-required="isRequired || undefined"
                 :aria-invalid="isInvalid ? 'true' : undefined"
                 :aria-describedby="describedBy"
-                @blur="setOpen(false)"
             />
 
             <button
