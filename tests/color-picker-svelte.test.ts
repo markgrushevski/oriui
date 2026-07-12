@@ -78,6 +78,26 @@ describe('useColorPicker (Svelte) — state', () => {
         expect(emitted).toMatch(/^#[0-9a-f]{8}$/);
         expect(get(cp.hex)).toBe(emitted); // the guard recognised its own emit → no re-parse
     });
+
+    it('a non-value option change (disabled) does NOT reset an uncontrolled drag', () => {
+        // Uncontrolled: `value` stays constant while the user drags (hsva drifts). A later change to a
+        // non-value option must not re-run the echo-guard and snap the color back — the guard watches
+        // `value` only (like the Vue watch), not the whole options object.
+        const opts = writable<UseColorPickerOptions>({
+            value: '#3366ff',
+            disabled: false,
+            onInput: () => {},
+            onChange: () => {}
+        });
+        const cp = useColorPicker(opts);
+
+        cp.setSaturationValue(0.9, 0.1); // drift the working color
+        const drifted = get(cp.value);
+        expect(drifted).not.toBe('#3366ff');
+
+        opts.update((o) => ({ ...o, disabled: true })); // a NON-value option change
+        expect(get(cp.value)).toBe(drifted); // preserved, not reset to the initial value
+    });
 });
 
 describe('useColorPicker (Svelte) — area + presets + prop bags', () => {
