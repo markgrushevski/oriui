@@ -1,5 +1,44 @@
 # @oriui/headless
 
+## 1.0.0-alpha.16
+
+### Minor Changes
+
+- 9448620: **`useColorPicker` now ships a Svelte twin** (`@oriui/headless/svelte`) — the last behaviour composable
+  without one. It mirrors the Vue contract 1:1 over the same zero-dependency `core/color-picker` engine
+  (sRGB + 2D-area math), returning Svelte stores: `Readable` prop-bags, stores-of-functions for
+  `getChannelInputProps` / `getPresetProps`, lowercased event handlers, the internal HSVA in a `writable`
+  with the same echo-guard, and `eyedropperSupported` as an SSR-safe `readable`. Every headless behaviour is
+  now available for **both Vue and Svelte**.
+- bbc937d: **New headless `useDismissable` (Vue + Svelte)** — the shared "close the overlay on an outside interaction"
+  layer for non-platform overlays, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardise.
+  While `enabled`, it attaches `document` listeners and calls `onDismiss()` when an interaction lands outside the
+  overlay's elements; each overlay picks its strategy — `pointerDownOutside` (a menu) or `focusOutside` (a
+  combobox). Built on a new pure `isTargetOutside(target, elements)` predicate exported from `@oriui/headless`.
+
+    `OriMenu` now uses it for outside-pointerdown (replacing a hand-rolled `document` listener) and `OriCombobox`
+    for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behaviour-preserving**, and it moves the dismiss glue out of
+    the styled SFCs into the headless layer so a Svelte consumer of `useMenu` / `useCombobox` can wire the same
+    close behaviour. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
+    the core connects.)
+
+- 7e4e397: **New headless `useTabs` composable (Vue + Svelte).** The WAI-ARIA tabs behaviour — automatic-activation
+  roving tabindex, defensive selection resolution (recovers to the first enabled tab), and the
+  tablist / tab / tabpanel ARIA prop bags — now lives in `@oriui/headless`: `useTabs` ships from both
+  `@oriui/headless/vue` (returning computeds) and `@oriui/headless/svelte` (returning stores), reusing the
+  shared `core/roving` index math with its skip-disabled predicate. `OriTabs` is rewritten to consume it —
+  **identical DOM, classes, and keyboard** — closing the last styled component that hand-rolled its behaviour
+  instead of sitting on a headless core. Additive: a new optional `label` prop on `OriTabs` (and
+  `label` / `labelledby` options on `useTabs`) names the tablist via `aria-label` / `aria-labelledby`, which
+  WAI-ARIA recommends.
+- d1163d0: **Toast behaviour moved into `@oriui/headless` (Vue + Svelte).** `useToast` — the imperative toast queue —
+  now ships from `@oriui/headless/vue` and, new, `@oriui/headless/svelte`, backed by a framework-agnostic core
+  queue engine (`createToastQueue`; kept out of the core barrel so it never weighs on the 1 kB core budget,
+  and projected into a Vue reactive array / a Svelte readable store). **Non-breaking:** the `@oriui/vue` path is
+  unchanged — `import { useToast } from '@oriui/vue'` still works and shares the one queue (it re-exports the
+  Vue adapter). The change is that the behaviour is now a shared headless composable with Svelte parity,
+  closing the last styled component whose composable lived in the styled package. Adds a `useToast` docs page.
+
 ## 1.0.0-alpha.15
 
 ### Minor Changes
