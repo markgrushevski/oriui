@@ -149,6 +149,25 @@ describe('OriTabs', () => {
         expect(emittedValues).toContain('account');
     });
 
+    it('self-heals at runtime: v-model set to a disabled tab is corrected back to the resolved tab', async () => {
+        const wrapper = mount(OriTabs, { props: { tabs: TABS_WITH_DISABLED, modelValue: 'account' } });
+        await wrapper.vm.$nextTick(); // 'account' is valid → no correction yet
+
+        await wrapper.setProps({ modelValue: 'billing' }); // billing is disabled
+        await wrapper.vm.$nextTick();
+
+        // The bound value resolves to the SAME displayed tab ('account'), yet the model must still be healed
+        // back so the parent's v-model is never left pointing at a disabled tab (regression guard: the heal
+        // must trigger on the bound-value change, not only when the resolved selection changes).
+        const emitted = wrapper.emitted('update:modelValue') ?? [];
+        expect(emitted.at(-1)?.[0]).toBe('account');
+    });
+
+    it('names the tablist via the label prop (aria-label)', () => {
+        const wrapper = mount(OriTabs, { props: { tabs: TABS, label: 'Settings sections' } });
+        expect(wrapper.find('.ori-tabs__list').attributes('aria-label')).toBe('Settings sections');
+    });
+
     it('horizontal orientation sets aria-orientation=horizontal on tablist (default)', () => {
         const wrapper = mount(OriTabs, { props: { tabs: TABS } });
         const list = wrapper.find('.ori-tabs__list');

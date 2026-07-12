@@ -27,6 +27,10 @@ export interface UseTabsOptions {
     value: string | number | undefined;
     /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
     orientation?: RovingOrientation;
+    /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
+    label?: string;
+    /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
+    labelledby?: string;
     /** SSR-stable id base for the derived tab/panel ids; defaults to `useId()`. */
     idBase?: string;
     /** Commit the next selected value (wire to your `v-model`). */
@@ -83,6 +87,8 @@ export function useTabs(options: () => UseTabsOptions) {
     const tablistProps = computed(() => ({
         role: 'tablist' as const,
         'aria-orientation': orientation(),
+        'aria-label': opts().label,
+        'aria-labelledby': opts().labelledby,
         onKeydown
     }));
 
