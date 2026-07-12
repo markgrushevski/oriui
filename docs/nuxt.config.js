@@ -105,6 +105,7 @@ export default defineNuxtConfig({
                     { title: 'useMenu', href: '/headless/use-menu' },
                     { title: 'useToolbar', href: '/headless/use-toolbar' },
                     { title: 'useTabs', href: '/headless/use-tabs' },
+                    { title: 'useToast', href: '/headless/use-toast' },
                     { title: 'useColorPicker', href: '/headless/use-color-picker' },
                     { title: 'useToken', href: '/headless/use-token' },
                     { title: 'useTheme', href: '/headless/use-theme' }
