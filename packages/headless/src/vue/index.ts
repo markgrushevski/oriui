@@ -21,6 +21,9 @@ export {
     type UseToolbarToggleGroupOptions
 } from './use-toolbar';
 
+// Headless tabs (WAI-ARIA tabs — automatic activation; data-driven roving tabindex, not a machine)
+export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs';
+
 // Headless color picker — compositional sRGB + 2D-area helpers (not a machine); Vue binding
 export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
 export type { ColorFormat, HSVA } from '../core/color-picker';
