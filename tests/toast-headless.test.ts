@@ -4,6 +4,15 @@ import { createToastQueue, type ToastItem } from '../packages/headless/src/core/
 import { useToast as useToastSvelte } from '@oriui/headless/svelte';
 import { useToast as useToastHeadlessVue } from '@oriui/headless/vue';
 import { useToast as useToastPkg } from '../packages/vue/src';
+import type { ToastColor } from '@oriui/headless/vue';
+import type { ThemeColor } from '../packages/vue/src/types';
+
+// Drift guard: the core queue duplicates @oriui/vue's ThemeColor as ToastColor (it can't import up the
+// dependency graph, vue → headless). Assert the two unions stay MUTUALLY assignable, so any divergence
+// fails `npm run test:types` HERE — at the drift source — not silently at a downstream toast({ color }) call.
+type Mutual<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+const _toastColorMatchesThemeColor: Mutual<ToastColor, ThemeColor> = true;
+void _toastColorMatchesThemeColor;
 
 // The toast queue moved into @oriui/headless: a framework-agnostic engine (`createToastQueue`) projected
 // into a Vue reactive array and a Svelte readable store. The Vue *behaviour* is covered by tests/toast.test.ts
