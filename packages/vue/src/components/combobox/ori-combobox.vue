@@ -154,15 +154,18 @@ const onInputKeydown = (event: KeyboardEvent) => {
     }
 };
 
-// Focus-out dismissal via the shared headless dismiss layer (replaces the input's @blur). A combobox keeps
-// focus on its input (aria-activedescendant), so focus leaving the whole control closes it — more robust
-// than input-blur (focus moving to the trigger no longer closes). The @mousedown.prevent guards on the
-// trigger / clear / options hold focus on the input during in-widget clicks, independent of this.
+// Outside-dismissal via the shared headless dismiss layer (replaces the input's @blur). Both strategies:
+// `focusOutside` closes on Tab-away / a click that moves focus out (focus lives on the input via
+// aria-activedescendant), and `pointerDownOutside` closes on a press in a blank / non-focusable area (which
+// blurs to <body> and fires no focusin — so focus-out alone would miss it). Clicks INSIDE the control (the
+// @mousedown.prevent trigger / clear / options) are covered by `elements`, and those guards hold focus on
+// the input for aria-activedescendant, independent of dismiss.
 const controlEl = ref<HTMLElement>();
 useDismissable(() => ({
     enabled: open.value,
     elements: () => [controlEl.value],
     onDismiss: () => setOpen(false),
+    pointerDownOutside: true,
     focusOutside: true
 }));
 </script>

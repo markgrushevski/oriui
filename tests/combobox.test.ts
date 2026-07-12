@@ -213,6 +213,25 @@ describe('OriCombobox', () => {
         outside.remove();
     });
 
+    it('a pointerdown on a blank (non-focusable) outside area closes the open listbox', async () => {
+        // A click on empty page space blurs the input to <body> and fires no focusin, so focus-out alone
+        // would miss it — pointerDownOutside covers this (the behaviour the old @blur had).
+        const outside = document.createElement('div'); // non-focusable
+        document.body.appendChild(outside);
+        const wrapper = mount(OriCombobox, { props: { options: OPTIONS, label: 'Fruit' }, attachTo: document.body });
+        const input = wrapper.find('input[role="combobox"]');
+
+        await input.trigger('keydown', { key: 'ArrowDown' }); // open
+        expect(input.attributes('aria-expanded')).toBe('true');
+
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+        await nextTick();
+        expect(input.attributes('aria-expanded')).toBe('false');
+
+        wrapper.unmount();
+        outside.remove();
+    });
+
     it('the selected option carries aria-selected=true', async () => {
         const wrapper = mountCb({ modelValue: 'banana' });
         const selected = wrapper.findAll('[role="option"]').find((o) => o.text() === 'Banana');

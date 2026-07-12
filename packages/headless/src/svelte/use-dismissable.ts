@@ -38,17 +38,30 @@ export function useDismissable(options: MaybeReactive<UseDismissableOptions>): v
         const types: string[] = [];
         if (o.pointerDownOutside) types.push('pointerdown');
         if (o.focusOutside) types.push('focusin');
-        types.forEach((type) => document.addEventListener(type, handler));
-        teardown = () => types.forEach((type) => document.removeEventListener(type, handler));
+        // Capture phase (like Radix DismissableLayer / Floating-UI useDismiss) so an outside handler that
+        // `stopPropagation()`s the event before it bubbles can't defeat the dismiss.
+        types.forEach((type) => document.addEventListener(type, handler, true));
+        teardown = () => types.forEach((type) => document.removeEventListener(type, handler, true));
     };
 
     // React to `enabled` only (derived dedupes the primitive), reading the full current options on attach.
+    // The initial/each attach is deferred a microtask — the Svelte parity for the Vue twin's `flush: 'post'` —
+    // so the interaction that opened the overlay has finished dispatching before the listener exists (a token
+    // invalidates a pending attach if `enabled` flips again or the component is destroyed first).
+    let attachToken = 0;
     const stopSub = derived(opts$, (o) => o.enabled).subscribe((enabled) => {
         stop();
-        if (enabled) start(get(opts$));
+        attachToken += 1;
+        if (enabled) {
+            const token = attachToken;
+            queueMicrotask(() => {
+                if (token === attachToken) start(get(opts$));
+            });
+        }
     });
 
     safeOnDestroy(() => {
+        attachToken += 1; // invalidate any pending microtask attach
         stopSub();
         stop();
     });
