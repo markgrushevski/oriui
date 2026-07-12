@@ -336,8 +336,9 @@ Vertical orientation, a non-default color, and named panel slots — a common se
 The accessibility contract holds across every layer — the standalone classes and the Vue component
 render the same attributes and keyboard behaviour.
 
-- Full WAI-ARIA Tabs pattern, hand-rolled (no behaviour engine). `role="tablist"` on the list with
-  `aria-orientation` reflecting the `orientation` prop.
+- Full WAI-ARIA Tabs pattern, driven by the headless [`useTabs`](/headless/use-tabs) composable (the
+  shared Vue + Svelte behaviour). `role="tablist"` on the list with `aria-orientation` reflecting the
+  `orientation` prop.
 - Each tab is a real `<button role="tab">` with a `useId()`-derived stable id, `aria-selected`
   (`"true"` / `"false"`), `aria-controls` pointing at its panel id, and a **roving tabindex**
   (selected = `0`, others = `-1`) so `Tab` / `Shift+Tab` enter and leave the group as a single stop.
@@ -367,12 +368,13 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop          | Type                                                                    | Default                      | Description                                                                                                         |
-| ------------- | ----------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                                                            | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.    |
-| `modelValue`  | `string \| number`                                                      | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid. |
-| `orientation` | `'horizontal' \| 'vertical'`                                            | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar. |
-| `tabs`        | `Array<{ value: string \| number; label: string; disabled?: boolean }>` | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                      |
+| Prop          | Type                                                                    | Default                      | Description                                                                                                                |
+| ------------- | ----------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`                                                            | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.           |
+| `label`       | `string`                                                                | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
+| `modelValue`  | `string \| number`                                                      | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
+| `orientation` | `'horizontal' \| 'vertical'`                                            | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
+| `tabs`        | `Array<{ value: string \| number; label: string; disabled?: boolean }>` | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
 
 ### Events & attributes
 
