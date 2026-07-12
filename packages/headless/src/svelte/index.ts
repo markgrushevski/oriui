@@ -22,6 +22,9 @@ export {
 // Headless tabs (WAI-ARIA tabs — automatic activation; data-driven roving tabindex over stores)
 export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs';
 
+// Headless toast queue — a framework-agnostic singleton projected into a Svelte readable store
+export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast';
+
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
 export { useToken, useThemeColor } from './use-token';
 

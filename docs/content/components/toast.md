@@ -305,7 +305,9 @@ Toast follows the ARIA live-region pattern — content is announced without movi
 ### `useToast()`
 
 The composable is a module-level singleton — every call returns the same reactive queue. Import
-it anywhere; no Vue injection or plugin registration required.
+it anywhere; no Vue injection or plugin registration required. Its behaviour is the framework-agnostic
+[`useToast`](/headless/use-toast) — the same imperative API ships from `@oriui/headless/vue` and
+`@oriui/headless/svelte`; this `@oriui/vue` re-export is unchanged.
 
 ```ts
 import { useToast } from '@oriui/vue';

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { useToast } from './use-toast';
+import { useToast } from '@oriui/headless/vue';
 import OriToast from './ori-toast.vue';
 
 const { position = 'top-right' } = defineProps<{
