@@ -20,11 +20,14 @@ interface TabItem {
 // is the one required prop — the component is meaningless without its set of tabs.
 const {
     color = 'primary',
+    label,
     orientation = 'horizontal',
     tabs
 } = defineProps<{
     /** Active-tab accent (indicator + focus ring). */
     color?: ThemeColor;
+    /** Accessible name for the tablist (→ `aria-label`; WAI-ARIA recommends naming a tablist). */
+    label?: string;
     orientation?: 'horizontal' | 'vertical';
     tabs: TabItem[];
 }>();
@@ -35,19 +38,21 @@ const { selectedValue, tablistProps, getTabProps, getPanelProps } = useTabs(() =
     tabs,
     value: model.value,
     orientation,
+    label,
     onChange: (value) => {
         model.value = value;
     }
 }));
 
 // Seed / recover the caller's v-model to the resolved selection (a component policy — keeps the parent's
-// bound value valid without forcing them to seed it). `selectedValue` already resolves to the first enabled
-// tab defensively, so this only writes it back; it also recovers when a bound value points at a
-// missing / disabled tab or the `tabs` set changes.
+// bound value valid without forcing them to seed it). `selectedValue` collapses an invalid bound value
+// (unset / missing / disabled) to the first enabled tab; reconcile on EITHER it OR the bound value
+// changing, so a v-model set to a disabled/missing tab is healed back even when the displayed tab (and
+// thus `selectedValue`) does not change.
 watch(
-    selectedValue,
-    (value) => {
-        if (value !== undefined && value !== model.value) model.value = value;
+    [selectedValue, () => model.value],
+    ([resolved, current]) => {
+        if (resolved !== undefined && resolved !== current) model.value = resolved;
     },
     { immediate: true }
 );

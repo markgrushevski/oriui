@@ -368,12 +368,13 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop          | Type                                                                    | Default                      | Description                                                                                                         |
-| ------------- | ----------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                                                            | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.    |
-| `modelValue`  | `string \| number`                                                      | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid. |
-| `orientation` | `'horizontal' \| 'vertical'`                                            | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar. |
-| `tabs`        | `Array<{ value: string \| number; label: string; disabled?: boolean }>` | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                      |
+| Prop          | Type                                                                    | Default                      | Description                                                                                                                |
+| ------------- | ----------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`                                                            | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.           |
+| `label`       | `string`                                                                | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
+| `modelValue`  | `string \| number`                                                      | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
+| `orientation` | `'horizontal' \| 'vertical'`                                            | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
+| `tabs`        | `Array<{ value: string \| number; label: string; disabled?: boolean }>` | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
 
 ### Events & attributes
 

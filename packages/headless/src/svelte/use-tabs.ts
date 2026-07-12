@@ -24,6 +24,10 @@ export interface UseTabsOptions {
     value: string | number | undefined;
     /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
     orientation?: RovingOrientation;
+    /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
+    label?: string;
+    /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
+    labelledby?: string;
     /** SSR-stable id base for the derived tab/panel ids; defaults to a module-unique id. */
     idBase?: string;
     /** Commit the next selected value (wire to your bound value). */
@@ -33,9 +37,6 @@ export interface UseTabsOptions {
 export function useTabs(options: MaybeReactive<UseTabsOptions>) {
     const opts$ = toReadable(options);
     const fallback = uid('ori-tabs');
-    const base = (): string => get(opts$).idBase ?? fallback;
-    const tabId = (index: number): string => `${base()}-tab-${index}`;
-    const panelId = (index: number): string => `${base()}-panel-${index}`;
 
     // The effective selection: the bound value when it points at a real, enabled tab; otherwise recover to
     // the first enabled tab (so the panel is always valid without forcing the caller to seed the value).
@@ -76,35 +77,45 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
     const tablistProps = derived(opts$, (o) => ({
         role: 'tablist' as const,
         'aria-orientation': o.orientation ?? 'horizontal',
+        'aria-label': o.label,
+        'aria-labelledby': o.labelledby,
         onkeydown
     }));
 
+    // Derive on selectedValue AND opts$ so a change to idBase (or the selection) re-emits — parity with the
+    // Vue twin, which reads the id base fresh on every render.
     const getTabProps: Readable<(tab: TabItem, index: number) => Record<string, unknown>> = derived(
-        selectedValue,
-        (sel) => (tab: TabItem, index: number) => {
-            const selected = tab.value === sel;
-            return {
-                id: tabId(index),
-                type: 'button' as const,
-                role: 'tab' as const,
-                'aria-selected': selected ? ('true' as const) : ('false' as const),
-                'aria-controls': panelId(index),
-                tabindex: selected ? 0 : -1,
-                disabled: tab.disabled,
-                onclick: () => select(tab)
+        [selectedValue, opts$],
+        ([sel, o]) => {
+            const base = o.idBase ?? fallback;
+            return (tab: TabItem, index: number) => {
+                const selected = tab.value === sel;
+                return {
+                    id: `${base}-tab-${index}`,
+                    type: 'button' as const,
+                    role: 'tab' as const,
+                    'aria-selected': selected ? ('true' as const) : ('false' as const),
+                    'aria-controls': `${base}-panel-${index}`,
+                    tabindex: selected ? 0 : -1,
+                    disabled: tab.disabled,
+                    onclick: () => select(tab)
+                };
             };
         }
     );
 
     const getPanelProps: Readable<(tab: TabItem, index: number) => Record<string, unknown>> = derived(
-        selectedValue,
-        (sel) => (tab: TabItem, index: number) => ({
-            id: panelId(index),
-            role: 'tabpanel' as const,
-            'aria-labelledby': tabId(index),
-            hidden: tab.value !== sel,
-            tabindex: 0
-        })
+        [selectedValue, opts$],
+        ([sel, o]) => {
+            const base = o.idBase ?? fallback;
+            return (tab: TabItem, index: number) => ({
+                id: `${base}-panel-${index}`,
+                role: 'tabpanel' as const,
+                'aria-labelledby': `${base}-tab-${index}`,
+                hidden: tab.value !== sel,
+                tabindex: 0
+            });
+        }
     );
 
     return { selectedValue, select, tablistProps, getTabProps, getPanelProps };

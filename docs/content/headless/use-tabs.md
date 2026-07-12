@@ -34,6 +34,8 @@ import { useTabs } from '@oriui/headless/vue';
 | `tabs`        | `TabItem[]`                         | —              | The set of tabs, in order. `TabItem` is `{ value: string \| number; disabled?: boolean }` (behaviour). |
 | `value`       | `string \| number \| undefined`     | —              | The controlled selection (bind to `v-model`). Resolves to the first enabled tab when unset.            |
 | `orientation` | `'horizontal' \| 'vertical'`        | `'horizontal'` | Arrow-key axis: `horizontal` navigates Left/Right, `vertical` Up/Down.                                 |
+| `label`       | `string`                            | —              | Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming a tablist).                 |
+| `labelledby`  | `string`                            | —              | Accessible name by element id → `aria-labelledby` (use instead of `label`).                            |
 | `idBase`      | `string`                            | `useId()`      | SSR-stable base for the derived `${base}-tab-${i}` / `-panel-${i}` ids.                                |
 | `onChange`    | `(value: string \| number) => void` | —              | Commit the next selected value (wire to your `v-model`).                                               |
 
@@ -118,7 +120,9 @@ The prop bags carry the WAI-ARIA [Tabs](https://www.w3.org/WAI/ARIA/apg/patterns
 **automatic activation** (arrows move focus and select in one step); the keyboard behaviour is the
 roving `onKeydown` on the tablist.
 
-- `tablistProps` set `role="tablist"` + `aria-orientation`; each `getTabProps` bag is a
+- `tablistProps` set `role="tablist"` + `aria-orientation`, plus `aria-label` / `aria-labelledby` from the
+  `label` / `labelledby` options — name the tablist (WAI-ARIA recommends it), especially with more than one
+  on a page. Each `getTabProps` bag is a
   `role="tab"` with `aria-selected`, `aria-controls` → its panel id, and the roving `tabindex`; each
   `getPanelProps` bag is a `role="tabpanel"` with `aria-labelledby` → its tab id, `hidden` when
   inactive, and `tabindex="0"` (the panel is focusable so keyboard users can reach its content).
