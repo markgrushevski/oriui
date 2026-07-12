@@ -191,10 +191,16 @@ bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are
 ```svelte
 <!-- MyColorPicker.svelte -->
 <script>
+    import { writable } from 'svelte/store';
     import { useColorPicker } from '@oriui/headless/svelte';
 
-    export let color;
-    const cp = useColorPicker({ value: color, onInput: (v) => (color = v), onChange: (v) => (color = v) });
+    export let color = '#3366ff';
+    // Pass a STORE (not a snapshot object) so an external `color` change re-syncs into the picker — a plain
+    // object becomes a constant store (`toReadable`) and would only seed the initial value.
+    const options = writable({ value: color, onInput: (v) => (color = v), onChange: (v) => (color = v) });
+    $: options.set({ value: color, onInput: (v) => (color = v), onChange: (v) => (color = v) });
+
+    const cp = useColorPicker(options);
     const { areaProps, areaThumbStyle, getChannelInputProps, hue, hex } = cp;
 </script>
 
