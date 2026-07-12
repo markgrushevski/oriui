@@ -65,11 +65,14 @@ export function useColorPicker(options: MaybeReactive<UseColorPickerOptions>) {
 
     // Echo-guard: re-sync internal HSVA only on a GENUINE external `value` change — skip our own last emit
     // (it MUST format with the same alpha flag we emit with, or an alpha-carrying echo re-quantizes s/v).
-    // `subscribe` fires synchronously on subscribe = the Vue watch's `{ immediate: true }`.
+    // Subscribe to a derived of `value` ONLY (not the whole opts$) — the Vue twin does `watch(() => value)`,
+    // so a change to a NON-value option (disabled, presets, …) must NOT re-run the guard and reset an
+    // uncontrolled drag. The derived dedupes the primitive, and fires on subscribe = the Vue `{ immediate }`.
     safeOnDestroy(
-        opts$.subscribe((o) => {
-            const parsed = parseColor(o.value ?? '', get(hsva).h);
-            if (parsed && formatColor(get(hsva), o.format ?? 'hex', o.alpha ?? false) !== (o.value ?? '')) {
+        derived(opts$, (o) => o.value).subscribe((value) => {
+            const o = get(opts$);
+            const parsed = parseColor(value ?? '', get(hsva).h);
+            if (parsed && formatColor(get(hsva), o.format ?? 'hex', o.alpha ?? false) !== (value ?? '')) {
                 hsva.set(parsed);
             }
         })
