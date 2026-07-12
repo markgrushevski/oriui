@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, mergeProps, nextTick, onBeforeUnmount, useId, useTemplateRef, watch } from 'vue';
-import { useMenu, type MenuItem } from '@oriui/headless/vue';
+import { computed, mergeProps, nextTick, useId, useTemplateRef, watch } from 'vue';
+import { useMenu, useDismissable, type MenuItem } from '@oriui/headless/vue';
 import type { AnchoredPlacement } from '../../types';
 
 // OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behaviour
@@ -48,28 +48,27 @@ watch(
     }
 );
 
-const onOutsidePointerDown = (event: PointerEvent): void => {
-    const target = event.target as Node;
-    if (contentRef.value?.contains(target) || triggerEl()?.contains(target)) return;
-    m.setOpen(false);
-};
+// Outside-pointerdown dismissal via the shared headless dismiss layer (was a hand-rolled document
+// listener). A menu has no single focus anchor, so pointerdown-outside is its strategy.
+useDismissable(() => ({
+    enabled: m.open.value,
+    elements: () => [contentRef.value, triggerEl()],
+    onDismiss: () => m.setOpen(false),
+    pointerDownOutside: true
+}));
 
-// On open, focus the menu (arrows then move into items); on close, return focus to the trigger. The
-// outside-click listener lives only while open.
+// On open, focus the menu (arrows then move into items); on close, return focus to the trigger.
 watch(
     () => m.open.value,
     async (open) => {
         if (open) {
             await nextTick();
             if (m.highlightedValue.value === null) contentRef.value?.focus();
-            document.addEventListener('pointerdown', onOutsidePointerDown);
         } else {
-            document.removeEventListener('pointerdown', onOutsidePointerDown);
             triggerEl()?.focus();
         }
     }
 );
-onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutsidePointerDown));
 </script>
 
 <template>
