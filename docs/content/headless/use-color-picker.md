@@ -183,8 +183,35 @@ Passing `alpha: true` adds the alpha channel (bind a second slider to `alpha` / 
 `opaqueColor` for its track), and `eyedropper: true` enables `openEyeDropper` (gate its trigger on
 `cp.eyedropperSupported`) — see how the styled [`OriColorPicker`](/components/color-picker) wires both.
 
-The **Svelte** binding is planned — there is no Svelte twin of `useColorPicker` yet (the pure core in
-`core/color-picker` is already framework-agnostic, so a store-based twin can slot in without a rewrite).
+The **Svelte** binding is the store twin (`@oriui/headless/svelte`) over the same core engine — the prop
+bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are **stores of functions**
+(`$getChannelInputProps('saturation')`, `$getPresetProps(color, i)`), and event handlers are lowercased
+(`onpointerdown` / `onkeydown` / `oninput` / `onclick` / `onfocus`). Options are a plain object or a store:
+
+```svelte
+<!-- MyColorPicker.svelte -->
+<script>
+    import { writable } from 'svelte/store';
+    import { useColorPicker } from '@oriui/headless/svelte';
+
+    export let color = '#3366ff';
+    // Pass a STORE (not a snapshot object) so an external `color` change re-syncs into the picker — a plain
+    // object becomes a constant store (`toReadable`) and would only seed the initial value.
+    const options = writable({ value: color, onInput: (v) => (color = v), onChange: (v) => (color = v) });
+    $: options.set({ value: color, onInput: (v) => (color = v), onChange: (v) => (color = v) });
+
+    const cp = useColorPicker(options);
+    const { areaProps, areaThumbStyle, getChannelInputProps, hue, hex } = cp;
+</script>
+
+<div {...$areaProps}>
+    <span style:left={$areaThumbStyle.left} style:top={$areaThumbStyle.top} aria-hidden="true"></span>
+    <input {...$getChannelInputProps('saturation')} />
+    <input {...$getChannelInputProps('value')} />
+</div>
+<input type="range" min="0" max="359" value={$hue} on:input={(e) => cp.setHue(+e.currentTarget.value)} on:change={cp.commit} />
+<input value={$hex} aria-label="Hex color" on:blur={(e) => cp.setHex(e.currentTarget.value)} />
+```
 
 ## Accessibility
 
