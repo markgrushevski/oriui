@@ -14,6 +14,7 @@
         "colorpicker-form-value",
         "colorpicker-hex-disabled",
         "colorpicker-polish",
+        "colorpicker-svelte-twin",
         "combobox-form-value",
         "combobox-keyboard-clear",
         "combobox-required-validity",
@@ -40,6 +41,9 @@
         "token-bridge",
         "toolbar-pressed-fill-and-button-color-transition",
         "toolbar",
+        "use-dismissable",
+        "use-tabs-headless",
+        "use-toast-headless",
         "vue-dts-node16",
         "vue-packaging-hygiene"
     ]
