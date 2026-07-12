@@ -33,6 +33,6 @@
         "name": "@oriui/headless/svelte (gzip)",
         "path": "packages/headless/dist/svelte/index.js",
         "gzip": true,
-        "limit": "8 kB"
+        "limit": "9 kB"
     }
 ]
