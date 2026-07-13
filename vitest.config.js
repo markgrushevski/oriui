@@ -16,6 +16,7 @@ export default defineConfig({
             '@oriui/headless/svelte': fileURLToPath(
                 new URL('./packages/headless/src/svelte/index.ts', import.meta.url)
             ),
+            '@oriui/headless/react': fileURLToPath(new URL('./packages/headless/src/react/index.ts', import.meta.url)),
             '@oriui/headless': fileURLToPath(new URL('./packages/headless/src/core/index.ts', import.meta.url)),
             '@oriui/vue': fileURLToPath(new URL('./packages/vue/src/index.ts', import.meta.url))
         }
