@@ -19,8 +19,10 @@ export interface DisclosureControl {
 }
 
 /**
- * A headless behaviour implementation. Swap freely: our native `../core` one, a Zag-backed one, or a
- * user-supplied one — the component markup never changes.
+ * A headless behaviour implementation. Swap the engine — our native `../core` one, a Zag-backed one, or a
+ * user-supplied one — without changing component markup. Choose it ONCE at the app root: in React the
+ * resolved adapter runs hooks, so it must be stable for a component's lifetime, not a per-render toggle
+ * (see plugin.ts + DECISIONS.md).
  */
 export type DisclosureAdapter = (options?: UseDisclosureOptions) => DisclosureControl;
 

@@ -1,14 +1,20 @@
 import { afterEach, describe, it, expect, vi } from 'vitest';
 import { renderHook, act, cleanup } from '@testing-library/react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { useDisclosure, useTabs, normalizeProps, type TabItem } from '@oriui/headless/react';
+import { createElement, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
+import {
+    useDisclosure,
+    useTabs,
+    normalizeProps,
+    OriHeadlessProvider,
+    type DisclosureControl,
+    type TabItem
+} from '@oriui/headless/react';
 
 // The React adapter is pure TS/hooks over the shared `../core` engine — the machine hooks bridge to React
 // via `useSyncExternalStore`, so we exercise them with `@testing-library/react`'s `renderHook` (no JSX):
 // `result.current` reads the projected control and `act()` flushes state changes. This mirrors
-// tests/svelte-adapter for the Svelte side and is the executable proof that the machine bridge + the React
-// prop normalizer (compound-event / camelCase-attribute casing) are correct. `useDisclosure` resolves to
-// the native adapter here (no `<OriHeadlessProvider>` in the tree).
+// tests/svelte-adapter for the Svelte side and is the executable proof that the machine bridge, the React
+// prop normalizer (compound-event / camelCase-attribute casing), and the adapter-swap seam are correct.
 
 afterEach(() => {
     cleanup();
@@ -40,8 +46,8 @@ describe('React normalizeProps', () => {
     });
 });
 
-describe('React useDisclosure (native fallback)', () => {
-    it('starts closed with the WAI-ARIA wiring, ids derived from the base id', () => {
+describe('React useDisclosure', () => {
+    it('starts closed with the WAI-ARIA wiring, ids derived from the base id (native fallback)', () => {
         const { result } = renderHook(() => useDisclosure({ id: 'test' }));
 
         expect(result.current.open).toBe(false);
@@ -94,6 +100,30 @@ describe('React useDisclosure (native fallback)', () => {
 
         rerender({ id: 'stable' });
         expect(result.current.open).toBe(true); // the service was created once (useRef), not per render
+    });
+
+    it('resolves a provided adapter over the native default; falls back to native with no provider', () => {
+        // A fake adapter proving the swap seam (OriHeadlessProvider → useHeadless → useDisclosure), the
+        // React analogue of tests/headless-adapter-swap for Vue. It emits marker props the native one never
+        // would; it runs no hooks, so it is a stable adapter (rules of hooks — chosen once at the root).
+        const control: DisclosureControl = {
+            open: true,
+            rootProps: { 'data-fake': 'root' },
+            triggerProps: { 'data-fake': 'trigger' },
+            contentProps: { 'data-fake': 'content' },
+            setOpen: () => {},
+            toggle: () => {}
+        };
+        const wrapper = ({ children }: { children: ReactNode }) =>
+            createElement(OriHeadlessProvider, { adapters: { disclosure: () => control }, children });
+
+        const provided = renderHook(() => useDisclosure({ id: 'p' }), { wrapper });
+        expect(provided.result.current.open).toBe(true);
+        expect(provided.result.current.triggerProps['data-fake']).toBe('trigger');
+
+        const native = renderHook(() => useDisclosure({ id: 'p' }));
+        expect(native.result.current.triggerProps.id).toBe('ori-p-trigger'); // native wiring, no marker
+        expect('data-fake' in native.result.current.triggerProps).toBe(false);
     });
 });
 
@@ -148,8 +178,9 @@ describe('React useTabs', () => {
         expect(onChange).toHaveBeenCalledTimes(1);
     });
 
-    it('onKeyDown roves real focus by DOM order, skipping disabled and wrapping', () => {
-        const { result } = renderHook(() => useTabs({ tabs: TABS, value: 'a' }));
+    it('onKeyDown roves real focus AND selects (automatic activation), skipping disabled and wrapping', () => {
+        const onChange = vi.fn();
+        const { result } = renderHook(() => useTabs({ tabs: TABS, value: 'a', onChange }));
 
         // A real tablist DOM in tab order: a, b, c(disabled), d.
         const root = document.createElement('div');
@@ -174,20 +205,21 @@ describe('React useTabs', () => {
         a!.focus();
         press(a!, 'ArrowRight');
         expect(document.activeElement).toBe(b);
+        expect(onChange).toHaveBeenLastCalledWith('b'); // automatic activation: the arrow also selects
 
         press(b!, 'ArrowRight'); // skips disabled c → d
         expect(document.activeElement).toBe(d);
+        expect(onChange).toHaveBeenLastCalledWith('d');
 
         press(d!, 'ArrowRight'); // last → wraps to first
         expect(document.activeElement).toBe(a);
+        expect(onChange).toHaveBeenLastCalledWith('a');
     });
 
     it('reacts to a changed controlled value on rerender', () => {
         const { result, rerender } = renderHook(
             (props: { value: string }) => useTabs({ tabs: TABS, value: props.value }),
-            {
-                initialProps: { value: 'a' }
-            }
+            { initialProps: { value: 'a' } }
         );
 
         expect(result.current.selectedValue).toBe('a');
