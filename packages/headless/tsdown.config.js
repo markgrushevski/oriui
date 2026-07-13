@@ -5,7 +5,7 @@ export default defineConfig({
     // adapter, the `./vue` export) and dist/svelte/* (the Svelte adapter, the `./svelte` export). Each
     // adapter imports the engine by a relative path, so the engine is bundled into it — fine, it is tiny
     // and stateless.
-    entry: ['src/core/index.ts', 'src/vue/index.ts', 'src/svelte/index.ts'],
+    entry: ['src/core/index.ts', 'src/vue/index.ts', 'src/svelte/index.ts', 'src/react/index.ts'],
     format: ['esm'],
     dts: true,
     clean: true,
