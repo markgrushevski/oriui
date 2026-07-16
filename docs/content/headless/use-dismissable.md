@@ -84,6 +84,39 @@ listeners over the shared `isTargetOutside`:
 </script>
 ```
 
+The **React** binding is the same — options are a plain object (no getter / store), element refs come from
+`useRef`, and it returns nothing; it wires the identical `document` capture listeners over the shared
+`isTargetOutside`. The subscribe re-runs only when `enabled` / the strategy changes, and the latest
+`onDismiss` / `elements` are always read on the event:
+
+```tsx
+// MyMenu.tsx — pointerdown-outside (a menu has no single focus anchor)
+import { useRef, useState } from 'react';
+import { useDismissable } from '@oriui/headless/react';
+
+function MyMenu() {
+    const [open, setOpen] = useState(false);
+    const content = useRef<HTMLDivElement>(null);
+    const trigger = useRef<HTMLButtonElement>(null);
+
+    useDismissable({
+        enabled: open,
+        elements: () => [content.current, trigger.current],
+        onDismiss: () => setOpen(false),
+        pointerDownOutside: true
+    });
+
+    return (
+        <>
+            <button ref={trigger} onClick={() => setOpen((v) => !v)}>
+                Menu
+            </button>
+            {open && <div ref={content}>…menu items…</div>}
+        </>
+    );
+}
+```
+
 ## Accessibility
 
 - Dismiss is one half of an overlay's a11y contract; the other keys live elsewhere — **Escape** is handled

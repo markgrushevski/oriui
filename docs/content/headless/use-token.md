@@ -100,6 +100,33 @@ you can auto-subscribe with `$brand` instead.)
 <canvas bind:this={canvas} />
 ```
 
+The **React** binding is the same — the control is a plain value (no `.value` / `$`, re-rendering on theme
+flips via a `useEffect` that resolves and observes; `''` until mounted, SSR-safe). Create the engine in one
+effect, then seed + re-push from a second effect keyed on the resolved color — `''` (SSR/unresolved) maps to
+the engine's own default. `@oriui/css` styles any surrounding markup with the same tokens in React / Next
+today:
+
+```tsx
+import { useEffect, useRef } from 'react';
+import { useThemeColor } from '@oriui/headless/react';
+
+function BrandCanvas() {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const engineRef = useRef<Engine>();
+    const brand = useThemeColor('primary'); // resolved --ori-color-primary; '' until mounted (SSR-safe)
+
+    useEffect(() => {
+        engineRef.current = createEngine(canvasRef.current!);
+    }, []); // create the engine once
+
+    useEffect(() => {
+        engineRef.current?.setColor(brand || null); // seed on mount, re-push on every theme flip
+    }, [brand]);
+
+    return <canvas ref={canvasRef} />;
+}
+```
+
 ## Lower-level
 
 Both composables wrap two core exports you can call directly (no framework). `resolveToken(token, options?)`
