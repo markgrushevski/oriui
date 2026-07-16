@@ -34,5 +34,11 @@
         "path": "packages/headless/dist/svelte/index.js",
         "gzip": true,
         "limit": "11 kB"
+    },
+    {
+        "name": "@oriui/headless/react (gzip)",
+        "path": "packages/headless/dist/react/index.js",
+        "gzip": true,
+        "limit": "6 kB"
     }
 ]

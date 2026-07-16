@@ -4,6 +4,30 @@ Architecture decision log for oriUI — the "why" behind key choices, so they ar
 relitigated after a context compaction or by a new contributor. Companion to
 [ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
 
+## React adapter: adapter-swap is choose-once-at-root (rules of hooks) — a React-only constraint
+
+Decided 2026-07-13 (the `@oriui/headless/react` slice — `useDisclosure` + `useTabs`). React joins Vue and
+Svelte as a third adapter over the same framework-agnostic `core/`. One constraint is React-specific and
+worth recording so the fan-out (dialog / combobox / menu React hooks) inherits it: **the resolved headless
+adapter must be stable for a component's lifetime.** `useDisclosure` resolves
+`useHeadless()?.disclosure ?? nativeDisclosure` and then _calls_ the adapter, which runs hooks (`useId` /
+`useRef` / `useSyncExternalStore` / `useCallback`). React's rules of hooks require the same hooks in the same
+order every render, so swapping the adapter for a given widget between renders (`disclosure: cond ? zag :
+custom`) is a hard crash ("rendered more/fewer hooks than expected") — unlike Vue `inject(ORI_HEADLESS)` /
+Svelte `getContext`, which resolve once in `setup` and carry no such ordering constraint. So in React,
+adapters are an **app-root choice** set once on `<OriHeadlessProvider>`, not a per-render toggle (documented
+in `react/plugin.ts` + `react/use-disclosure.ts`).
+
+The machine bridge is `useSyncExternalStore(service.subscribe, service.getState, service.getState)` — SSR-safe
+(the server snapshot is the machine's initial state, matching the first client render), and the core reducer's
+same-reference-on-no-change contract keeps the snapshot stable, so there is no tearing or render loop. **Vue
+stays SFC** and shares no render code with React (different `h` / vnode / reactivity / events → zero render
+reuse): the shared substrate is `core` (behaviour) + `@oriui/css` (style); the render is a thin per-framework
+skin (the Radix / Ark model). A styled JSX catalog (`@oriui/react`) is deliberately NOT built — that would be
+the catalog-race trap. `@oriui/css` already works in React / Next today (framework-free `.ori-*` classes +
+tokens). Slice-first: `useDisclosure` (machine shape) + `useTabs` (data-driven prop-getter shape) prove both
+contract shapes; the remaining hooks fan out next.
+
 ## Roving-tabindex is a compositional context over shared core helpers — a THIRD headless shape, and when to use which
 
 Decided 2026-07-10 (OriToolbar flagship). The catalog now has **three** ways to implement behavior in the
