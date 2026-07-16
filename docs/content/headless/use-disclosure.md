@@ -73,6 +73,28 @@ The **Svelte** binding is the same primitive as stores — auto-subscribe with `
 <div {...$contentProps}>…content…</div>
 ```
 
+The **React** binding is the same primitive as a hook — the control is plain values (no `.value` / `$`,
+re-rendering on state changes via `useSyncExternalStore`); spread the bags onto your JSX:
+
+```tsx
+import { useDisclosure } from '@oriui/headless/react';
+
+function Details() {
+    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false });
+
+    return (
+        <>
+            <button {...triggerProps}>Details {open ? '▲' : '▼'}</button>
+            <div {...contentProps}>…content…</div>
+        </>
+    );
+}
+```
+
+> `@oriui/css` is framework-free — the same `.ori-*` classes and tokens style this markup in React / Next
+> today, no adapter needed. The React adapter here adds the _behaviour_ (this slice ships `useDisclosure` +
+> `useTabs`; the rest follow).
+
 ## Adapter
 
 The behaviour resolves through the `OriHeadless` contract. With nothing wired, `useDisclosure` falls

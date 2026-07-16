@@ -114,6 +114,43 @@ item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), event
 {/each}
 ```
 
+The **React** binding is the same — the control is plain values (no `$` / `.value`), the item / panel
+getters are plain functions (`getTabProps(tab, i)`), handlers use React casing (`onKeyDown` / `onClick` /
+`tabIndex`), and options are a plain object. `@oriui/css` styles the markup with the same `.ori-tabs`
+classes in React / Next today:
+
+```tsx
+import { useState } from 'react';
+import { useTabs } from '@oriui/headless/react';
+
+function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boolean }[] }) {
+    const [value, setValue] = useState(tabs[0]?.value);
+    const { tablistProps, getTabProps, getPanelProps } = useTabs({
+        tabs,
+        value,
+        onChange: (v) => setValue(v as string)
+    });
+
+    return (
+        <div>
+            <div {...tablistProps}>
+                {tabs.map((tab, i) => (
+                    <button key={tab.value} {...getTabProps(tab, i)}>
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {tabs.map((tab, i) => (
+                <div key={tab.value} {...getPanelProps(tab, i)}>
+                    …{tab.value}…
+                </div>
+            ))}
+        </div>
+    );
+}
+```
+
 ## Accessibility
 
 The prop bags carry the WAI-ARIA [Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) pattern with
