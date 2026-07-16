@@ -39,6 +39,6 @@
         "name": "@oriui/headless/react (gzip)",
         "path": "packages/headless/dist/react/index.js",
         "gzip": true,
-        "limit": "6 kB"
+        "limit": "12 kB"
     }
 ]

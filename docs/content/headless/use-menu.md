@@ -177,6 +177,46 @@ The **Svelte** binding is the same — auto-subscribe the stores with `$`, and m
 </div>
 ```
 
+The **React** binding is the same — the control is plain values (no `$` / `.value`); move real focus to the
+highlighted item in an effect (`getItemProps(item, i)` is a plain function):
+
+```tsx
+import { useRef, useEffect } from 'react';
+import { useMenu } from '@oriui/headless/react';
+
+function Actions() {
+    const contentRef = useRef<HTMLDivElement>(null);
+    const { open, highlightedValue, items, triggerProps, contentProps, getItemProps } = useMenu({
+        id: 'actions',
+        items: [
+            { value: 'new', label: 'New file' },
+            { value: 'open', label: 'Open…' },
+            { value: 'delete', label: 'Delete', disabled: true }
+        ],
+        onSelect: (value) => console.log(value)
+    });
+
+    // Roving tabindex: a projection can't touch the DOM, so move real focus to the highlighted item.
+    useEffect(() => {
+        if (open && highlightedValue != null)
+            contentRef.current?.querySelector<HTMLElement>('[data-highlighted]')?.focus();
+    }, [open, highlightedValue]);
+
+    return (
+        <>
+            <button {...triggerProps}>Actions</button>
+            <div {...contentProps} ref={contentRef} className="ori-menu">
+                {items.map((item, i) => (
+                    <div key={item.value} {...getItemProps(item, i)} className="ori-menu__item">
+                        {item.label ?? item.value}
+                    </div>
+                ))}
+            </div>
+        </>
+    );
+}
+```
+
 ## Accessibility
 
 The prop bags carry the full WAI-ARIA menu-button contract; the host completes it by moving real focus.
