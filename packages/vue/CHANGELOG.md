@@ -1,5 +1,14 @@
 # @oriui/vue
 
+## 1.0.0-alpha.17
+
+### Patch Changes
+
+- Updated dependencies [f6d1016]
+- Updated dependencies [d79d76d]
+    - @oriui/headless@1.0.0-alpha.17
+    - @oriui/css@1.0.0-alpha.17
+
 ## 1.0.0-alpha.16
 
 ### Minor Changes
