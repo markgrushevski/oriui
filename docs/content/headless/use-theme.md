@@ -84,6 +84,30 @@ setters:
 <button on:click={theme.cycleTheme}> Theme: {$theme.theme} ({$theme.resolvedTheme}) </button>
 ```
 
+The **React** binding is the same controller as a hook — the return is plain values (`theme` /
+`resolvedTheme`, no `$` / `.value`) plus the same setters, re-rendering on change (`onClick` in React
+casing). It is **client-only**: the controller is created in a mount effect, so the server and the first
+client render show the neutral default and there is no hydration mismatch (the persisted / OS-resolved
+value lands right after mount — see **SSR & the initial theme** below):
+
+```tsx
+import { useTheme } from '@oriui/headless/react';
+
+function ThemeToggle() {
+    // setTheme(mode) and toggleTheme() are also returned — see Returns.
+    const { theme, resolvedTheme, cycleTheme } = useTheme({
+        storageKey: 'ori-theme',
+        default: 'auto'
+    });
+
+    return (
+        <button onClick={cycleTheme}>
+            Theme: {theme} ({resolvedTheme})
+        </button>
+    );
+}
+```
+
 ## Lower-level
 
 `useTheme` wraps two exports you can use directly. If you already own the mode state — your own store,

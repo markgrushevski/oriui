@@ -101,6 +101,41 @@ The **Svelte** binding is the same imperative API; `toasts` is a `readable` stor
 {/each}
 ```
 
+The **React** binding is the same imperative API; `toasts` is a **plain array** re-projected on every queue
+change via `useSyncExternalStore` (no `.value` / `$`). Because it is a hook, call `useToast()` inside a
+component (rules of hooks) to get the queue and the actions, then push from an event handler. `@oriui/css`
+styles the markup with the same `.ori-toast` classes in React / Next today:
+
+```tsx
+import { useToast } from '@oriui/headless/react';
+
+// Render the queue once near the app root.
+function MyToaster() {
+    const { toasts, dismiss } = useToast();
+
+    return (
+        <div className="my-toaster">
+            {toasts.map((t) => (
+                <div key={t.id} role="status">
+                    {t.text}
+                    {t.closable && <button onClick={() => dismiss(t.id)}>×</button>}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Push from anywhere you can call the hook — the single module-level queue reaches the one <MyToaster />.
+function SaveButton() {
+    const { success, error } = useToast();
+    return (
+        <button onClick={() => success('Saved')} onDoubleClick={() => error({ title: 'Oops', duration: 0 })}>
+            Save
+        </button>
+    );
+}
+```
+
 ## Accessibility
 
 - The queue itself carries no roles — the **styled** [`OriToast`](/components/toast) is the live region:

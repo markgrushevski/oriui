@@ -213,6 +213,77 @@ bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are
 <input value={$hex} aria-label="Hex color" on:blur={(e) => cp.setHex(e.currentTarget.value)} />
 ```
 
+The **React** binding (`@oriui/headless/react`) is the hooks twin over the same core engine — the control
+is **plain values** (no `$` / `.value`), the per-part getters are plain functions
+(`getChannelInputProps('saturation')`, `getPresetProps(color, i)`), event handlers use React casing
+(`onPointerDown` / `onKeyDown` / `onInput` / `onClick` / `onFocus`, `tabIndex`), and options are a plain
+object (not a getter or store) re-read every render, so `value` / `format` / `disabled` stay controlled.
+`@oriui/css` styles the markup with the same `.ori-color-picker` classes in React / Next today:
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useColorPicker } from '@oriui/headless/react';
+
+function MyColorPicker({ presets }: { presets?: string[] }) {
+    const [color, setColor] = useState('#3366ff');
+    // onInput streams live (drives the controlled value); onChange commits (one undo entry).
+    const cp = useColorPicker({ value: color, presets, onInput: setColor, onChange: setColor });
+
+    // The hex field holds a local draft so a partial entry isn't reformatted mid-type; cp.hex re-seeds it.
+    const [hexDraft, setHexDraft] = useState(cp.hex);
+    useEffect(() => setHexDraft(cp.hex), [cp.hex]);
+
+    return (
+        <div role="group">
+            {/* 2D saturation × value area — the two visually-hidden ranges are the a11y surface. */}
+            <div {...cp.areaProps}>
+                <span style={cp.areaThumbStyle} aria-hidden="true" />
+                <input className="sr-only" {...cp.getChannelInputProps('saturation')} />
+                <input className="sr-only" {...cp.getChannelInputProps('value')} />
+            </div>
+
+            {/* Preview swatch — named by the current color, ink chosen for contrast. */}
+            <span role="img" aria-label={cp.hex} style={{ background: cp.swatchColor, color: cp.ink }} />
+
+            {/* Hue slider — a native range in [0, 360); commit on release. */}
+            <input
+                type="range"
+                min={0}
+                max={360}
+                step={1}
+                value={cp.hue}
+                aria-label="Hue"
+                onChange={(e) => cp.setHue(Number(e.currentTarget.value))}
+                onPointerUp={cp.commit}
+            />
+
+            {/* Hex field — setHex parses and commits, returning false on a bad hex. */}
+            <input
+                value={hexDraft}
+                aria-label="Hex color"
+                spellCheck={false}
+                onChange={(e) => setHexDraft(e.currentTarget.value)}
+                onBlur={() => cp.setHex(hexDraft)}
+                onKeyDown={(e) => e.key === 'Enter' && cp.setHex(hexDraft)}
+            />
+
+            {/* Presets — a single-select roving listbox (one tab stop; arrows move focus). */}
+            {presets?.length ? (
+                <div {...cp.presetGroupProps} onKeyDown={cp.onPresetKeydown}>
+                    {presets.map((preset, i) => (
+                        <button key={preset} {...cp.getPresetProps(preset, i)} />
+                    ))}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+```
+
+Passing `alpha: true` / `eyedropper: true` behaves the same as in Vue (bind a second slider to
+`cp.alpha` / `cp.setAlpha`; gate the eyedropper trigger on `cp.eyedropperSupported`, which is `false` on
+the server and until mount, then `true` where the browser has the `EyeDropper` API).
+
 ## Accessibility
 
 The prop-getters carry the ARIA and keyboard contract; nothing is hand-rolled that a native control

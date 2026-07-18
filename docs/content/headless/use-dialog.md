@@ -114,6 +114,39 @@ The **Svelte** binding is the same — drive `showModal()` / `close()` from `$op
 </dialog>
 ```
 
+The **React** binding is the same — the control is plain values (no `$` / `.value`); drive `showModal()` /
+`close()` from `open` in an effect:
+
+```tsx
+import { useRef, useEffect } from 'react';
+import { useDialog } from '@oriui/headless/react';
+
+function Confirm() {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const { open, triggerProps, dialogProps, titleProps, descriptionProps, closeTriggerProps } = useDialog({
+        modal: true
+    });
+
+    useEffect(() => {
+        const el = dialogRef.current;
+        if (!el) return;
+        if (open && !el.open) el.showModal();
+        else if (!open && el.open) el.close();
+    }, [open]);
+
+    return (
+        <>
+            <button {...triggerProps}>Open</button>
+            <dialog ref={dialogRef} {...dialogProps}>
+                <h2 {...titleProps}>Title</h2>
+                <p {...descriptionProps}>Body copy.</p>
+                <button {...closeTriggerProps}>Close</button>
+            </dialog>
+        </>
+    );
+}
+```
+
 ## Adapter
 
 `useDialog` defaults to the native `<dialog>` engine — the focus trap, scroll lock, `Esc`, `::backdrop`

@@ -28,6 +28,18 @@ the catalog-race trap. `@oriui/css` already works in React / Next today (framewo
 tokens). Slice-first: `useDisclosure` (machine shape) + `useTabs` (data-driven prop-getter shape) prove both
 contract shapes; the remaining hooks fan out next.
 
+**Fan-out (2026-07-13):** the rest landed — the machine trio (`useDialog` / `useCombobox` / `useMenu`, same
+`useSyncExternalStore` bridge + `nativeDialog` / `nativeCombobox` / `nativeMenu`) and the compositional /
+data-driven set (`useToolbar` family, `useColorPicker`, `useToast`, `useDismissable`, `useTheme`, `useToken`),
+so `./react` reaches Vue/Svelte parity. One further React-only deviation worth recording: **`useToolbar` /
+`useToolbarToggleGroup` return a `ToolbarProvider` / `ToggleGroupProvider` component** the consumer wraps the
+items with. Vue `provide` / Svelte `setContext` register into an ambient scope straight from `setup`; React
+context has no hook-only equivalent — it needs a _rendered_ Provider — so the compositional hooks hand back a
+Provider element (stable identity, reads live context via a ref) alongside the prop bags. Every other member
+mirrors its Vue/Svelte twin exactly. Client-only concerns (EyeDropper, theme/token resolution, dismiss
+listeners, the toast queue snapshot) are gated behind effects / a cached `useSyncExternalStore` snapshot so
+SSR renders a neutral default with no hydration mismatch.
+
 ## Roving-tabindex is a compositional context over shared core helpers — a THIRD headless shape, and when to use which
 
 Decided 2026-07-10 (OriToolbar flagship). The catalog now has **three** ways to implement behavior in the
