@@ -26,6 +26,8 @@
         "field-integration-controls",
         "neutral-skin-tooltip-fix",
         "package-restructure",
+        "react-adapter-fanout",
+        "react-headless-adapter",
         "rem-tokens",
         "reset-independence",
         "role-text-one-hue",
