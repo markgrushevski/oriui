@@ -159,6 +159,50 @@ item prop-getters are a store of a function (`$getOptionProps(item, i)`):
 In Svelte the options are a `MaybeReactive` — pass a store instead of a plain object to react to a
 changing option list or `disabled`.
 
+The **React** binding is the same — the control is plain values (no `$` / `.value`), and the item
+prop-getters are plain functions (`getOptionProps(item, i)`):
+
+```tsx
+import { useCombobox } from '@oriui/headless/react';
+
+function FruitPicker() {
+    const {
+        items,
+        rootProps,
+        labelProps,
+        controlProps,
+        inputProps,
+        triggerProps,
+        listboxProps,
+        getOptionProps,
+        getOptionState
+    } = useCombobox({
+        options: [
+            { label: 'Apple', value: 'apple' },
+            { label: 'Banana', value: 'banana' },
+            { label: 'Cherry', value: 'cherry' }
+        ]
+    });
+
+    return (
+        <div {...rootProps}>
+            <label {...labelProps}>Fruit</label>
+            <div {...controlProps}>
+                <input {...inputProps} placeholder="Search a fruit…" />
+                <button {...triggerProps}>▾</button>
+                <ul {...listboxProps}>
+                    {items.map((item, i) => (
+                        <li key={item.value} {...getOptionProps(item, i)} data-selected={getOptionState(item).selected}>
+                            {item.label}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+}
+```
+
 ## Accessibility
 
 Implements the WAI-ARIA **combobox with listbox popup** pattern; the prop bags carry the wiring.
