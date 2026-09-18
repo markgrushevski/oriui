@@ -3,42 +3,85 @@
         "name": "@oriui/css — styles.css (gzip)",
         "path": "packages/css/dist/styles.css",
         "gzip": true,
-        "limit": "11 kB"
+        "limit": "11 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/css — base.css foundation (gzip)",
         "path": "packages/css/dist/base.css",
         "gzip": true,
-        "limit": "3 kB"
+        "limit": "3 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/vue — full library, all 34 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
-        "limit": "45 kB"
+        "limit": "45 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/headless — core engine (gzip)",
         "path": "packages/headless/dist/core/index.js",
         "gzip": true,
-        "limit": "1 kB"
+        "limit": "1 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/headless/vue (gzip)",
         "path": "packages/headless/dist/vue/index.js",
         "gzip": true,
-        "limit": "12 kB"
+        "limit": "12 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/headless/svelte (gzip)",
         "path": "packages/headless/dist/svelte/index.js",
         "gzip": true,
-        "limit": "11 kB"
+        "limit": "11 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
     },
     {
         "name": "@oriui/headless/react (gzip)",
         "path": "packages/headless/dist/react/index.js",
         "gzip": true,
-        "limit": "12 kB"
+        "limit": "12 kB",
+        "disablePlugins": ["@size-limit/esbuild"]
+    },
+    {
+        "name": "tree-shaking ceiling — every @oriui/vue export bundled into one app (gzip)",
+        "path": "packages/vue/dist/index.js",
+        "import": "*",
+        "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
+        "gzip": true,
+        "limit": "15 kB",
+        "message": "This is the denominator the per-component entries below are judged against: what a consumer ships who imports the whole catalog. Raising it to make CI pass also raises the bar every tree-shaking entry is read against, so re-measure those too."
+    },
+    {
+        "name": "tree-shaking — OriKbd alone: a leaf stays ~1.5% of the ceiling, it must not drag in the other 33 (gzip)",
+        "path": "packages/vue/dist/index.js",
+        "import": "{ OriKbd }",
+        "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
+        "gzip": true,
+        "limit": "400 B",
+        "message": "OriKbd imports no sibling component, so this is the floor: importing one name out of the barrel must not pull the catalog. A jump toward the ceiling entry means the barrel stopped tree-shaking — look for a new cross-component import, or a module-scope side effect that contradicts \"sideEffects\": false in packages/vue/package.json."
+    },
+    {
+        "name": "tree-shaking — OriButton alone: pulls only the 2 siblings it renders (Icon, Spinner) (gzip)",
+        "path": "packages/vue/dist/index.js",
+        "import": "{ OriButton }",
+        "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
+        "gzip": true,
+        "limit": "1.2 kB",
+        "message": "OriButton legitimately pulls OriIcon and OriSpinner (it renders an icon slot and a loading spinner) and nothing else. A jump means a third sibling crept into its import graph — a cost every consumer of OriButton now pays."
+    },
+    {
+        "name": "tree-shaking — OriColorPicker alone: the heaviest component, 5 siblings, still a fraction of the ceiling (gzip)",
+        "path": "packages/vue/dist/index.js",
+        "import": "{ OriColorPicker }",
+        "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
+        "gzip": true,
+        "limit": "4.5 kB",
+        "message": "OriColorPicker composes OriInput, OriSlider, OriButton, OriIcon and OriSpinner — the upper bound for a single component import. If it approaches the ceiling, composition has stopped being selective."
     }
 ]

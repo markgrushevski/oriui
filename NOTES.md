@@ -652,3 +652,42 @@ Normalise first (`raw.includes('\r\n') ? raw.replace(/\r\n/g, '\n') : raw`), edi
 original ending. Better: use the Write/Edit tools rather than heredoc-driven scripts — a quoted bash
 heredoc also collapses one level of backslashes, which silently breaks regexes and string literals written
 that way.
+
+## A contrast probe must pair its surface background with a text colour
+
+The Chromium contrast guard built its probe surface with a background and no `color`, so any cell that did
+not set its own colour was measured against the UA default foreground — pure black in light, pure white
+under `color-scheme: dark`. That is the most flattering foreground that exists, and it hid nothing for
+years only because every original cell set its own colour. The first inherited-text cells (form labels,
+hints, control values) exposed it: the hint's true worst reading is 4.87:1, not the 7.43:1 the unpaired
+probe reported. Every real surface block in the library declares both (card, dialog, menu, popover, the
+combobox listbox), so the probe must too. **Rule: a test surface that stands in for a component surface has
+to reproduce BOTH halves of the pairing, or it measures a page that does not exist.**
+
+Related, from the same batch: the pre-fix `danger`-as-body-text bug was only ever catchable in the DARK
+theme (it reads 5.69–6.47:1 in light across all skins). Any future attempt to speed the spec up by
+sweeping one theme loses the ability to see that entire class of defect.
+
+## Runtime theme toggling is not a measurement method
+
+Flipping `.dark` on `<html>` and reading `getComputedStyle` gives STALE values for anything the element
+baked in — the recorded Chromium bug (ISSUES-OUTER ORI-O-01). It bit again while hand-verifying the outline
+variant: the border measured `0,82,136` (dark blue on a dark surface, apparently a 1.4:1 defect) when the
+real value after a clean load is 12.17:1. Measure after a page load with the theme already applied, which
+is exactly what the e2e specs do and why they are the authority for theme-dependent numbers.
+
+Also note `getComputedStyle` returns `oklch(...)` / `oklab(...)` for relative-colour declarations, and
+`color-mix()` values come back uncomposited. To get a true sRGB triple, paint the colour on a 1×1 canvas
+over the real backdrop and read the pixel — a parser that assumes `rgb()` silently produces nonsense
+(computing luminance from `oklch(0.86 0.19 27.5)` as if it were RGB yields a 1.1:1 "failure" that is not
+real).
+
+## Introducing a bundler plugin to size-limit changes every existing entry
+
+`.size-limit.json` entries that only measure a built file use `@size-limit/file`. The moment one entry
+needs the `import` field (to measure what a single named export costs), the config needs
+`@size-limit/esbuild`, and size-limit then applies **every installed plugin to every entry** — so all the
+pre-existing file entries must add `disablePlugins` or they start bundling and report different numbers.
+Plugins are also discovered from the nearest `package.json`, which is why the devDependency lands in the
+ROOT manifest rather than a workspace. The failure mode if the manifest change is dropped from the commit
+is loud (`Config option import needs @size-limit/esbuild plugin`), but it fails the release gate.

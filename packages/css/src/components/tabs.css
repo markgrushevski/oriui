@@ -37,7 +37,11 @@
         flex-direction: column;
         flex-shrink: 0;
 
-        border-right: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        /* Logical, not `border-right`: a flex row lays the list out on the inline-start side, so the
+           rule has to be the PANEL-FACING edge — physical right in LTR, physical left in RTL. The
+           selected-tab indicator below already uses inset-inline-end, and a physical border here put
+           the two on opposite edges under dir=rtl (guarded by e2e/rtl.spec.ts). */
+        border-inline-end: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
         border-bottom: 0;
     }
 
