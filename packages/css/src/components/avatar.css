@@ -8,19 +8,30 @@
         box-sizing: border-box;
     }
 
-    .ori-avatar {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-avatar_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-avatar.ori-avatar_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-avatar) {
         --ori-font-size_md: calc(1rem + 2px);
-        /* Baked per-axis defaults so a bare `.ori-avatar` is a valid lg, rounded avatar. Single-class
-           utilities (.ori-avatar_xl, .ori-size-radius_sm, .ori-font-size_xl, .ori-color_primary)
-           override by layer order. The default tint stays the neutral backdrop fill below. */
+        /* Baked per-axis defaults so a bare `.ori-avatar` is a valid lg, rounded avatar. The global
+           utilities (.ori-size-radius_sm, .ori-font-size_xl, .ori-color_primary) override by layer
+           order, the component's own size sugar (.ori-avatar_xl) by specificity against this (0,0,0)
+           rule. The default tint stays the neutral backdrop fill below. */
         --ori-size-action: var(--ori-size-action_lg);
         --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-font-size: var(--ori-font-size_lg);
-        --ori-color: #00000018;
+        /* Neutral backdrop tint, derived from the ambient ink like every other structural neutral in
+           the library (see menu / popover / surface). The literal #00000018 it replaced was a black
+           veil no theme could reach, so it vanished on a dark page. */
+        --ori-color: color-mix(in srgb, currentcolor 10%, transparent);
         /* `spaced` opt-in margin — the `.ori-size-action-space_<size>` utility repoints this; 0 by
            default so an unspaced avatar has no outer margin. */
         --ori-size-action-space: var(--ori-size-action-space_text);
+    }
 
+    .ori-avatar {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -35,40 +46,40 @@
 
     /* Size sugar (action-size axis) — the daisyUI-familiar `.ori-avatar_lg` shape; mirrors the
        low-level `.ori-size-action_*` utility. Drives the avatar square. */
-    .ori-avatar.ori-avatar_xs {
+    .ori-avatar_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-avatar.ori-avatar_sm {
+    .ori-avatar_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-avatar.ori-avatar_md {
+    .ori-avatar_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-avatar.ori-avatar_lg {
+    .ori-avatar_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-avatar.ori-avatar_xl {
+    .ori-avatar_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-avatar.ori-avatar_xxl {
+    .ori-avatar_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 
-    .ori-avatar.ori-avatar_inline {
+    .ori-avatar_inline {
         display: inline-flex;
         margin: 0.25em;
     }
 
-    .ori-avatar.ori-avatar_titled {
+    .ori-avatar_titled {
         width: max-content;
     }
 
-    .ori-avatar.ori-avatar_reverse {
+    .ori-avatar_reverse {
         flex-direction: row-reverse;
     }
 
@@ -91,8 +102,8 @@
         font-size: max(10px, var(--ori-font-size));
     }
 
-    .ori-avatar.ori-avatar_titled .ori-avatar__image,
-    .ori-avatar.ori-avatar_titled .ori-avatar__backdrop {
+    .ori-avatar_titled .ori-avatar__image,
+    .ori-avatar_titled .ori-avatar__backdrop {
         width: var(--ori-size-action);
         height: var(--ori-size-action);
     }
@@ -106,7 +117,7 @@
         white-space: nowrap;
     }
 
-    .ori-avatar.ori-avatar_reverse .ori-avatar__text {
+    .ori-avatar_reverse .ori-avatar__text {
         align-items: flex-end;
     }
 

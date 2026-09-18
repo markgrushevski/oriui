@@ -116,6 +116,10 @@ A toolbar is two pieces: a **root** that spreads `toolbarProps` (and owns the ro
 **items** that each call `useToolbarItem` to register and spread `itemProps`. This is exactly what the
 styled [`OriToolbar`](/components/toolbar) / `OriToolbarButton` wrap.
 
+::example
+
+#vue
+
 ```vue
 <!-- MyToolbar.vue — the root: owns orientation / loop / dir + the roving keydown handler -->
 <script setup lang="ts">
@@ -208,6 +212,8 @@ const { itemProps } = useToolbarToggleItem(() => value)
 </template>
 ```
 
+#svelte
+
 The **Svelte** binding is the same — a `setContext` roving context, the prop bags as `Readable` stores
 you auto-subscribe with `$`, and lowercased event handlers (`onkeydown` / `onfocus`). Options are a
 plain object (or a store), not getters:
@@ -237,6 +243,8 @@ plain object (or a store), not getters:
 
 <button {...$itemProps}>{text}</button>
 ```
+
+#react
 
 The **React** binding is the same two pieces — but because a React context needs a _rendered_ Provider
 (Vue's `provide` / Svelte's `setContext` have no hook-only equivalent), `useToolbar` returns a stable
@@ -297,6 +305,8 @@ function ToggleItem({ value, children }: { value: string; children: ReactNode })
     return <button {...itemProps}>{children}</button>
 }
 ```
+
+::
 
 ## Accessibility
 

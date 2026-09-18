@@ -8,7 +8,12 @@
         box-sizing: border-box;
     }
 
-    .ori-input {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-input_lg`, `.ori-input_fill`) is (0,1,0)
+       and therefore outranks this on SPECIFICITY, not on source order — which is what lets the modifier
+       vocabulary stay flat instead of compounding `.ori-input.ori-input_lg`. Declaring a custom property
+       on the element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-input) {
         --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
         --ori-input-bg: transparent;
         /* Baked default for the action-size axis: the bare `.ori-input` is already a valid `md` field.
@@ -21,46 +26,48 @@
         --ori-color-on: var(--ori-color-on-primary);
         /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
         --ori-font-size: var(--ori-font-size_md);
+    }
 
+    .ori-input {
         display: inline-flex;
         flex-direction: column;
         gap: 0.375em;
     }
 
-    .ori-input.ori-input_fluid {
+    .ori-input_fluid {
         display: flex;
         width: 100%;
     }
 
-    .ori-input.ori-input_fill {
+    .ori-input_fill {
         --ori-input-border: transparent;
         --ori-input-bg: color-mix(in srgb, currentcolor 6%, transparent);
     }
 
     /* Size sugar (action-size axis / field height) — the daisyUI-familiar `.ori-input_lg` shape.
-       Compound with the block so it beats the baked `md` default by specificity; the field inherits
-       the repointed alias. Mirrors the low-level `.ori-size-action_*` utility one-for-one. */
-    .ori-input.ori-input_xs {
+       One class, like the `.ori-size-action_*` utility it mirrors: it beats the baked `md` default
+       because that default sits in the `:where()` rule above at (0,0,0). The field inherits the alias. */
+    .ori-input_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-input.ori-input_sm {
+    .ori-input_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-input.ori-input_md {
+    .ori-input_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-input.ori-input_lg {
+    .ori-input_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-input.ori-input_xl {
+    .ori-input_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-input.ori-input_xxl {
+    .ori-input_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 
@@ -115,12 +122,17 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);
     }
 
+    /* The danger TONE, not the raw role. Status roles are shared by both themes (one hue, no -dark
+       variant), so the raw #b91c1c fill colour is only ever tuned for the light surface: as a border it
+       measured 2.08-2.85:1 on the dark surfaces, under the 3:1 WCAG 1.4.11 bar for a UI boundary. The
+       -text tone is the same hue with its lightness clamped per theme, which is the precedent the
+       outline variant already set at _themes-variant.css (`--ori-variant-border-color`). */
     .ori-input__field[aria-invalid='true'] {
-        border-color: var(--ori-color-danger);
+        border-color: var(--ori-color-danger-text);
     }
 
     .ori-input__field[aria-invalid='true']:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger) 25%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger-text) 25%, transparent);
     }
 
     .ori-input__field:disabled {

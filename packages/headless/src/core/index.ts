@@ -20,6 +20,12 @@ export * from './token'
 export * from './roving'
 export * from './roving-dom'
 export * from './dismiss'
+export * from './tabs'
+export * from './toolbar'
+
+// The four swappable behaviours' option shapes — one declaration, pinned to every adapter's copy by
+// tests/adapter-parity.test.ts (type-only: erased at build time, so the core bundle is unchanged).
+export type { UseDisclosureOptions, UseDialogOptions, UseComboboxOptions, UseMenuOptions } from './options'
 
 // Components — namespaced (mirrors Zag's `import * as disclosure from '@zag-js/...'`)
 export * as disclosure from './disclosure'

@@ -50,6 +50,10 @@ Reactive state plus imperative setters.
 
 ## Usage
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { useTheme } from '@oriui/headless/vue'
@@ -71,6 +75,8 @@ between mount and the applied theme — and tears its OS-scheme listener down on
 client-only SPA can still flash on the very first paint before JS runs; the pre-paint script below
 closes that gap.)
 
+#svelte
+
 The **Svelte** twin is the same controller as a readable store (auto-subscribe with `$`) plus the
 setters:
 
@@ -90,6 +96,8 @@ silently killed `auto` mode for the rest of the session). Teardown rides on `onD
 exists during component init, so a `useTheme()` called at **module scope** has no component to hang on:
 there the store exposes `theme.destroy()` and you are responsible for calling it, or the OS-scheme
 listener outlives the page's need for it.
+
+#react
 
 The **React** binding is the same controller as a hook — the return is plain values (`theme` /
 `resolvedTheme`, no `$` / `.value`) plus the same setters, re-rendering on change (`onClick` in React
@@ -114,6 +122,8 @@ function ThemeToggle() {
     )
 }
 ```
+
+::
 
 ## Lower-level
 

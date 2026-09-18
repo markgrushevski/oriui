@@ -26,6 +26,11 @@ theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to t
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-select","type":"Block","description":"Column wrapper (label, control, hint/error); carries the ori-color and ori-font-size utility classes."},{"class":"ori-color_*","type":"Color","description":"primary (default) · secondary · success · warn · danger · info · surface (focus ring accent)."},{"class":"ori-select_* (size)","type":"Size","description":"xs · sm · md (default) · lg · xl · xxl (control height sugar on the wrapper)."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md (default) · lg · xl · rounded (control corners, on the inner select element)."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · md (default) · lg · xl · xxl (text scale, driven by size prop)."},{"class":"ori-select__control","type":"Part","description":"The native select element; carries ori-size-radius utility."},{"class":"ori-select__chevron","type":"Part","description":"Decorative aria-hidden chevron (inline SVG), absolutely positioned at inset-inline-end."},{"class":"ori-select__label · ori-select__required · ori-select__control-wrap · ori-select__hint · ori-select__error","type":"Part","description":"label / required asterisk / control+chevron wrapper / helper text / error message (role=alert)."},{"class":"ori-select_fluid","type":"Layout","description":"Stretches the wrapper to full width of its container."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes, not classes"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/select.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Colors
 
 The `ori-color_*` class controls the focus ring accent.
@@ -416,22 +421,33 @@ planned.)
 
 ### Props
 
-| Prop          | Type                                                                    | Default     | Description                                                                                                                                     |
-| ------------- | ----------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                                                            | `'primary'` | Accent that drives the focus-ring/border color via the ori-color utility (repoints `--ori-color`).                                              |
-| `describedby` | `string`                                                                | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                                                                   |
-| `disabled`    | `boolean`                                                               | `false`     | Disables the control via the real native `disabled` attribute (styled with `:disabled`).                                                        |
-| `error`       | `string`                                                                | —           | Error message rendered below the control (`role="alert"`); flips the control to `aria-invalid` and wires `aria-describedby`. Replaces the hint. |
-| `fluid`       | `boolean`                                                               | `false`     | Stretches the control to the full width of its container.                                                                                       |
-| `hint`        | `string`                                                                | —           | Helper text below the control, wired via `aria-describedby`. Hidden while an error is shown.                                                    |
-| `id`          | `string`                                                                | `useId()`   | Id applied to the native `<select>`; defaults to an SSR-safe `useId()` so the `label` (or an external `<label for>`) can target it.             |
-| `invalid`     | `boolean`                                                               | `false`     | Marks the control invalid via `aria-invalid="true"`; styled with a danger border and ring. (`error` also sets this.)                            |
-| `label`       | `string`                                                                | —           | Built-in `<label>` rendered above the control and wired to it via `for`.                                                                        |
-| `options`     | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]`        | Options rendered as `<option>` elements. Ignored when a default slot is provided.                                                               |
-| `placeholder` | `string`                                                                | —           | Renders a disabled, selected-by-default first `<option value="">` as a non-selectable prompt.                                                   |
-| `radius`      | `RadiusSize`                                                            | `'md'`      | Border radius via the `ori-size-radius_*` single-class token (`zero` · xs · sm · md · lg · xl · rounded).                                       |
-| `required`    | `boolean`                                                               | `false`     | Sets the native `required` attribute and renders a `*` after the label.                                                                         |
-| `size`        | `ActionSize`                                                            | `'md'`      | Control height (`ori-select_*` size sugar) and font-size (`ori-font-size_*`) (`xs`–`xxl`).                                                      |
+| Prop          | Type             | Default     | Description                                                                                                                                     |
+| ------------- | ---------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`     | `'primary'` | Accent that drives the focus-ring/border color via the ori-color utility (repoints `--ori-color`).                                              |
+| `describedby` | `string`         | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                                                                   |
+| `disabled`    | `boolean`        | `false`     | Disables the control via the real native `disabled` attribute (styled with `:disabled`).                                                        |
+| `error`       | `string`         | —           | Error message rendered below the control (`role="alert"`); flips the control to `aria-invalid` and wires `aria-describedby`. Replaces the hint. |
+| `fluid`       | `boolean`        | `false`     | Stretches the control to the full width of its container.                                                                                       |
+| `hint`        | `string`         | —           | Helper text below the control, wired via `aria-describedby`. Hidden while an error is shown.                                                    |
+| `id`          | `string`         | `useId()`   | Id applied to the native `<select>`; defaults to an SSR-safe `useId()` so the `label` (or an external `<label for>`) can target it.             |
+| `invalid`     | `boolean`        | `false`     | Marks the control invalid via `aria-invalid="true"`; styled with a danger border and ring. (`error` also sets this.)                            |
+| `label`       | `string`         | —           | Built-in `<label>` rendered above the control and wired to it via `for`.                                                                        |
+| `options`     | `SelectOption[]` | `[]`        | Options rendered as `<option>` elements. Ignored when a default slot is provided.                                                               |
+| `placeholder` | `string`         | —           | Renders a disabled, selected-by-default first `<option value="">` as a non-selectable prompt.                                                   |
+| `radius`      | `RadiusSize`     | `'md'`      | Border radius via the `ori-size-radius_*` single-class token (`zero` · xs · sm · md · lg · xl · rounded).                                       |
+| `required`    | `boolean`        | `false`     | Sets the native `required` attribute and renders a `*` after the label.                                                                         |
+| `size`        | `ActionSize`     | `'md'`      | Control height (`ori-select_*` size sugar) and font-size (`ori-font-size_*`) (`xs`–`xxl`).                                                      |
+
+`SelectOption` is exported — `import type { SelectOption } from '@oriui/vue'`:
+
+```ts
+import type { SelectOption } from '@oriui/vue'
+
+const options: SelectOption[] = [
+    { label: 'Vue', value: 'vue' },
+    { label: 'Svelte', value: 'svelte', disabled: true }
+]
+```
 
 ### Events & attributes
 

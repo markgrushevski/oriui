@@ -30,7 +30,8 @@
         "./package.json": "./package.json"
     },
     "scripts": {
-        "build": "node build.mjs"
+        "build": "node build.mjs",
+        "prepack": "npm run build"
     },
     "devDependencies": {
         "autoprefixer": "^10.5.2",

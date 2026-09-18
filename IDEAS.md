@@ -229,26 +229,31 @@ general atomic set. Candidates that fit that rule:
 - ◽ **Theme / skin gallery** page · **framework-switch** examples (Vue ↔ Svelte) — ROADMAP phase 7.
 - 🧪 Tailwind v4 preset adapter · `@oriui/vanilla` (Zag) headless adapter for htmx / no-framework.
 
-- ⭐ **`oriui` CLI — one generator surface for humans _and_ AI agents** _(idea; shape undecided. The
-  original discussion was lost with a deleted transcript — this is the reconstruction.)_ The pitch: a
-  machine-readable, executable entry point to the library, so that "add a Combobox to my app" is a command
-  instead of a copy-paste out of the docs. Three shapes, in ascending ambition:
-    1. **registry / `add`** (the shadcn model) — `npx oriui add dialog` copies the SFC + its CSS block into
-       the consumer's repo. Suits people who want the code in their own tree; the cost is a second
-       distribution channel to keep in sync with the published package, and it pulls against the
-       "swap a layer, don't fork it" thesis.
-    2. **generator** — `npx oriui skin` / `oriui token` scaffolds a valid skin or token set and runs the
-       contrast check (`tests/tokens.contrast.test.ts` is already that engine); `oriui new component`
-       scaffolds SFC + CSS block + test + docs page for **contributors**, encoding the conventions
-       CLAUDE.md currently spells out in prose.
-    3. **agent surface** — the same binary as an MCP server / `--json` API exposing the component contract
-       (props, slots, tokens, BEM class names, a11y invariants), so an agent in a consumer project emits
-       correct markup without guessing. `/llms.txt` + `/llms-full.txt` are the static prototype of exactly
-       this; a CLI makes it queryable and versioned with the package.
+- 🧪 **A CLI for oriUI — mostly closed by review, one narrow piece left** _(the original discussion was lost
+  with a deleted transcript; this entry is the reconstruction, and it has since been taken apart by an
+  adversarial review — three of its load-bearing premises were false.)_ The pitch was a machine-readable,
+  executable entry point so that "add a Combobox to my app" is a command rather than a copy-paste. Verdict
+  per shape:
+    1. **registry / `add`** (the shadcn model) — **closed, architecturally.** shadcn's copy-in works because
+       the copied file is self-contained: its Tailwind classes travel inside it. oriUI made the opposite
+       choice on purpose (DECISIONS.md — component CSS lives in `@oriui/css`), so a copied SFC arrives with
+       no styles. There is also already a crude copy-out path: the published tarball ships `src`.
+    2. **generator / scaffolder** — **weak.** `tests/tokens.contrast.test.ts` is not an engine to reuse; it is
+       a vitest file with hardcoded repo paths and no exports, and extracting a real `checkSkinContrast(css)`
+       means a CSS parser plus its own test suite. And the conventions a scaffolder would freeze are not yet
+       stable enough to freeze. Cheaper substitute, already done: fix the stale lines in REVIEW.md.
+    3. **agent surface** — **already ships, and was broken.** `@nuxt/content` emits a per-page `/raw/**.md`
+       endpoint and the static build emits `llms.txt` + `llms-full.txt` with exactly the per-component payload
+       (props table, class table, a11y section). What was missing was not a CLI but a working generator: the
+       output duplicated a hand-authored block, mangled entities, and published 100+ absolute `/raw` URLs
+       nothing asked for. Fixed as ORI-I-53 / ORI-I-59 — build the queryable layer, if ever, on a generator
+       that is already correct.
 
-    **Open question to settle before writing any of it:** does this serve a real user (the library has one
-    consumer today), or is it the catalog-race trap in a new costume? Same bar as the rest of the project —
-    build it when a real screen needs it.
+    **What actually remains:** the reachable command is `npx @oriui/cli …` or an in-repo `node scripts/…` —
+    never `npx oriui`, because npm rejects the unscoped name as too close to `cliui` (a hard 403, recorded in
+    DECISIONS.md and ISSUES-OUTER.md). The only piece still worth building is a **contributor** scaffolder,
+    and it belongs under "Project improvements" rather than here, once the conventions settle. The consumer
+    story is served by the docs, `llms-full.txt` and `@oriui/css` — build more when a real screen asks.
 
 ## Inspired by UnoCSS (integration / no-framework layer)
 

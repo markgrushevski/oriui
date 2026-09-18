@@ -1,8 +1,15 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
 import { ref } from 'vue'
 import { get, writable, derived } from 'svelte/store'
-import { useTabs as useTabsVue, type TabItem } from '@oriui/headless/vue'
-import { useTabs as useTabsSvelte } from '@oriui/headless/svelte'
+import type { TabItem as CoreTabItem } from '@oriui/headless'
+import {
+    useTabs as useTabsVue,
+    type TabItem,
+    type TabItem as VueTabItem,
+    type UseTabsOptions
+} from '@oriui/headless/vue'
+import { useTabs as useTabsSvelte, type TabItem as SvelteTabItem } from '@oriui/headless/svelte'
+import type { TabItem as ReactTabItem } from '@oriui/headless/react'
 
 // The headless `useTabs` is pure TS over the shared `../core/roving` math. The Vue binding returns
 // computeds; the Svelte binding returns stores — both are exercised WITHOUT rendering a component
@@ -123,6 +130,35 @@ describe('useTabs (Vue)', () => {
         arrowFrom(buttons[3]) // d -> wrap -> a
         expect(onChange).toHaveBeenLastCalledWith('a')
         expect(document.activeElement).toBe(buttons[0])
+    })
+
+    // ORI-I-71: this composable used to demand `() => UseTabsOptions` while every sibling (useDisclosure /
+    // useCombobox / useMenu) accepted `MaybeRefOrGetter` — a consumer who passed a plain object got a type
+    // error with no hint that this one was different. All three call styles must now work.
+    it('accepts the three MaybeRefOrGetter call styles, like every sibling composable', () => {
+        expect(useTabsVue({ tabs: TABS, value: 'b' }).selectedValue.value).toBe('b')
+
+        const asRef = ref<UseTabsOptions>({ tabs: TABS, value: 'b' })
+        const fromRef = useTabsVue(asRef)
+        expect(fromRef.selectedValue.value).toBe('b')
+        asRef.value = { tabs: TABS, value: 'd' }
+        expect(fromRef.selectedValue.value).toBe('d') // a ref is re-read, not snapshotted
+
+        expect(useTabsVue(() => ({ tabs: TABS, value: 'd' })).selectedValue.value).toBe('d')
+    })
+})
+
+// ORI-I-73: the item type is declared ONCE in core and re-exported by each adapter — this import is what
+// fails to compile if the core declaration goes away, and `test:types` runs the suite through `vue-tsc`.
+// (Structural typing means a runtime assertion cannot tell one shared declaration from three identical
+// copies; the proof that matters here is that the core name resolves and the adapters agree with it.)
+describe('TabItem (shared core declaration)', () => {
+    it('is the same type in core and in all three adapters', () => {
+        const fromCore: CoreTabItem = { value: 'a', disabled: true }
+        const vue: VueTabItem = fromCore
+        const svelte: SvelteTabItem = vue
+        const react: ReactTabItem = svelte
+        expect(react).toEqual({ value: 'a', disabled: true })
     })
 })
 

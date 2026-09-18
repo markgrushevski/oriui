@@ -127,14 +127,14 @@ describe('React useColorPicker — echo-guard re-sync', () => {
 })
 
 describe('React useColorPicker — 2D area', () => {
-    it('areaProps carries the group role, the --ori-hue style, and a React-cased onPointerDown', () => {
+    it('areaProps carries the group role, the --ori-color-picker-hue style, and a React-cased onPointerDown', () => {
         const { result } = render({ value: '#3366ff', onInput: noop, onChange: noop })
         const area = result.current.areaProps
 
         expect(area.role).toBe('group')
         expect(area['aria-label']).toBe('Saturation and brightness')
         expect(area['aria-disabled']).toBeUndefined()
-        expect(area.style['--ori-hue']).toBe(result.current.hueColor)
+        expect(area.style['--ori-color-picker-hue']).toBe(result.current.hueColor)
         expect(typeof area.onPointerDown).toBe('function')
         expect('onPointerdown' in area).toBe(false) // React casing, not the neutral/Svelte lowercase
     })

@@ -24,10 +24,15 @@
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
         --ori-variant-text-color: var(--ori-color-on);
+        /* Component-local padding knob (an alias, not a raw scale read) — the card's inset is its own
+           dimension, independent of the `--ori-size-gap` alias the header / actions rows below use, so a
+           consumer can retune it without moving the whole gap scale. Same idiom as --ori-tooltip-radius
+           and --ori-color-picker-radius. */
+        --ori-card-padding: var(--ori-size-gap_xl);
 
         min-width: min-content;
 
-        padding: var(--ori-size-gap_xl);
+        padding: var(--ori-card-padding);
 
         overflow: hidden;
 
@@ -58,11 +63,11 @@
         pointer-events: none;
     }
 
-    .ori-card.ori-card_fluid {
+    .ori-card_fluid {
         width: 100%;
     }
 
-    .ori-card.ori-card_row {
+    .ori-card_row {
         display: flex;
         gap: calc(var(--ori-size-gap) * 2);
     }

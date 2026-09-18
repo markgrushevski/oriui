@@ -56,6 +56,10 @@ There is no styled component — the consumer is a JS painter. Create the engine
 composable's own `onMounted` ran first, so `brand.value` is already resolved), seed it with the resolved
 value, then `watch` — theme flips re-push automatically:
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { onMounted, useTemplateRef, watch } from 'vue'
@@ -76,6 +80,8 @@ watch(brand, (c) => engine?.setColor(c || null)) // '' (SSR/unresolved) -> engin
     <canvas ref="canvas" />
 </template>
 ```
+
+#svelte
 
 The **Svelte** binding is the same — a lazy readable store (resolution and the theme observer start with
 the first subscriber and tear down with the last). Create the engine in `onMount`, then `subscribe`: it
@@ -99,6 +105,8 @@ you can auto-subscribe with `$brand` instead.)
 
 <canvas bind:this={canvas} />
 ```
+
+#react
 
 The **React** binding is the same — the control is a plain value (no `.value` / `$`, re-rendering on theme
 flips via a `useEffect` that resolves and observes; `''` until mounted, SSR-safe). Create the engine in one
@@ -126,6 +134,8 @@ function BrandCanvas() {
     return <canvas ref={canvasRef} />
 }
 ```
+
+::
 
 ## Lower-level
 

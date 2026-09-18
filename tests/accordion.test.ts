@@ -1,12 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OriAccordion } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
 
 const ITEMS = [
-    { value: 'a', title: 'Section A' },
-    { value: 'b', title: 'Section B' },
-    { value: 'c', title: 'Section C', disabled: true }
+    { value: 'a', label: 'Section A' },
+    { value: 'b', label: 'Section B' },
+    { value: 'c', label: 'Section C', disabled: true }
 ]
 
 describe('OriAccordion', () => {
@@ -25,7 +25,7 @@ describe('OriAccordion', () => {
         details.forEach((d) => expect(d.classes()).toContain('ori-accordion__item'))
     })
 
-    it('renders a <summary> trigger with the title text per item', () => {
+    it('renders a <summary> trigger with the label text per item', () => {
         const wrapper = mount(OriAccordion, { props: { items: ITEMS } })
         const summaries = wrapper.findAll('summary')
 
@@ -95,7 +95,7 @@ describe('OriAccordion', () => {
 
     it('enabled items carry no aria-disabled or tabindex override', () => {
         const wrapper = mount(OriAccordion, {
-            props: { items: [{ value: 'x', title: 'X' }] }
+            props: { items: [{ value: 'x', label: 'X' }] }
         })
         const summary = wrapper.find('summary')
 
@@ -132,9 +132,9 @@ describe('OriAccordion', () => {
 
     it('exposes a scoped default slot that receives the current item', () => {
         const wrapper = mount(OriAccordion, {
-            props: { items: [{ value: 'a', title: 'Alpha' }] },
+            props: { items: [{ value: 'a', label: 'Alpha' }] },
             slots: {
-                default: `<template #default="{ item }"><p class="slot-content">{{ item.title }}</p></template>`
+                default: `<template #default="{ item }"><p class="slot-content">{{ item.label }}</p></template>`
             }
         })
 
@@ -145,9 +145,9 @@ describe('OriAccordion', () => {
 
     it('exposes a scoped #title slot that renders custom header content and receives the item', () => {
         const wrapper = mount(OriAccordion, {
-            props: { items: [{ value: 'a', title: 'Alpha' }] },
+            props: { items: [{ value: 'a', label: 'Alpha' }] },
             slots: {
-                title: `<template #title="{ item }"><span class="slot-title">Custom {{ item.title }}</span></template>`
+                title: `<template #title="{ item }"><span class="slot-title">Custom {{ item.label }}</span></template>`
             }
         })
 
@@ -156,17 +156,17 @@ describe('OriAccordion', () => {
         expect(wrapper.find('.ori-accordion__title .slot-title').exists()).toBe(true)
     })
 
-    it('falls back to the item title when no #title slot is provided', () => {
-        const wrapper = mount(OriAccordion, { props: { items: [{ value: 'a', title: 'Alpha' }] } })
+    it('falls back to the item label when no #title slot is provided', () => {
+        const wrapper = mount(OriAccordion, { props: { items: [{ value: 'a', label: 'Alpha' }] } })
 
         expect(wrapper.find('.ori-accordion__title').text()).toBe('Alpha')
     })
 
     it('expand/collapse still works with a #title slot present', async () => {
         const wrapper = mount(OriAccordion, {
-            props: { items: [{ value: 'a', title: 'Alpha' }] },
+            props: { items: [{ value: 'a', label: 'Alpha' }] },
             slots: {
-                title: `<template #title="{ item }"><span class="slot-title">{{ item.title }}</span></template>`
+                title: `<template #title="{ item }"><span class="slot-title">{{ item.label }}</span></template>`
             }
         })
         const details = wrapper.find('details').element as HTMLDetailsElement
@@ -201,6 +201,55 @@ describe('OriAccordion', () => {
         wrapper.findAll('summary').forEach((s) => {
             expect(s.element.tagName.toLowerCase()).toBe('summary')
         })
+    })
+
+    // ----- the pre-1.0 `title` → `label` rename -----
+    //
+    // The key is now `label`, matching every other collection item in the catalog. TypeScript rejects
+    // the old key, but an untyped array (JS, JSON from an API) would silently render empty summaries —
+    // so the component names the rename in DEV. These tests pin BOTH halves: that the stale key is
+    // reported, and that the report does not fire for a correct array (a warn nobody can silence is
+    // worse than no warn).
+
+    it('warns in DEV, naming the renamed key, when an item still carries `title`', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        mount(OriAccordion, {
+            // The whole point is the untyped caller the type system cannot reach.
+            props: { items: [{ value: 'a', title: 'Alpha' }] as unknown as { value: string; label: string }[] }
+        })
+
+        expect(warn).toHaveBeenCalledTimes(1)
+        const message = warn.mock.calls[0]![0] as string
+        expect(message).toContain('[OriAccordion]')
+        expect(message).toContain('`title`')
+        expect(message).toContain('`label`')
+        // The offending item is named, so a long list points at the one that is wrong.
+        expect(message).toContain('a')
+
+        warn.mockRestore()
+    })
+
+    it('renders nothing for a stale `title` — the summary is empty, which is what the warning is for', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        const wrapper = mount(OriAccordion, {
+            props: { items: [{ value: 'a', title: 'Alpha' }] as unknown as { value: string; label: string }[] }
+        })
+
+        expect(wrapper.find('.ori-accordion__title').text()).toBe('')
+
+        warn.mockRestore()
+    })
+
+    it('stays silent for a correct `label` array', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        mount(OriAccordion, { props: { items: ITEMS } })
+
+        expect(warn).not.toHaveBeenCalled()
+
+        warn.mockRestore()
     })
 
     // ----- axe -----

@@ -13,8 +13,9 @@ export default defineConfig({
             entry: 'src/index.ts'
         },
         rollupOptions: {
-            // vue is a peer; the headless packages are runtime deps (OriDialog consumes the
-            // useDialog() contract from @oriui/headless/vue) and must stay external, not bundled.
+            // vue and the headless packages are all peers now (a duplicated @oriui/headless would break
+            // the provide/inject singletons). They must stay external either way — OriDialog consumes the
+            // useDialog() contract from @oriui/headless/vue at runtime, it just must not bundle a copy.
             external: ['vue', '@oriui/headless/vue', '@oriui/headless'],
             output: {
                 preserveModules: true,

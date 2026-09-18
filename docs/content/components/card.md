@@ -21,6 +21,11 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class. Defaults bake in fill variant, surface color, and lg radius — a bare ori-card is valid."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · <b>lg</b> · xl · rounded"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/card.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Anatomy
 
 The card's slot structure from top to bottom. Each named slot falls back to a corresponding prop, so

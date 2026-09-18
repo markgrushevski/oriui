@@ -240,8 +240,15 @@ class.
 ### Action (control height)
 
 `md` is `2.75rem` — 44px at the browser-default 16px root, meeting the iOS HIG ≥44pt and Android
-Material ≥48dp touch-target minimums; `xs` / `sm` are compact opt-ins for dense or icon-only UI. The
-alias `--ori-size-action` defaults to `var(--ori-size-action_text)` (`1em`, i.e. font-driven).
+Material ≥48dp touch-target minimums; `xs` / `sm` are compact opt-ins for dense or icon-only UI.
+
+The alias `--ori-size-action` is declared at `:root` as `var(--ori-size-action_text)` (`1em`,
+font-driven), but **no action component reads that default**: every block bakes its own step on
+itself (`.ori-button { --ori-size-action: var(--ori-size-action_md) }`), and the
+`.ori-<family>_<step>` utility beats it by layer order. Two consequences worth knowing: the `text`
+default only shows up on markup that opts into it, and repointing `--ori-size-action` on a wrapper
+does nothing — scope a subtree through the raw step instead (see
+[Customization §5](/guides/customization)).
 
 | Token / step             | Value     |
 | ------------------------ | --------- |

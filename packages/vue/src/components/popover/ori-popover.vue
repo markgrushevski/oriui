@@ -18,9 +18,28 @@ import type { AnchoredPlacement } from '../../types'
 // name by passing `aria-label` / `aria-labelledby` — undeclared attrs fall through to the panel.
 defineOptions({ inheritAttrs: false })
 
-const { placement = 'bottom-start', role = 'dialog' } = defineProps<{
+/**
+ * The closed vocabulary `aria-haspopup` accepts on a trigger. Deliberately NOT the same set as the
+ * panel's `role`: a popover panel is legitimately a `group`, a `region`, a `tooltip` or roleless, and
+ * none of those are legal `aria-haspopup` tokens — so narrowing `role` to this union would forbid valid
+ * markup, while widening this to `string` is what used to make the trigger bag un-spreadable.
+ */
+type PopupRole = 'dialog' | 'menu' | 'listbox' | 'tree' | 'grid'
+
+const POPUP_ROLES: readonly string[] = ['dialog', 'menu', 'listbox', 'tree', 'grid']
+
+const {
+    haspopup,
+    placement = 'bottom-start',
+    role = 'dialog'
+} = defineProps<{
+    /** What the TRIGGER announces it opens (`aria-haspopup`). Defaults to `role` when the panel's role
+     *  is one of the five ARIA popup types, else to "dialog" — set it explicitly when the panel carries
+     *  a role outside that vocabulary (`group`, `region`, …). */
+    haspopup?: PopupRole
     placement?: AnchoredPlacement
-    /** ARIA role for the panel — "dialog" (default), "menu", "listbox", … per the content it holds. */
+    /** ARIA role for the PANEL — "dialog" (default), "menu", "listbox", "group", … per the content it
+     *  holds. Unconstrained on purpose: the panel's role is a wider set than `aria-haspopup`'s. */
     role?: string
 }>()
 
@@ -29,11 +48,19 @@ const uid = useId()
 const panelId = `ori-popover-${uid}`
 const anchorName = `--ori-popover-${uid}`
 
+// The trigger's popup HINT, resolved from the two concerns kept apart above: an explicit `haspopup`
+// wins; otherwise mirror `role` when it happens to be one of the five popup types (the ergonomic case
+// — `role="menu"` should not need a second prop), and fall back to "dialog" when it is not, because a
+// generic popup is what a `group`/`region` panel is from the trigger's point of view. The mirror used
+// to be unconditional, which is what leaked `string` into the bag below.
+const popupRole = computed<PopupRole>(() => haspopup ?? (POPUP_ROLES.includes(role) ? (role as PopupRole) : 'dialog'))
+
 // Spread onto the trigger button: opens the panel, names it as this panel's anchor, and conveys the
-// popup relationship — `aria-haspopup` mirrors the panel role, `aria-controls` points at the panel.
+// popup relationship. Every value here is typed as narrowly as the attribute it feeds, so the bag
+// `v-bind`s onto a real <button> without a cast — the whole point of splitting `haspopup` off `role`.
 const triggerProps = computed(() => ({
     popovertarget: panelId,
-    'aria-haspopup': role,
+    'aria-haspopup': popupRole.value,
     'aria-controls': panelId,
     style: { anchorName }
 }))

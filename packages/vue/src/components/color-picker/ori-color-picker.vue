@@ -123,7 +123,7 @@ function commitHex(): void {
                 :class="{ 'ori-color-picker__swatch_alpha': alpha }"
                 role="img"
                 :aria-label="cp.hex.value"
-                :style="{ '--ori-color': cp.swatchColor.value, '--ori-ink': cp.ink.value }"
+                :style="{ '--ori-color': cp.swatchColor.value, '--ori-color-picker-ink': cp.ink.value }"
             >
                 <slot name="swatch" :color="cp.swatchColor.value" :ink="cp.ink.value"></slot>
             </span>

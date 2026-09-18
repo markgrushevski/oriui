@@ -146,7 +146,7 @@ practical gotchas go here.
   in `packages/css/src/components/<name>.css`, NOT in the SFC (the SFCs have **no `<style>` block**). So
   a styled-component consumer must `import '@oriui/css'` once (it ships tokens + components + utilities),
   and there are no per-component CSS chunks in `@oriui/vue`'s `dist`. The `ori.utilities` layer is declared
-  **last**, so utilities (`.ori-color_*`, `.ori-shadow`, …) win over a component's own rules — they set
+  **last**, so utilities (`.ori-color_*`, `.ori-variant_*`, …) win over a component's own rules — they set
   tokens the components read, so they don't actually clash. Modifiers use the house `.ori-x.ori-x_y`
   compound pattern (not `:where()`). **Adding a component:** create `packages/css/src/components/<name>.css`
   wrapped in `@layer ori.components { … }` and add its `@import` to `packages/css/src/styles.css`.
@@ -691,3 +691,30 @@ pre-existing file entries must add `disablePlugins` or they start bundling and r
 Plugins are also discovered from the nearest `package.json`, which is why the devDependency lands in the
 ROOT manifest rather than a workspace. The failure mode if the manifest change is dropped from the commit
 is loud (`Config option import needs @size-limit/esbuild plugin`), but it fails the release gate.
+
+## A capture listener on a component root swallows the caller's fall-through `@click`
+
+Binding `@click.capture` unconditionally on an SFC's root element stops a caller's own `onClick` (arriving
+through `$attrs` fall-through) from ever running on a real `<button>` — even when the capture handler itself
+does nothing. It cost an afternoon to find because the failure is invisible in isolation: the test passes
+when it runs alone, and passes again if anything reads the DOM (`outerHTML`) between mount and dispatch,
+which is how the agent that wrote it saw green.
+
+Three things to remember:
+
+- **Bind the guard only where it is needed.** `:onClickCapture="as === 'button' ? undefined : onClickCapture"`
+  — a real `<button>` is stopped at the source by its `disabled` attribute and must not carry the listener.
+- **The camelCase spelling is load-bearing.** `:on-click-capture` does NOT compile to a capture listener
+  (Vue only recognises the camelCase DOM prop here), so `vue/attribute-hyphenation` is configured to ignore
+  `onClickCapture` in `eslint.config.mjs` rather than "fixed". Auto-fixing that warning silently removes the
+  guard while leaving a binding that looks right.
+- **`@click.capture` cannot be made conditional**, which is why the explicit prop binding exists at all.
+
+## Resolving a computed colour: canvas, not a colour library
+
+`getComputedStyle` returns `oklch(…)` / `oklab(…)` for relative-colour declarations and serialises
+`color-mix()` as `color(srgb r g b / a)`. colord cannot parse that serialisation — it silently returns
+opaque black, which made a 2.1:1 switch thumb measure 21:1 and look perfect. Paint the value on a 1×1
+canvas over the real backdrop and read the pixel instead; that also composites translucent layers, which a
+parser cannot do at all. (Pair this with the entry above about runtime theme toggling: measure after a
+fresh load, or force a `display: none` reflow flush per permutation.)

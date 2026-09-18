@@ -8,8 +8,11 @@ import path from 'node:path'
 // host app's ambient ink used to bleed through — black-on-black text).
 const CSS = path.resolve('packages/css/dist/styles.css')
 
-const NEUTRAL_900 = 'rgb(15, 23, 42)' // --ori-neutral-900 #0f172a
-const NEUTRAL_50 = 'rgb(248, 250, 252)' // --ori-neutral-50  #f8fafc
+// The default chip is the PAGE INVERTED — on-background over background — not a literal neutral step.
+// It moved off the raw ramp when the theme-blind literals were removed (ORI-I-23), which is what makes it
+// track skin and theme instead of only the default skin.
+const CHIP_BG_LIGHT = 'rgb(10, 34, 51)' // --ori-color-on-background-light #0a2233
+const CHIP_TEXT_LIGHT = 'rgb(243, 248, 252)' // --ori-color-background-light  #f3f8fc
 const PRIMARY_LIGHT = 'rgb(3, 105, 161)' // --ori-color-primary-light #0369a1
 
 function tooltip(id: string, opts: { content?: string; placement?: string; extra?: string } = {}): string {
@@ -37,8 +40,8 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
             const s = getComputedStyle(el)
             return { bg: s.backgroundColor, text: s.color }
         })
-        expect(colors.bg).toBe(NEUTRAL_900)
-        expect(colors.text).toBe(NEUTRAL_50)
+        expect(colors.bg).toBe(CHIP_BG_LIGHT)
+        expect(colors.text).toBe(CHIP_TEXT_LIGHT)
         expect(colors.bg).not.toBe(colors.text)
     })
 

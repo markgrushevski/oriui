@@ -25,6 +25,12 @@ documented on the [Popover page](/components/popover#classes) — placement, the
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-menu","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg + a z-index (not top-layer, unlike Popover). Composed with .ori-anchored for placement."},{"class":"ori-anchored / ori-anchored_*","type":"Placement base","description":"Shared floating-panel placement primitive — see the Popover class reference for the full modifier list."},{"class":"ori-menu__item","type":"Part","description":"One action row (role=menuitem). Highlight follows roving focus / pointer hover via [data-highlighted]."},{"class":"aria-disabled / data-highlighted","type":"State","description":"real attributes, not classes — a disabled item is skipped by roving navigation."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/menu.css`. The shared `.ori-anchored`
+placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Basic
 
 Open the menu and use the Arrow keys — focus moves between items with **roving tabindex** (one item is

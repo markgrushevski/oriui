@@ -82,7 +82,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     const opaqueColor = computed(() => rgbToHex(rgb.value))
     /** Readable ink (black/white) over the current color, per WCAG luminance. */
     const ink = computed(() => readableInk(rgb.value))
-    /** The fully-saturated hue color — the area's `--ori-hue` gradient anchor. */
+    /** The fully-saturated hue color — the area's `--ori-color-picker-hue` gradient anchor. */
     const hueColor = computed(() => rgbToHex(hsvToRgb(hsva.value.h, 1, 1)))
 
     const emitInput = (): void => opts().onInput(formatColor(hsva.value, fmt(), alphaOn()))
@@ -143,7 +143,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         role: 'group' as const,
         'aria-label': 'Saturation and brightness',
         'aria-disabled': disabled() || undefined,
-        style: { '--ori-hue': hueColor.value },
+        style: { '--ori-color-picker-hue': hueColor.value },
         onPointerdown: onAreaPointerdown
     }))
 

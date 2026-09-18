@@ -22,6 +22,11 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-radio-group","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales all option labels."},{"class":"ori-radio-group_inline","type":"Layout","description":"Lays options out in a row (flex-wrap) instead of a column."},{"class":"ori-radio-group__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-radio-group__options","type":"Part","description":"Options wrapper; flex column (or row when _inline)."},{"class":"ori-radio","type":"Part","description":"Wrapping <label> for each option. Add ori-radio_disabled when disabled."},{"class":"ori-radio__input · ori-radio__circle · ori-radio__label","type":"Part","description":"Hidden native input / styled circle indicator / visible label text."},{"class":"disabled · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/radio.css`. `.ori-radio-group` lives in
+`radio.css`, not a file of its own. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`)
+first — the token utilities (`ori-color_*`, `ori-size-radius_*`, …) live there, not in the component file. The
+full bundle `@oriui/css` is the default and already carries both; see [à-la-carte imports](/guides/css).
+
 ## Anatomy
 
 ```
@@ -345,7 +350,16 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `required` | `boolean`       | `false`     | Sets `aria-required="true"` on the group and `required` on each input.               |
 | `size`     | `ActionSize`    | `'md'`      | Font size scale (`xs`–`xxl`); the circle and gap scale with it via `em` units.       |
 
-`RadioOption` shape: `{ label: string; value: string | number; disabled?: boolean }`.
+`RadioOption` is exported — `import type { RadioOption } from '@oriui/vue'`:
+
+```ts
+import type { RadioOption } from '@oriui/vue'
+
+const options: RadioOption[] = [
+    { label: 'Email', value: 'email' },
+    { label: 'SMS', value: 'sms', disabled: true }
+]
+```
 
 ### Events & attributes
 

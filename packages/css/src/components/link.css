@@ -31,12 +31,12 @@
     }
 
     /* `_hover`: underline only on hover (no rest-state underline). */
-    .ori-link.ori-link_hover {
+    .ori-link_hover {
         text-decoration-line: none;
     }
 
     @media (hover: hover) {
-        .ori-link.ori-link_hover:hover {
+        .ori-link_hover:hover {
             text-decoration-line: underline;
         }
     }

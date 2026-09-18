@@ -51,7 +51,7 @@
         user-select: none;
     }
 
-    .ori-badge.ori-badge_dot {
+    .ori-badge_dot {
         width: 0.625em;
         min-width: 0;
         height: 0.625em;
@@ -61,7 +61,7 @@
         border-radius: 9999px;
     }
 
-    .ori-badge.ori-badge_floating {
+    .ori-badge_floating {
         position: absolute;
         inset-block-start: 0;
         inset-inline-end: 0;
@@ -69,7 +69,7 @@
         transform: translate(50%, -50%);
     }
 
-    .ori-badge-anchor:dir(rtl) .ori-badge.ori-badge_floating {
+    .ori-badge-anchor:dir(rtl) .ori-badge_floating {
         transform: translate(-50%, -50%);
     }
 }
