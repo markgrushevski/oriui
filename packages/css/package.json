@@ -13,8 +13,8 @@
         "**/*.css"
     ],
     "files": [
-        "dist",
-        "src"
+        "CHANGELOG.md",
+        "dist"
     ],
     "publishConfig": {
         "access": "public"
