@@ -576,34 +576,42 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 
 ### ORI-I-64 — Performance under real data was examined by nobody — and the headless review's own fix would make the combobox O(n^2)
 
-`unconfirmed` · kind `questionable-verdict` · source: paired review 2026-09-18 (completeness critic)
+`fixed` · kind `questionable-verdict` · source: paired review 2026-09-18 (completeness critic)
 
 - **Why it matters:** The headless module's missed-item proposes dropping the `index` parameter from `getOptionProps(item, index)` and deriving it inside: 'derive `const index = collection.findIndex(i => i.value === item.value)` inside getOptionProps / getItemProps', rated should-fix with 'Cheapest now: after 1.0 ... narrowing it is a major'. The elegance argument is good and the cost analysis is…
 - **How to check:** Benchmark before deciding: mount OriCombobox with 1k / 10k items, drive an arrow-key hold in the real-Chromium e2e harness and measure scripting time per keystroke, then repeat with the findIndex-inside variant. If the two-arg signature is kept for this reason, record it in DECISIONS.md so the next reviewer does not re-file it as ceremony; if it is dropped, pass a precomputed…
 
+- **Outcome:** Closed by the verification batch: measured in real Chromium (`e2e/perf-collections.spec.ts`). The shipped two-arg getter is LINEAR — per-ArrowDown 3.0-3.8 ms at 1k and 36-39 ms at 10k (x11.4-12.2); mount 9-12 ms / 76-89 ms; filtering 1.7-2.5 ms / 16.4-21.8 ms. The deriving-the-index-inside-the-getter variant that ORI-I-08 proposes measures x31-50 at 10k (245 ms per keystroke in the CI run) — so that proposal is now refuted with numbers, not with an opinion. The guard asserts the 10k/1k ratio stays under 24, a threshold placed off CDP CPU-throttled runs (x4, x8) rather than guessed, and the quadratic variant is mounted through the library own `provideHeadless` swap seam so the counter-example stays honest.
+
 ### ORI-I-65 — The tree-shaking promise is written into the review bar and a changeset and measured by nothing
 
-`unconfirmed` · kind `unexamined-dimension` · source: paired review 2026-09-18 (completeness critic)
+`fixed` · kind `unexamined-dimension` · source: paired review 2026-09-18 (completeness critic)
 
 - **Why it matters:** REVIEW.md:88 requires 'tree-shakeable (importing one component doesn't pull the others)' and a shipped changeset asserts the same. The packaging skeptic noticed the gap and its opposed agent explicitly deferred it ('that needs a bundler and a second budget file, and it is a separate change'), so it ends the review cycle unexamined by anyone. The build shape looks right —…
 - **How to check:** Add one size-limit entry with an `import` field — `{"import": "{ OriButton }", "path": "packages/vue/dist/index.js"}` — and a second for a component with no siblings, then compare against the 45 kB full-bundle number. If a single-component import lands anywhere near the full bundle, bisect with rollup's `--treeshake` output before the freeze rather than after.
 
+- **Outcome:** Closed by the verification batch: tree-shaking is not broken — it is excellent, and now measured. Against a 13.79 kB ceiling (every export bundled), OriKbd is 215 B (1.6%), OriSkeleton 205 B, OriButton 968 B (pulls only the Icon and Spinner it renders), OriColorPicker 3.76 kB (5 siblings). Four `import`-based `size-limit` entries hold those numbers in CI, each carrying a `message` that says what broke if it fails.
+
 ### ORI-I-66 — RTL and i18n were examined by no reviewer, although the CSS shows RTL was an intended capability
 
-`unconfirmed` · kind `unexamined-dimension` · source: paired review 2026-09-18 (completeness critic)
+`fixed` · kind `unexamined-dimension` · source: paired review 2026-09-18 (completeness critic)
 
 - **Why it matters:** Not one of the six reviews contains the word RTL, yet the code says the project meant to support it: packages/css/src/components/badge.css:72 carries an explicit `.ori-badge-anchor:dir(rtl)` rule, anchored.css:20 comments that its alignment is 'RTL- and writing-mode-aware', and the blocks are otherwise disciplined about logical properties (margin-inline, border-block). Against…
 - **How to check:** Run `grep -rnE '(border|margin|padding)-(left|right)|^\s*(left|right)\s*:' packages/css/src/` for the full inventory, then load the e2e harness with `<html dir="rtl">` and screenshot vertical tabs, the vertical divider, the badge anchor and each toast corner. Decide and document one line: either RTL is supported (and these become inline properties) or it is explicitly out of…
 
 ## Found while fixing the Tier-0 batch
 
+- **Outcome:** Closed by the verification batch: `e2e/rtl.spec.ts` (39 assertions, real Chromium) renders the same markup under `dir=ltr` and `dir=rtl` and asserts real geometry. It found THREE defects, two of them fixed here — the switch thumb escaped its track under RTL by 13px (~37% of the track width) because `translateX(1em)` pushed it further along an already-reversed axis, and the vertical tabs rule sat on the outer edge while the selected indicator sat on the panel-facing edge. The divider was hygiene only (zero visual delta). The inventory is small because the package was already ~90% logical: 6 physical box properties, 4 of which (safe-area insets) are correctly physical. The third defect is the slider fill, now ORI-I-75.
+
 ### ORI-I-67 — tests/token.test.ts — `observeTheme` fires-twice case is flaky under full-suite load
 
-`confirmed` · severity `should-fix` · source: observed while gating the Tier-0 branch, 2026-09-18
+`fixed` · severity `should-fix` · source: observed while gating the Tier-0 branch, 2026-09-18
 
 - **Where:** tests/token.test.ts:128
 - **What:** The MutationObserver case saw 1 of 2 expected callbacks once during a full `npm run test` (1075 ms), then passed on a re-run and passes every time in isolation. It is a timing flake, not a regression — but a flaky test in the gate erodes the meaning of a green run.
 - **Fix:** Give the assertion a longer `vi.waitFor` window, or drive the observer deterministically (flush the microtask queue after each mutation) rather than racing a wall-clock wait.
+
+- **Outcome:** fixed before the rc — a flaky gate makes a green run meaningless, and this one failed twice during release prep. Cause: a MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (60 files, parallel workers) the default 1s `vi.waitFor` window was a wall-clock race, not a statement about behaviour. The four waits in tests/token.test.ts now share a 5s/20ms window; the assertions are unchanged, so the test still fails if the observer never fires. Three consecutive full-suite runs are clean.
 
 ### ORI-I-68 — The invalid-control border is the same failing contrast, one axis over
 
@@ -615,13 +623,15 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 
 ### ORI-I-69 — The real-engine contrast e2e never renders a form control
 
-`confirmed` · severity `should-fix` · source: raised by the Tier-0 contrast fixer, 2026-09-18
+`fixed` · severity `should-fix` · source: raised by the Tier-0 contrast fixer, 2026-09-18
 
 - **Where:** e2e/text-contrast.spec.ts (markup builder, ~lines 32-47)
 - **What:** The Chromium contrast guard builds its probe markup from button / link / tag / alert / tabs only. Every form block — field, input, select, textarea, combobox — is outside it, which is the second reason the danger-as-text defect survived a suite that advertises executable AA coverage.
 - **Fix:** Add a form row to the probe markup so hint, error and required text are measured in the real engine across every skin and both themes.
 
 ## Opened by the Tier-1 batch (2026-09-18)
+
+- **Outcome:** Closed by the verification batch: the probe now renders field / input / select / textarea / combobox — label, required marker, hint, error and the control value — plus the open listbox (option, highlighted, selected, selected+highlighted), across every skin and both themes. 1760 readings per run against 880. Worst guarded form reading is 6.53:1 (error/required, sumi dark); the hint is the tightest at 4.87:1. A second test is a NEGATIVE control: it paints the pre-fix raw role and asserts every dark skin reads below AA, so the guard cannot rot into a green-but-blind state. Also corrected the probe itself, which had never declared a text colour on its surface and so measured inherited text against the UA default foreground — the most flattering value available.
 
 ### ORI-I-70 — Vue `useTheme` has the mirror-image teardown hole and no escape hatch
 
@@ -662,3 +672,37 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 - **Where:** docs/content/components/tabs.md:377, select.md:430, accordion.md:315
 - **What:** The four item types are exported from their barrels now, but the docs still inline the shape as `Array<{ … }>` and never say the type has a name or where to import it from — so a consumer still hand-writes the shape.
 - **Fix:** Name the type in the props table and show the import line once per page. Pure docs, additive.
+
+## Opened by the verification batch (2026-09-18)
+
+### ORI-I-75 — The slider fill is painted opposite its thumb under RTL
+
+`confirmed` · severity `should-fix` · source: RTL verification, 2026-09-18
+
+- **Where:** packages/css/src/components/slider.css (the author-drawn fill), measured in e2e/rtl.spec.ts
+- **What:** Chromium reverses a native `<input type=range>` under `dir=rtl` — a click 25% in from the physical left returns a value >= 50, so the engine treats the RIGHT edge as the minimum. The fill oriUI paints does not follow: sampling the painted pixels at 12% and 88% of the control width shows the accent on the left and the groove on the right in BOTH directions, so in RTL the fill sits on the opposite side from the thumb. ColorPicker inherits the same question through its two range inputs.
+- **Fix:** Needs a decision, not a swap, which is why the RTL agent stopped: either mirror the fill under `:dir(rtl)` (matching the engine, so fill and thumb agree) or pin the whole control as physical and document it. The e2e spec already carries the measurement as a deliberate `test.fail`, so whichever way it is resolved, the test is the thing to flip.
+
+### ORI-I-76 — Toast enter/leave animation is direction-blind and corner-blind
+
+`confirmed` · severity `nit` · source: RTL verification, 2026-09-18
+
+- **Where:** packages/css/src/components/toast.css:169
+- **What:** `transform: translateX(20px)` slides every toast in from the right, regardless of writing direction and regardless of which corner the toaster is pinned to — so a left-corner toaster in an LTR page, and every toaster in an RTL page, animates from the wrong side.
+- **Fix:** Drive the offset from a custom property the corner modifiers set, and flip its sign under `:dir(rtl)`. Purely cosmetic and additive.
+
+### ORI-I-77 — The library ships no RTL story: nothing sets or reads `dir`, and no page mentions it
+
+`confirmed` · severity `should-fix` · source: RTL verification, 2026-09-18
+
+- **Where:** docs/content (no page mentions RTL), packages/vue/src (no component reads `dir`)
+- **What:** The CSS layer is now VERIFIED direction-aware in a real browser, and two of its parts are deliberately physical (the six toaster corners, the colour-picker value plane) while the rest mirrors. A consumer has no way to learn any of that: there is no RTL guide, no example, and the placement class names read physical while behaving logically (`.ori-anchored_left` resolves to `position-area: inline-start`, so it places to the physical right under RTL).
+- **Fix:** One docs section: what mirrors, what stays physical and why, the logical meaning of the placement names, and the open slider question. The behaviour is already pinned by `e2e/rtl.spec.ts`, so the page is describing tested truth rather than intent.
+
+### ORI-I-78 — The combobox "no results" message was 3.69:1
+
+`fixed` · severity `should-fix` · source: found by the new form-contrast guard on its first run, 2026-09-18
+
+- **Where:** packages/css/src/components/combobox.css (`.ori-combobox__empty`)
+- **What:** `opacity: 0.6` on on-surface text measured 3.69:1 at worst (sumi light). Unlike a placeholder or a disabled option, the empty message is real informational content, so WCAG 1.4.3 applies to it.
+- **Outcome:** faded to 0.7 — the same treatment a field hint carries — which measures 4.87:1 at worst, and the cell was promoted from the printed-but-not-asserted set into the guarded matrix. The guard found this on the first run it could see the element at all, which is the argument for the muted cells being printed rather than hidden in a comment.
