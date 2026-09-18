@@ -54,6 +54,11 @@ const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 // Core engine
 // ---------------------------------------------------------------------------
 
+// A MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (60 files,
+// parallel workers) the default 1s waitFor window is a wall-clock race rather than a statement about
+// behaviour — this test flaked exactly once that way. The assertion is unchanged; only the window grows.
+const OBSERVER_WAIT = { timeout: 5000, interval: 20 }
+
 describe('resolveToken (core)', () => {
     it('resolves a token through a var() alias chain to the computed color', () => {
         expect(resolveToken('--ori-test-brand')).toBe(BRAND_LIGHT)
@@ -122,10 +127,10 @@ describe('observeTheme (core)', () => {
         const stop = observeTheme(callback)
 
         document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(1))
+        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(1), OBSERVER_WAIT)
 
         document.documentElement.style.setProperty('--ori-test-inline', 'red')
-        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2))
+        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2), OBSERVER_WAIT)
 
         stop()
         document.documentElement.style.removeProperty('--ori-test-inline')
@@ -206,7 +211,7 @@ describe('useToken (Vue)', () => {
         expect(value()).toBe(BRAND_LIGHT)
 
         document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(value()).toBe(BRAND_DARK))
+        await vi.waitFor(() => expect(value()).toBe(BRAND_DARK), OBSERVER_WAIT)
         wrapper.unmount()
     })
 
@@ -272,7 +277,7 @@ describe('useToken (Svelte)', () => {
         const stop = value.subscribe((v) => seen.push(v))
 
         document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(seen).toContain(BRAND_DARK))
+        await vi.waitFor(() => expect(seen).toContain(BRAND_DARK), OBSERVER_WAIT)
 
         stop()
         document.documentElement.classList.remove('dark')
