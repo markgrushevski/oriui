@@ -100,6 +100,19 @@
            Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
         --ori-color: currentColor;
         --ori-color-on: currentColor;
+
+        /* STRUCTURAL neutrals — the colour of a hairline, a divider, a control edge. Two tokens, because
+           structure has exactly two weights in this library: the resting hairline that separates surfaces
+           (panels, dividers, list rows) and the heavier edge that says "this is an interactive control"
+           (the text-field border). Anything lighter than these is a state TINT, not structure, and stays
+           a per-component mix — a token covering both would be a name that lies.
+
+           They derive from `currentcolor`, deliberately: substitution resolves where the var() is USED,
+           so a hairline follows the text it accompanies rather than freezing to :root's ink, and a themed
+           subtree gets the right value with no per-theme re-declaration. This is the one public handle for
+           "the colour of our borders" — a consumer repoints these instead of guessing our percentages. */
+        --ori-color-outline: color-mix(in srgb, currentcolor 12%, transparent);
+        --ori-color-outline-strong: color-mix(in srgb, currentcolor 28%, transparent);
     }
 
     /* ==========================================================

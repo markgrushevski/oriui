@@ -22,7 +22,7 @@
         /* Same baked field tokens as `.ori-input` — the inner control reuses `.ori-input__field`,
            which reads these from this ancestor. A `.ori-color_*` / `.ori-font-size_*` utility or a
            size modifier repoints them; the field inherits. */
-        --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
+        --ori-input-border: var(--ori-color-outline-strong);
         --ori-input-bg: transparent;
         --ori-size-action: var(--ori-size-action_md);
         --ori-color: var(--ori-color-primary);
@@ -165,7 +165,7 @@
         padding: 0.25em;
         overflow-y: auto;
 
-        border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+        border: 1px solid var(--ori-color-outline);
         border-radius: var(--ori-size-radius);
 
         background: var(--ori-color-surface);
