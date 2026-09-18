@@ -452,7 +452,6 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `color`                   | `ThemeColor` | `'surface'` | Semantic role: primary · secondary · success · warn · danger · info · surface · background. |
 | `disabled`                | `boolean`    | —           | Sets `aria-disabled="true"` and `pointer-events: none`.                                     |
 | `fluid`                   | `boolean`    | —           | Stretches the card to full container width (`ori-card_fluid`).                              |
-| `image`                   | `string`     | —           | Reserved for a hero image URL (not yet rendered by the template).                           |
 | `loading`                 | `boolean`    | —           | Sets `aria-busy="true"` and `pointer-events: none`.                                         |
 | `prependAvatar`           | `string`     | —           | URL for an avatar in the leading header slot.                                               |
 | `prependIcon`             | `string`     | —           | SVG path for an icon in the leading header slot.                                            |

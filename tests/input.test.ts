@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { OriInput } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
 
@@ -95,6 +96,30 @@ describe('OriInput', () => {
         expect(field.attributes('inputmode')).toBe('email')
         // inheritAttrs:false — they land on the field, not the wrapper
         expect(wrapper.attributes('name')).toBeUndefined()
+    })
+
+    it('joins a caller-supplied aria-describedby instead of clobbering it', async () => {
+        const wrapper = mount(OriInput, {
+            props: { hint: 'We never share it' },
+            attrs: { 'aria-describedby': 'form-note' }
+        })
+        const ids = (wrapper.find('input').attributes('aria-describedby') ?? '').split(' ')
+
+        expect(ids).toContain('form-note')
+        expect(ids).toContain(wrapper.find('.ori-input__hint').attributes('id'))
+
+        // …and it survives on its own when the component renders no hint/error
+        const bare = mount(OriInput, { attrs: { 'aria-describedby': 'form-note' } })
+        expect(bare.find('input').attributes('aria-describedby')).toBe('form-note')
+
+        // the attr is read inside a computed — it has to stay reactive when the caller changes it
+        const note = ref('form-note')
+        const host = mount(defineComponent({ setup: () => () => h(OriInput, { 'aria-describedby': note.value }) }))
+        expect(host.find('input').attributes('aria-describedby')).toBe('form-note')
+
+        note.value = 'other-note'
+        await nextTick()
+        expect(host.find('input').attributes('aria-describedby')).toBe('other-note')
     })
 
     it('maps size / radius / variant / color to classes', () => {

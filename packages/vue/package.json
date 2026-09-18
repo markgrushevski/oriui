@@ -22,6 +22,7 @@
     },
     "homepage": "https://oriui.vercel.app",
     "files": [
+        "CHANGELOG.md",
         "dist",
         "src"
     ],

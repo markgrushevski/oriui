@@ -50,8 +50,11 @@ public API may shift before `1.0`.
 The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headless`, and `@oriui/css`
 always share one version, and their internal dependencies are pinned to that exact
 version (a
-`*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Prereleases publish
-under the **`alpha`** npm dist-tag; pre-1.0, with no stable release yet, `latest` also tracks the newest alpha, so `npm install @oriui/vue` gets the current alpha (pin it with `@oriui/vue@alpha`). Once `1.0.0` ships, `latest` moves to the stable line.
+`*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Despite pre mode, these
+prereleases publish under **`latest`**, not `alpha`: changesets falls back to `latest` while every
+published version of a package is a prerelease, so `npm install @oriui/vue` gets the current alpha. The
+`alpha` dist-tag is stale (frozen at `1.0.0-alpha.3`) — **don't pin `@alpha`, pin an exact version**.
+Both the mechanism and the 1.0 cutover that repoints the tag are in [RELEASING.md](RELEASING.md).
 
 ## Releases & tags
 
@@ -64,9 +67,10 @@ A **release is a deliberate event, separate from merging to `main`** — and it 
 2. **Merge to `main`.** The **Release** workflow (`changesets/action`) opens/updates a **"Version
    Packages"** PR that applies the pending changesets — bumping the lockstep version + the pinned
    internal deps and updating each `CHANGELOG.md`.
-3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`alpha`** dist-tag
+3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`latest`** dist-tag
    (via OIDC Trusted Publishing — no token, provenance attached) and tags the release commit, so every `@oriui/vue@x` is
    checkout-able.
 
-Full runbook — token setup, the manual fallback (`npm run version` / `npm run release`), and the
-prerelease / dist-tag rules — is in [RELEASING.md](RELEASING.md).
+Full runbook — token setup, the manual fallback (`npm run version` / `npm run release`), the
+prerelease / dist-tag rules, and the **1.0 cutover** (`changeset pre exit`) — is in
+[RELEASING.md](RELEASING.md).

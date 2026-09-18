@@ -222,6 +222,18 @@ describe('OriSelect', () => {
         expect(describedby).toContain(wrapper.find('.ori-select__hint').attributes('id'))
     })
 
+    it('joins a caller-supplied aria-describedby instead of clobbering it', () => {
+        const wrapper = mount(OriSelect, { props: { hint: 'A hint' }, attrs: { 'aria-describedby': 'form-note' } })
+        const ids = (wrapper.find('select').attributes('aria-describedby') ?? '').split(' ')
+
+        expect(ids).toContain('form-note')
+        expect(ids).toContain(wrapper.find('.ori-select__hint').attributes('id'))
+
+        // …and it survives on its own when the component renders no hint/error
+        const bare = mount(OriSelect, { attrs: { 'aria-describedby': 'form-note' } })
+        expect(bare.find('select').attributes('aria-describedby')).toBe('form-note')
+    })
+
     it('has no axe violations (built-in label, no external <label> needed)', async () => {
         const wrapper = mount(OriSelect, {
             props: { label: 'Fruit', options: OPTIONS },

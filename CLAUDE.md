@@ -21,6 +21,15 @@ their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [R
 non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runbook in
 [RELEASING.md](RELEASING.md); the branch / commit / release workflow in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+**Known problems live in two registers:** [ISSUES-INNER.md](ISSUES-INNER.md) — defects and design debts we
+fix _here_ — and [ISSUES-OUTER.md](ISSUES-OUTER.md) — problems owned by a browser, a dependency or a
+registry, each naming the local workaround that exists only because of it. The axis is **who must fix it**,
+not who found it. Read INNER before reviewing: a defect already recorded there is not a new finding, and
+re-reporting it wastes a review pass. Agents **report** issues; the orchestrator **records** them (same rule
+as NOTES.md, so parallel agents never edit the registers at once). A consumer's own `ISSUES-OUTER.md` — see
+justpaint's `docs/ISSUES-OUTER.md` — is this project's inbound queue: accept an entry by opening an
+`ORI-I-*` here that backlinks it.
+
 **Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
 vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` /
 `useCombobox` / `useMenu` behind a swappable adapter, with Vue **and Svelte** adapters), the Vitest +
