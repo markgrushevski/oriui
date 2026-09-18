@@ -2,7 +2,7 @@
     "name": "@oriui/vue",
     "description": "Styled Vue 3 components for oriUI — ready <Ori*> components composed from the headless behavior (@oriui/headless) + standalone CSS (@oriui/css) layers (織り)",
     "license": "MIT",
-    "version": "1.0.0-alpha.17",
+    "version": "1.0.0-rc.18",
     "type": "module",
     "engines": {
         "node": ">=22"
@@ -46,12 +46,12 @@
         "types": "vue-tsc --noEmit"
     },
     "peerDependencies": {
-        "@oriui/css": "1.0.0-alpha.17",
-        "@oriui/headless": "1.0.0-alpha.17",
+        "@oriui/css": "1.0.0-rc.18",
+        "@oriui/headless": "1.0.0-rc.18",
         "vue": "^3.5"
     },
     "devDependencies": {
-        "@oriui/css": "1.0.0-alpha.17",
-        "@oriui/headless": "1.0.0-alpha.17"
+        "@oriui/css": "1.0.0-rc.18",
+        "@oriui/headless": "1.0.0-rc.18"
     }
 }
