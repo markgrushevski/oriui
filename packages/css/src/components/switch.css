@@ -82,6 +82,15 @@
         transform: translateX(1em);
     }
 
+    /* The thumb travels along the INLINE axis, and `transform` has no logical form — under dir=rtl the
+       thumb already rests at the track's right end, so the LTR travel pushed it clean out of the track.
+       Mirror it (the same shape as the badge's floating-corner rule). A flow-relative `margin-inline-start:
+       auto` would do it without :dir(), but margin can't animate from a length to auto, and the slide is
+       the affordance. Guarded by e2e/rtl.spec.ts. */
+    .ori-switch:dir(rtl) .ori-switch__input:checked ~ .ori-switch__track .ori-switch__thumb {
+        transform: translateX(-1em);
+    }
+
     .ori-switch__input:focus-visible ~ .ori-switch__track {
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;

@@ -993,3 +993,36 @@ hang teardown on. Rather than leak, the Svelte store exposes `destroy()` for tha
 the use-theme page. Vue has the mirror-image hole (`onScopeDispose` also no-ops outside an effect scope)
 and does **not** expose an escape hatch today; that asymmetry is recorded in ISSUES-INNER.md rather than
 papered over here.
+
+## RTL: the CSS layer mirrors, three things stay physical on purpose
+
+Verified rather than intended, as of 2026-09-18: `e2e/rtl.spec.ts` renders the same markup under `dir=ltr`
+and `dir=rtl` in real Chromium and asserts real geometry — bounding boxes relative to their container, never
+class names — so every claim below is a test, not a promise. The package turned out to be about 90% logical
+already (`inset-inline-*`, `padding-inline-*`, `border-start-start-radius`); the audit found 6 physical box
+properties, of which 4 were correct as physical.
+
+**Mirrors** (asserted): the vertical tabs rule and the selected-tab indicator, the vertical divider, the
+badge overhang, the whole 12-value anchored placement grid, toolbar item order, the select chevron and its
+reserved padding, and the switch thumb travel.
+
+**Stays physical** (also asserted, so a future "helpful" logical swap has to break a test):
+
+- **The six toaster corners.** `.ori-toaster_top-right` is the screen's top right in both directions. This
+  matches Sonner and Radix: a toast corner is a screen position, not a reading-order position.
+- **Safe-area insets** (`utils.css`). A device notch does not move with the writing direction; swapping
+  `padding-left: env(safe-area-inset-left)` to a logical property would be the bug, not the fix.
+- **The colour-picker value plane.** Its saturation/value area is physical by construction and
+  self-consistently so — the thumb is placed with a physical `left: %`, the pointer maths is
+  `clientX - rect.left`, and the gradients run `to right`. Mirroring one of those three without the others
+  is how you get a picker whose thumb disagrees with the colour under it.
+
+**Open, deliberately unresolved:** the slider fill. Chromium reverses a native `<input type=range>` under
+RTL (the engine's minimum end becomes the right), but the fill oriUI paints still runs `to right`, so fill
+and thumb end up on opposite sides — measured, recorded as ORI-I-75, and carried in the spec as a
+`test.fail` so whichever way it is decided, the test is the thing that flips.
+
+**Naming note the audit surfaced:** the placement classes read physical and behave logically —
+`.ori-anchored_left` resolves to `position-area: inline-start`, so under RTL it places the panel to the
+physical right. That is the correct behaviour and the wrong-sounding name; renaming it is a breaking change,
+so it is a documentation duty instead (ORI-I-77).

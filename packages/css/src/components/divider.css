@@ -66,6 +66,6 @@
         height: auto;
 
         border-top: 0;
-        border-left: 1px solid var(--ori-color);
+        border-inline-start: 1px solid var(--ori-color);
     }
 }
