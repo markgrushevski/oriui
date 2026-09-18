@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { OriSlider } from '../packages/vue/src/components/slider'
 import { expectNoA11yViolations } from './helpers/axe'
 
@@ -181,6 +182,21 @@ describe('OriSlider', () => {
         const wrapper = mount(OriSlider, { attrs: { 'aria-label': 'Volume level' } })
 
         expect(wrapper.find('input').attributes('aria-label')).toBe('Volume level')
+    })
+
+    it('keeps a caller-supplied aria-describedby instead of clobbering it', async () => {
+        const wrapper = mount(OriSlider, { attrs: { 'aria-describedby': 'form-note' } })
+
+        expect(wrapper.find('input').attributes('aria-describedby')).toBe('form-note')
+
+        // the attr is read inside a computed — it has to stay reactive when the caller changes it
+        const note = ref('form-note')
+        const host = mount(defineComponent({ setup: () => () => h(OriSlider, { 'aria-describedby': note.value }) }))
+        expect(host.find('input').attributes('aria-describedby')).toBe('form-note')
+
+        note.value = 'other-note'
+        await nextTick()
+        expect(host.find('input').attributes('aria-describedby')).toBe('other-note')
     })
 
     it('has no axe violations when named via aria-label only (no visible label)', async () => {

@@ -140,6 +140,21 @@ describe('OriTextarea', () => {
         expect(fieldDescribedBy).toContain(hintId)
     })
 
+    it('joins a caller-supplied aria-describedby instead of clobbering it', () => {
+        const wrapper = mount(OriTextarea, {
+            props: { hint: 'Some hint' },
+            attrs: { 'aria-describedby': 'form-note' }
+        })
+        const ids = (wrapper.find('textarea').attributes('aria-describedby') ?? '').split(' ')
+
+        expect(ids).toContain('form-note')
+        expect(ids).toContain(wrapper.find('.ori-textarea__hint').attributes('id'))
+
+        // …and it survives on its own when the component renders no hint/error
+        const bare = mount(OriTextarea, { attrs: { 'aria-describedby': 'form-note' } })
+        expect(bare.find('textarea').attributes('aria-describedby')).toBe('form-note')
+    })
+
     it('has no axe violations (labeled, with hint)', async () => {
         const wrapper = mount(OriTextarea, {
             props: { label: 'Description', hint: 'Up to 500 characters', modelValue: '' },

@@ -396,6 +396,68 @@ describe('OriToaster component', () => {
         wrapper.unmount()
     })
 
+    it('the live region is in the DOM, empty, before any toast is pushed', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+
+        const region = document.body.querySelector('.ori-toaster')
+
+        // A live region that first appears already populated is not announced — assistive tech only
+        // reports mutations inside a region it was already tracking. So the container, not the toast,
+        // must carry the live semantics, and it must exist (empty) before anything is inserted.
+        expect(region).not.toBeNull()
+        expect(region?.getAttribute('aria-live')).toBe('polite')
+        // Not atomic: only the newly inserted toast is announced, never the whole stack again.
+        expect(region?.getAttribute('aria-atomic')).toBe('false')
+        expect(region?.children).toHaveLength(0)
+
+        wrapper.unmount()
+    })
+
+    it('pushing a toast mutates the existing region instead of creating a new one', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+        const regionBefore = document.body.querySelector('.ori-toaster')
+
+        const { toast } = useToast()
+        toast({ text: 'announced' })
+        await nextTick()
+
+        const regionAfter = document.body.querySelector('.ori-toaster')
+        // Same node — if the region were gated on toasts.length it would be re-created with its
+        // content and the insertion would go unannounced.
+        expect(regionAfter).toBe(regionBefore)
+        expect(regionAfter?.querySelector('.ori-toast')).not.toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('has no axe violations with a toast inside the live region', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+
+        const { success } = useToast()
+        success({ title: 'Saved', text: 'Your changes were saved', closable: true })
+        await nextTick()
+
+        await expectNoA11yViolations(document.body.querySelector('.ori-toaster') as Element)
+
+        wrapper.unmount()
+    })
+
+    it('a danger toast still reaches role="alert" inside the polite region', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+
+        const { error } = useToast()
+        error('it broke')
+        await nextTick()
+
+        expect(document.body.querySelector('.ori-toast')?.getAttribute('role')).toBe('alert')
+
+        wrapper.unmount()
+    })
+
     it('renders pushed toasts inside the Teleport container', async () => {
         const wrapper = mount(OriToaster, { attachTo: document.body })
         await nextTick() // let mounted() fire and Teleport render
