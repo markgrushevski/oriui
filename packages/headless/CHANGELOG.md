@@ -1,5 +1,206 @@
 # @oriui/headless
 
+## 1.0.0-rc.18
+
+### Patch Changes
+
+- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+  library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
+  future token with a better claim to the name) could collide with them silently. They are now
+  `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
+
+    Breaking only for markup that wrote or read those names directly. The rename spans three packages in one
+    commit, because the value is written by the headless composable (all three adapters), consumed by the
+    stylesheet, and forwarded by the styled SFC — a partial rename would have left the area painting its
+    fallback red.
+
+- bc78e38: **Injection keys survive a duplicated package**, and the **adapter-swap contract is written down**.
+
+    Every cross-package provide/inject seam was keyed by a module-scope `Symbol('…')`: `ORI_HEADLESS`
+    (Vue and Svelte), the toolbar's root and toggle-group keys (Vue and Svelte), and `oriFieldKey` in
+    `@oriui/vue`. A symbol is unique per evaluation, so two copies of a package in one install — a
+    transitive duplicate, two lockfile entries in a monorepo, an exact pin that blocks hoisting — mint two
+    different keys. The `provide` lands on one, the `inject` reads the other, and nothing reports it: a
+    configured adapter silently reverts to the native engine, a toolbar item goes inert, a control inside
+    an `OriField` quietly falls back to standalone wiring.
+
+    All seven keys move to `Symbol.for('…@1')`, which interns them in the cross-realm registry so
+    undeduped copies agree. The `@1` is the **major**, and must be bumped with it: the registry is global,
+    so an unversioned key would also intern across majors, and during an incremental v1 → v2 migration a
+    v2 provider would satisfy a v1 `inject` with a shape it was never typed against. Scoping to the major
+    keeps duplicates of one major interoperable and lets two majors miss each other — the safe direction,
+    since a miss falls back but a cross-major match hands over a foreign shape. No type-surface change.
+
+    Separately, the swap promise now has a test that can falsify it. The existing swap tests build their
+    fakes by spreading the native adapter, so every key the styled component reaches for is inherited from
+    the implementation under test — a third-party adapter missing one would still have passed. New
+    from-scratch fakes implement `MenuControl` / `ComboboxControl` without importing `nativeMenu` /
+    `nativeCombobox`, drive `OriMenu` / `OriCombobox`, and pin each requirement twice: once passing, once
+    omitting the key to show the silent breakage. What they were forced to emit is now an explicit MUST
+    list in the `MenuControl` and `ComboboxControl` JSDoc — `triggerProps.id` (focus-return resolves the
+    trigger by `getElementById`), `data-highlighted` plus a roving `tabindex` on the item bags (roving
+    moves real DOM focus), `contentProps.tabindex`, and `inputProps.id` / `labelProps.id` (the combobox
+    derives the input id, the hint/error ids and the listbox's `aria-labelledby` from them).
+
+- 793b2e1: Headless adapter polish — the reactive options a composable advertises are now actually re-read, and
+  the three adapters agree with each other.
+
+    - **`disabled` is live on Disclosure, in all three adapters.** The composables accept a reactive
+      options form (Vue `MaybeRefOrGetter`, a Svelte store, a fresh object per React render), but the
+      disclosure adapters read `disabled` once at creation and the machine had no event that could change
+      it — so a consumer binding `disabled` to state (a form disabling its sections while saving) was stuck
+      at the first value forever. The core machine gains `SET_DISABLED`, and the Vue / Svelte / React native
+      adapters re-sync it exactly the way `nativeCombobox` / `nativeMenu` already did. Unlike menu and
+      combobox, disabling does **not** collapse an open disclosure: an expanded panel with a disabled
+      trigger is the accordion idiom for "this section stays open". Svelte's `nativeDisclosure` now also
+      accepts a store of options (`MaybeReactive`), like its combobox / menu siblings.
+    - **Vue `useTheme` returns `destroy()`.** `onScopeDispose` no-ops outside an effect scope, so a
+      `useTheme()` called at module scope leaked its MutationObserver and matchMedia listener with no way to
+      stop it. It now mirrors the Svelte twin: automatic teardown when there is a scope, an explicit
+      `destroy()` for when there is not (idempotent, and no more dev warning about the missing scope).
+    - **Vue `useTabs` accepts `MaybeRefOrGetter<UseTabsOptions>`**, not a getter only — the one composable
+      in the adapter that rejected a plain object or a ref. Widening, so no call site changes.
+    - **Svelte `nativeDialog` re-projects `dialogProps`** instead of publishing a `readable({…})` frozen at
+      creation, matching the Vue `computed` and React's per-render projection — so an option read through a
+      getter property reaches the bag instead of being snapshotted once.
+    - **`TabItem` is declared once in core** and re-exported by each adapter (as the combobox / menu item
+      types already were), instead of three copies that could drift apart silently.
+    - **`core/mergeProps` is documented and tested.** The JSDoc now says Vue users should use Vue's own
+      (the names collide) and that `class` values must be strings. The new tests found a real hole while
+      pinning the rules: a later blank `class` — a consumer's `class: props.class ?? ''` — used to **wipe**
+      the bag's own classes. A blank or absent side now contributes nothing, the rule clsx and Zag's
+      `mergeProps` use.
+
+- 04c63bf: Headless API consistency — one declaration per option shape, one rule for how options are passed, and
+  the toggle group's missing `deselectable`. Closes ISSUES-INNER ORI-I-04, ORI-I-07, ORI-I-09 and ORI-I-48.
+
+    **`useToolbarToggleGroup` gains `deselectable` (ORI-I-48).** `type: 'single'` was unconditionally
+    deselectable — pressing the active item always cleared it — so a tool picker that must always have a
+    tool was impossible, and its only consumer guarded it by hand. `deselectable` defaults to `true`, which
+    is exactly today's behaviour and the Radix default the JSDoc always claimed; `false` guarantees a
+    non-empty selection and means the same thing under `type: 'multiple'` (the last remaining value cannot
+    be removed), so it is never a silently-ignored prop. A refused press now fires no `onChange` at all,
+    rather than re-committing the value the group already holds. Available in all three adapters; the
+    styled `OriToolbarToggleGroup` does not surface it yet.
+
+    **One rule for reactive options (ORI-I-04).** The rule, now written into the option interfaces
+    themselves: an option that SEEDS a primitive (`defaultOpen`, an initial `value`) is read once and
+    accepts a value, a ref or a store; an option that is LIVE is re-read on every use and must be passed in
+    the adapter's reactive form. Two signatures disagreed with their own adapter and are aligned:
+
+    - Vue's `UseToolbarToggleGroupOptions.value` was a bare getter while `type` beside it was a
+      `MaybeRefOrGetter`. It is widened to `MaybeRefOrGetter`, so a ref or a plain value works and every
+      getter that compiles today still compiles.
+    - **Breaking (Svelte):** `useToolbarToggleGroup` took a plain object of per-member stores — the only
+      Svelte composable that did. It now takes `MaybeReactive<UseToolbarToggleGroupOptions>` with plain
+      members, like `useToolbar`, `useCombobox`, `useMenu`, `useTabs`, `useColorPicker` and
+      `useDismissable`. Migration: move the store out one level —
+      `useToolbarToggleGroup({ type: 'single', value: $tool, onChange })` becomes
+      `useToolbarToggleGroup(derived(tool, (t) => ({ type: 'single', value: t, onChange })))`. Per-member
+      stores stop type-checking, so this fails loudly at build time; taken now because pre-1.0 is the last
+      moment it is free.
+
+    **Option shapes are declared once (ORI-I-07).** `UseTabsOptions` moves into `core` beside `TabItem` and
+    each adapter re-exports it, and `UseDisclosureOptions` / `UseDialogOptions` / `UseComboboxOptions` /
+    `UseMenuOptions` are now declared in `core` too and exported from `@oriui/headless` for anyone writing
+    their own adapter. The toggle group's selection rules likewise move into `core/toolbar` (`resolveToolbarToggle`
+    / `isToolbarTogglePressed`), shared verbatim by the three adapters instead of hand-written three times —
+    which is why the adapter bundles each got ~30 B smaller while core grew 28 B. `tests/adapter-parity.test.ts`
+    now pins every adapter's option interface to the core declaration in BOTH directions, so a member added on
+    one side, or re-typed on one side, is a `test:types` failure naming the adapter — key parity alone missed
+    the second case.
+
+    **React's compound-event map is held to the core (ORI-I-09).** The `onKeydown` → `onKeyDown` allowlist
+    failed silently: an event the core emits that the map does not know reaches React mis-cased and is
+    dropped with no error. A new test derives the event list from the core's own `connect()` bags (open and
+    closed, item getters included), pushes each through the real normalizer onto a real React element and
+    dispatches the matching native event — so it asserts React actually calls the handler, not merely that
+    a key is in a table. No behaviour change; the map was complete.
+
+- 9c3cf30: Fix what the published tarballs actually contain:
+
+    - **Ship the MIT license.** All three declared `"license": "MIT"` but no tarball carried the text — the
+      LICENSE lived only at the repo root, which npm never reaches into. Each package now has its own copy
+      (npm always includes a package-root `LICENSE`, so no `files` change was needed).
+    - **Ship the changelog.** `CHANGELOG.md` is not part of npm's always-included set, so the changelog
+      changesets generates every release never left the repo. It is now listed in `files`.
+    - **`@oriui/css` ships `dist` only.** It was shipping 52 source files nothing could reach: unlike
+      `@oriui/vue` / `@oriui/headless`, whose dist source maps resolve into `src`, the css package emits no
+      maps and every export resolves inside `dist`. The tarball drops from 93 files / 63.4 kB to 43 / 33.2 kB.
+
+- 793b2e1: Fix what the three manifests promise an installer:
+
+    - **`@oriui/vue` takes its siblings as peers, not exact `dependencies`.** The exact pin looked like it
+      guaranteed a matching CSS/component pair and could not: `npm i @oriui/vue@alpha.17 @oriui/css@alpha.16`
+      exited 0 with alpha.16 on top and an unreachable alpha.17 nested inside `@oriui/vue` — new components
+      rendering against old CSS, plus a duplicated module graph around `@oriui/headless`'s process-wide
+      singletons, with no warning anywhere. As `peerDependencies` (`+ devDependencies` for the repo build)
+      npm hoists one copy or refuses with `ERESOLVE` naming the conflict. npm 7+ auto-installs peers, so
+      `npm i @oriui/vue` still brings all three at the right versions — only the mismatch case changes, from
+      silent to loud. The ranges stay pinned to the exact lockstep version until 1.0, since `^` cannot match
+      a prerelease.
+    - **Node engine floors say what they mean.** `@oriui/vue` published `>=22.18.0`, copied from the tsdown
+      build toolchain — a build requirement, not a runtime one. Both packages that ship executable JS now
+      declare `">=22"`, the supported Node line; `@oriui/css` declares none, because a stylesheet has no
+      runtime.
+    - **Every package rebuilds on `prepack`.** `dist` is gitignored and untracked, and nothing but the root
+      `release` script put a build inside a publish — so the manual `npm publish` path documented in
+      RELEASING.md could ship an empty package from a clean checkout. `prepack` runs for both `npm pack` and
+      `npm publish`, which makes the build unskippable whichever command is typed.
+
+- a61c497: **React `useToast`** now returns stable action identities. `toast` / `success` / `error` / `warn` /
+  `info` / `dismiss` / `clear` were rebuilt by a `createToastActions(queue)` call inside the hook body, so
+  every render handed consumers brand-new function references — even though the queue they close over is a
+  module-level singleton that never changes. Anything that listed one in a dependency array
+  (`useEffect`, `useCallback`, `useMemo`, a memoised child's props) re-ran on every single render.
+
+    The actions are now built once at module scope, beside the queue: the identities are stable for the
+    process, so they are safe to depend on and need no memoisation on the consumer's side. The values are
+    unchanged — same functions, same behaviour, same shared queue — so this only removes spurious work.
+    Worth fixing before 1.0, since identity stability is part of a hook's frozen public contract.
+
+    A test pins it: after a bare re-render, after a real queue change, and across two separate `useToast()`
+    callers, every action passes `Object.is`. The `useSyncExternalStore` snapshot cache (which keeps
+    `toasts` referentially stable between queue changes) is untouched.
+
+    The Vue and Svelte twins share the same core actions but have no equivalent bug: their `useToast()`
+    runs once per component instance, not once per render, and neither framework re-runs work off a
+    dependency array of identities.
+
+- a61c497: **Svelte `useTheme` no longer dies when the last store subscriber leaves.** The controller's lifetime was
+  tied to the store's subscriber count, so an ordinary `{#if}` around markup that reads `$theme` took the
+  count to 0 and back to 1 — destroying the controller and then re-subscribing to a dead one, after which
+  `auto` silently stopped following `prefers-color-scheme` for the rest of the component's life.
+
+    The controller now lives as long as the component that created it (`safeOnDestroy`, the same lifecycle hook
+    the other Svelte composables use), and the store's start/stop only subscribes and unsubscribes. Because that
+    hook is a no-op when `useTheme` is called outside component init (module scope, a plain `.ts` module, a
+    test), the returned store gained an idempotent **`destroy()`** — the explicit handle such a caller disposes
+    the OS-scheme listener with. A new subscriber is also re-seeded with the controller's current state, so a
+    theme change that happened while the store was dormant is no longer delivered stale.
+
+    Additive: existing `$theme` / `setTheme` / `toggleTheme` / `cycleTheme` usage is unchanged.
+
+- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
+  came in from a consumer's outbound queue rather than from the library's own review, which is the first time
+  that path produced fixes.
+
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
+    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
+    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    fails if the compensation is ever removed. A leading icon deliberately stays in flow.
+
+    `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
+    queue forced `true` onto everything it enqueued, so the component default was unreachable and a caller who
+    said nothing got a dismiss button anyway. The queue now leaves the option alone — with one exception it is
+    worth keeping: a toast with `duration: 0` never auto-dismisses, so it opts itself in rather than becoming
+    impossible to remove.
+
+    Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
+    once at your call sites). The behaviour change is visible, not silent.
+
 ## 1.0.0-alpha.17
 
 ### Minor Changes

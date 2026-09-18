@@ -1,5 +1,301 @@
 # @oriui/vue
 
+## 1.0.0-rc.18
+
+### Patch Changes
+
+- 9d35ee8: **OriCard** drops the `image` prop. It was declared and typed on the component (and documented, with
+  the admission "not yet rendered by the template") but read by neither the template nor
+  `packages/css/src/components/card.css` — passing it did exactly nothing. A real hero image is a design
+  task (an `.ori-card__image` block, aspect-ratio handling, a defined position in the `ori-card_row`
+  flex mode), not a one-liner, so the prop goes rather than freezing an empty promise into the API.
+
+    Removing a prop is breaking after 1.0 and free now: nothing in the repo or the docs passed `image`,
+    and because it was never rendered no output can change. Consumers that did pass it lose only a
+    silently-ignored prop — `image` now falls through to the root `<div>` as a plain attribute.
+
+    A new card test probes **every** declared prop and fails if one changes nothing in the rendered DOM,
+    so a declared-but-unrendered prop cannot be reintroduced unnoticed.
+
+- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+  library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
+  future token with a better claim to the name) could collide with them silently. They are now
+  `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
+
+    Breaking only for markup that wrote or read those names directly. The rename spans three packages in one
+    commit, because the value is written by the headless composable (all three adapters), consumed by the
+    stylesheet, and forwarded by the styled SFC — a partial rename would have left the area painting its
+    fallback red.
+
+- f82544e: Every collection-item type is now exported from the entry its component comes from, so a consumer can
+  annotate the array they are about to pass instead of inlining a shape that will drift from ours:
+  `AccordionItem`, `RadioOption`, `SelectOption` and `TabItem` were local interfaces inside their SFCs
+  and are now public, and `MenuItem` — which `menu.md` had been naming in the props table all along — is
+  re-exported from `@oriui/vue`, mirroring the `ComboboxItem` re-export the combobox barrel already had.
+  Type-only additions: no runtime, no output and no shape changes.
+
+    `TabItem` existed under one name in both packages with two different shapes — `@oriui/headless`'s
+    behaviour-only `{ value; disabled? }` and the styled component's `{ value; label; disabled? }`. They
+    describe the same thing (`<OriTabs>` hands its `tabs` array straight to `useTabs`), so the styled one
+    now **derives** from the headless one — `interface TabItem extends HeadlessTabItem { label: string }`
+    — rather than redeclaring it. The resolved shape is identical to before; what changes is that the two
+    names are no longer independent, so they cannot drift apart once 1.0 freezes them. Renaming either
+    side was the alternative and was rejected: `@oriui/headless` already publishes `TabItem` from its Vue,
+    Svelte and React entries, and renaming the styled one would break the `ComboboxItem` / `MenuItem` /
+    `ToastItem` naming symmetry consumers see on `@oriui/vue`.
+
+- bc78e38: **Injection keys survive a duplicated package**, and the **adapter-swap contract is written down**.
+
+    Every cross-package provide/inject seam was keyed by a module-scope `Symbol('…')`: `ORI_HEADLESS`
+    (Vue and Svelte), the toolbar's root and toggle-group keys (Vue and Svelte), and `oriFieldKey` in
+    `@oriui/vue`. A symbol is unique per evaluation, so two copies of a package in one install — a
+    transitive duplicate, two lockfile entries in a monorepo, an exact pin that blocks hoisting — mint two
+    different keys. The `provide` lands on one, the `inject` reads the other, and nothing reports it: a
+    configured adapter silently reverts to the native engine, a toolbar item goes inert, a control inside
+    an `OriField` quietly falls back to standalone wiring.
+
+    All seven keys move to `Symbol.for('…@1')`, which interns them in the cross-realm registry so
+    undeduped copies agree. The `@1` is the **major**, and must be bumped with it: the registry is global,
+    so an unversioned key would also intern across majors, and during an incremental v1 → v2 migration a
+    v2 provider would satisfy a v1 `inject` with a shape it was never typed against. Scoping to the major
+    keeps duplicates of one major interoperable and lets two majors miss each other — the safe direction,
+    since a miss falls back but a cross-major match hands over a foreign shape. No type-surface change.
+
+    Separately, the swap promise now has a test that can falsify it. The existing swap tests build their
+    fakes by spreading the native adapter, so every key the styled component reaches for is inherited from
+    the implementation under test — a third-party adapter missing one would still have passed. New
+    from-scratch fakes implement `MenuControl` / `ComboboxControl` without importing `nativeMenu` /
+    `nativeCombobox`, drive `OriMenu` / `OriCombobox`, and pin each requirement twice: once passing, once
+    omitting the key to show the silent breakage. What they were forced to emit is now an explicit MUST
+    list in the `MenuControl` and `ComboboxControl` JSDoc — `triggerProps.id` (focus-return resolves the
+    trigger by `getElementById`), `data-highlighted` plus a roving `tabindex` on the item bags (roving
+    moves real DOM focus), `contentProps.tabindex`, and `inputProps.id` / `labelProps.id` (the combobox
+    derives the input id, the hint/error ids and the listbox's `aria-labelledby` from them).
+
+- 9c3cf30: Fix what the published tarballs actually contain:
+
+    - **Ship the MIT license.** All three declared `"license": "MIT"` but no tarball carried the text — the
+      LICENSE lived only at the repo root, which npm never reaches into. Each package now has its own copy
+      (npm always includes a package-root `LICENSE`, so no `files` change was needed).
+    - **Ship the changelog.** `CHANGELOG.md` is not part of npm's always-included set, so the changelog
+      changesets generates every release never left the repo. It is now listed in `files`.
+    - **`@oriui/css` ships `dist` only.** It was shipping 52 source files nothing could reach: unlike
+      `@oriui/vue` / `@oriui/headless`, whose dist source maps resolve into `src`, the css package emits no
+      maps and every export resolves inside `dist`. The tarball drops from 93 files / 63.4 kB to 43 / 33.2 kB.
+
+- 793b2e1: Fix what the three manifests promise an installer:
+
+    - **`@oriui/vue` takes its siblings as peers, not exact `dependencies`.** The exact pin looked like it
+      guaranteed a matching CSS/component pair and could not: `npm i @oriui/vue@alpha.17 @oriui/css@alpha.16`
+      exited 0 with alpha.16 on top and an unreachable alpha.17 nested inside `@oriui/vue` — new components
+      rendering against old CSS, plus a duplicated module graph around `@oriui/headless`'s process-wide
+      singletons, with no warning anywhere. As `peerDependencies` (`+ devDependencies` for the repo build)
+      npm hoists one copy or refuses with `ERESOLVE` naming the conflict. npm 7+ auto-installs peers, so
+      `npm i @oriui/vue` still brings all three at the right versions — only the mismatch case changes, from
+      silent to loud. The ranges stay pinned to the exact lockstep version until 1.0, since `^` cannot match
+      a prerelease.
+    - **Node engine floors say what they mean.** `@oriui/vue` published `>=22.18.0`, copied from the tsdown
+      build toolchain — a build requirement, not a runtime one. Both packages that ship executable JS now
+      declare `">=22"`, the supported Node line; `@oriui/css` declares none, because a stylesheet has no
+      runtime.
+    - **Every package rebuilds on `prepack`.** `dist` is gitignored and untracked, and nothing but the root
+      `release` script put a build inside a publish — so the manual `npm publish` path documented in
+      RELEASING.md could ship an empty package from a clean checkout. `prepack` runs for both `npm pack` and
+      `npm publish`, which makes the build unskippable whichever command is typed.
+
+- 04c63bf: **The styled layer's public API, converged before the freeze.** Five shapes that a 1.0 would have
+  frozen as-is — a collection item that disagrees with its four siblings, a slot namespace that can
+  collide with itself, a prop bag that does not type-check where it is documented to be spread, and
+  thirteen exported types nothing consumes. Each is breaking to change after 1.0 and free to change now,
+  so they change now. Migration lines are inline below.
+
+    **`AccordionItem.title` is now `AccordionItem.label`.** Four of the five collection-item shapes spelled
+    the display string `label` (`TabItem`, `SelectOption`, `RadioOption`, `ComboboxItem`, and `MenuItem`'s
+    optional one); `AccordionItem` alone spelled it `title` for the identical concept. One shape across the
+    catalog means one source array can be mapped into whichever component renders it, instead of a rename
+    per component.
+
+    ```diff
+    - const items = [{ value: 'shipping', title: 'Shipping' }]
+    + const items = [{ value: 'shipping', label: 'Shipping' }]
+    ```
+
+    TypeScript rejects the old key outright. For callers it cannot reach — plain JS, JSON from an API —
+    `<OriAccordion>` warns in DEV naming the offending items and the rename, because the symptom otherwise
+    is an empty `<summary>` with nothing to grep for. The warning is compiled out of production builds.
+    The `#title` slot keeps its name: it names a region of the markup (and the `.ori-accordion__title`
+    element), not the item field.
+
+    **`<OriTabs>` panel slots are now named `#panel-<value>`, not `#<value>`.** Panel slot names come from
+    caller data — a tab's `value` — while `tab` and `default` are the component's own reserved slots, and
+    Vue resolves both from one flat namespace. A tab whose value was literally `"tab"` therefore rendered
+    the consumer's `#tab` template (the label renderer) inside its panel, twice over, with the panel's real
+    content unreachable. Prefixing moves data-derived names into a namespace of their own, where no caller
+    value can collide with a reserved one.
+
+    ```diff
+    - <template #account>…</template>
+    + <template #panel-account>…</template>
+    ```
+
+    The `#tab` and `#default` slots are unchanged. A stale `#<value>` slot is a silent miss — Vue never
+    warns about a slot nobody consumes — so OriTabs warns in DEV when it sees one, naming the new spelling.
+
+    **`<OriPopover>` splits the panel's `role` from the trigger's `aria-haspopup`.** They were one value:
+    `aria-haspopup` mirrored `role` unconditionally. But the two are not the same vocabulary —
+    `aria-haspopup` accepts exactly `dialog | menu | listbox | tree | grid`, while a popover panel is
+    legitimately a `group`, a `region` or a `tooltip`. So `<OriPopover role="group">` emitted
+    `aria-haspopup="group"`, which is not a valid token, and typed the whole `#trigger` bag as carrying
+    `'aria-haspopup': string` — which Vue's `ButtonHTMLAttributes` rejects, so `v-bind="props"` on a
+    `<button>`, the documented usage, did not type-check. The one real consumer worked around it with
+    `as Record<string, unknown>`, discarding type-checking on the entire bag.
+
+    `role` stays `string` (narrowing it would forbid the valid panel roles above). A new optional
+    `haspopup` prop carries the trigger's hint, typed as the ARIA popup union. It defaults to `role` when
+    `role` happens to be one of the five popup types — so `role="menu"` still needs no second prop — and to
+    `'dialog'` when it is not. Existing markup keeps its output except where the old output was invalid.
+
+    **Thirteen unused types are removed and the rest are flattened.** `export * from './types'` made every
+    name in `packages/vue/src/types.ts` public API. `Sizes`, `BlockSize`, `ScreenSize`, `ActionSpaceSize`,
+    `Size`, `CenterPosition`, `InlinePosition`, `BlockPosition`, `CustomPosition`, `Position`,
+    `AnchoredSide`, `SeverityColor` and `DeepPartial` were consumed by nothing — no component, no test, no
+    docs page — and are gone. The seven that survive (`ActionSize`, `GapSize`, `RadiusSize`,
+    `CenteredPosition`, `AnchoredPlacement`, `ThemeColor`, `Variant`) are unchanged in meaning, but are now
+    written as the string-literal unions they always were, instead of an `interface` whose keys were read
+    back out with `keyof` — a record whose values nothing ever used. `AnchoredSide` still exists as a
+    private building block of `AnchoredPlacement`; it is simply no longer exported on its own.
+
+    **`<OriMenu>`'s `#trigger` slot now exposes `open` alongside `props`**, matching `<OriDialog>`'s trigger
+    slot, so the two overlays read alike at the call site (`#trigger="{ props, open }"` to rotate a caret or
+    swap a label). Additive; the `props` bag already carried `aria-expanded` for assistive tech, and this
+    exists so a caller can render with the state instead of parsing an ARIA string out of the bag.
+
+    New tests pin all five: the reserved-slot collision (a tab valued `"tab"` and one valued `"default"`),
+    both DEV migration warnings and their false-positive guards, the `aria-haspopup` fallback across every
+    role in and out of the popup vocabulary, and — in `tests/types.test.ts` — the exported type surface
+    itself, including an assertion that the popover trigger bag is assignable to `ButtonHTMLAttributes`,
+    which fails against the previous version.
+
+- f36d7bd: **OriInput / OriSelect / OriTextarea / OriCombobox** no longer delete a caller's `aria-describedby`.
+
+    The four text controls run `inheritAttrs: false` and promise that arbitrary native attributes fall
+    through to the underlying control. `aria-describedby` was the one exception: the template bound
+    `v-bind="$attrs"` first and `:aria-describedby="describedBy"` after it, so Vue's `mergeProps`
+    overwrote the caller's value with the component's own — and with `undefined` when the control
+    rendered no hint and no error. `<OriInput aria-describedby="form-note" />` emitted no
+    `aria-describedby` at all, silently dropping a description a screen-reader user depends on.
+
+    The caller's id is now folded into the same id list the components already build for their hint /
+    error and the `describedby` prop, so the two are **joined** instead of one clobbering the other —
+    matching what a native `<input>` would do if the attribute were simply forwarded. The same applies
+    inside an `OriField`: the field's `aria-describedby` and the caller's are joined rather than the
+    field's winning. Nothing else changes — controls that render a hint or an error and get no
+    `aria-describedby` from the caller produce exactly the value they did before.
+
+    Each of the four components gains a test asserting a caller-supplied `aria-describedby` both
+    survives on its own and is joined with the component's own hint id.
+
+- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
+  came in from a consumer's outbound queue rather than from the library's own review, which is the first time
+  that path produced fixes.
+
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
+    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
+    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    fails if the compensation is ever removed. A leading icon deliberately stays in flow.
+
+    `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
+    queue forced `true` onto everything it enqueued, so the component default was unreachable and a caller who
+    said nothing got a dismiss button anyway. The queue now leaves the option alone — with one exception it is
+    worth keeping: a toast with `duration: 0` never auto-dismisses, so it opts itself in rather than becoming
+    impossible to remove.
+
+    Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
+    once at your call sites). The behaviour change is visible, not silent.
+
+- f36d7bd: **OriToaster** now carries the live-region semantics on its container, so polite toasts are actually
+  announced. Previously the only live region in play was the toast card itself (`role="status"`, or
+  `role="alert"` for `color="danger"`) — and that element is created together with its text. Assistive
+  tech reports mutations _inside_ a region it was already tracking; a region that first appears already
+  holding its content is not announced. `role="alert"` is the documented exception most screen readers
+  honour, which is why `error()` toasts announced and `success()` / `info()` / `warn()` / plain ones
+  silently did not.
+
+    The `.ori-toaster` container was already rendered from mount and already empty until the first push —
+    it was simply semantically inert. It now gets `aria-live="polite"` plus `aria-atomic="false"`, so each
+    push is a mutation inside an established region, and only the new toast is read rather than the whole
+    stack being re-announced. Per-toast roles are untouched: a `danger` toast still renders
+    `role="alert"` and keeps its assertive urgency, and standalone `<OriToast>` is unchanged.
+
+    No visual, DOM-structure or API change — two attributes on a container that was already there.
+    `aria-relevant` stays at its default (`additions text`), so dismissing a toast announces nothing.
+
+    The regression test mounts `<OriToaster>` with an empty queue and asserts the region exists, is empty
+    and carries the live attributes _before_ any toast is pushed — the case the previous tests missed,
+    because they only checked that role strings were present once a toast already existed. A second test
+    pins the region's node identity across a push, so gating the container on `toasts.length` would fail.
+
+- 793b2e1: **The toggle-button contract, and three states that only looked real.**
+
+    **`OriButton` gains `pressed`** — the toggle STATE (`aria-pressed`), next to the existing `active`,
+    which stays what it always was: a forced `:active` LOOK (`data-active`). Like `OriToolbarButton`'s
+    `pressed` and `OriDialog`'s `open`, it defaults to `undefined` rather than `false`, so a plain action
+    button renders no `aria-pressed` at all. Before this, a toggle built on `OriButton` announced nothing
+    to assistive technology, and the toolbar's own `aria-pressed` wiring is unchanged (it passes the
+    attribute through, which still wins over the new binding).
+
+    **The pressed look is no longer gated behind `.ori-toolbar`.** It moves from `toolbar.css` into
+    `button.css` and is now keyed on the button alone, so any toggle gets it. It is deliberately NOT the
+    flat ungate that suggests itself: a literal `background-color` on `.ori-button[aria-pressed='true']`
+    beats the variant token and repaints `fill` and `tonal` toggles with a neutral grey (measured in
+    Chromium: a pressed `fill` button went from `rgb(3, 105, 161)` to an 18% near-black tint). Instead the
+    universal affordance is an inset hairline in `currentcolor` — no variant touches `box-shadow`, and the
+    button's own label colour is contrast-paired with whatever background sits under it — and the neutral
+    tint is added only for `text` / `plain` / `outline`, the three variants whose background is
+    transparent. A toolbar button (`variant="text"` by default) renders exactly the same tint it did
+    before; `fill` and `tonal` toolbar toggles stop being flattened. A source-level test fails if the rule
+    is re-gated behind an ancestor, or if a pressed background ever reaches a variant that owns its own.
+
+    **`<OriCard disabled>` is now `inert`.** It used to be `aria-disabled` on a role-less `<div>` plus
+    `pointer-events: none` — announced to nobody (a role-less `<div>` is `role=generic`) and no obstacle
+    at all to the keyboard: buttons and links inside stayed focusable and Enter-activatable. With `inert`
+    (Baseline 2024) Chromium drops the whole subtree from the accessibility tree, refuses focus and
+    refuses hit-tested clicks. `aria-disabled` stays as the CSS-layer styling hook.
+
+    **`loading` on a non-`button` `OriButton`** (`as="a"`, a router link) no longer relies on
+    `pointer-events: none`, which never stopped the keyboard — Enter on a focused link still navigated.
+    It now renders `aria-disabled="true"` and blocks activation with the same capture-phase guard
+    `OriToolbarButton` already uses. The control stays focusable and simply refuses, and a real `<button>`
+    is untouched (its `disabled` attribute stops the event at the source).
+
+    **Checkbox / switch / radio dim from the real control state.** Their disabled look was driven only by
+    a prop-driven modifier class, so a control disabled by a surrounding `<fieldset disabled>` — or by a
+    hand-written `disabled` attribute in the CSS layer — was inert but rendered fully enabled. The
+    stylesheets now also match `:has(<input>:disabled)`; the modifier class stays for compatibility.
+
+- Updated dependencies [04c63bf]
+- Updated dependencies [793b2e1]
+- Updated dependencies [983b821]
+- Updated dependencies [04c63bf]
+- Updated dependencies [793b2e1]
+- Updated dependencies [9d35ee8]
+- Updated dependencies [f36d7bd]
+- Updated dependencies [bc78e38]
+- Updated dependencies [793b2e1]
+- Updated dependencies [04c63bf]
+- Updated dependencies [9c3cf30]
+- Updated dependencies [793b2e1]
+- Updated dependencies [a61c497]
+- Updated dependencies [e8265d6]
+- Updated dependencies [16a5a16]
+- Updated dependencies [a61c497]
+- Updated dependencies [13e6fd2]
+- Updated dependencies [793b2e1]
+    - @oriui/css@1.0.0-rc.18
+    - @oriui/headless@1.0.0-rc.18
+
 ## 1.0.0-alpha.17
 
 ### Patch Changes
