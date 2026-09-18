@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, provide, useId, useSlots } from 'vue';
-import type { ActionSize } from '../../types';
-import { oriFieldKey } from './context';
+import { computed, provide, useId, useSlots } from 'vue'
+import type { ActionSize } from '../../types'
+import { oriFieldKey } from './context'
 
 // OriField — the shared form-field shell: one source of truth for the label / hint / error / required
 // a11y contract the text controls (OriInput, OriSelect, OriTextarea) otherwise each wire by hand. It
@@ -23,43 +23,43 @@ const {
     size = 'md'
 } = defineProps<{
     /** Extra element id(s) to append to aria-describedby (e.g. a shared form note). */
-    describedby?: string;
-    disabled?: boolean;
+    describedby?: string
+    disabled?: boolean
     /** Error message: rendered below the control (role=alert) and flips the field to aria-invalid. */
-    error?: string;
-    fluid?: boolean;
+    error?: string
+    fluid?: boolean
     /** Helper text below the control; hidden while an error is shown. */
-    hint?: string;
-    id?: string;
-    invalid?: boolean;
-    label?: string;
-    required?: boolean;
-    size?: ActionSize;
-}>();
+    hint?: string
+    id?: string
+    invalid?: boolean
+    label?: string
+    required?: boolean
+    size?: ActionSize
+}>()
 
 // SSR-safe shared id (Vue 3.5) so the label's `for` always targets the control — even without an
 // explicit id.
-const uid = useId();
-const fieldId = computed(() => id ?? uid);
-const hintId = computed(() => `${fieldId.value}-hint`);
-const errorId = computed(() => `${fieldId.value}-error`);
+const uid = useId()
+const fieldId = computed(() => id ?? uid)
+const hintId = computed(() => `${fieldId.value}-hint`)
+const errorId = computed(() => `${fieldId.value}-error`)
 // error / hint can come from a prop OR a slot; the a11y wiring must track whichever actually renders
 // a `<p>` (the template renders error/hint on `prop || $slots.<name>`), else aria-describedby dangles.
-const slots = useSlots();
-const hasError = computed(() => Boolean(error) || Boolean(slots.error));
-const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint));
-const hasLabel = computed(() => Boolean(label) || Boolean(slots.label));
-const isInvalid = computed(() => invalid || hasError.value);
+const slots = useSlots()
+const hasError = computed(() => Boolean(error) || Boolean(slots.error))
+const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint))
+const hasLabel = computed(() => Boolean(label) || Boolean(slots.label))
+const isInvalid = computed(() => invalid || hasError.value)
 // Only expose a labelId when a label actually renders (mirrors describedBy) — else a group/composite
 // control's aria-labelledby would dangle at a non-existent element.
-const labelId = computed(() => (hasLabel.value ? `${fieldId.value}-label` : undefined));
+const labelId = computed(() => (hasLabel.value ? `${fieldId.value}-label` : undefined))
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
 // id — never reference an element that isn't in the DOM.
 const describedBy = computed(() => {
-    const ids = [hasError.value ? errorId.value : hasHint.value ? hintId.value : '', describedby].filter(Boolean);
-    return ids.length ? ids.join(' ') : undefined;
-});
+    const ids = [hasError.value ? errorId.value : hasHint.value ? hintId.value : '', describedby].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+})
 
 // Hand the contract to a nested Ori control.
 provide(oriFieldKey, {
@@ -70,7 +70,7 @@ provide(oriFieldKey, {
     required: computed(() => required),
     disabled: computed(() => disabled),
     size: computed(() => size)
-});
+})
 
 // Ready-to-spread attributes for a raw control via the scoped slot (the css-layer / htmx path).
 const controlAttrs = computed(() => ({
@@ -79,13 +79,13 @@ const controlAttrs = computed(() => ({
     'aria-invalid': isInvalid.value ? 'true' : undefined,
     disabled: disabled || undefined,
     required: required || undefined
-}));
+}))
 const slotProps = computed(() => ({
     id: fieldId.value,
     invalid: isInvalid.value,
     describedby: describedBy.value,
     controlAttrs: controlAttrs.value
-}));
+}))
 </script>
 
 <template>

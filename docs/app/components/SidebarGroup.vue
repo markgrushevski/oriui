@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Dogfood: the docs sidebar groups are collapsible via the headless Disclosure primitive
 // from @oriui/headless/vue (built on the framework-agnostic @oriui/headless).
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 
-defineProps<{ title: string }>();
+defineProps<{ title: string }>()
 
-const { triggerProps, contentProps, open } = useDisclosure(() => ({ defaultOpen: true }));
+const { triggerProps, contentProps, open } = useDisclosure(() => ({ defaultOpen: true }))
 </script>
 
 <template>

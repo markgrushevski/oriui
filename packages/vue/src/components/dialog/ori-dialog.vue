@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useAttrs, useSlots, useTemplateRef, watch, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/headless/vue';
+import { computed, mergeProps, useAttrs, useSlots, useTemplateRef, watch, watchPostEffect } from 'vue'
+import { useDialog } from '@oriui/headless/vue'
 
 // Forward stray attributes (aria-label, data-*, @click, …) to the <dialog>, not the multi-root
 // fragment — the dialog is the meaningful element, matching the other controls. (Without this, a
 // consumer's aria-label would warn + be dropped, so a titleless dialog could never be named.)
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 // OriDialog — the library's first behavioral styled component: styled markup + tokens over the
 // engine-agnostic useDialog() contract, rendered on the native <dialog> element. The focus trap,
@@ -33,18 +33,18 @@ const {
     open = undefined,
     title
 } = defineProps<{
-    closeOnEscape?: boolean;
-    closeOnInteractOutside?: boolean;
-    defaultOpen?: boolean;
-    modal?: boolean;
-    open?: boolean;
-    title?: string;
-}>();
+    closeOnEscape?: boolean
+    closeOnInteractOutside?: boolean
+    defaultOpen?: boolean
+    modal?: boolean
+    open?: boolean
+    title?: string
+}>()
 
 const emit = defineEmits<{
-    'update:open': [open: boolean];
-    close: [];
-}>();
+    'update:open': [open: boolean]
+    close: []
+}>()
 
 // `open ?? defaultOpen` seeds the initial state: a controlled `:open` wins, else the uncontrolled
 // default. onOpenChange mirrors every transition back out — `update:open` for v-model, plus `close`
@@ -55,10 +55,10 @@ const dlg = useDialog(() => ({
     defaultOpen: open ?? defaultOpen,
     modal,
     onOpenChange: (value: boolean) => {
-        emit('update:open', value);
-        if (!value) emit('close');
+        emit('update:open', value)
+        if (!value) emit('close')
     }
-}));
+}))
 
 // Controlled mode: mirror a bound `open` prop into the adapter. setOpen() no-ops when the value
 // already matches, so the emit → v-model → prop → watch round-trip settles without a loop. When no
@@ -66,24 +66,24 @@ const dlg = useDialog(() => ({
 watch(
     () => open,
     (value) => {
-        if (value !== undefined) dlg.setOpen(value);
+        if (value !== undefined) dlg.setOpen(value)
     }
-);
+)
 
 // Drive the platform <dialog> from reactive open state. `flush: 'post'` runs after the element is in
 // the DOM, so it also covers `defaultOpen` on first mount. Guards keep showModal()/close() idempotent
 // (showModal throws if already open; close is a no-op when closed).
-const dialogEl = useTemplateRef<HTMLDialogElement>('dialog');
+const dialogEl = useTemplateRef<HTMLDialogElement>('dialog')
 watchPostEffect(() => {
-    const el = dialogEl.value;
-    if (!el) return;
+    const el = dialogEl.value
+    if (!el) return
     if (dlg.open.value && !el.open) {
-        if (modal) el.showModal();
-        else el.show();
+        if (modal) el.showModal()
+        else el.show()
     } else if (!dlg.open.value && el.open) {
-        el.close();
+        el.close()
     }
-});
+})
 
 // Accessible name. The adapter's `aria-labelledby` points at the <h2>, but that <h2> would be EMPTY
 // when no `title` / `#title` is given — a dialog "labelled" by an empty node (an AT announces an empty
@@ -91,19 +91,19 @@ watchPostEffect(() => {
 // reference the browser ignores, and a consumer `aria-label` (merged from $attrs) names the dialog
 // instead. The adapter's props are still applied verbatim (adapter transparency), just merged after
 // $attrs so the dialog's own a11y wins.
-const slots = useSlots();
-const attrs = useAttrs();
-const hasTitle = computed(() => Boolean(title) || Boolean(slots.title));
-const dialogBindings = computed(() => mergeProps(attrs, dlg.dialogProps.value));
+const slots = useSlots()
+const attrs = useAttrs()
+const hasTitle = computed(() => Boolean(title) || Boolean(slots.title))
+const dialogBindings = computed(() => mergeProps(attrs, dlg.dialogProps.value))
 
 if (import.meta.env.DEV) {
     watchPostEffect(() => {
         if (dlg.open.value && !hasTitle.value && !attrs['aria-label'] && !attrs['aria-labelledby']) {
             console.warn(
                 '[OriDialog] opened without an accessible name — pass a `title`, a #title slot, or an `aria-label`.'
-            );
+            )
         }
-    });
+    })
 }
 </script>
 

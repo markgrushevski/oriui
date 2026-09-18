@@ -1,1 +1,1 @@
-export { default as OriCard } from './ori-card.vue';
+export { default as OriCard } from './ori-card.vue'

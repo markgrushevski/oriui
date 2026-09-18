@@ -21,8 +21,8 @@ Pulls in `@oriui/css` + `@oriui/headless` automatically; `vue ^3` is a peer depe
 Import the stylesheet once (e.g. in your entry file), then the components:
 
 ```ts
-import '@oriui/css'; // tokens + .ori-* classes, once
-import { OriButton } from '@oriui/vue';
+import '@oriui/css' // tokens + .ori-* classes, once
+import { OriButton } from '@oriui/vue'
 ```
 
 ```vue

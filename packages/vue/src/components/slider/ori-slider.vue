@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue';
-import type { ThemeColor } from '../../types';
-import { useOriField } from '../field/context';
+import { computed, useId } from 'vue'
+import type { ThemeColor } from '../../types'
+import { useOriField } from '../field/context'
 
 const {
     color = 'primary',
@@ -11,45 +11,45 @@ const {
     modelValue,
     step = 1
 } = defineProps<{
-    color?: ThemeColor;
-    disabled?: boolean;
-    label?: string;
-    max?: number;
-    min?: number;
-    modelValue?: number;
+    color?: ThemeColor
+    disabled?: boolean
+    label?: string
+    max?: number
+    min?: number
+    modelValue?: number
     /** Show the current value next to the label. */
-    showValue?: boolean;
-    step?: number;
-}>();
+    showValue?: boolean
+    step?: number
+}>()
 
 const emit = defineEmits<{
-    'update:modelValue': [value: number];
-    change: [value: number];
-}>();
+    'update:modelValue': [value: number]
+    change: [value: number]
+}>()
 
 // Attributes (aria-label, name, id, …) target the real <input>, not the wrapper — the native
 // role/value/keyboard live there, so the accessible name must too (mirrors the other form controls).
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 // Adopt a surrounding OriField's id + a11y wiring (the field's `<label for>` then names the range);
 // standalone the slider wires its own. A slider has no required/size concept, so it takes only the
 // field's id / disabled / describedby / invalid.
-const field = useOriField();
-const inField = Boolean(field);
-const uid = useId();
-const id = computed(() => field?.id.value ?? uid);
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
-const describedBy = computed(() => field?.describedBy.value);
-const isInvalid = computed(() => field?.invalid.value ?? false);
+const field = useOriField()
+const inField = Boolean(field)
+const uid = useId()
+const id = computed(() => field?.id.value ?? uid)
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
+const describedBy = computed(() => field?.describedBy.value)
+const isInvalid = computed(() => field?.invalid.value ?? false)
 
-const current = computed(() => modelValue ?? min);
+const current = computed(() => modelValue ?? min)
 const percent = computed(() => {
-    const span = max - min;
-    return span > 0 ? ((current.value - min) / span) * 100 : 0;
-});
+    const span = max - min
+    return span > 0 ? ((current.value - min) / span) * 100 : 0
+})
 
 function onInput(event: Event) {
-    emit('update:modelValue', Number((event.target as HTMLInputElement).value));
+    emit('update:modelValue', Number((event.target as HTMLInputElement).value))
 }
 
 // Commit-on-release. The native `change` fires ONCE when the value settles — pointer release after a
@@ -58,7 +58,7 @@ function onInput(event: Event) {
 // keeps streaming the live value for `v-model`. (Was reachable only as a raw-Event $attrs fallthrough;
 // declaring it makes it a first-class typed emit carrying the committed number.)
 function onChange(event: Event) {
-    emit('change', Number((event.target as HTMLInputElement).value));
+    emit('change', Number((event.target as HTMLInputElement).value))
 }
 </script>
 

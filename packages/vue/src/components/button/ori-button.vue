@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { ActionSize, Variant, ThemeColor, CenteredPosition, RadiusSize } from '../../types';
-import { OriSpinner } from '../spinner';
-import { OriIcon } from '../icon';
+import type { ActionSize, Variant, ThemeColor, CenteredPosition, RadiusSize } from '../../types'
+import { OriSpinner } from '../spinner'
+import { OriIcon } from '../icon'
 
 const {
     as = 'button',
@@ -11,20 +11,20 @@ const {
     size = 'md',
     variant = 'fill'
 } = defineProps<{
-    active?: boolean;
+    active?: boolean
     /** An HTML tag name, a Component name or Component class reference. */
-    as?: string | object;
-    color?: ThemeColor;
-    disabled?: boolean;
-    fluid?: boolean;
-    icon?: string;
-    iconPosition?: CenteredPosition;
-    loading?: boolean;
-    radius?: RadiusSize;
-    size?: ActionSize;
-    text?: string;
-    variant?: Variant;
-}>();
+    as?: string | object
+    color?: ThemeColor
+    disabled?: boolean
+    fluid?: boolean
+    icon?: string
+    iconPosition?: CenteredPosition
+    loading?: boolean
+    radius?: RadiusSize
+    size?: ActionSize
+    text?: string
+    variant?: Variant
+}>()
 </script>
 
 <template>

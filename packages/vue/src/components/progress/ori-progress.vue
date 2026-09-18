@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import type { RadiusSize, ThemeColor } from '../../types';
+import { computed } from 'vue'
+import type { RadiusSize, ThemeColor } from '../../types'
 
 const {
     color = 'primary',
@@ -11,17 +11,17 @@ const {
     size = 'md',
     value = 0
 } = defineProps<{
-    color?: ThemeColor;
-    indeterminate?: boolean;
-    label?: string;
-    max?: number;
-    radius?: RadiusSize;
-    size?: 'sm' | 'md' | 'lg';
-    value?: number;
-}>();
+    color?: ThemeColor
+    indeterminate?: boolean
+    label?: string
+    max?: number
+    radius?: RadiusSize
+    size?: 'sm' | 'md' | 'lg'
+    value?: number
+}>()
 
-const clamped = computed(() => Math.min(Math.max(value, 0), max));
-const percent = computed(() => (max > 0 ? (clamped.value / max) * 100 : 0));
+const clamped = computed(() => Math.min(Math.max(value, 0), max))
+const percent = computed(() => (max > 0 ? (clamped.value / max) * 100 : 0))
 </script>
 
 <template>

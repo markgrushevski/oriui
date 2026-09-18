@@ -3,10 +3,10 @@
 // identity swatches + intent; clicking one calls the same `useOriTheme` the header picker uses, so the
 // whole site reskins instantly — the zero-runtime theming story, shown live. Skins are page-level
 // (`:root[data-ori-skin]`), so they can't be scoped to a card; applying site-wide is the honest demo.
-import { useOriTheme, SKINS, type SkinId } from '../../composables/useOriTheme';
-import { OriBadge, OriButton } from '@oriui/vue';
+import { useOriTheme, SKINS, type SkinId } from '../../composables/useOriTheme'
+import { OriBadge, OriButton } from '@oriui/vue'
 
-const { skin, theme, setSkin, toggleTheme } = useOriTheme();
+const { skin, theme, setSkin, toggleTheme } = useOriTheme()
 
 // One-line design intent per skin (mirrors the comments in packages/css `_themes-skins.css`).
 const INTENT: Record<SkinId, string> = {
@@ -18,7 +18,7 @@ const INTENT: Record<SkinId, string> = {
     luxury: 'Warm gold on cream.',
     neutral: 'Pure grays, monochrome accent.',
     cyber: 'Neon magenta on near-black.'
-};
+}
 </script>
 
 <template>

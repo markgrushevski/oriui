@@ -19,7 +19,7 @@ there are no prop bags and no swappable adapter. It re-resolves on every skin / 
 ## Import
 
 ```ts
-import { useToken, useThemeColor } from '@oriui/headless/vue';
+import { useToken, useThemeColor } from '@oriui/headless/vue'
 ```
 
 ## Arguments
@@ -58,18 +58,18 @@ value, then `watch` — theme flips re-push automatically:
 
 ```vue
 <script setup lang="ts">
-import { onMounted, useTemplateRef, watch } from 'vue';
-import { useThemeColor } from '@oriui/headless/vue';
+import { onMounted, useTemplateRef, watch } from 'vue'
+import { useThemeColor } from '@oriui/headless/vue'
 
-const canvasEl = useTemplateRef<HTMLCanvasElement>('canvas');
-const brand = useThemeColor('primary'); // resolved --ori-color-primary; '' until mounted (SSR-safe)
+const canvasEl = useTemplateRef<HTMLCanvasElement>('canvas')
+const brand = useThemeColor('primary') // resolved --ori-color-primary; '' until mounted (SSR-safe)
 
-let engine: Engine | undefined;
+let engine: Engine | undefined
 onMounted(() => {
-    engine = createEngine(canvasEl.value);
-    engine.setColor(brand.value || null); // seed the initial resolved color
-});
-watch(brand, (c) => engine?.setColor(c || null)); // '' (SSR/unresolved) -> engine default
+    engine = createEngine(canvasEl.value)
+    engine.setColor(brand.value || null) // seed the initial resolved color
+})
+watch(brand, (c) => engine?.setColor(c || null)) // '' (SSR/unresolved) -> engine default
 </script>
 
 <template>
@@ -107,23 +107,23 @@ the engine's own default. `@oriui/css` styles any surrounding markup with the sa
 today:
 
 ```tsx
-import { useEffect, useRef } from 'react';
-import { useThemeColor } from '@oriui/headless/react';
+import { useEffect, useRef } from 'react'
+import { useThemeColor } from '@oriui/headless/react'
 
 function BrandCanvas() {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const engineRef = useRef<Engine>();
-    const brand = useThemeColor('primary'); // resolved --ori-color-primary; '' until mounted (SSR-safe)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const engineRef = useRef<Engine>()
+    const brand = useThemeColor('primary') // resolved --ori-color-primary; '' until mounted (SSR-safe)
 
     useEffect(() => {
-        engineRef.current = createEngine(canvasRef.current!);
-    }, []); // create the engine once
+        engineRef.current = createEngine(canvasRef.current!)
+    }, []) // create the engine once
 
     useEffect(() => {
-        engineRef.current?.setColor(brand || null); // seed on mount, re-push on every theme flip
-    }, [brand]);
+        engineRef.current?.setColor(brand || null) // seed on mount, re-push on every theme flip
+    }, [brand])
 
-    return <canvas ref={canvasRef} />;
+    return <canvas ref={canvasRef} />
 }
 ```
 
@@ -138,12 +138,12 @@ change listener (so an `auto`-skin OS flip re-resolves without any attribute mut
 unsubscribe.
 
 ```ts
-import { resolveToken, observeTheme } from '@oriui/headless';
+import { resolveToken, observeTheme } from '@oriui/headless'
 
-let color = resolveToken('--ori-color-primary'); // 'rgb(3, 105, 161)' | '' if unresolvable / SSR
+let color = resolveToken('--ori-color-primary') // 'rgb(3, 105, 161)' | '' if unresolvable / SSR
 const stop = observeTheme(() => {
-    color = resolveToken('--ori-color-primary'); // re-resolve on skin/mode flip
-});
+    color = resolveToken('--ori-color-primary') // re-resolve on skin/mode flip
+})
 // later: stop();
 ```
 

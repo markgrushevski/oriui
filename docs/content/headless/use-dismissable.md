@@ -20,7 +20,7 @@ it.) The pure `isTargetOutside(target, elements)` predicate it's built on is exp
 ## Import
 
 ```ts
-import { useDismissable } from '@oriui/headless/vue';
+import { useDismissable } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -47,19 +47,19 @@ Pass the overlay's `open`, its element refs, and a close callback — pick the s
 ```vue
 <!-- MyMenu.vue — pointerdown-outside (a menu has no single focus anchor) -->
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useDismissable } from '@oriui/headless/vue';
+import { ref } from 'vue'
+import { useDismissable } from '@oriui/headless/vue'
 
-const open = ref(false);
-const content = ref<HTMLElement>();
-const trigger = ref<HTMLElement>();
+const open = ref(false)
+const content = ref<HTMLElement>()
+const trigger = ref<HTMLElement>()
 
 useDismissable(() => ({
     enabled: open.value,
     elements: () => [content.value, trigger.value],
     onDismiss: () => (open.value = false),
     pointerDownOutside: true
-}));
+}))
 </script>
 ```
 
@@ -91,20 +91,20 @@ The **React** binding is the same — options are a plain object (no getter / st
 
 ```tsx
 // MyMenu.tsx — pointerdown-outside (a menu has no single focus anchor)
-import { useRef, useState } from 'react';
-import { useDismissable } from '@oriui/headless/react';
+import { useRef, useState } from 'react'
+import { useDismissable } from '@oriui/headless/react'
 
 function MyMenu() {
-    const [open, setOpen] = useState(false);
-    const content = useRef<HTMLDivElement>(null);
-    const trigger = useRef<HTMLButtonElement>(null);
+    const [open, setOpen] = useState(false)
+    const content = useRef<HTMLDivElement>(null)
+    const trigger = useRef<HTMLButtonElement>(null)
 
     useDismissable({
         enabled: open,
         elements: () => [content.current, trigger.current],
         onDismiss: () => setOpen(false),
         pointerDownOutside: true
-    });
+    })
 
     return (
         <>
@@ -113,7 +113,7 @@ function MyMenu() {
             </button>
             {open && <div ref={content}>…menu items…</div>}
         </>
-    );
+    )
 }
 ```
 

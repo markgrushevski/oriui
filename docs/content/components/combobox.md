@@ -35,15 +35,15 @@ as you type.
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const fruit = ref(null);
+import { ref } from 'vue'
+const fruit = ref(null)
 const options = [
     { label: 'Apple', value: 'apple' },
     { label: 'Banana', value: 'banana' },
     { label: 'Cherry', value: 'cherry' },
     { label: 'Grape', value: 'grape' },
     { label: 'Mango', value: 'mango' }
-];
+]
 </script>
 
 <template>
@@ -161,14 +161,14 @@ visible (filtered) items.
 
 ```vue
 <script setup>
-import { useCombobox } from '@oriui/headless/vue';
+import { useCombobox } from '@oriui/headless/vue'
 
 const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useCombobox(() => ({
     options: [
         { label: 'Apple', value: 'apple' },
         { label: 'Banana', value: 'banana' }
     ]
-}));
+}))
 </script>
 
 <template>

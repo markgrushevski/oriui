@@ -1,5 +1,5 @@
-import { afterEach, describe, it, expect, vi } from 'vitest';
-import { get, writable } from 'svelte/store';
+import { afterEach, describe, it, expect, vi } from 'vitest'
+import { get, writable } from 'svelte/store'
 import {
     nativeDisclosure,
     nativeDialog,
@@ -13,11 +13,11 @@ import {
     useToolbarToggleGroup,
     normalizeProps,
     type UseToolbarOptions
-} from '@oriui/headless/svelte';
+} from '@oriui/headless/svelte'
 
 afterEach(() => {
-    document.body.innerHTML = '';
-});
+    document.body.innerHTML = ''
+})
 
 // The Svelte adapter is pure TS over the shared `../core` engine — it returns Svelte stores, so we can
 // exercise it without rendering a component: `get(store)` reads the current value and a live
@@ -26,13 +26,13 @@ afterEach(() => {
 
 describe('Svelte normalizeProps', () => {
     it('lowercases onXxx handler keys so a spread wires real Svelte handlers', () => {
-        const fn = () => {};
-        const out = normalizeProps.button({ onClick: fn, onKeyDown: fn });
+        const fn = () => {}
+        const out = normalizeProps.button({ onClick: fn, onKeyDown: fn })
 
-        expect(out.onclick).toBe(fn);
-        expect(out.onkeydown).toBe(fn);
-        expect('onClick' in out).toBe(false);
-    });
+        expect(out.onclick).toBe(fn)
+        expect(out.onkeydown).toBe(fn)
+        expect('onClick' in out).toBe(false)
+    })
 
     it('remaps className/htmlFor and drops undefined', () => {
         const out = normalizeProps.element({
@@ -41,123 +41,123 @@ describe('Svelte normalizeProps', () => {
             'aria-label': 'x',
             'data-state': 'open',
             title: undefined
-        });
+        })
 
-        expect(out.class).toBe('a');
-        expect(out.for).toBe('b');
-        expect(out['aria-label']).toBe('x');
-        expect(out['data-state']).toBe('open');
-        expect('title' in out).toBe(false);
-        expect('className' in out).toBe(false);
-    });
-});
+        expect(out.class).toBe('a')
+        expect(out.for).toBe('b')
+        expect(out['aria-label']).toBe('x')
+        expect(out['data-state']).toBe('open')
+        expect('title' in out).toBe(false)
+        expect('className' in out).toBe(false)
+    })
+})
 
 describe('Svelte nativeDisclosure', () => {
     it('starts closed with the WAI-ARIA wiring, ids derived from the base id', () => {
-        const d = nativeDisclosure({ id: 'test' });
+        const d = nativeDisclosure({ id: 'test' })
 
-        expect(get(d.open)).toBe(false);
+        expect(get(d.open)).toBe(false)
 
-        const trigger = get(d.triggerProps);
-        expect(trigger.id).toBe('ori-test-trigger');
-        expect(trigger.type).toBe('button');
-        expect(trigger['aria-controls']).toBe('ori-test-content');
-        expect(trigger['aria-expanded']).toBe(false);
+        const trigger = get(d.triggerProps)
+        expect(trigger.id).toBe('ori-test-trigger')
+        expect(trigger.type).toBe('button')
+        expect(trigger['aria-controls']).toBe('ori-test-content')
+        expect(trigger['aria-expanded']).toBe(false)
         // The core emits `onClick`; the Svelte normalizer must have lowercased it.
-        expect(typeof trigger.onclick).toBe('function');
-        expect('onClick' in trigger).toBe(false);
+        expect(typeof trigger.onclick).toBe('function')
+        expect('onClick' in trigger).toBe(false)
 
-        const content = get(d.contentProps);
-        expect(content.id).toBe('ori-test-content');
-        expect(content.role).toBe('region');
-        expect(content['aria-labelledby']).toBe('ori-test-trigger');
-        expect(content.hidden).toBe(true);
-    });
+        const content = get(d.contentProps)
+        expect(content.id).toBe('ori-test-content')
+        expect(content.role).toBe('region')
+        expect(content['aria-labelledby']).toBe('ori-test-trigger')
+        expect(content.hidden).toBe(true)
+    })
 
     it('setOpen / toggle drive the stores and re-project the prop bags', () => {
-        const d = nativeDisclosure({ id: 'x' });
+        const d = nativeDisclosure({ id: 'x' })
 
-        d.setOpen(true);
-        expect(get(d.open)).toBe(true);
-        expect(get(d.triggerProps)['aria-expanded']).toBe(true);
-        expect(get(d.contentProps).hidden).toBe(false);
+        d.setOpen(true)
+        expect(get(d.open)).toBe(true)
+        expect(get(d.triggerProps)['aria-expanded']).toBe(true)
+        expect(get(d.contentProps).hidden).toBe(false)
 
-        d.toggle();
-        expect(get(d.open)).toBe(false);
-    });
+        d.toggle()
+        expect(get(d.open)).toBe(false)
+    })
 
     it('a live subscriber is notified on every machine change (real reactivity)', () => {
-        const d = nativeDisclosure({ id: 'live' });
-        const seen: boolean[] = [];
-        const stop = d.open.subscribe((v) => seen.push(v));
+        const d = nativeDisclosure({ id: 'live' })
+        const seen: boolean[] = []
+        const stop = d.open.subscribe((v) => seen.push(v))
 
-        d.setOpen(true);
-        d.setOpen(false);
-        stop();
+        d.setOpen(true)
+        d.setOpen(false)
+        stop()
 
-        expect(seen).toEqual([false, true, false]);
-    });
+        expect(seen).toEqual([false, true, false])
+    })
 
     it('a disabled disclosure ignores toggle and flags the trigger', () => {
-        const d = nativeDisclosure({ id: 'd', disabled: true });
+        const d = nativeDisclosure({ id: 'd', disabled: true })
 
-        d.toggle();
-        expect(get(d.open)).toBe(false);
+        d.toggle()
+        expect(get(d.open)).toBe(false)
 
-        const trigger = get(d.triggerProps);
-        expect(trigger.disabled).toBe(true);
-        expect(trigger['data-disabled']).toBe('');
-    });
-});
+        const trigger = get(d.triggerProps)
+        expect(trigger.disabled).toBe(true)
+        expect(trigger['data-disabled']).toBe('')
+    })
+})
 
 describe('Svelte nativeDialog', () => {
     it('exposes the trigger + dialog prop bags with lowercased native-event handlers', () => {
-        const onOpenChange = vi.fn();
-        const dlg = nativeDialog({ id: 'dl', onOpenChange });
+        const onOpenChange = vi.fn()
+        const dlg = nativeDialog({ id: 'dl', onOpenChange })
 
-        expect(get(dlg.open)).toBe(false);
+        expect(get(dlg.open)).toBe(false)
 
-        const trigger = get(dlg.triggerProps);
-        expect(trigger['aria-haspopup']).toBe('dialog');
-        expect(trigger['aria-expanded']).toBe(false);
-        expect(typeof trigger.onclick).toBe('function');
+        const trigger = get(dlg.triggerProps)
+        expect(trigger['aria-haspopup']).toBe('dialog')
+        expect(trigger['aria-expanded']).toBe(false)
+        expect(typeof trigger.onclick).toBe('function')
 
-        const dialog = get(dlg.dialogProps);
-        expect(dialog.role).toBe('dialog');
-        expect(dialog['aria-modal']).toBe('true');
-        expect(dialog['aria-labelledby']).toBe('dl-title');
-        expect(typeof dialog.onclose).toBe('function');
-        expect(typeof dialog.onclick).toBe('function');
+        const dialog = get(dlg.dialogProps)
+        expect(dialog.role).toBe('dialog')
+        expect(dialog['aria-modal']).toBe('true')
+        expect(dialog['aria-labelledby']).toBe('dl-title')
+        expect(typeof dialog.onclose).toBe('function')
+        expect(typeof dialog.onclick).toBe('function')
         // oncancel is absent by default (only present as an Esc-guard when closeOnEscape === false).
-        expect(dialog.oncancel).toBeUndefined();
+        expect(dialog.oncancel).toBeUndefined()
 
-        expect(get(dlg.titleProps).id).toBe('dl-title');
-        expect(get(dlg.descriptionProps).id).toBe('dl-description');
-        expect(typeof get(dlg.closeTriggerProps).onclick).toBe('function');
-    });
+        expect(get(dlg.titleProps).id).toBe('dl-title')
+        expect(get(dlg.descriptionProps).id).toBe('dl-description')
+        expect(typeof get(dlg.closeTriggerProps).onclick).toBe('function')
+    })
 
     it('setOpen fires onOpenChange once and toggles state', () => {
-        const onOpenChange = vi.fn();
-        const dlg = nativeDialog({ id: 'd2', onOpenChange });
+        const onOpenChange = vi.fn()
+        const dlg = nativeDialog({ id: 'd2', onOpenChange })
 
-        dlg.setOpen(true);
-        expect(get(dlg.open)).toBe(true);
-        expect(onOpenChange).toHaveBeenCalledWith(true);
-        expect(onOpenChange).toHaveBeenCalledTimes(1);
+        dlg.setOpen(true)
+        expect(get(dlg.open)).toBe(true)
+        expect(onOpenChange).toHaveBeenCalledWith(true)
+        expect(onOpenChange).toHaveBeenCalledTimes(1)
 
         // no-op set: same value must not re-fire
-        dlg.setOpen(true);
-        expect(onOpenChange).toHaveBeenCalledTimes(1);
-    });
+        dlg.setOpen(true)
+        expect(onOpenChange).toHaveBeenCalledTimes(1)
+    })
 
     it('modal:false drops aria-modal; closeOnEscape:false keeps an oncancel guard', () => {
-        const nonModal = get(nativeDialog({ id: 'm', modal: false }).dialogProps);
-        expect(nonModal['aria-modal']).toBeUndefined();
+        const nonModal = get(nativeDialog({ id: 'm', modal: false }).dialogProps)
+        expect(nonModal['aria-modal']).toBeUndefined()
 
-        const noEsc = get(nativeDialog({ id: 'e', closeOnEscape: false }).dialogProps);
-        expect(typeof noEsc.oncancel).toBe('function');
-    });
-});
+        const noEsc = get(nativeDialog({ id: 'e', closeOnEscape: false }).dialogProps)
+        expect(typeof noEsc.oncancel).toBe('function')
+    })
+})
 
 describe('Svelte useCombobox', () => {
     const OPTIONS = [
@@ -165,139 +165,139 @@ describe('Svelte useCombobox', () => {
         { label: 'Banana', value: 'banana' },
         { label: 'Cherry', value: 'cherry', disabled: true },
         { label: 'Grape', value: 'grape' }
-    ];
+    ]
 
     it('starts closed, empty, with the full list and a role=combobox input', () => {
-        const cb = useCombobox({ id: 'c', options: OPTIONS });
+        const cb = useCombobox({ id: 'c', options: OPTIONS })
 
-        expect(get(cb.open)).toBe(false);
-        expect(get(cb.value)).toBe(null);
-        expect(get(cb.inputValue)).toBe('');
-        expect(get(cb.items)).toHaveLength(4);
-        expect(get(cb.inputProps).role).toBe('combobox');
-    });
+        expect(get(cb.open)).toBe(false)
+        expect(get(cb.value)).toBe(null)
+        expect(get(cb.inputValue)).toBe('')
+        expect(get(cb.items)).toHaveLength(4)
+        expect(get(cb.inputProps).role).toBe('combobox')
+    })
 
     it('setInputValue filters the visible items live and opens', () => {
-        const cb = useCombobox({ id: 'c', options: OPTIONS });
+        const cb = useCombobox({ id: 'c', options: OPTIONS })
 
-        cb.setInputValue('ap'); // matches Apple + grAPe (substring)
-        expect(get(cb.open)).toBe(true);
-        expect(get(cb.items).map((i) => i.label)).toEqual(['Apple', 'Grape']);
-    });
+        cb.setInputValue('ap') // matches Apple + grAPe (substring)
+        expect(get(cb.open)).toBe(true)
+        expect(get(cb.items).map((i) => i.label)).toEqual(['Apple', 'Grape'])
+    })
 
     it('select commits value + label and closes; clear resets', () => {
-        const cb = useCombobox({ id: 'c', options: OPTIONS });
+        const cb = useCombobox({ id: 'c', options: OPTIONS })
 
-        cb.select({ label: 'Banana', value: 'banana' });
-        expect(get(cb.value)).toBe('banana');
-        expect(get(cb.inputValue)).toBe('Banana');
-        expect(get(cb.open)).toBe(false);
+        cb.select({ label: 'Banana', value: 'banana' })
+        expect(get(cb.value)).toBe('banana')
+        expect(get(cb.inputValue)).toBe('Banana')
+        expect(get(cb.open)).toBe(false)
 
-        cb.clear();
-        expect(get(cb.value)).toBe(null);
-        expect(get(cb.inputValue)).toBe('');
-    });
+        cb.clear()
+        expect(get(cb.value)).toBe(null)
+        expect(get(cb.inputValue)).toBe('')
+    })
 
     it('getOptionProps is a store of a function returning role=option props', () => {
-        const cb = useCombobox({ id: 'c', options: OPTIONS });
-        const optionProps = get(cb.getOptionProps)(OPTIONS[0]!, 0);
+        const cb = useCombobox({ id: 'c', options: OPTIONS })
+        const optionProps = get(cb.getOptionProps)(OPTIONS[0]!, 0)
 
-        expect(optionProps.role).toBe('option');
-        expect(typeof optionProps.id).toBe('string');
-    });
+        expect(optionProps.role).toBe('option')
+        expect(typeof optionProps.id).toBe('string')
+    })
 
     it('reacts to an options store — a new list re-filters the visible items', () => {
-        const opts = writable({ id: 'rx', options: OPTIONS });
-        const cb = useCombobox(opts);
-        expect(get(cb.items)).toHaveLength(4);
+        const opts = writable({ id: 'rx', options: OPTIONS })
+        const cb = useCombobox(opts)
+        expect(get(cb.items)).toHaveLength(4)
 
-        opts.set({ id: 'rx', options: [{ label: 'Kiwi', value: 'kiwi' }] });
-        expect(get(cb.items).map((i) => i.label)).toEqual(['Kiwi']);
-    });
+        opts.set({ id: 'rx', options: [{ label: 'Kiwi', value: 'kiwi' }] })
+        expect(get(cb.items).map((i) => i.label)).toEqual(['Kiwi'])
+    })
 
     it('reacts to a disabled store — toggling disabled pushes SET_DISABLED and closes the listbox', () => {
-        const opts = writable({ id: 'rd', options: OPTIONS, disabled: false });
-        const cb = useCombobox(opts);
+        const opts = writable({ id: 'rd', options: OPTIONS, disabled: false })
+        const cb = useCombobox(opts)
 
-        cb.setOpen(true);
-        expect(get(cb.open)).toBe(true);
+        cb.setOpen(true)
+        expect(get(cb.open)).toBe(true)
 
-        opts.set({ id: 'rd', options: OPTIONS, disabled: true });
-        expect(get(cb.open)).toBe(false);
-    });
-});
+        opts.set({ id: 'rd', options: OPTIONS, disabled: true })
+        expect(get(cb.open)).toBe(false)
+    })
+})
 
 describe('Svelte useMenu', () => {
     const ITEMS = [
         { label: 'Copy', value: 'copy' },
         { label: 'Paste', value: 'paste' }
-    ];
+    ]
 
     it('starts closed with the WAI-ARIA menu-button wiring', () => {
-        const m = useMenu({ id: 'm', items: ITEMS });
+        const m = useMenu({ id: 'm', items: ITEMS })
 
-        expect(get(m.open)).toBe(false);
-        expect(get(m.highlightedValue)).toBe(null);
-        expect(get(m.items)).toHaveLength(2);
+        expect(get(m.open)).toBe(false)
+        expect(get(m.highlightedValue)).toBe(null)
+        expect(get(m.items)).toHaveLength(2)
 
-        const trigger = get(m.triggerProps);
-        expect(trigger['aria-haspopup']).toBe('menu');
-        expect(trigger['aria-expanded']).toBe(false);
-        expect(get(m.contentProps).role).toBe('menu');
-    });
+        const trigger = get(m.triggerProps)
+        expect(trigger['aria-haspopup']).toBe('menu')
+        expect(trigger['aria-expanded']).toBe(false)
+        expect(get(m.contentProps).role).toBe('menu')
+    })
 
     it('setOpen and highlightFirst drive the reactive stores', () => {
-        const m = useMenu({ id: 'm', items: ITEMS });
+        const m = useMenu({ id: 'm', items: ITEMS })
 
-        m.setOpen(true);
-        expect(get(m.open)).toBe(true);
-        expect(get(m.triggerProps)['aria-expanded']).toBe(true);
+        m.setOpen(true)
+        expect(get(m.open)).toBe(true)
+        expect(get(m.triggerProps)['aria-expanded']).toBe(true)
 
-        m.highlightFirst();
-        expect(get(m.highlightedValue)).toBe('copy');
-    });
+        m.highlightFirst()
+        expect(get(m.highlightedValue)).toBe('copy')
+    })
 
     it('getItemProps is a store of a function returning role=menuitem props with a lowercased handler', () => {
-        const m = useMenu({ id: 'm', items: ITEMS });
-        const itemProps = get(m.getItemProps)(ITEMS[0]!, 0);
+        const m = useMenu({ id: 'm', items: ITEMS })
+        const itemProps = get(m.getItemProps)(ITEMS[0]!, 0)
 
-        expect(itemProps.role).toBe('menuitem');
-        expect(typeof itemProps.onclick).toBe('function');
-        expect('onClick' in itemProps).toBe(false);
-    });
+        expect(itemProps.role).toBe('menuitem')
+        expect(typeof itemProps.onclick).toBe('function')
+        expect('onClick' in itemProps).toBe(false)
+    })
 
     it('reacts to an items store — a new list is reflected', () => {
-        const opts = writable({ id: 'rm', items: ITEMS });
-        const m = useMenu(opts);
-        expect(get(m.items)).toHaveLength(2);
+        const opts = writable({ id: 'rm', items: ITEMS })
+        const m = useMenu(opts)
+        expect(get(m.items)).toHaveLength(2)
 
-        opts.set({ id: 'rm', items: [{ label: 'Cut', value: 'cut' }] });
-        expect(get(m.items).map((i) => i.label)).toEqual(['Cut']);
-    });
-});
+        opts.set({ id: 'rm', items: [{ label: 'Cut', value: 'cut' }] })
+        expect(get(m.items).map((i) => i.label)).toEqual(['Cut'])
+    })
+})
 
 describe('Svelte resolvers fall back to native outside a component', () => {
     it('useDisclosure / useDialog / useCombobox / useMenu resolve the native adapter when no context is provided', () => {
         // Called outside Svelte component init, getContext would throw — getHeadless swallows that and
         // returns null, so the native default is used. (The swap-WITH-context path needs a real component
         // tree, like the toolbar registration below — see the note there.)
-        const d = useDisclosure({ id: 'r' });
-        expect(get(d.open)).toBe(false);
-        expect(get(d.triggerProps).id).toBe('ori-r-trigger');
+        const d = useDisclosure({ id: 'r' })
+        expect(get(d.open)).toBe(false)
+        expect(get(d.triggerProps).id).toBe('ori-r-trigger')
 
-        const dlg = useDialog({ id: 'rd' });
-        expect(get(dlg.open)).toBe(false);
-        expect(get(dlg.dialogProps).role).toBe('dialog');
+        const dlg = useDialog({ id: 'rd' })
+        expect(get(dlg.open)).toBe(false)
+        expect(get(dlg.dialogProps).role).toBe('dialog')
 
-        const cb = useCombobox({ id: 'rc', options: [{ label: 'A', value: 'a' }] });
-        expect(get(cb.open)).toBe(false);
-        expect(get(cb.items)).toHaveLength(1);
+        const cb = useCombobox({ id: 'rc', options: [{ label: 'A', value: 'a' }] })
+        expect(get(cb.open)).toBe(false)
+        expect(get(cb.items)).toHaveLength(1)
 
-        const mn = useMenu({ id: 'rm', items: [{ label: 'X', value: 'x' }] });
-        expect(get(mn.open)).toBe(false);
-        expect(get(mn.items)).toHaveLength(1);
-    });
-});
+        const mn = useMenu({ id: 'rm', items: [{ label: 'X', value: 'x' }] })
+        expect(get(mn.open)).toBe(false)
+        expect(get(mn.items)).toHaveLength(1)
+    })
+})
 
 // The toolbar is compositional (Svelte context + roving tabindex), so the register→activeId wiring and
 // the toggle-group↔item selection only connect through a real component tree — setContext/getContext
@@ -309,97 +309,97 @@ describe('Svelte resolvers fall back to native outside a component', () => {
 
 /** Build a bare toolbar subtree wired to the root keydown handler, returning the marked focusable items. */
 function buildBar(onkeydown: (event: KeyboardEvent) => void, count = 3) {
-    const root = document.createElement('div');
-    root.addEventListener('keydown', onkeydown as EventListener);
+    const root = document.createElement('div')
+    root.addEventListener('keydown', onkeydown as EventListener)
     const items = Array.from({ length: count }, () => {
-        const button = document.createElement('button');
-        button.setAttribute('data-ori-toolbar-item', '');
-        root.append(button);
-        return button;
-    });
-    document.body.append(root);
-    return { root, items };
+        const button = document.createElement('button')
+        button.setAttribute('data-ori-toolbar-item', '')
+        root.append(button)
+        return button
+    })
+    document.body.append(root)
+    return { root, items }
 }
 
-const press = (el: HTMLElement, key: string) => el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+const press = (el: HTMLElement, key: string) => el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
 
 describe('Svelte useToolbar', () => {
     it('projects role=toolbar + the accessible name, omitting the implicit-horizontal aria-orientation', () => {
-        const { toolbarProps } = useToolbar({ label: 'Formatting' });
-        const props = get(toolbarProps);
+        const { toolbarProps } = useToolbar({ label: 'Formatting' })
+        const props = get(toolbarProps)
 
-        expect(props.role).toBe('toolbar');
-        expect(props['aria-label']).toBe('Formatting');
-        expect(props['aria-orientation']).toBeUndefined();
-        expect(typeof props.onkeydown).toBe('function');
-    });
+        expect(props.role).toBe('toolbar')
+        expect(props['aria-label']).toBe('Formatting')
+        expect(props['aria-orientation']).toBeUndefined()
+        expect(typeof props.onkeydown).toBe('function')
+    })
 
     it('sets aria-orientation only when vertical, re-projecting from a reactive options store', () => {
-        const opts = writable<UseToolbarOptions>({ orientation: 'horizontal', label: 'Bar' });
-        const { toolbarProps } = useToolbar(opts);
-        expect(get(toolbarProps)['aria-orientation']).toBeUndefined();
+        const opts = writable<UseToolbarOptions>({ orientation: 'horizontal', label: 'Bar' })
+        const { toolbarProps } = useToolbar(opts)
+        expect(get(toolbarProps)['aria-orientation']).toBeUndefined()
 
-        opts.set({ orientation: 'vertical', label: 'Bar' });
-        expect(get(toolbarProps)['aria-orientation']).toBe('vertical');
-    });
+        opts.set({ orientation: 'vertical', label: 'Bar' })
+        expect(get(toolbarProps)['aria-orientation']).toBe('vertical')
+    })
 
     it('onkeydown roves real focus by DOM order — ArrowRight / End / Home, wrapping when loop', () => {
-        const { toolbarProps } = useToolbar({ label: 'Bar' });
-        const { items } = buildBar(get(toolbarProps).onkeydown);
-        const [a, b, c] = items;
+        const { toolbarProps } = useToolbar({ label: 'Bar' })
+        const { items } = buildBar(get(toolbarProps).onkeydown)
+        const [a, b, c] = items
 
-        a.focus();
-        press(a, 'ArrowRight');
-        expect(document.activeElement).toBe(b);
+        a.focus()
+        press(a, 'ArrowRight')
+        expect(document.activeElement).toBe(b)
 
-        press(b, 'End');
-        expect(document.activeElement).toBe(c);
+        press(b, 'End')
+        expect(document.activeElement).toBe(c)
 
-        press(c, 'ArrowRight'); // last -> first (loop defaults true)
-        expect(document.activeElement).toBe(a);
+        press(c, 'ArrowRight') // last -> first (loop defaults true)
+        expect(document.activeElement).toBe(a)
 
-        press(a, 'Home');
-        expect(document.activeElement).toBe(a);
-    });
+        press(a, 'Home')
+        expect(document.activeElement).toBe(a)
+    })
 
     it('does not wrap when loop is false — ArrowRight on the last item stays put', () => {
-        const { toolbarProps } = useToolbar({ label: 'Bar', loop: false });
-        const { items } = buildBar(get(toolbarProps).onkeydown);
-        const last = items[items.length - 1]!;
+        const { toolbarProps } = useToolbar({ label: 'Bar', loop: false })
+        const { items } = buildBar(get(toolbarProps).onkeydown)
+        const last = items[items.length - 1]!
 
-        last.focus();
-        press(last, 'ArrowRight');
-        expect(document.activeElement).toBe(last);
-    });
+        last.focus()
+        press(last, 'ArrowRight')
+        expect(document.activeElement).toBe(last)
+    })
 
     it('yields arrow keys to a control that owns them (a text input) — focus is not hijacked', () => {
-        const { toolbarProps } = useToolbar({ label: 'Bar' });
-        const { root } = buildBar(get(toolbarProps).onkeydown);
-        const input = document.createElement('input');
-        input.type = 'text';
-        root.append(input);
+        const { toolbarProps } = useToolbar({ label: 'Bar' })
+        const { root } = buildBar(get(toolbarProps).onkeydown)
+        const input = document.createElement('input')
+        input.type = 'text'
+        root.append(input)
 
-        input.focus();
-        press(input, 'ArrowRight');
-        expect(document.activeElement).toBe(input);
-    });
-});
+        input.focus()
+        press(input, 'ArrowRight')
+        expect(document.activeElement).toBe(input)
+    })
+})
 
 describe('Svelte useToolbarItem / orientation (inert outside a toolbar)', () => {
     it('useToolbarItem is inert without a toolbar context: marked, tabindex -1, not active', () => {
-        const { itemProps, isActive } = useToolbarItem();
-        const props = get(itemProps);
+        const { itemProps, isActive } = useToolbarItem()
+        const props = get(itemProps)
 
-        expect(props['data-ori-toolbar-item']).toBe('');
-        expect(props.tabindex).toBe(-1);
-        expect(typeof props.onfocus).toBe('function');
-        expect(get(isActive)).toBe(false);
-    });
+        expect(props['data-ori-toolbar-item']).toBe('')
+        expect(props.tabindex).toBe(-1)
+        expect(typeof props.onfocus).toBe('function')
+        expect(get(isActive)).toBe(false)
+    })
 
     it('useToolbarOrientation defaults to horizontal outside a toolbar', () => {
-        expect(get(useToolbarOrientation())).toBe('horizontal');
-    });
-});
+        expect(get(useToolbarOrientation())).toBe('horizontal')
+    })
+})
 
 describe('Svelte useToolbarToggleGroup', () => {
     it('exposes a role=group prop bag', () => {
@@ -407,7 +407,7 @@ describe('Svelte useToolbarToggleGroup', () => {
             type: 'single',
             value: writable<string | undefined>(undefined),
             onChange: () => {}
-        });
-        expect(get(groupProps).role).toBe('group');
-    });
-});
+        })
+        expect(get(groupProps).role).toBe('group')
+    })
+})

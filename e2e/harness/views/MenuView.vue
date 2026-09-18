@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { OriMenu } from '@oriui/vue';
-import type { MenuItem } from '@oriui/headless/vue';
+import { ref } from 'vue'
+import { OriMenu } from '@oriui/vue'
+import type { MenuItem } from '@oriui/headless/vue'
 
 // Four items with one disabled ("Archive") so ArrowUp/Down skip-the-disabled and Home/End are testable.
 // The activated value is mirrored into `[data-testid=selected]` so Enter/Space activation is observable.
@@ -10,9 +10,9 @@ const items: MenuItem[] = [
     { label: 'Duplicate', value: 'duplicate' },
     { label: 'Archive', value: 'archive', disabled: true },
     { label: 'Delete', value: 'delete' }
-];
+]
 
-const selected = ref('');
+const selected = ref('')
 </script>
 
 <template>

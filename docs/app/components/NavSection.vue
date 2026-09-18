@@ -2,21 +2,21 @@
 // One top-level nav section (Guide / Components / Composables …), collapsible via the headless
 // Disclosure primitive. A section either lists links directly, or holds nested category groups
 // (each its own collapsible SidebarGroup) → links.
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 
 interface NavLink {
-    label: string;
-    to: string;
+    label: string
+    to: string
 }
 interface NavGroup {
-    title: string;
-    links: NavLink[];
+    title: string
+    links: NavLink[]
 }
 
-defineProps<{ title: string; links?: NavLink[]; groups?: NavGroup[] }>();
-const emit = defineEmits<{ navigate: [] }>();
+defineProps<{ title: string; links?: NavLink[]; groups?: NavGroup[] }>()
+const emit = defineEmits<{ navigate: [] }>()
 
-const { triggerProps, contentProps, open } = useDisclosure(() => ({ defaultOpen: true }));
+const { triggerProps, contentProps, open } = useDisclosure(() => ({ defaultOpen: true }))
 </script>
 
 <template>

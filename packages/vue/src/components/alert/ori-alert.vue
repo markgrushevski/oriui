@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types';
-import { OriIcon } from '../icon';
+import { computed } from 'vue'
+import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
+import { OriIcon } from '../icon'
 
 const {
     closeLabel = 'Dismiss',
@@ -11,38 +11,38 @@ const {
     size = 'md',
     variant = 'tonal'
 } = defineProps<{
-    closable?: boolean;
-    closeLabel?: string;
-    color?: ThemeColor;
-    icon?: string;
+    closable?: boolean
+    closeLabel?: string
+    color?: ThemeColor
+    icon?: string
     /**
      * Live-region politeness. Defaults to `assertive` (role="alert") for urgent colors (danger / warn)
      * and `polite` (role="status") otherwise — so a static info/success banner is not announced
      * assertively on load. `off` opts out of the live region entirely.
      */
-    live?: 'assertive' | 'polite' | 'off';
-    radius?: RadiusSize;
-    size?: ActionSize;
-    text?: string;
-    title?: string;
-    variant?: Variant;
-}>();
+    live?: 'assertive' | 'polite' | 'off'
+    radius?: RadiusSize
+    size?: ActionSize
+    text?: string
+    title?: string
+    variant?: Variant
+}>()
 
 const emit = defineEmits<{
-    close: [];
-}>();
+    close: []
+}>()
 
 // role=alert is assertive (interrupts the screen reader) — correct only for urgent messages. Derive the
 // politeness from the color unless the caller sets `live` explicitly: danger/warn → assertive (alert),
 // everything else → polite (status). `off` → no live region.
-const politeness = computed(() => live ?? (color === 'danger' || color === 'warn' ? 'assertive' : 'polite'));
+const politeness = computed(() => live ?? (color === 'danger' || color === 'warn' ? 'assertive' : 'polite'))
 const ariaRole = computed(() => {
-    if (politeness.value === 'assertive') return 'alert';
-    if (politeness.value === 'polite') return 'status';
-    return undefined;
-});
+    if (politeness.value === 'assertive') return 'alert'
+    if (politeness.value === 'polite') return 'status'
+    return undefined
+})
 
-const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6Z';
+const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6Z'
 </script>
 
 <template>

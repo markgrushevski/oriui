@@ -15,7 +15,7 @@ and a zero-dependency native engine ships as the default — so it works with no
 ## Import
 
 ```ts
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -49,9 +49,9 @@ look:
 
 ```vue
 <script setup lang="ts">
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 
-const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen: false }));
+const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen: false }))
 </script>
 
 <template>
@@ -77,17 +77,17 @@ The **React** binding is the same primitive as a hook — the control is plain v
 re-rendering on state changes via `useSyncExternalStore`); spread the bags onto your JSX:
 
 ```tsx
-import { useDisclosure } from '@oriui/headless/react';
+import { useDisclosure } from '@oriui/headless/react'
 
 function Details() {
-    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false });
+    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false })
 
     return (
         <>
             <button {...triggerProps}>Details {open ? '▲' : '▼'}</button>
             <div {...contentProps}>…content…</div>
         </>
-    );
+    )
 }
 ```
 
@@ -102,10 +102,10 @@ back to the **native** `@oriui/headless` engine — zero dependencies, no setup.
 engine (Zag, or your own), provide a `disclosure` adapter once at the app root:
 
 ```ts
-import { OriHeadless } from '@oriui/headless/vue';
-import { myDisclosureAdapter } from './headless/my-disclosure';
+import { OriHeadless } from '@oriui/headless/vue'
+import { myDisclosureAdapter } from './headless/my-disclosure'
 
-app.use(OriHeadless, { disclosure: myDisclosureAdapter });
+app.use(OriHeadless, { disclosure: myDisclosureAdapter })
 ```
 
 The adapter must satisfy the `DisclosureAdapter` contract — same `DisclosureControl` shape — so your

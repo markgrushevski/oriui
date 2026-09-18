@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 // Docs-only: a DaisyUI-style class reference table with a coloured "type" chip per row.
 // Used in markdown via MDC: :class-table{:rows='[{"class":"ori-button","type":"Block","description":"…"}]'}
@@ -7,27 +7,27 @@ import { computed } from 'vue';
 // parse (a stray quote/apostrophe in a description), it passes the raw string instead. Normalise and
 // guard so a malformed table degrades to empty rather than 500-ing the whole page.
 interface ClassRow {
-    class: string;
-    type: string;
-    description: string;
+    class: string
+    type: string
+    description: string
 }
 
-const props = defineProps<{ rows?: ClassRow[] | string }>();
+const props = defineProps<{ rows?: ClassRow[] | string }>()
 
 const items = computed<ClassRow[]>(() => {
-    if (Array.isArray(props.rows)) return props.rows;
+    if (Array.isArray(props.rows)) return props.rows
     if (typeof props.rows === 'string') {
         try {
-            const parsed = JSON.parse(props.rows);
-            return Array.isArray(parsed) ? parsed : [];
+            const parsed = JSON.parse(props.rows)
+            return Array.isArray(parsed) ? parsed : []
         } catch {
-            return [];
+            return []
         }
     }
-    return [];
-});
+    return []
+})
 
-const chipKey = (type?: string) => (type ?? '').toLowerCase().replace(/[^a-z]+/g, '-');
+const chipKey = (type?: string) => (type ?? '').toLowerCase().replace(/[^a-z]+/g, '-')
 </script>
 
 <template>

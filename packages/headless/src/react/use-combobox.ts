@@ -1,6 +1,6 @@
-import { useHeadless } from './plugin';
-import { nativeCombobox } from './native';
-import type { ComboboxControl, UseComboboxOptions } from './contract';
+import { useHeadless } from './plugin'
+import { nativeCombobox } from './native'
+import type { ComboboxControl, UseComboboxOptions } from './contract'
 
 /**
  * Resolve the active Combobox behaviour — the WAI-ARIA listbox-combobox. Returns whichever adapter the app
@@ -8,7 +8,7 @@ import type { ComboboxControl, UseComboboxOptions } from './contract';
  * (Rules of hooks: the resolved adapter must be stable across a component's lifetime.)
  */
 export function useCombobox(options: UseComboboxOptions): ComboboxControl {
-    const adapters = useHeadless();
-    const adapter = adapters?.combobox ?? nativeCombobox;
-    return adapter(options);
+    const adapters = useHeadless()
+    const adapter = adapters?.combobox ?? nativeCombobox
+    return adapter(options)
 }

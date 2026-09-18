@@ -1,8 +1,8 @@
-import { derived, get, readable, writable } from 'svelte/store';
-import { combobox, disclosure, menu, type ComboboxItem, type MenuItem } from '../core';
-import { uid } from './id';
-import { normalizeProps } from './normalize-props';
-import { connectStore, safeOnDestroy, serviceVersion, toReadable, type MaybeReactive } from './use-store';
+import { derived, get, readable, writable } from 'svelte/store'
+import { combobox, disclosure, menu, type ComboboxItem, type MenuItem } from '../core'
+import { uid } from './id'
+import { normalizeProps } from './normalize-props'
+import { connectStore, safeOnDestroy, serviceVersion, toReadable, type MaybeReactive } from './use-store'
 import type {
     ComboboxControl,
     DialogControl,
@@ -12,7 +12,7 @@ import type {
     UseDialogOptions,
     UseDisclosureOptions,
     UseMenuOptions
-} from './contract';
+} from './contract'
 
 /**
  * Native oriUI Disclosure adapter — built on the in-house `../core` machine, the same one the Vue
@@ -24,10 +24,10 @@ export const nativeDisclosure = (options: UseDisclosureOptions = {}): Disclosure
         id: options.id ?? uid('disclosure'),
         defaultOpen: options.defaultOpen,
         disabled: options.disabled
-    };
+    }
 
-    const service = disclosure.machine(props);
-    const api = connectStore(service, () => disclosure.connect(service, normalizeProps));
+    const service = disclosure.machine(props)
+    const api = connectStore(service, () => disclosure.connect(service, normalizeProps))
 
     return {
         open: derived(api, (a) => a.open),
@@ -36,8 +36,8 @@ export const nativeDisclosure = (options: UseDisclosureOptions = {}): Disclosure
         contentProps: derived(api, (a) => a.getContentProps()),
         setOpen: (open: boolean) => service.send({ type: 'SET', open }),
         toggle: () => service.send({ type: 'TOGGLE' })
-    };
-};
+    }
+}
 
 /**
  * Native oriUI Dialog adapter — zero dependencies, built on the platform `<dialog>` element. It owns
@@ -47,18 +47,18 @@ export const nativeDisclosure = (options: UseDisclosureOptions = {}): Disclosure
  * a `{...props}` spread wires real Svelte handlers. Default behind `useDialog`; still swappable.
  */
 export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
-    const baseId = options.id ?? uid('ori-dialog');
-    const titleId = `${baseId}-title`;
-    const descriptionId = `${baseId}-description`;
+    const baseId = options.id ?? uid('ori-dialog')
+    const titleId = `${baseId}-title`
+    const descriptionId = `${baseId}-description`
 
-    const open = writable(options.defaultOpen ?? false);
+    const open = writable(options.defaultOpen ?? false)
 
     function setOpen(value: boolean): void {
         open.update((current) => {
-            if (current === value) return current;
-            options.onOpenChange?.(value);
-            return value;
-        });
+            if (current === value) return current
+            options.onOpenChange?.(value)
+            return value
+        })
     }
 
     return {
@@ -85,17 +85,17 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
                 options.closeOnInteractOutside === false
                     ? undefined
                     : (event: MouseEvent) => {
-                          if (event.currentTarget === event.target) setOpen(false);
+                          if (event.currentTarget === event.target) setOpen(false)
                       }
         }),
         titleProps: readable({ id: titleId }),
         descriptionProps: readable({ id: descriptionId }),
         closeTriggerProps: readable({ onclick: () => setOpen(false) })
-    };
-};
+    }
+}
 
 const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
-    item.label.toLowerCase().includes(query.trim().toLowerCase());
+    item.label.toLowerCase().includes(query.trim().toLowerCase())
 
 /**
  * Native oriUI Combobox adapter (Svelte) — the WAI-ARIA listbox-combobox on the shared `../core` state
@@ -103,41 +103,41 @@ const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
  * behind `useCombobox`; the OriHeadless contract lets an app swap a custom / Zag-backed one.
  */
 export const nativeCombobox = (options: MaybeReactive<UseComboboxOptions>): ComboboxControl => {
-    const opts$ = toReadable(options);
-    const initial = get(opts$);
+    const opts$ = toReadable(options)
+    const initial = get(opts$)
 
     const service = combobox.machine({
         id: initial.id ?? uid('combobox'),
         defaultValue: initial.value ?? null,
         defaultInputValue: initial.inputValue ?? '',
         disabled: initial.disabled
-    });
+    })
 
     // Keep `disabled` in sync past creation. A store input drives it; a plain object emits once → no-op.
-    let lastDisabled = initial.disabled ?? false;
+    let lastDisabled = initial.disabled ?? false
     safeOnDestroy(
         opts$.subscribe((o) => {
-            const next = o.disabled ?? false;
-            if (next === lastDisabled) return;
-            lastDisabled = next;
-            service.send({ type: 'SET_DISABLED', disabled: next });
+            const next = o.disabled ?? false
+            if (next === lastDisabled) return
+            lastDisabled = next
+            service.send({ type: 'SET_DISABLED', disabled: next })
         })
-    );
+    )
 
-    const version$ = serviceVersion(service);
+    const version$ = serviceVersion(service)
 
     // Visible items: filter by the current input — but show the whole list when the input is empty or
     // still equals the committed selection's label (so picking an option doesn't collapse the list).
     const visibleItems = (o: UseComboboxOptions): ComboboxItem[] => {
-        const { inputValue, value } = service.getState();
-        const all = o.options;
-        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined;
-        if (inputValue.trim() === '' || inputValue === selectedLabel) return all;
-        const filter = o.filter ?? defaultComboboxFilter;
-        return all.filter((item) => filter(item, inputValue));
-    };
+        const { inputValue, value } = service.getState()
+        const all = o.options
+        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined
+        if (inputValue.trim() === '' || inputValue === selectedLabel) return all
+        const filter = o.filter ?? defaultComboboxFilter
+        return all.filter((item) => filter(item, inputValue))
+    }
 
-    const api = derived([version$, opts$], ([, o]) => combobox.connect(service, normalizeProps, visibleItems(o)));
+    const api = derived([version$, opts$], ([, o]) => combobox.connect(service, normalizeProps, visibleItems(o)))
 
     return {
         open: derived(api, (a) => a.open),
@@ -158,35 +158,35 @@ export const nativeCombobox = (options: MaybeReactive<UseComboboxOptions>): Comb
         setInputValue: (next: string) => get(api).setInputValue(next),
         select: (item: ComboboxItem) => get(api).select(item),
         clear: () => get(api).clear()
-    };
-};
+    }
+}
 
 /**
  * Native oriUI Menu adapter (Svelte) — the WAI-ARIA menu-button + roving tabindex on `../core`. Default
  * behind `useMenu`; swappable through the OriHeadless contract like the others.
  */
 export const nativeMenu = (options: MaybeReactive<UseMenuOptions>): MenuControl => {
-    const opts$ = toReadable(options);
-    const initial = get(opts$);
+    const opts$ = toReadable(options)
+    const initial = get(opts$)
 
     const service = menu.machine({
         id: initial.id ?? uid('menu'),
         disabled: initial.disabled
-    });
+    })
 
-    let lastDisabled = initial.disabled ?? false;
+    let lastDisabled = initial.disabled ?? false
     safeOnDestroy(
         opts$.subscribe((o) => {
-            const next = o.disabled ?? false;
-            if (next === lastDisabled) return;
-            lastDisabled = next;
-            service.send({ type: 'SET_DISABLED', disabled: next });
+            const next = o.disabled ?? false
+            if (next === lastDisabled) return
+            lastDisabled = next
+            service.send({ type: 'SET_DISABLED', disabled: next })
         })
-    );
+    )
 
-    const version$ = serviceVersion(service);
+    const version$ = serviceVersion(service)
 
-    const api = derived([version$, opts$], ([, o]) => menu.connect(service, normalizeProps, o.items, o.onSelect));
+    const api = derived([version$, opts$], ([, o]) => menu.connect(service, normalizeProps, o.items, o.onSelect))
 
     return {
         open: derived(api, (a) => a.open),
@@ -201,5 +201,5 @@ export const nativeMenu = (options: MaybeReactive<UseMenuOptions>): MenuControl 
         highlight: (value: string | null) => get(api).highlight(value),
         highlightFirst: () => get(api).highlightFirst(),
         highlightLast: () => get(api).highlightLast()
-    };
-};
+    }
+}

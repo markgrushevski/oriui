@@ -98,7 +98,7 @@ Components import types from `../../types` and sibling components directly (e.g.
 
 ## Code conventions
 
-Tooling enforces formatting (prettier: 4-space, single quotes, semicolons, width 120,
+Tooling enforces formatting (prettier: 4-space, single quotes, NO semicolons, width 120,
 no trailing comma) and lint rules (eslint flat config; stylelint with a BEM selector
 pattern + SMACSS property order). The conventions below carry the intent tooling can't —
 each is a deliberate engineering choice, not legacy to copy blindly.
@@ -114,7 +114,7 @@ each is a deliberate engineering choice, not legacy to copy blindly.
 - Declare props with **reactive props destructure** (Vue 3.5+), not `withDefaults` —
   defaults co-locate with the declaration and there is no `@default` JSDoc to drift:
     ```ts
-    const { color = 'primary', size = 'md' } = defineProps<{ color?: ThemeColor; size?: ActionSize }>();
+    const { color = 'primary', size = 'md' } = defineProps<{ color?: ThemeColor; size?: ActionSize }>()
     ```
     When a prop feeds a composable/`watch`, pass a getter to keep it reactive:
     `useFocus(() => disabled)`, not `useFocus(disabled)` (lint: `vue/no-setup-props-reactivity-loss`).

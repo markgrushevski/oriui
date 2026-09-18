@@ -1,1 +1,1 @@
-export { default as OriSlider } from './ori-slider.vue';
+export { default as OriSlider } from './ori-slider.vue'

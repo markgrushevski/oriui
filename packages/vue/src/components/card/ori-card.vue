@@ -1,31 +1,31 @@
 <script lang="ts" setup>
-import type { RadiusSize, ThemeColor, Variant } from '../../types';
-import { OriAvatar } from '../avatar';
-import { OriIcon } from '../icon';
+import type { RadiusSize, ThemeColor, Variant } from '../../types'
+import { OriAvatar } from '../avatar'
+import { OriIcon } from '../icon'
 
 const {
     color = 'surface',
     radius = 'lg',
     variant = 'fill'
 } = defineProps<{
-    appendAvatar?: string;
-    appendIcon?: string;
-    color?: ThemeColor;
-    disabled?: boolean;
-    fluid?: boolean;
-    image?: string;
-    loading?: boolean;
-    prependAvatar?: string;
-    prependIcon?: string;
-    radius?: RadiusSize;
-    reverseAppendedActions?: boolean;
-    reversePrependedActions?: boolean;
-    subtitle?: string;
-    text?: string;
-    title?: string;
-    variant?: Variant;
-    row?: boolean;
-}>();
+    appendAvatar?: string
+    appendIcon?: string
+    color?: ThemeColor
+    disabled?: boolean
+    fluid?: boolean
+    image?: string
+    loading?: boolean
+    prependAvatar?: string
+    prependIcon?: string
+    radius?: RadiusSize
+    reverseAppendedActions?: boolean
+    reversePrependedActions?: boolean
+    subtitle?: string
+    text?: string
+    title?: string
+    variant?: Variant
+    row?: boolean
+}>()
 </script>
 
 <template>

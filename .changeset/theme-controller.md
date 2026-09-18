@@ -16,11 +16,11 @@ round-trip on `document.body`, exposed as `flushThemeInvalidation`), which relia
 
 ```ts
 // Vue
-const { resolvedTheme, cycleTheme } = useTheme({ storageKey: 'app-theme', default: 'auto' });
+const { resolvedTheme, cycleTheme } = useTheme({ storageKey: 'app-theme', default: 'auto' })
 
 // or low-level, in your own store / vanilla:
-import { applyTheme } from '@oriui/headless';
-applyTheme(isDark ? 'dark' : 'light'); // instead of a bare classList.toggle
+import { applyTheme } from '@oriui/headless'
+applyTheme(isDark ? 'dark' : 'light') // instead of a bare classList.toggle
 ```
 
 Consumers that switch themes at runtime should apply the theme through these (or add the flush wherever they flip

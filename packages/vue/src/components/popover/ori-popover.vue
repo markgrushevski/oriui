@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue';
-import type { AnchoredPlacement } from '../../types';
+import { computed, useId } from 'vue'
+import type { AnchoredPlacement } from '../../types'
 
 // OriPopover — a positioned overlay built on the platform. The trigger opens the panel via the
 // Popover API (`popovertarget` → top-layer, light-dismiss, Esc — zero JS); the panel is placed with
@@ -16,18 +16,18 @@ import type { AnchoredPlacement } from '../../types';
 //
 // Accessibility: the panel takes a `role` (default "dialog" — a non-modal popup). Give it an accessible
 // name by passing `aria-label` / `aria-labelledby` — undeclared attrs fall through to the panel.
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 const { placement = 'bottom-start', role = 'dialog' } = defineProps<{
-    placement?: AnchoredPlacement;
+    placement?: AnchoredPlacement
     /** ARIA role for the panel — "dialog" (default), "menu", "listbox", … per the content it holds. */
-    role?: string;
-}>();
+    role?: string
+}>()
 
 // SSR-safe unique ids so the popovertarget link and the anchor-name never collide across instances.
-const uid = useId();
-const panelId = `ori-popover-${uid}`;
-const anchorName = `--ori-popover-${uid}`;
+const uid = useId()
+const panelId = `ori-popover-${uid}`
+const anchorName = `--ori-popover-${uid}`
 
 // Spread onto the trigger button: opens the panel, names it as this panel's anchor, and conveys the
 // popup relationship — `aria-haspopup` mirrors the panel role, `aria-controls` points at the panel.
@@ -36,7 +36,7 @@ const triggerProps = computed(() => ({
     'aria-haspopup': role,
     'aria-controls': panelId,
     style: { anchorName }
-}));
+}))
 </script>
 
 <template>

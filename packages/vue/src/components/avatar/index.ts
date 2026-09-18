@@ -1,1 +1,1 @@
-export { default as OriAvatar } from './ori-avatar.vue';
+export { default as OriAvatar } from './ori-avatar.vue'

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { ThemeColor } from '../../types';
+import type { ThemeColor } from '../../types'
 
 const { as = 'a' } = defineProps<{
     /** An HTML tag name (default `'a'`), a Component name, or a Component class reference. */
-    as?: string | object;
-    color?: ThemeColor;
+    as?: string | object
+    color?: ThemeColor
     /** Opens in a new tab (`target="_blank"`) with `rel="noopener noreferrer"`. */
-    external?: boolean;
+    external?: boolean
     /** Underline only on hover (instead of always). */
-    hover?: boolean;
-    href?: string;
-}>();
+    hover?: boolean
+    href?: string
+}>()
 </script>
 
 <template>

@@ -5,5 +5,5 @@
  * contains it) — i.e. the overlay should dismiss.
  */
 export function isTargetOutside(target: Node | null, elements: (HTMLElement | null | undefined)[]): boolean {
-    return !elements.some((el) => el?.contains(target));
+    return !elements.some((el) => el?.contains(target))
 }

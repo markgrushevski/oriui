@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { ThemeColor } from '../../types';
+import type { ThemeColor } from '../../types'
 
 const { color } = defineProps<{
-    color?: ThemeColor;
-    text?: string;
-    vertical?: boolean;
-}>();
+    color?: ThemeColor
+    text?: string
+    vertical?: boolean
+}>()
 </script>
 
 <template>
