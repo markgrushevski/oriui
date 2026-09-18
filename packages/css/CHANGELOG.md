@@ -1,5 +1,337 @@
 # @oriui/css
 
+## 1.0.0-rc.18
+
+### Minor Changes
+
+- 16a5a16: **Structure has a name: `--ori-color-outline` and `--ori-color-outline-strong`.** Borders, dividers and
+  control edges were invented per component — forty-odd ad-hoc `color-mix` percentages — so a consumer who
+  wanted one consistent hairline had nothing to repoint and had to guess our numbers. This is the fix for the
+  one gap a real consumer filed that the library had not closed.
+
+    Two weights, because there are two structural jobs: the resting hairline that separates surfaces (panels,
+    menus, dividers, list rows) and the heavier edge that marks an interactive control (text fields, key caps,
+    colour swatches). Both derive from `currentcolor`, so a hairline follows the text it accompanies and a
+    themed subtree needs no per-theme re-declaration.
+
+    Visible change: the hairlines that were 14% are now 12%, and the chip edges that were 20% / 25% are now
+    28% — a few percentage points of alpha on a translucent line, collapsed so one token can own the weight.
+    Deliberately NOT folded in: low-percentage background tints (hover rows, zebra stripes, the progress
+    track) are state tinting rather than structure, and the checkbox / radio box edge stays heavier on purpose,
+    because an unfilled interactive target has to read as an affordance.
+
+    A source guard in `tests/tokens.contrast.test.ts` now fails if a component hand-rolls a structural mix
+    again, with the checkbox / radio exception named in the test rather than left silent.
+
+### Patch Changes
+
+- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+  library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
+  future token with a better claim to the name) could collide with them silently. They are now
+  `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
+
+    Breaking only for markup that wrote or read those names directly. The rename spans three packages in one
+    commit, because the value is written by the headless composable (all three adapters), consumed by the
+    stylesheet, and forwarded by the styled SFC — a partial rename would have left the area painting its
+    fallback red.
+
+- 793b2e1: **Colour correctness sweep** — four defects where a colour could not reach the theme it was rendered
+  in. Every ratio below is a computed-style measurement in real Chromium over the full cascade, eight
+  skins × both themes, compositing each translucent layer onto what it actually sits on.
+
+    **Subtree theming really works now.** `.ori-theme_dark` / `.ori-theme_light` on a non-root element was
+    documented as supported and was half-wired. Custom-property substitution resolves where a property is
+    _declared_, not where it is used, so the derived tones written once in the bare `:root` rule froze to
+    the root theme and merely inherited into a themed region: a dark region on a light page rendered its
+    body text at **1.03:1**, and a light region on a dark page rendered ink at **1.13:1**, the danger tone
+    at **2.06:1** and the primary tone at **1.53:1** — while keeping the dark theme's heavy shadows over a
+    white surface. The six role `-text` clamps and the neutral `--ori-color-text` default now live in one
+    derived block selected by `:root, :root.light, .ori-theme_light`, `--ori-color-text` is re-declared in
+    the dark block, and the elevation shadows gained the same light selector. One block per theme, not two
+    copies of twenty lines — the duplication is what let the two halves drift apart in the first place.
+    All eighteen readings across page / dark-subtree / light-subtree now pass at 7.61:1 or better.
+
+    **Three blocks baked literal colours no theme could reach.** The tooltip chip was the neutral ramp, so
+    it measured **1.04–1.11:1** against the dark page it floated over — a chip invisible against its own
+    backdrop, contradicting the comment above it. It now reads the page inverted (`--ori-color-on-background`
+    on `--ori-color-background`), which is a contrast-checked pairing by construction: **13.89:1**. The
+    avatar's `#00000018` tint was a black veil that vanished on a dark page; it derives from the ambient ink
+    like every other structural neutral. The switch thumb was `#ffffff`: **1.85–2.15:1** against the off
+    track in light, and **1.13–2.98:1** against the on track in dark. The thumb is the state indicator and
+    the track changes colour between states, so no single thumb colour can clear WCAG 1.4.11's 3:1 bar for
+    both — it now pairs with its own track (the ink when off, `--ori-color-on` when on, which is the
+    contrast-checked partner of the `--ori-color` the track paints). Worst reading is now 4.91:1.
+
+    **The invalid-control border was the failing contrast one axis over.** `border-color:
+var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea measured **2.08–2.85:1**
+    on the dark surfaces, under the 3:1 minimum for a UI-component boundary; the focus ring beside it had
+    the same problem. Status roles are shared by both themes — one hue, no `-dark` source — so the raw role
+    is only ever tuned as a fill on the light surface and has nothing to adapt with. Both now read
+    `--ori-color-danger-text`, the same hue with its lightness clamped per theme, which is the precedent the
+    outline variant already set. Worst reading is now 6.53:1.
+
+    **One mechanism for the structural hairline.** `.ori-surface_bordered` derived its 12% hairline from
+    `--ori-color-on-surface` while the menu, popover and combobox listbox derived the same hairline from
+    `currentcolor`. Surface now matches them. It renders byte-identically today (verified across all
+    sixteen skin/theme combinations) — the point is that one job stops having two answers, and the hairline
+    follows a `color` the consumer sets. No new public token: naming a neutral/structural token is an API
+    decision, and `currentcolor` already adapts to theme, skin and ambient colour without one.
+
+    Three new guards in the unit suite keep these closed, each with a self-check so a guard that stopped
+    seeing anything cannot pass silently: a theme-shared status role may not be painted as a border,
+    outline or focus ring (the four per-theme roles still may, so the colour picker's primary outline stays
+    legitimate); whatever the dark theme rule declares, the light rule declares too; and a token deriving
+    from a theme-varying token must itself be theme-scoped. "Theme-varying" is discovered from the
+    stylesheet, never hand-listed. Against the pre-fix files the guards report 3 failures and 6 offending
+    declarations; after, none.
+
+- 983b821: **The combobox "no results" message now meets AA.** `.ori-combobox__empty` faded on-surface text with
+  `opacity: 0.6`, which measured **3.69:1** at worst (sumi, light) — below the WCAG 1.4.3 minimum for body
+  text. Unlike a placeholder or a disabled option, an empty-state message is real informational content, so
+  the exemption for disabled and decorative elements does not apply to it.
+
+    It now carries `opacity: 0.7`, the same fade a field hint uses, measuring **4.87:1** at worst. Found by the
+    extended real-Chromium contrast guard on its first run over form controls, and the cell is now asserted in
+    that matrix rather than only printed.
+
+- 04c63bf: **CSS layer: the modifier vocabulary goes flat — 106 `.ori-x.ori-x_y` compounds collapse to one class.**
+
+    REVIEW.md has always set the bar ("specificity stays flat — `:where()`, no `.a.a_b` stacking") and the
+    component layer broke it 106 times, across 22 files. The cause was structural rather than sloppy: each
+    block declared its baked token defaults in the very same `.ori-input { … }` rule (0,1,0) that carried
+    its layout, so a single-class modifier could never outrank it, and `input.css` said so out loud
+    ("Compound with the block so it beats the baked `md` default by specificity").
+
+    So the baked defaults move out into a companion `:where(.ori-input) { … }` rule at (0,0,0) — declaring
+    a custom property on the element still beats inheritance at any specificity, so a nested block keeps
+    reading its own value — and every modifier is now a single class: `.ori-input_lg`, `.ori-card_fluid`,
+    `.ori-toaster_top-left`, `.ori-surface_elevation-md`. The vocabulary finally matches the
+    `.ori-size-action_*` utilities it was written to mirror, and the modifiers still win on **specificity**
+    rather than on source order.
+
+    **This is a behavioural change for one audience, and it is deliberate.** Every modifier selector drops
+    from (0,2,0) to (0,1,0), so a rule you wrote to beat one needs one less class. Nothing changes for the
+    common case — an unlayered consumer stylesheet still outranks the whole library by layer order, and
+    `@oriui/vue` emits exactly the same class names — but an override that lives _inside_ `@layer` and was
+    sized against the old (0,2,0) now ties or wins where it used to lose. Pre-1.0 is the moment to pay for
+    that; after 1.0 it is a major-version event.
+
+    **Proof that nothing else moved:** every component in the reset-independence fixture was rendered once
+    per modifier class, in four theme selectors (bare `:root`, `:root.dark`, `:root.light`,
+    `.ori-theme_dark`) × LTR and RTL × page-level and subtree-themed regions, against the before and after
+    builds in real Chromium — 16,016 element renders, 9,549,488 computed-property readings, **0
+    differences**. A control run that seeded two regressions into the same harness reported 472.
+
+    One selector genuinely did change a cascade outcome and was fixed rather than skipped:
+    `.ori-toaster:dir(rtl)` is (0,2,0), so once the corner modifiers flattened to (0,1,0) the direction
+    default started beating them and a corner-pinned toaster slid in from the wrong edge under `dir="rtl"`
+    — the exact regression the control run reproduces. Both arms of that default now sit in `:where()`, so
+    the corners outrank them by specificity instead of by source order, which is what the file's own
+    comment had been relying on all along.
+
+    **The variant vocabulary's interactive half is no longer button-only.** Ten rules in `ori.utilities`
+    named `.ori-button` outright, so `.ori-variant_*` gave a consumer's own block the base cluster and the
+    generic `[data-active]` tint but no `:hover` / `:active` — two thirds of a vocabulary. They now read
+    `:where(.ori-button, [data-ori-interactive])`, so an element opts in with `data-ori-interactive` and
+    gets the whole thing. `:where()` keeps the hook free, so a button computes identical values at rest,
+    on hover, on `:active` and under `[data-active]` in all five variants and both themes (measured), and
+    an element _without_ the attribute is still untouched. The rules stay in `ori.utilities` on purpose:
+    they move `--ori-variant-bg-color`, and that layer outranks `ori.components`, so the same rules moved
+    into a block file could never win.
+
+    **Eleven more dead `var(--ori-color, …)` fallbacks are gone** — from `accordion`, `menu`, `popover` and
+    `tabs`, finishing the sweep the slider and colour-picker blocks started. `--ori-color`, `--ori-color-on`
+    and `--ori-color-text` are all declared unconditionally at `:root`, so the fallback arm can never fire.
+    Eight of the eleven were also misleading: `accordion` and `tabs` bake the primary accent in their own
+    block, so the `currentcolor` those arms advertised was never what would resolve — measured, the
+    accordion chevron and the tabs indicator paint `rgb(3, 105, 161)` in light and `rgb(56, 189, 248)` in
+    dark where the fallback claimed the page ink. The remaining three (`menu` ×2, `popover`) bake no accent,
+    so they were merely redundant. A component that needs its own default declares a block-local token, the
+    way `--ori-tooltip-bg` and `--ori-checker-*` already do.
+
+    Net effect on the bundle: `styles.css` loses 798 bytes raw and 29 bytes gzipped.
+
+- 793b2e1: **CSS layer: token hygiene, plus the two places the paint ignored the writing direction.**
+
+    **`.ori-shadow` is removed.** The library's only shadow class hardcoded two literal `rgb(0 0 0 / …)`
+    layers, so it was not theme-aware, carried no value suffix, and could never grow the `_sm`/`_md`/`_lg`
+    siblings that `--ori-shadow-{sm,md,lg,ring}` (themes/\_themes-elevation.css) has had all along. It
+    appeared in no component, no doc page and no test, so there is no compat story to preserve and
+    freezing an off-axis public class into 1.0 is the worse trade. Read the elevation tokens in your own
+    `box-shadow` instead. `.ori-safe-area*` is untouched.
+
+    **The slider's painted track now follows the engine under RTL.** Chromium reverses a native
+    `<input type=range>` when the direction is RTL — a click a quarter in from the physical left resolves
+    to a value ≥ 50 — but every author-drawn track still painted `to right`, so the fill, the hue spectrum
+    and the alpha ramp all sat on the opposite side from their own thumb. The axis is now a
+    `--ori-slider-axis` knob that a `.ori-slider:dir(rtl)` rule repoints, and all three tracks read it.
+    Measured in real Chromium (`e2e/rtl.spec.ts` samples the painted pixels, since Chrome does not report
+    author styles for `::-webkit-slider-runnable-track`); the spec's deliberate `test.fail` is now a real
+    assertion, and the hue and alpha tracks are pinned alongside it.
+
+    **A toast now enters off the edge its toaster is pinned to.** `transform: translateX(20px)` slid every
+    toast in from the right whatever the corner and whatever the direction. The offset comes from
+    `--ori-toast-enter-x`, which each corner modifier sets physically — the corner names a _screen_ corner
+    and deliberately does not mirror — so left corners enter from the left, right corners from the right,
+    and a centred toaster does not slide sideways at all. Only a corner-less `.ori-toaster` has no edge to
+    follow, so that one case reads the writing direction.
+
+    **`--ori-card-padding`** joins the local-token idiom (`--ori-tooltip-radius`, `--ori-color-picker-radius`).
+    `.ori-card` pinned its outer padding straight to the raw `--ori-size-gap_xl` scale token while reading
+    the `--ori-size-gap` alias for its own rows, so the card's inset could not be retuned without moving
+    the whole gap scale. Same computed default (16px), one knob.
+
+    **`--ori-checker-1` / `--ori-checker-2` are now declared on `.ori-slider` as well**, not only inside
+    `.ori-color-picker`. `.ori-slider .ori-slider_alpha` is reachable without a colour picker, and a block
+    must not read a token another block owns: a standalone alpha slider fell through to the hardcoded
+    `#c8c8c8`/`#fff` grid, which is glaring on a dark page. It now gets the same theme-derived mid-neutrals
+    the picker does. Nested inside a picker nothing changes.
+
+    **Dead `var(--ori-color, …)` fallbacks are gone** from the slider and colour-picker blocks.
+    `--ori-color` is declared unconditionally at `:root` as `currentColor`, so the fallback arm could never
+    fire — and the ones that named a colour were also misleading: an alpha track with no inline colour
+    paints the **primary accent**, and an unset swatch paints **`currentcolor`** (white here, via the
+    swatch's own `color`), never the `#000000` the fallback advertised. `--ori-ink` and `--ori-hue` keep
+    their fallbacks: nothing declares those globally, so those arms are live.
+
+- 9d35ee8: Drop the legacy `.ori-variant` base class. oriUI's token axes are single-class — a block class plus
+  one value class (`ori-button ori-variant_tonal`) — and the `.ori-color` axis already shipped without a
+  paired base. `.ori-variant` was the last survivor of the older `base + modifier` model, and it was not
+  an inert opt-in: it lives in `ori.utilities`, which by layer order outranks the per-axis defaults a
+  block bakes into `ori.components`, so its `--ori-variant-bg-color: transparent` **stripped the fill of
+  any block it was added to**. In real Chromium, `<button class="ori-button ori-variant">` painted
+  `rgba(0,0,0,0)` with a `currentColor` label instead of the filled primary — also silently bypassing
+  the AA-checked `--ori-color-on` pairing, since the cluster's `--ori-variant-text-color` fell back to
+  `currentColor`.
+
+    Removing the rule is strictly a fix, not a break. Nothing in the library applied the class, and the
+    legacy paired form keeps rendering exactly as before: `ori-variant ori-variant_fill` already resolved
+    through `.ori-variant_fill` (same specificity, later in source order), so with the base gone the bare
+    class simply matches nothing and becomes the true no-op it was assumed to be. Markup that used
+    `ori-variant` alone stops losing its background and now renders like the bare block.
+
+    A new source-level guard (`tests/css.utilities.test.ts`) walks every stylesheet under
+    `packages/css/src` and fails if a bare `.ori-variant` or `.ori-color` rule reappears, so the paired
+    model cannot creep back in; a companion assertion keeps the five single-class variant utilities in
+    place so the guard can't be satisfied by deleting the file.
+
+- f36d7bd: The form blocks' **error message and required marker** now paint `--ori-color-danger-text`, not the raw
+  `--ori-color-danger` role. The role token is tuned as a fill BACKGROUND (saturated, paired with a
+  `--ori-color-on-danger` ink); painted straight onto the surface as body text it measured ~2.4:1 on the
+  dark surface (~2.9:1 on the dark page) — below the WCAG AA 4.5:1 the library advertises, and against the
+  project's own rule that a role is never body text. Because the status hues are shared across themes, the
+  dark theme was the failing case in every skin. Ten declarations across `field`, `input`, `select`,
+  `textarea` and `combobox` (`.ori-*__error` and `.ori-*__required`) now read the AA-safe tone that the
+  non-fill button variants, the selected tab, Alert, Tag and Link already used. It is the same hue and
+  chroma with only lightness clamped, so the marker still reads as the same red — slightly darker in light,
+  legible in dark.
+
+    Non-text axes are unchanged: the invalid-state `border-color` and focus ring still ride the raw role
+    (WCAG 1.4.11, a separate axis).
+
+    `tests/tokens.contrast.test.ts` gains a source-derived guard so this cannot silently reopen. The existing
+    pairings walk a closed role/on-role list, which structurally cannot see a role used as a foreground; the
+    new check reads every stylesheet in the css package and fails on any `color` declaration — or any
+    `--ori-color-text` / `--ori-variant-text-color` hand-off — fed a raw role token, naming the offending
+    `file:line`.
+
+- 9c3cf30: Fix what the published tarballs actually contain:
+
+    - **Ship the MIT license.** All three declared `"license": "MIT"` but no tarball carried the text — the
+      LICENSE lived only at the repo root, which npm never reaches into. Each package now has its own copy
+      (npm always includes a package-root `LICENSE`, so no `files` change was needed).
+    - **Ship the changelog.** `CHANGELOG.md` is not part of npm's always-included set, so the changelog
+      changesets generates every release never left the repo. It is now listed in `files`.
+    - **`@oriui/css` ships `dist` only.** It was shipping 52 source files nothing could reach: unlike
+      `@oriui/vue` / `@oriui/headless`, whose dist source maps resolve into `src`, the css package emits no
+      maps and every export resolves inside `dist`. The tarball drops from 93 files / 63.4 kB to 43 / 33.2 kB.
+
+- 793b2e1: Fix what the three manifests promise an installer:
+
+    - **`@oriui/vue` takes its siblings as peers, not exact `dependencies`.** The exact pin looked like it
+      guaranteed a matching CSS/component pair and could not: `npm i @oriui/vue@alpha.17 @oriui/css@alpha.16`
+      exited 0 with alpha.16 on top and an unreachable alpha.17 nested inside `@oriui/vue` — new components
+      rendering against old CSS, plus a duplicated module graph around `@oriui/headless`'s process-wide
+      singletons, with no warning anywhere. As `peerDependencies` (`+ devDependencies` for the repo build)
+      npm hoists one copy or refuses with `ERESOLVE` naming the conflict. npm 7+ auto-installs peers, so
+      `npm i @oriui/vue` still brings all three at the right versions — only the mismatch case changes, from
+      silent to loud. The ranges stay pinned to the exact lockstep version until 1.0, since `^` cannot match
+      a prerelease.
+    - **Node engine floors say what they mean.** `@oriui/vue` published `>=22.18.0`, copied from the tsdown
+      build toolchain — a build requirement, not a runtime one. Both packages that ship executable JS now
+      declare `">=22"`, the supported Node line; `@oriui/css` declares none, because a stylesheet has no
+      runtime.
+    - **Every package rebuilds on `prepack`.** `dist` is gitignored and untracked, and nothing but the root
+      `release` script put a build inside a publish — so the manual `npm publish` path documented in
+      RELEASING.md could ship an empty package from a clean checkout. `prepack` runs for both `npm pack` and
+      `npm publish`, which makes the build unskippable whichever command is typed.
+
+- e8265d6: **RTL fixes.** Three blocks laid out with physical properties, so they broke under `dir="rtl"`. Now measured by a new real-Chromium geometry guard (`e2e/rtl.spec.ts`) that renders the same markup in both directions.
+
+    - **Switch** — the thumb travels on the inline axis via `transform`, which has no logical form, so the checked thumb kept moving physically right in RTL and left the track entirely (measured: 13px outside a 35px track). It now mirrors its travel under `:dir(rtl)`, the same shape as the badge's existing floating-corner rule.
+    - **Tabs** — the vertical tab list drew its separator with `border-right`, i.e. on its outer edge in RTL, while the selected-tab indicator already used `inset-inline-end`; the two landed on opposite edges. The rule is now `border-inline-end`, so it stays the panel-facing edge in both directions.
+    - **Divider** — the vertical divider's rule is now `border-inline-start` rather than `border-left`. Intent-only: the pseudo is a zero-width box, so it occupies the identical slot either way.
+
+    No API or class-name change; LTR rendering is byte-identical.
+
+- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
+  came in from a consumer's outbound queue rather than from the library's own review, which is the first time
+  that path produced fixes.
+
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
+    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
+    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    fails if the compensation is ever removed. A leading icon deliberately stays in flow.
+
+    `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
+    queue forced `true` onto everything it enqueued, so the component default was unreachable and a caller who
+    said nothing got a dismiss button anyway. The queue now leaves the option alone — with one exception it is
+    worth keeping: a toast with `duration: 0` never auto-dismisses, so it opts itself in rather than becoming
+    impossible to remove.
+
+    Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
+    once at your call sites). The behaviour change is visible, not silent.
+
+- 793b2e1: **The toggle-button contract, and three states that only looked real.**
+
+    **`OriButton` gains `pressed`** — the toggle STATE (`aria-pressed`), next to the existing `active`,
+    which stays what it always was: a forced `:active` LOOK (`data-active`). Like `OriToolbarButton`'s
+    `pressed` and `OriDialog`'s `open`, it defaults to `undefined` rather than `false`, so a plain action
+    button renders no `aria-pressed` at all. Before this, a toggle built on `OriButton` announced nothing
+    to assistive technology, and the toolbar's own `aria-pressed` wiring is unchanged (it passes the
+    attribute through, which still wins over the new binding).
+
+    **The pressed look is no longer gated behind `.ori-toolbar`.** It moves from `toolbar.css` into
+    `button.css` and is now keyed on the button alone, so any toggle gets it. It is deliberately NOT the
+    flat ungate that suggests itself: a literal `background-color` on `.ori-button[aria-pressed='true']`
+    beats the variant token and repaints `fill` and `tonal` toggles with a neutral grey (measured in
+    Chromium: a pressed `fill` button went from `rgb(3, 105, 161)` to an 18% near-black tint). Instead the
+    universal affordance is an inset hairline in `currentcolor` — no variant touches `box-shadow`, and the
+    button's own label colour is contrast-paired with whatever background sits under it — and the neutral
+    tint is added only for `text` / `plain` / `outline`, the three variants whose background is
+    transparent. A toolbar button (`variant="text"` by default) renders exactly the same tint it did
+    before; `fill` and `tonal` toolbar toggles stop being flattened. A source-level test fails if the rule
+    is re-gated behind an ancestor, or if a pressed background ever reaches a variant that owns its own.
+
+    **`<OriCard disabled>` is now `inert`.** It used to be `aria-disabled` on a role-less `<div>` plus
+    `pointer-events: none` — announced to nobody (a role-less `<div>` is `role=generic`) and no obstacle
+    at all to the keyboard: buttons and links inside stayed focusable and Enter-activatable. With `inert`
+    (Baseline 2024) Chromium drops the whole subtree from the accessibility tree, refuses focus and
+    refuses hit-tested clicks. `aria-disabled` stays as the CSS-layer styling hook.
+
+    **`loading` on a non-`button` `OriButton`** (`as="a"`, a router link) no longer relies on
+    `pointer-events: none`, which never stopped the keyboard — Enter on a focused link still navigated.
+    It now renders `aria-disabled="true"` and blocks activation with the same capture-phase guard
+    `OriToolbarButton` already uses. The control stays focusable and simply refuses, and a real `<button>`
+    is untouched (its `disabled` attribute stops the event at the source).
+
+    **Checkbox / switch / radio dim from the real control state.** Their disabled look was driven only by
+    a prop-driven modifier class, so a control disabled by a surrounding `<fieldset disabled>` — or by a
+    hand-written `disabled` attribute in the CSS layer — was inert but rendered fully enabled. The
+    stylesheets now also match `:has(<input>:disabled)`; the modifier class stays for compatibility.
+
 ## 1.0.0-alpha.17
 
 ## 1.0.0-alpha.16
