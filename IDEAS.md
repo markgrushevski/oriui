@@ -229,6 +229,27 @@ general atomic set. Candidates that fit that rule:
 - ◽ **Theme / skin gallery** page · **framework-switch** examples (Vue ↔ Svelte) — ROADMAP phase 7.
 - 🧪 Tailwind v4 preset adapter · `@oriui/vanilla` (Zag) headless adapter for htmx / no-framework.
 
+- ⭐ **`oriui` CLI — one generator surface for humans _and_ AI agents** _(idea; shape undecided. The
+  original discussion was lost with a deleted transcript — this is the reconstruction.)_ The pitch: a
+  machine-readable, executable entry point to the library, so that "add a Combobox to my app" is a command
+  instead of a copy-paste out of the docs. Three shapes, in ascending ambition:
+    1. **registry / `add`** (the shadcn model) — `npx oriui add dialog` copies the SFC + its CSS block into
+       the consumer's repo. Suits people who want the code in their own tree; the cost is a second
+       distribution channel to keep in sync with the published package, and it pulls against the
+       "swap a layer, don't fork it" thesis.
+    2. **generator** — `npx oriui skin` / `oriui token` scaffolds a valid skin or token set and runs the
+       contrast check (`tests/tokens.contrast.test.ts` is already that engine); `oriui new component`
+       scaffolds SFC + CSS block + test + docs page for **contributors**, encoding the conventions
+       CLAUDE.md currently spells out in prose.
+    3. **agent surface** — the same binary as an MCP server / `--json` API exposing the component contract
+       (props, slots, tokens, BEM class names, a11y invariants), so an agent in a consumer project emits
+       correct markup without guessing. `/llms.txt` + `/llms-full.txt` are the static prototype of exactly
+       this; a CLI makes it queryable and versioned with the package.
+
+    **Open question to settle before writing any of it:** does this serve a real user (the library has one
+    consumer today), or is it the catalog-race trap in a new costume? Same bar as the rest of the project —
+    build it when a real screen needs it.
+
 ## Inspired by UnoCSS (integration / no-framework layer)
 
 oriUI is component-first with a standalone CSS layer; UnoCSS is an on-demand atomic engine. The overlap

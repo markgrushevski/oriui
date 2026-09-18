@@ -11,15 +11,19 @@ A layered **Vue 3** UI library — _prototype fast, scale without rewriting_. Th
 consumable layers woven around shared design tokens, so you can start with styled components and drop
 to headless behavior or raw CSS when you need control, without rewriting.
 
-| Package                                                        | Layer    | What you get                                                   |
-| -------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="tonal" />`         |
-| [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless composables for focus / keyboard / ARIA               |
-| [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework** |
+| Package                                                        | Layer    | What you get                                                         |
+| -------------------------------------------------------------- | -------- | -------------------------------------------------------------------- |
+| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="tonal" />`               |
+| [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless behavior for focus / keyboard / ARIA — Vue · Svelte · React |
+| [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework**       |
 
 Zero-runtime theming via CSS custom properties · no Tailwind dependency · **34 components** · WCAG-AA
 token contrast (executably tested) · fully typed · htmx / Astro / plain-HTML friendly through the CSS
 layer.
+
+The behavior layer ships **Vue, Svelte and React** adapters over one framework-agnostic core, and the
+CSS layer needs no framework at all — so oriUI's tokens and behavior travel to React / Next, SvelteKit,
+Astro or plain HTML, not just Vue.
 
 ## Install
 
@@ -27,11 +31,12 @@ layer.
 npm install @oriui/vue      # styled Vue components (pulls in @oriui/css + @oriui/headless)
 # or just the layer you need:
 npm install @oriui/css     # standalone CSS — no framework
-npm install @oriui/headless     # headless composables
+npm install @oriui/headless     # headless behavior (Vue / Svelte / React adapters)
 ```
 
-> **Alpha.** The line is `1.0.0-alpha.*` on the `alpha` dist-tag (and, pre-1.0, `latest` too) — `npm i @oriui/vue`
-> works today; APIs may still shift before `1.0.0`.
+> **Alpha.** The line is `1.0.0-alpha.*` and `npm i @oriui/vue` (the `latest` tag) works today; APIs may
+> still shift before `1.0.0`. Note that changesets' pre-mode leaves the `alpha` dist-tag lagging behind
+> `latest` — pin an exact version rather than installing `@alpha`.
 
 ## Use it — Vue
 
@@ -44,7 +49,25 @@ import { OriButton } from '@oriui/vue'
 <OriButton text="Save" variant="tonal" color="primary" size="lg" />
 ```
 
-## Use it — standalone CSS (htmx / Astro / Svelte / plain HTML)
+## Use it — React / Svelte (the behavior layer)
+
+The behavior is framework-agnostic at the core, with one thin adapter per framework — same state
+machines, same keyboard handling, same ARIA wiring; only the reactive wrapper differs.
+
+```tsx
+// React 18 / 19 — add 'use client' in the Next.js app router
+import { useDisclosure } from '@oriui/headless/react'
+
+const { open, triggerProps, contentProps } = useDisclosure()
+// <button {...triggerProps}>Toggle</button>
+// <div {...contentProps}>Panel</div>
+```
+
+Swap `/react` for `/svelte` to get the same surface back as Svelte stores. Style either one with the
+`.ori-*` classes below: `@oriui/css` is a plain stylesheet, so the whole design system works in a React
+or Next app today — no Vue anywhere in the tree.
+
+## Use it — standalone CSS (React / Next · htmx / Astro / Svelte / plain HTML)
 
 ```html
 <!-- same tokens, no Vue — one class repoints one token -->
