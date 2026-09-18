@@ -605,11 +605,13 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 
 ### ORI-I-67 — tests/token.test.ts — `observeTheme` fires-twice case is flaky under full-suite load
 
-`confirmed` · severity `should-fix` · source: observed while gating the Tier-0 branch, 2026-09-18
+`fixed` · severity `should-fix` · source: observed while gating the Tier-0 branch, 2026-09-18
 
 - **Where:** tests/token.test.ts:128
 - **What:** The MutationObserver case saw 1 of 2 expected callbacks once during a full `npm run test` (1075 ms), then passed on a re-run and passes every time in isolation. It is a timing flake, not a regression — but a flaky test in the gate erodes the meaning of a green run.
 - **Fix:** Give the assertion a longer `vi.waitFor` window, or drive the observer deterministically (flush the microtask queue after each mutation) rather than racing a wall-clock wait.
+
+- **Outcome:** fixed before the rc — a flaky gate makes a green run meaningless, and this one failed twice during release prep. Cause: a MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (60 files, parallel workers) the default 1s `vi.waitFor` window was a wall-clock race, not a statement about behaviour. The four waits in tests/token.test.ts now share a 5s/20ms window; the assertions are unchanged, so the test still fails if the observer never fires. Three consecutive full-suite runs are clean.
 
 ### ORI-I-68 — The invalid-control border is the same failing contrast, one axis over
 
