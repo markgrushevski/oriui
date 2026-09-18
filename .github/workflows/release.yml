@@ -46,17 +46,23 @@ jobs:
             - name: Install (npm ci — root + workspaces)
               run: npm ci
 
-            # Gate the publish on the same publish-correctness checks CI runs — otherwise a publint /
-            # build regression only fails the (separate, non-blocking) CI workflow while this one still
-            # publishes. `npm run release` builds again before publishing; this build is for publint.
-            - name: Quality gate
-              run: |
-                  npm run lint:ci
-                  npm run types
-                  npm run test:types
-                  npm run test
-                  npm run build
-                  npx -y publint@0.3.21 ./packages/css && npx -y publint@0.3.21 ./packages/headless && npx -y publint@0.3.21 ./packages/vue
+            - name: Install Playwright Chromium (for the e2e leg of the gate)
+              run: npx playwright install --with-deps chromium
+
+            # Gate the publish on the same checks CI runs — otherwise a regression only fails the
+            # (separate, non-blocking) CI workflow while this one still publishes. The gate is ONE root
+            # script, `npm run gate`, so the two workflows cannot drift the way they had by ORI-I-31:
+            # the list lives in package.json, and tests/packaging.test.ts fails if a check reachable
+            # from ci.yml is not reachable from here. `npm run release` builds again before publishing.
+            # ORI_SMOKE_IGNORE_SCRIPTS: the gate's own build step already produced the dist that the
+            # smoke leg packs, so skip the per-package `prepack` rebuild.
+            - name: Quality gate (lint → types → test → build → size → publint → attw → smoke → docs)
+              run: npm run gate
+              env:
+                  ORI_SMOKE_IGNORE_SCRIPTS: '1'
+
+            - name: Quality gate (e2e — real Chromium)
+              run: npm run test:e2e
 
             - name: Create Release PR or publish to npm
               uses: changesets/action@v1

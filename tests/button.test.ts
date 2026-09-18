@@ -1,4 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OriButton } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
@@ -61,6 +63,99 @@ describe('OriButton', () => {
         expect(el.getAttribute('data-active')).toBe('')
     })
 
+    // ------------------------------------------------------------------
+    // Toggle contract: `pressed` is the STATE (aria-pressed, announced), `active` is the LOOK
+    // (data-active, a forced :active). Before this, a standalone toggle had only the look — it
+    // announced nothing and painted the same pixels as :hover.
+    // ------------------------------------------------------------------
+
+    it('pressed renders aria-pressed (true and false are both real toggle states)', () => {
+        expect(mount(OriButton, { props: { text: 'x', pressed: true } }).attributes('aria-pressed')).toBe('true')
+        expect(mount(OriButton, { props: { text: 'x', pressed: false } }).attributes('aria-pressed')).toBe('false')
+    })
+
+    // Only holds because the SFC defaults `pressed = undefined`, opting out of Vue's absent-Boolean
+    // coercion — without it every plain action button would announce itself as an unpressed toggle.
+    it('omitting pressed renders no aria-pressed at all (plain action button)', () => {
+        expect(mount(OriButton, { props: { text: 'x' } }).attributes('aria-pressed')).toBeUndefined()
+    })
+
+    it('active is a look, not a state: it never implies aria-pressed', () => {
+        const el = mount(OriButton, { props: { text: 'x', active: true } }).element
+
+        expect(el.getAttribute('data-active')).toBe('')
+        expect(el.hasAttribute('aria-pressed')).toBe(false)
+    })
+
+    // OriToolbarButton / OriToolbarToggleItem pass aria-pressed as a fall-through ATTRIBUTE (the
+    // toggle item gets it straight from the headless prop bag). The new `:aria-pressed="pressed"`
+    // binding must not overwrite that with `undefined` — the exact failure mode ORI-I-13 recorded.
+    it('a caller-supplied aria-pressed attribute survives the pressed binding', () => {
+        const wrapper = mount(OriButton, { props: { text: 'x' }, attrs: { 'aria-pressed': 'true' } })
+
+        expect(wrapper.attributes('aria-pressed')).toBe('true')
+    })
+
+    // ------------------------------------------------------------------
+    // `loading` on a non-button `as`: no real `disabled` attribute exists to stop activation, and
+    // CSS pointer-events:none never stops the keyboard (Enter on a focused <a> navigates).
+    // ------------------------------------------------------------------
+
+    it('loading on as="a" marks the link aria-disabled and blocks activation', async () => {
+        const onClick = vi.fn()
+        const wrapper = mount(OriButton, {
+            props: { text: 'x', as: 'a', loading: true },
+            attrs: { href: '/somewhere', onClick }
+        })
+        const el = wrapper.element as HTMLAnchorElement
+
+        expect(el.tagName).toBe('A')
+        expect(el.getAttribute('aria-disabled')).toBe('true')
+        expect(el.getAttribute('aria-busy')).toBe('true')
+        // Still focusable — a loading control keeps its place in the tab order and simply refuses.
+        expect(el.getAttribute('tabindex')).toBeNull()
+
+        const event = new MouseEvent('click', { bubbles: true, cancelable: true })
+        el.dispatchEvent(event)
+
+        expect(onClick).not.toHaveBeenCalled()
+        expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('disabled on as="a" blocks activation too', () => {
+        const onClick = vi.fn()
+        const el = mount(OriButton, {
+            props: { text: 'x', as: 'a', disabled: true },
+            attrs: { href: '/somewhere', onClick }
+        }).element
+
+        const event = new MouseEvent('click', { bubbles: true, cancelable: true })
+        el.dispatchEvent(event)
+
+        expect(onClick).not.toHaveBeenCalled()
+        expect(event.defaultPrevented).toBe(true)
+    })
+
+    // The guard is scoped to non-button tags: a real <button> is stopped by the `disabled` attribute at
+    // the source, and an enabled button must keep firing its caller's handler. The scoping is not just
+    // tidiness — a capture listener bound unconditionally on the root swallows the caller's fall-through
+    // `onClick` on a real button, which is exactly what this test caught.
+    it('an enabled button still activates normally', async () => {
+        const onClick = vi.fn()
+        const el = mount(OriButton, { props: { text: 'x' }, attrs: { onClick } }).find('button').element
+
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('loading on a real button keeps the disabled attribute and adds no aria-disabled', () => {
+        const el = mount(OriButton, { props: { text: 'x', loading: true } }).element as HTMLButtonElement
+
+        expect(el.disabled).toBe(true)
+        expect(el.getAttribute('aria-disabled')).toBeNull()
+    })
+
     it('as="a" drops the button-only attrs and guards focus when disabled', () => {
         const el = mount(OriButton, { props: { text: 'x', as: 'a', disabled: true } }).element
 
@@ -100,5 +195,79 @@ describe('OriButton', () => {
         const wrapper = mount(OriButton, { props: { text: 'Save' }, attachTo: document.body })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
+    })
+})
+
+/**
+ * Source-level guard for the pressed LOOK (same shape as tokens.contrast.test.ts / css.entries.test.ts:
+ * it reads the shipped CSS, no build required). Two regressions are being held off at once, and they
+ * pull in opposite directions:
+ *
+ *  1. The look must not be gated behind a `.ori-toolbar` ancestor again — that is what left every
+ *     toggle button outside a toolbar with no pressed affordance (ORI-I-10 / ORI-I-41).
+ *  2. The obvious "just ungate it" edit — one flat `.ori-button[aria-pressed='true'] {
+ *     background-color: <neutral> }` — silently strips the role colour off every fill / tonal toggle
+ *     (ORI-I-61). A literal background beats `.ori-button`'s own `background-color:
+ *     var(--ori-variant-bg-color)` on specificity, so the pressed tint may only be applied to the
+ *     variants whose background is `transparent`.
+ */
+describe('the pressed look in @oriui/css', () => {
+    const componentsDir = resolve(process.cwd(), 'packages/css/src/components')
+    const strip = (file: string) => readFileSync(resolve(componentsDir, file), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+
+    // Every rule block whose selector list mentions [aria-pressed='true']. `[^{}]*` cannot cross a
+    // brace, so the selector capture stops at the enclosing @layer / @media opening brace.
+    const pressedRules = (css: string) =>
+        [...css.matchAll(/([^{}]*\[aria-pressed='true'\][^{}]*)\{([^{}]*)\}/g)].map((m) => ({
+            selectors: m[1]
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean),
+            declarations: m[2]
+        }))
+
+    const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_plain', '.ori-variant_outline']
+
+    it('button.css styles the pressed state on the button itself — no ancestor gate', () => {
+        const rules = pressedRules(strip('button.css'))
+
+        expect(rules.length).toBeGreaterThan(0)
+        for (const rule of rules) {
+            for (const selector of rule.selectors) {
+                expect(selector, `pressed rule re-gated behind an ancestor: ${selector}`).not.toContain('.ori-toolbar')
+                expect(selector).toContain('.ori-button')
+            }
+        }
+    })
+
+    it('the universal pressed affordance is an inset ring, which no variant can erase', () => {
+        const ring = pressedRules(strip('button.css')).find(
+            (rule) =>
+                rule.selectors.length === 1 &&
+                rule.selectors[0] === ".ori-button[aria-pressed='true']" &&
+                /box-shadow:\s*inset/.test(rule.declarations)
+        )
+
+        expect(ring, 'no unconditional inset box-shadow for [aria-pressed="true"]').toBeDefined()
+        // A ring is the only pressed declaration a fill / tonal button gets, so it must never be a
+        // background: `background-color` in the unconditional rule IS the ORI-I-61 regression.
+        expect(ring?.declarations).not.toMatch(/background-color/)
+    })
+
+    it('the pressed tint reaches only the variants whose background is transparent', () => {
+        for (const rule of pressedRules(strip('button.css'))) {
+            if (!/background-color/.test(rule.declarations)) continue
+
+            for (const selector of rule.selectors) {
+                expect(
+                    TRANSPARENT_VARIANTS.some((variant) => selector.includes(variant)),
+                    `pressed background on a selector that can match fill / tonal: ${selector}`
+                ).toBe(true)
+            }
+        }
+    })
+
+    it('toolbar.css no longer owns a pressed rule of its own', () => {
+        expect(strip('toolbar.css')).not.toContain('aria-pressed')
     })
 })

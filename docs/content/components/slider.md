@@ -24,6 +24,11 @@ map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-slider","type":"Block","description":"Required base class (wrapper div). Full-width by default."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-slider__label","type":"Part","description":"Flex row wrapping the visible label text and optional current value."},{"class":"ori-slider__value","type":"Part","description":"Current value badge inside the label row; tabular-nums, slightly dimmed."},{"class":"ori-slider__input","type":"Part","description":"The native <code>&lt;input type=range&gt;</code>; receives the inline <code>--ori-slider-pct</code> custom property."},{"class":"data-disabled","type":"State","description":"Set on the wrapper when <code>disabled</code> is true; dims the control and changes the cursor to not-allowed."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/slider.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Live demo
 
 Drag either handle to see `v-model` update in real time. The two sliders share no state — each

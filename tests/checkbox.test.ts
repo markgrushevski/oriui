@@ -1,7 +1,25 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OriCheckbox } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
+
+/**
+ * The selector list of a component stylesheet's "disabled look" rule — the one that sets
+ * `cursor: not-allowed`. Source-level, like tokens.contrast.test.ts: no build required.
+ */
+function disabledSelectors(component: string): string[] {
+    const css = readFileSync(resolve(process.cwd(), `packages/css/src/components/${component}.css`), 'utf8')
+    const rule = [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) =>
+        /cursor:\s*not-allowed/.test(m[2])
+    )
+
+    return (rule?.[1] ?? '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+}
 
 describe('OriCheckbox', () => {
     it('renders a real <input type="checkbox"> with the default classes', () => {
@@ -38,6 +56,24 @@ describe('OriCheckbox', () => {
 
         expect((wrapper.find('input').element as HTMLInputElement).disabled).toBe(true)
         expect(wrapper.classes()).toContain('ori-checkbox_disabled')
+    })
+
+    // The modifier class is prop-driven, so it is absent exactly when the control is disabled by
+    // something the prop knows nothing about — a surrounding `<fieldset disabled>`, or a hand-written
+    // `disabled` attribute in the CSS layer. That control was inert but rendered fully enabled.
+    // Drop the class from a really-disabled checkbox: the stylesheet must still dim it.
+    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+        const wrapper = mount(OriCheckbox, { props: { disabled: true, label: 'x' } })
+        const el = wrapper.element as HTMLElement
+
+        el.classList.remove('ori-checkbox_disabled')
+
+        const selectors = disabledSelectors('checkbox')
+        expect(selectors.length).toBeGreaterThan(0)
+        expect(
+            selectors.some((selector) => el.matches(selector)),
+            `no disabled-look selector matches a class-less disabled checkbox: ${selectors.join(', ')}`
+        ).toBe(true)
     })
 
     it('invalid flips aria-invalid', () => {

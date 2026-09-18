@@ -115,12 +115,13 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);
     }
 
+    /* The danger TONE, not the raw role — see input.css for the measurement and the precedent. */
     .ori-textarea__field[aria-invalid='true'] {
-        border-color: var(--ori-color-danger);
+        border-color: var(--ori-color-danger-text);
     }
 
     .ori-textarea__field[aria-invalid='true']:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger) 25%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger-text) 25%, transparent);
     }
 
     .ori-textarea__field:disabled {

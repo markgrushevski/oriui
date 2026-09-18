@@ -22,6 +22,11 @@ that drives variant tokens. Each part class maps to a structural element produce
 
 :class-table{:rows='[{"class":"ori-dialog","type":"Block","description":"The native <code>&lt;dialog&gt;</code> panel: max-width 460 px, rounded, surface-coloured. Its <code>::backdrop</code> pseudo-element is the dimmed overlay."},{"class":"ori-dialog__content","type":"Layout","description":"Padding wrapper inside the dialog that holds the header and body."},{"class":"ori-dialog__header","type":"Part","description":"Flex row — title on the left, close button on the right."},{"class":"ori-dialog__title","type":"Part","description":"<code>h2</code> heading; its <code>id</code> is wired to <code>aria-labelledby</code> on the dialog."},{"class":"ori-dialog__close","type":"Part","description":"Bare close button (<code>aria-label=Close</code>); styled via opacity."},{"class":"ori-dialog__body","type":"Part","description":"Body copy region below the header."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/dialog.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Anatomy
 
 The component renders its parts in this order:

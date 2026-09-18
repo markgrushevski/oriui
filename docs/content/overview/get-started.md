@@ -30,6 +30,11 @@ Import the stylesheet once, for example in your entry file:
 import '@oriui/css'
 ```
 
+That full bundle is the **default** — it carries the tokens, the utilities and every component block.
+Rendering only a handful of components? Import a foundation plus the blocks you use instead
+(`@oriui/css/base.css` + `@oriui/css/components/button.css`); the entry set is not one file per
+component, so see [à-la-carte imports](/guides/css) for which block ships where.
+
 That is all — components are themeable through design tokens, with light/dark and swappable
 skins out of the box. See them live on the [component pages](/components/button).
 

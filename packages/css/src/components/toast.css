@@ -14,6 +14,13 @@
     /* Portal container: fixed to a screen corner, ignores pointer events so it never blocks the
        page; the toasts themselves re-enable pointer events. */
     .ori-toaster {
+        /* Horizontal offset the toast enters from / leaves toward, read by the transition classes at the
+           bottom of this file. A toast should come in off the screen edge its toaster is pinned to, so
+           each corner modifier below sets the sign PHYSICALLY — the corner names a screen corner and
+           deliberately does not mirror with the writing direction (pinned by e2e/rtl.spec.ts). This bare
+           default is the one case with no corner to follow, so it follows the text direction instead. */
+        --ori-toast-enter-x: 20px;
+
         display: flex;
         position: fixed;
         z-index: 1000;
@@ -26,6 +33,12 @@
         gap: var(--ori-size-gap);
     }
 
+    /* Direction-relative default only. Equal specificity to the corner rules below (0,2,0), which come
+       later and therefore win — a corner-pinned toaster keeps its physical offset in both directions. */
+    .ori-toaster:dir(rtl) {
+        --ori-toast-enter-x: -20px;
+    }
+
     .ori-toaster > * {
         pointer-events: auto;
     }
@@ -34,19 +47,26 @@
         top: 0;
         right: 0;
         align-items: flex-end;
+
+        --ori-toast-enter-x: 20px;
     }
 
     .ori-toaster.ori-toaster_top-left {
         top: 0;
         left: 0;
         align-items: flex-start;
+
+        --ori-toast-enter-x: -20px;
     }
 
+    /* A centred toaster has no side to come from — it fades and settles vertically instead. */
     .ori-toaster.ori-toaster_top-center {
         top: 0;
         left: 50%;
         align-items: center;
         transform: translateX(-50%);
+
+        --ori-toast-enter-x: 0px;
     }
 
     .ori-toaster.ori-toaster_bottom-right {
@@ -54,6 +74,8 @@
         bottom: 0;
         flex-direction: column-reverse;
         align-items: flex-end;
+
+        --ori-toast-enter-x: 20px;
     }
 
     .ori-toaster.ori-toaster_bottom-left {
@@ -61,6 +83,8 @@
         left: 0;
         flex-direction: column-reverse;
         align-items: flex-start;
+
+        --ori-toast-enter-x: -20px;
     }
 
     .ori-toaster.ori-toaster_bottom-center {
@@ -69,6 +93,8 @@
         flex-direction: column-reverse;
         align-items: center;
         transform: translateX(-50%);
+
+        --ori-toast-enter-x: 0px;
     }
 
     .ori-toast {
@@ -155,8 +181,11 @@
         opacity: 1;
     }
 
-    /* TransitionGroup enter/leave — slide in from the side + fade; the leaving item is taken out of
-       flow so the rest slide up smoothly. */
+    /* TransitionGroup enter/leave — slide in off the toaster's own screen edge + fade; the leaving item
+       is taken out of flow so the rest slide up smoothly. The offset comes from --ori-toast-enter-x,
+       which the toaster sets (see the corner rules above): a left-pinned toaster no longer flies in from
+       the right, and a centred one does not slide sideways at all. `translateX` is physical, so the sign
+       is resolved once, at the toaster, rather than here. */
     .ori-toast-enter-active,
     .ori-toast-leave-active {
         transition:
@@ -166,7 +195,7 @@
 
     .ori-toast-enter-from,
     .ori-toast-leave-to {
-        transform: translateX(20px);
+        transform: translateX(var(--ori-toast-enter-x, 20px));
         opacity: 0;
     }
 

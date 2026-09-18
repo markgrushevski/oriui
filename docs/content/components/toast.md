@@ -17,6 +17,12 @@ show the look without triggering a notification.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-coloured left-border accent, elevation shadow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warn / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; coloured by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/toast.css`. `.ori-toast` and `.ori-toaster`
+both live in `toast.css` — there is no `toaster.css`. Import a foundation (`@oriui/css/base.css` or
+`@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`, `ori-size-radius_*`, …) live there, not
+in the component file. The full bundle `@oriui/css` is the default and already carries both; see [à-la-carte
+imports](/guides/css).
+
 ## Live demo
 
 Click a button to fire a real toast. The queue is shared: rapid-clicking stacks multiple

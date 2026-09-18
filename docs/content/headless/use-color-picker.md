@@ -99,6 +99,10 @@ The picker is assembled from the parts you spread its getters onto — exactly w
 visually-hidden range inputs, drive a slider off `hue` / `setHue`, feed the hex field through `setHex`,
 and render `presets` as the roving listbox.
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { ref, watch } from 'vue'
@@ -183,6 +187,8 @@ Passing `alpha: true` adds the alpha channel (bind a second slider to `alpha` / 
 `opaqueColor` for its track), and `eyedropper: true` enables `openEyeDropper` (gate its trigger on
 `cp.eyedropperSupported`) — see how the styled [`OriColorPicker`](/components/color-picker) wires both.
 
+#svelte
+
 The **Svelte** binding is the store twin (`@oriui/headless/svelte`) over the same core engine — the prop
 bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are **stores of functions**
 (`$getChannelInputProps('saturation')`, `$getPresetProps(color, i)`), and event handlers are lowercased
@@ -212,6 +218,8 @@ bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are
 <input type="range" min="0" max="359" value={$hue} on:input={(e) => cp.setHue(+e.currentTarget.value)} on:change={cp.commit} />
 <input value={$hex} aria-label="Hex color" on:blur={(e) => cp.setHex(e.currentTarget.value)} />
 ```
+
+#react
 
 The **React** binding (`@oriui/headless/react`) is the hooks twin over the same core engine — the control
 is **plain values** (no `$` / `.value`), the per-part getters are plain functions
@@ -279,6 +287,8 @@ function MyColorPicker({ presets }: { presets?: string[] }) {
     )
 }
 ```
+
+::
 
 Passing `alpha: true` / `eyedropper: true` behaves the same as in Vue (bind a second slider to
 `cp.alpha` / `cp.setAlpha`; gate the eyedropper trigger on `cp.eyedropperSupported`, which is `false` on

@@ -157,6 +157,40 @@ describe('Svelte nativeDialog', () => {
         const noEsc = get(nativeDialog({ id: 'e', closeOnEscape: false }).dialogProps)
         expect(typeof noEsc.oncancel).toBe('function')
     })
+
+    // ORI-I-72: dialogProps was a `readable({…})` built once, so unlike the Vue (`computed`) and React
+    // (per-render) twins it could never see an option change. The Svelte contract takes a plain options
+    // object, so the reactive call style is a getter property — which only pays off if the bag is
+    // re-projected rather than frozen.
+    it('re-projects dialogProps, so an option read through a getter is not frozen at creation', () => {
+        let modal = true
+        const dlg = nativeDialog({
+            id: 'live',
+            get modal() {
+                return modal
+            }
+        })
+
+        expect(get(dlg.dialogProps)['aria-modal']).toBe('true')
+
+        modal = false
+        dlg.setOpen(true)
+
+        expect(get(dlg.dialogProps)['aria-modal']).toBeUndefined()
+    })
+
+    it('emits a fresh dialogProps to live subscribers on every open change', () => {
+        const dlg = nativeDialog({ id: 'sub' })
+        const seen: unknown[] = []
+        const stop = dlg.dialogProps.subscribe((bag) => seen.push(bag))
+
+        dlg.setOpen(true)
+        dlg.setOpen(false)
+        stop()
+
+        expect(seen).toHaveLength(3)
+        expect(seen[0]).not.toBe(seen[1]) // re-projected, not the one frozen object handed out forever
+    })
 })
 
 describe('Svelte useCombobox', () => {

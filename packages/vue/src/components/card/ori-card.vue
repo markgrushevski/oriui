@@ -3,6 +3,15 @@ import type { RadiusSize, ThemeColor, Variant } from '../../types'
 import { OriAvatar } from '../avatar'
 import { OriIcon } from '../icon'
 
+// `disabled` is enforced with `inert`, not with `pointer-events: none` alone. A card is a plain
+// role-less container, so `aria-disabled` on it is inherited by nothing and announced to no one
+// (a role-less <div> is `role=generic`, which supports global ARIA attributes only) — the buttons
+// and links inside stayed tab-focusable and Enter-activatable. `inert` (Baseline 2024, the same
+// tier as the native <dialog> and anchor positioning this library already builds on) blocks the
+// pointer AND the keyboard AND removes the subtree from the accessibility tree, which is what the
+// docs always claimed. `aria-disabled` stays as the CSS-layer styling hook (card.css dims from it,
+// and a hand-written card that adds a role still needs it).
+
 const {
     color = 'surface',
     radius = 'lg',
@@ -42,6 +51,7 @@ const {
         ]"
         :aria-disabled="disabled ? 'true' : undefined"
         :aria-busy="loading ? 'true' : undefined"
+        :inert="disabled || undefined"
     >
         <slot>
             <div

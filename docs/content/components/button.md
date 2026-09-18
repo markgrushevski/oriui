@@ -21,6 +21,11 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/button.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 The non-fill variants (`tonal` / `outline` / `text` / `plain`) paint the label with the AA-safe
 `--ori-color-text` tone rather than the raw role; `fill` keeps `--ori-color-on` for its solid
 background — see [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
@@ -220,7 +225,15 @@ text button is never forced into a square.
 
 ## States
 
-`active` paints the pressed look (`data-active`); `disabled` is the real attribute.
+`active` and `pressed` are different things, and the difference is the whole toggle contract.
+
+`active` paints a forced `:active` **look** (`data-active`) and announces nothing — use it for a transient
+highlight. `pressed` is the toggle **state**: it renders `aria-pressed`, so assistive tech reports the
+button as on or off, and it paints the pressed affordance (a tint plus an inset ring) on the button itself,
+with no toolbar ancestor required. Omit `pressed` entirely on a plain action button — binding it to `false`
+is a claim that the control is a toggle that happens to be off.
+
+`disabled` is the real attribute.
 
 ::example
 :ori-button{text="Active" :active="true"}
@@ -325,7 +338,8 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'`              | `'left'`    | Icon placement around the label.                                                                               |
 | `loading`      | `boolean`                                             | `false`     | Shows a spinner, sets `aria-busy`, and blocks interaction.                                                     |
 | `disabled`     | `boolean`                                             | `false`     | Real `disabled` (button) or `aria-disabled` + `tabindex="-1"` (other tags).                                    |
-| `active`       | `boolean`                                             | `false`     | Pressed look via `data-active`.                                                                                |
+| `active`       | `boolean`                                             | `false`     | Forced `:active` LOOK via `data-active`. Not a toggle state — see `pressed`.                                   |
+| `pressed`      | `boolean`                                             | —           | Toggle STATE: renders `aria-pressed` and the pressed affordance. Omit it on a plain action button.             |
 | `fluid`        | `boolean`                                             | `false`     | Full-width (block) button.                                                                                     |
 | `as`           | `string \| Component`                                 | `'button'`  | Element or component to render (e.g. `'a'`, a router link).                                                    |
 

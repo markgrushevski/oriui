@@ -23,6 +23,12 @@ The block is a labelled control wrapping a positioned listbox popup. The input r
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-combobox","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-combobox_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · … (focus ring + highlight + selected accent)."},{"class":"ori-combobox__control · __input · __trigger · __clear · __listbox · __option · __empty","type":"Part","description":"control wrap / input / chevron / clear / popup / option / no-results."},{"class":"ori-combobox__label · __required · __hint · __error","type":"Part","description":"label / required-asterisk / helper / error."},{"class":"ori-combobox_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)."},{"class":"role=combobox · aria-expanded · aria-activedescendant · aria-selected · data-highlighted","type":"State","description":"real ARIA + data attributes, not classes."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/combobox.css`. The shared `.ori-anchored`
+placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Basic
 
 Pass `options` (`{ label, value, disabled? }[]`) and bind `v-model`. Type to filter; the list opens

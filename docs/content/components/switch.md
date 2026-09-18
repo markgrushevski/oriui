@@ -23,6 +23,11 @@ per axis, no base class needed. The Vue props in [Framework API](#framework-api)
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>&lt;label&gt;</code>."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>&lt;input type=checkbox role=switch&gt;</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"ori-switch_disabled","type":"State","description":"Added by the component when <code>disabled</code> is true; also sets the native <code>disabled</code> attribute on the input."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/switch.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Colors
 
 Every semantic color role. The track fill and the focus ring both use `--ori-color`.

@@ -56,6 +56,10 @@ object:
 Call `toast()` from anywhere, and render the queue once. The styled
 [`OriToaster`](/components/toast) does the rendering for you; to build your own, iterate `toasts`:
 
+::example
+
+#vue
+
 ```vue
 <!-- MyToaster.vue — render the queue (what OriToaster wraps) -->
 <script setup lang="ts">
@@ -83,6 +87,8 @@ success('Saved')
 error({ title: 'Upload failed', text: 'Try again', duration: 0 }) // 0 = stay until dismissed
 ```
 
+#svelte
+
 The **Svelte** binding is the same imperative API; `toasts` is a `readable` store you subscribe with `$`:
 
 ```svelte
@@ -100,6 +106,8 @@ The **Svelte** binding is the same imperative API; `toasts` is a `readable` stor
     </div>
 {/each}
 ```
+
+#react
 
 The **React** binding is the same imperative API; `toasts` is a **plain array** re-projected on every queue
 change via `useSyncExternalStore` (no `.value` / `$`). Because it is a hook, call `useToast()` inside a
@@ -135,6 +143,8 @@ function SaveButton() {
     )
 }
 ```
+
+::
 
 ## Accessibility
 

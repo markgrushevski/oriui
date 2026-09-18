@@ -96,19 +96,38 @@
         --ori-color-background: var(--ori-color-background-light);
         --ori-color-on-background: var(--ori-color-on-background-light);
 
+        /* Resolved component aliases — components read these, never the role tokens directly.
+           Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
+        --ori-color: currentColor;
+        --ori-color-on: currentColor;
+    }
+
+    /* ==========================================================
+       DERIVED light tones. Split out of the source-token rule above because custom-property
+       substitution resolves where a property is DECLARED, not where it is used: a `var()` written
+       in the bare `:root` rule freezes to :root's values and then merely INHERITS into a themed
+       subtree, so `.ori-theme_dark` on a non-root element got light-theme text. Every token whose
+       value is computed FROM another token therefore lives in a theme-scoped rule and is
+       re-declared per theme, so it re-resolves on the element that carries the theme class.
+
+       The selector is the LIGHT set — bare `:root` (the default theme), the explicit page class,
+       and the subtree class — rather than two blocks with the same twenty lines in each, which is
+       how the dark clamps and the neutral default drifted apart the first time.
+       ========================================================== */
+    :root,
+    :root.light,
+    .ori-theme_light {
         /* On-surface TEXT tone per role — the AA-safe foreground for the non-fill variants (outline /
            tonal / text), the selected tab, alert, tag, link. A role's hue is tuned as a fill BACKGROUND
            (bright / saturated + dark on-ink); as TEXT on the surface a bright role fails the 4.5:1 body-
            text bar. This is a DARKER-BUT-SATURATED shade of the SAME role: relative color keeps the role's
            hue + chroma and only clamps LIGHTNESS (light theme caps it dark, dark theme floors it light),
            so the text and the outline border read as the same colour as the fill — one hue, only lightness
-           varying, NOT the muddy desaturation a mix toward the neutral ink gives. Declared per theme (here
-           = light default; the .ori-theme_dark block below re-declares with the dark clamp) so it tracks
-           theme AND skin AND a brand's role override, at any nesting. Light caps L at 0.42, dark floors at
-           0.86 — the tightest bounds that clear WCAG AA (>= 4.5:1) for every role × skin × text kind incl.
-           the tonal hover/active tint (min ~4.55:1); verified in real Chromium by e2e/text-contrast.spec.ts.
-           Retune by
-           overriding --ori-color-<role>-text directly (at :root, per skin, or per instance). */
+           varying, NOT the muddy desaturation a mix toward the neutral ink gives. Light caps L at 0.42,
+           dark floors at 0.86 — the tightest bounds that clear WCAG AA (>= 4.5:1) for every role × skin ×
+           text kind incl. the tonal hover/active tint (min ~4.55:1); verified in real Chromium by
+           e2e/text-contrast.spec.ts. Retune by overriding --ori-color-<role>-text directly (at :root, per
+           skin, or per instance). */
         --ori-color-primary-text: oklch(from var(--ori-color-primary) min(l, 0.42) c h);
         --ori-color-secondary-text: oklch(from var(--ori-color-secondary) min(l, 0.42) c h);
         --ori-color-success-text: oklch(from var(--ori-color-success) min(l, 0.42) c h);
@@ -116,16 +135,11 @@
         --ori-color-danger-text: oklch(from var(--ori-color-danger) min(l, 0.42) c h);
         --ori-color-info-text: oklch(from var(--ori-color-info) min(l, 0.42) c h);
 
-        /* Resolved component aliases — components read these, never the role tokens directly.
-           Default currentColor keeps non-skinned usage (avatar, icon) sensible. */
-        --ori-color: currentColor;
-        --ori-color-on: currentColor;
         /* Non-fill / selected TEXT foreground. Role tones are delivered by the `.ori-color_*` utility
            (which sets this on the element) AND by each block that bakes a role — button / tabs / tag /
            combobox bake `--ori-color-text: var(--ori-color-primary-text)`, alert bakes the info tone. This
-           `:root` default is NOT a role derive: a `var(--ori-color)` here would freeze to :root's
-           currentColor (custom-property substitution resolves where the property is DECLARED, not where
-           it's used), so it can't track a block-baked `--ori-color`. It therefore serves only truly bare
+           default is NOT a role derive: a `var(--ori-color)` here would freeze to the theme element's
+           currentColor, so it can't track a block-baked `--ori-color`. It therefore serves only truly bare
            usage (no role, no utility) — the neutral surface ink, always AA. */
         --ori-color-text: var(--ori-color-on-surface);
     }
@@ -166,6 +180,10 @@
         --ori-color-warn-text: oklch(from var(--ori-color-warn) max(l, 0.86) c h);
         --ori-color-danger-text: oklch(from var(--ori-color-danger) max(l, 0.86) c h);
         --ori-color-info-text: oklch(from var(--ori-color-info) max(l, 0.86) c h);
+        /* The neutral default has to be re-declared here for the same reason the clamps are: declared
+           only in :root it substitutes to the LIGHT ink once and then inherits, so a `.ori-theme_dark`
+           subtree read dark-on-dark. */
+        --ori-color-text: var(--ori-color-on-surface);
     }
 
     /* Preset skins (Sumi 墨, Indigo, Tech, Health, Luxury, Neutral, Cyber) live in

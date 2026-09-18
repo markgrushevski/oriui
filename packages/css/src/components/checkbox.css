@@ -26,7 +26,14 @@
         cursor: pointer;
     }
 
-    .ori-checkbox.ori-checkbox_disabled {
+    /* Disabled reads from the REAL control state, not only from the prop-driven modifier class. A
+       checkbox can be disabled without anyone setting that class — `<fieldset disabled>` disables
+       every control inside it, and a CSS-layer consumer writes the `disabled` attribute by hand —
+       and in both cases the control was inert but rendered fully enabled. `:has()` is what lets the
+       label dim from its own input's state (the modifier class stays for compatibility and for
+       anyone overriding it). */
+    .ori-checkbox.ori-checkbox_disabled,
+    .ori-checkbox:has(.ori-checkbox__input:disabled) {
         opacity: 0.55;
 
         cursor: not-allowed;

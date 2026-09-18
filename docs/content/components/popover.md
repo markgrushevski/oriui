@@ -26,6 +26,12 @@ surface tokens.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-popover","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg. Composed with .ori-anchored for placement; requires the native popover attribute for top-layer + light-dismiss."},{"class":"ori-anchored","type":"Placement base","description":"Shared floating-panel placement primitive — position:fixed + position-anchor + collision flip. Add alongside the surface class."},{"class":"ori-anchored_<side>","type":"Placement","description":"top / bottom / left / right of the trigger, centered on the cross axis."},{"class":"ori-anchored_<side>-start / -end","type":"Placement","description":"Same four sides, aligned to the trigger's start / end edge instead of centered (logical, RTL-aware)."},{"class":"--ori-anchored-gap","type":"Custom prop","description":"Gap between trigger and panel on the facing side. Default 0.25rem."},{"class":"--ori-anchor","type":"Custom prop","description":"The anchor-name linking the panel to its trigger; set per-instance by the component (or by you in plain HTML)."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/popover.css`. The shared `.ori-anchored`
+placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Basic
 
 Open the popover and observe it track the trigger with no JS positioning — the panel is a `[popover]`

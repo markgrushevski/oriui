@@ -7,6 +7,11 @@ these choices lives in [DECISIONS.md](DECISIONS.md); the coding conventions and 
 Prerequisites: **Node ≥ 22.18** (the tsdown build toolchain; Node 20 is EOL) and npm. The repo uses **npm workspaces** —
 a single root `npm install` wires the `docs/` and `packages/*` workspaces.
 
+That floor is the **build** requirement and lives only in the root (private) `package.json`. What the
+published packages ask of a consumer is a separate, looser claim: `@oriui/vue` and `@oriui/headless`
+declare `"node": ">=22"` — the supported Node line, not tsdown's patch-level minimum — and `@oriui/css`
+declares none, because a stylesheet has no runtime. `tests/packaging.test.ts` holds that distinction.
+
 ## Branching
 
 `main` is an **always-green trunk** — every commit on it is releasable, and the docs site
@@ -40,7 +45,12 @@ author **Leonid**, **no `Co-Authored-By` trailer**, and grouping into reasonably
 
 A husky **pre-commit** hook runs `npm run build` + `lint-staged` on every commit, so a commit
 fails fast if the build or formatting breaks. CI (GitHub Actions) re-runs the gate on every push
-to `main` and every PR: `lint:ci → types → test → build` across Node 22 and 24.
+to `main` and every PR: `lint:ci → types → test:types → test → build` across Node 22 and 24, then
+`size → publint → attw → smoke → docs:build` once, plus the Playwright e2e in real Chromium.
+
+That whole list is also one script, **`npm run gate`** — which is what the Release workflow runs, so
+the publish gate cannot quietly become a subset of CI's again. `tests/packaging.test.ts` fails if a
+check reachable from `ci.yml` is not reachable from `release.yml`.
 
 ## Versioning
 
@@ -48,9 +58,16 @@ oriUI follows **SemVer**. The line is currently on the **`1.0.0-alpha.*`** serie
 public API may shift before `1.0`.
 
 The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headless`, and `@oriui/css`
-always share one version, and their internal dependencies are pinned to that exact
-version (a
-`*` range cannot match a prerelease — see [RELEASING.md](RELEASING.md)). Despite pre mode, these
+always share one version. `@oriui/vue` declares the other two as **`peerDependencies`** (plus
+`devDependencies`, so the repo build links them), not as `dependencies` — npm 7+ still auto-installs
+them, so `npm i @oriui/vue` is unchanged, but a **mismatch now fails loudly with `ERESOLVE` instead of
+silently nesting a second copy**. That matters twice over: `@oriui/headless` holds process-wide
+singletons that a duplicate breaks outright, and `@oriui/css` is a stylesheet _the app_ imports, so a
+`dependencies` entry could never have enforced the version match it looked like it was promising.
+
+Those peer ranges are pinned to the exact lockstep version while the line is a prerelease — a `^1.0.0`
+range cannot match `1.0.0-alpha.N`. Widening them to `^1.0.0` is step 4 of the 1.0 cutover in
+[RELEASING.md](RELEASING.md), which also carries the changesets flag that has to land with it. Despite pre mode, these
 prereleases publish under **`latest`**, not `alpha`: changesets falls back to `latest` while every
 published version of a package is a prerelease, so `npm install @oriui/vue` gets the current alpha. The
 `alpha` dist-tag is stale (frozen at `1.0.0-alpha.3`) — **don't pin `@alpha`, pin an exact version**.

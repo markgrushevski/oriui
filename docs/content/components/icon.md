@@ -23,6 +23,11 @@ modifiers.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (text) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-size-action-space_*","type":"Layout","description":"adds margin equal to the action-space scale for the active size (the spaced opt-in); pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/icon.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Sizes
 
 `xs` → `xxl`. The default `text` means the icon inherits the current font size — use `text` to keep

@@ -24,6 +24,11 @@ theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to t
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/textarea.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Variants
 
 Two visual styles — `outline` (default, border visible at rest) and `fill` (tinted background, no

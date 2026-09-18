@@ -1026,3 +1026,57 @@ and thumb end up on opposite sides — measured, recorded as ORI-I-75, and carri
 `.ori-anchored_left` resolves to `position-area: inline-start`, so under RTL it places the panel to the
 physical right. That is the correct behaviour and the wrong-sounding name; renaming it is a breaking change,
 so it is a documentation duty instead (ORI-I-77).
+
+## The toggle contract: `pressed` is state, `active` is a look, and the affordance belongs to the button
+
+`OriButton` had one prop for two jobs and neither was complete: `active` emitted `data-active` — a forced
+`:active` LOOK that announces nothing — while the only correct pressed treatment (a tint plus an inset ring)
+was gated behind a `.ori-toolbar` ancestor. So a toggle button outside a toolbar told assistive tech nothing
+AND painted the same pixels as `:hover`.
+
+Now `pressed` renders `aria-pressed` and the affordance, on the button itself, with no ancestor gate;
+`active` keeps its old meaning and is documented as a look. `pressed` defaults to `undefined`, not `false`,
+because Vue coerces an absent boolean prop to `false` and would otherwise stamp `aria-pressed="false"` on
+every plain action button — claiming every button is a toggle that happens to be off.
+
+**The trap this replaced, recorded because two independent reviewers walked into it:** the obvious fix is to
+ungate the toolbar's pressed rule to `.ori-button[aria-pressed='true']`. That rule was authored for the
+toolbar's `variant="text"` default; ungated, it strips the background from every fill / tonal / outline
+toggle. The shipped version separates the two halves — a universal inset ring that no variant can erase, and
+a tint that reaches only the variants whose background is transparent.
+
+## `@oriui/vue` declares no runtime dependencies — both siblings are peers, for different reasons
+
+`@oriui/headless` is a genuine runtime import AND holds process-wide singletons behind `Symbol.for` keys, so
+a duplicated copy is not merely wasteful, it silently breaks provide/inject. `@oriui/css` is never imported
+by any file in `@oriui/vue` — the app imports the stylesheet itself — so an exact `dependencies` entry could
+never enforce the version match it appeared to promise. Different relationships, same mechanism: both move
+to `peerDependencies` + `devDependencies`.
+
+The ranges stay pinned to the exact lockstep version while the line is a prerelease (a `^` range cannot
+match `1.0.0-alpha.N`), so the 1.0 cutover is a documented one-time edit of two range strings rather than a
+redesign — see RELEASING.md.
+
+## Structural hairlines derive from `currentcolor`, not from `--ori-color-on-surface`
+
+The library derived its neutral structure two ways for the same job — `color-mix(… var(--ori-color-on-surface) 12% …)`
+in one block, `color-mix(… currentcolor 12% …)` in another. They agree today and diverge the moment anyone
+sets `color` on a panel, which is exactly the kind of latent split that surfaces as a bug report years later.
+
+`currentcolor` wins on the count (36 structural declarations against 6) and on behaviour: a hairline should
+follow the text it accompanies. No new public token was introduced — that is an API decision, and this is a
+mechanism decision.
+
+## Disclosure's `SET_DISABLED` does not close an open panel
+
+Menu and Combobox close when disabled mid-flight; Disclosure deliberately does not. The APG accordion idiom
+is "this section is open and must stay open even while interaction is suspended" — collapsing it would lose
+content the user is reading. This is the one place the three machines' disable semantics differ on purpose,
+so a future "consistency" pass should not flatten it.
+
+## Vue `useTheme` returns `destroy()`, mirroring the Svelte twin
+
+`onScopeDispose` no-ops outside an effect scope, exactly as `onDestroy` does outside Svelte component init,
+so a module-scope caller leaked its `MutationObserver` and `matchMedia` listener with no way to dispose. Vue
+now registers `onScopeDispose(destroy, true)` — the `failSilently` flag, so a genuinely scope-less call does
+not warn — and returns `destroy()` for that caller. Same shape, same reason, both adapters.

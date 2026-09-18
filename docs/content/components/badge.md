@@ -22,6 +22,11 @@ complete the floating pattern.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: fill variant, primary color, rounded radius."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/badge.css`. `.ori-badge-anchor` lives in
+`badge.css`. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token
+utilities (`ori-color_*`, `ori-size-radius_*`, …) live there, not in the component file. The full bundle
+`@oriui/css` is the default and already carries both; see [à-la-carte imports](/guides/css).
+
 ## Variants
 
 Five visual styles, driven by the `ori-variant_*` single-class token.

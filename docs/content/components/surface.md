@@ -22,6 +22,11 @@ utility. Bordered is a modifier; the surface colour is fixed (it's chrome).
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-surface","type":"Block","description":"Required base class. Surface background + on-surface text + lg radius; a block-level box with no padding of its own."},{"class":"ori-surface_elevation-sm | -md | -lg","type":"Modifier","description":"Shadow depth, mapped to the mode-aware --ori-shadow-{sm,md,lg} tokens (light: tinted ink; dark: deeper shadow). Default lg."},{"class":"ori-surface_bordered","type":"Modifier","description":"Adds a hairline border (a color-mix of on-surface). Present by default via the bordered prop; drop it for a shadow-only surface."},{"class":"ori-size-radius_*","type":"Radius","description":"Repoints --ori-size-radius (zero · xs · sm · md · lg · xl · rounded). The block bakes lg as the default."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/surface.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Elevation
 
 Three depths, mode-aware. Drag the theme toggle and the shadow re-tunes automatically (tinted ink in

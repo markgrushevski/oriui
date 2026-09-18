@@ -1,5 +1,5 @@
 import { useCallback, useId, type KeyboardEvent } from 'react'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation } from '../core'
+import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
 
 /**
  * Headless WAI-ARIA Tabs (https://www.w3.org/WAI/ARIA/apg/patterns/tabs/, **automatic activation**) — the
@@ -9,11 +9,14 @@ import { resolveRovingIndex, rovingIntent, type RovingOrientation } from '../cor
  * Prop bags carry React-native casing directly (`onClick` / `onKeyDown` / `tabIndex`), so they need no
  * `normalizeProps` pass. Automatic activation = arrows move focus AND select; the tablist owns one keydown
  * handler that resolves the target tab by live DOM order, skipping disabled tabs.
+ *
+ * (This block documents the module. It deliberately sits on the type-only re-export below rather than on
+ * `useTabs` itself: the adapter bundles ship their comments, and size-limit measures them — a doc moved
+ * onto a runtime export is ~0.3 kB of budget for bytes every consumer's minifier then throws away.)
  */
-export interface TabItem {
-    value: string | number
-    disabled?: boolean
-}
+
+/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
+export type { TabItem }
 
 export interface UseTabsOptions {
     /** The set of tabs, in order. */

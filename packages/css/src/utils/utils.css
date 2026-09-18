@@ -1,9 +1,9 @@
 @layer ori.utilities {
-    .ori-shadow {
-        box-shadow:
-            0 2px 4px 0 rgb(0 0 0 / 0.2),
-            0 3px 10px 0 rgb(0 0 0 / 0.19);
-    }
+    /* No `.ori-shadow` class here by design. Elevation is a TOKEN axis, not a bare class: read
+       `--ori-shadow-{sm,md,lg,ring}` (themes/_themes-elevation.css), which is theme-aware and re-tuned
+       per skin, in your own `box-shadow`. The removed class hardcoded two literal rgb(0 0 0 / …) layers
+       that ignored those tokens and carried no value suffix, so it could never grow `_sm`/`_md`/`_lg`
+       siblings the way `.ori-size-*` / `.ori-color_*` do. */
 
     /* Safe-area insets for hybrid / PWA (notch, home indicator) */
     .ori-safe-area {

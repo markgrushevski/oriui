@@ -20,7 +20,10 @@
         --ori-color-picker-radius: var(--ori-size-radius_md);
         --ori-color-picker-preset-radius: var(--ori-size-radius_sm);
         /* Transparency-grid tones, derived from the theme so the alpha checkerboard stays a mid-neutral
-           in dark mode instead of glaring light (was hard-coded #c8c8c8 / #fff). */
+           in dark mode instead of glaring light (was hard-coded #c8c8c8 / #fff). The SAME pair is
+           declared on `.ori-slider` (slider.css) — the alpha track must not read a token this block
+           owns, and it is reachable without a picker. Keep the two expressions identical: a slider
+           nested here resolves the nearer one. */
         --ori-checker-1: color-mix(in srgb, var(--ori-color-on-surface) 12%, var(--ori-color-surface));
         --ori-checker-2: var(--ori-color-surface);
 
@@ -127,7 +130,13 @@
         border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
         border-radius: var(--ori-color-picker-radius);
 
-        background: var(--ori-color, #000000);
+        /* No `var()` fallback on --ori-color: it is declared unconditionally at :root as `currentColor`
+           (themes/_themes-color-tokens.css), so the fallback arm could never fire — and it lied about
+           what it would do. A swatch with no inline colour paints `currentcolor`, which here is the
+           `color` two lines down: measured white, not the black the old `var(--ori-color, #000000)`
+           advertised. --ori-ink is genuinely optional (nothing declares it globally), so ITS fallback is
+           live and stays. */
+        background: var(--ori-color);
 
         color: var(--ori-ink, #ffffff);
     }
@@ -136,12 +145,12 @@
        transparency reads. */
     .ori-color-picker__swatch_alpha {
         background-image:
-            linear-gradient(var(--ori-color, #000000), var(--ori-color, #000000)),
+            linear-gradient(var(--ori-color), var(--ori-color)),
             conic-gradient(
-                var(--ori-checker-1, #c8c8c8) 25%,
-                var(--ori-checker-2, #ffffff) 0 50%,
-                var(--ori-checker-1, #c8c8c8) 0 75%,
-                var(--ori-checker-2, #ffffff) 0
+                var(--ori-checker-1) 25%,
+                var(--ori-checker-2) 0 50%,
+                var(--ori-checker-1) 0 75%,
+                var(--ori-checker-2) 0
             );
         background-size:
             auto,
@@ -170,7 +179,8 @@
         border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
         border-radius: var(--ori-color-picker-preset-radius);
 
-        background: var(--ori-color, #000000);
+        /* Inline --ori-color per chip; no fallback arm — see the swatch above. */
+        background: var(--ori-color);
 
         cursor: pointer;
     }

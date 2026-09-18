@@ -99,6 +99,44 @@
         pointer-events: none;
     }
 
+    /* Pressed toggle look — `aria-pressed='true'` is the ONE styled toggle idiom in the catalog
+       (`data-active` is a forced `:active` LOOK, not a state). It has to satisfy two things at once:
+       the "on" state must be distinguishable from `:hover` — every variant already tints on hover,
+       so a tint on its own says nothing (WCAG 1.4.11) — and it must not repaint a variant that owns
+       its background.
+
+       Hence the split below. The inset hairline is UNIVERSAL: no variant touches `box-shadow`, so it
+       layers over `fill` / `tonal` without erasing them, and drawing it in `currentcolor` means it is
+       always the button's own label colour — AA-paired with whatever background sits under it by
+       construction, in every skin.
+
+       The tint is added ONLY for the three variants whose background is `transparent`. It has to be a
+       LITERAL `background-color`, never `--ori-variant-bg-color`: that token is re-set by
+       `.ori-variant_*` in the LATER `ori.utilities` layer, which wins over `ori.components`
+       regardless of specificity, so a token routed through the variant is unreachable from here. The
+       literal beats `.ori-button`'s own `background-color: var(--ori-variant-bg-color)` on
+       specificity inside this layer — which is exactly why it must NOT reach `fill` / `tonal`: it
+       would flatten their role colour to a neutral grey and make every pressed button look alike.
+       (These rules used to live in toolbar.css, gated behind `.ori-toolbar`, which is why a toggle
+       button anywhere else had no pressed look at all.) */
+    .ori-button[aria-pressed='true'] {
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, currentcolor 35%, transparent);
+    }
+
+    .ori-button.ori-variant_text[aria-pressed='true'],
+    .ori-button.ori-variant_plain[aria-pressed='true'],
+    .ori-button.ori-variant_outline[aria-pressed='true'] {
+        background-color: color-mix(in srgb, var(--ori-color-on-surface) 18%, transparent);
+    }
+
+    @media (hover: hover) {
+        .ori-button.ori-variant_text[aria-pressed='true']:hover,
+        .ori-button.ori-variant_plain[aria-pressed='true']:hover,
+        .ori-button.ori-variant_outline[aria-pressed='true']:hover {
+            background-color: color-mix(in srgb, var(--ori-color-on-surface) 26%, transparent);
+        }
+    }
+
     .ori-button.ori-button_fluid {
         display: flex;
         width: 100%;

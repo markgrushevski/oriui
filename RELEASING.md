@@ -3,11 +3,11 @@
 How releases work — oriUI is a small monorepo of **three publishable packages** plus the docs
 workspace, released with **changesets** in alpha prerelease mode.
 
-| Package           | Path                | What it is                                        |
-| ----------------- | ------------------- | ------------------------------------------------- |
-| `@oriui/vue`      | `packages/vue`      | Styled Vue components (depends on css + headless) |
-| `@oriui/headless` | `packages/headless` | Engine (`.`) + Vue adapter (`./vue`)              |
-| `@oriui/css`      | `packages/css`      | Standalone CSS tokens + utilities                 |
+| Package           | Path                | What it is                                             |
+| ----------------- | ------------------- | ------------------------------------------------------ |
+| `@oriui/vue`      | `packages/vue`      | Styled Vue components (**peers**: css + headless)      |
+| `@oriui/headless` | `packages/headless` | Engine (`.`) + `./vue`, `./svelte`, `./react` adapters |
+| `@oriui/css`      | `packages/css`      | Standalone CSS tokens + utilities                      |
 
 The three are a **fixed** lockstep group (`.changeset/config.json`) — they always bump together. The
 repo is in **alpha pre mode** (`.changeset/pre.json`), so versions stay `1.0.0-alpha.N`.
@@ -25,7 +25,7 @@ repo is in **alpha pre mode** (`.changeset/pre.json`), so versions stay `1.0.0-a
 > ```
 >
 > So `npm i @oriui/vue` gets the current alpha and `npm i @oriui/vue@alpha` gets a stale one — **pin an
-> exact version**, never `@alpha`. Repointing that tag is step 5 of the 1.0 cutover below.
+> exact version**, never `@alpha`. Repointing that tag is step 6 of the 1.0 cutover below.
 
 ## One-time setup
 
@@ -76,6 +76,10 @@ npm run version    # changeset version + lockfile sync  (the "Version Packages" 
 npm run release    # build + changeset publish → latest dist-tag  (needs npm login / OTP locally)
 ```
 
+Each package also has a `prepack` hook that runs its own build, so `npm publish` and `npm pack` produce
+a fresh `dist` whichever command you type — `dist` is gitignored, and before that hook existed a manual
+`npm publish` from a clean checkout would have shipped a package with nothing in it.
+
 ## Cut the 1.0 (exiting pre mode)
 
 Leaving alpha is its own release. Run it in this order.
@@ -101,10 +105,32 @@ Leaving alpha is its own release. Run it in this order.
    shipped it — so the section arrives as a ~41-bullet replay of the entire alpha series. Rewrite it in
    the PR into a real 1.0 entry; the alpha entries below it stay as the detailed history.
 
-4. **Merge it.** `pre.json` is gone, so no pre-release tag is in play at all and the three publish to
+4. **Widen the internal peer ranges in that same PR — and add the changesets flag with them.**
+   `@oriui/vue` pins `@oriui/css` and `@oriui/headless` to the exact lockstep version only because a
+   `^` range cannot match a prerelease. Once the versions read `1.0.0` that reason is gone, and an
+   exact peer pin turns every patch-level drift into an `ERESOLVE` for consumers. In the Version
+   Packages PR, edit `packages/vue/package.json` so both entries read `^1.0.0` in **`peerDependencies`
+   and `devDependencies`** (changesets preserves whichever range style it finds, so this is a one-time
+   edit, not a recurring one), and add to `.changeset/config.json`:
+
+    ```json
+    "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": { "onlyUpdatePeerDependentsWhenOutOfRange": true }
+    ```
+
+    That flag is **not optional book-keeping**. Changesets treats "a package bumped, and something
+    peer-depends on it" as breaking by default. Measured on a fixture of these three packages: with
+    `^1.0.0` peer ranges and no flag, a plain `minor` changeset on `@oriui/headless` escalates
+    `@oriui/vue` to a **major**, and the fixed group drags all three to **2.0.0**. With the flag, the
+    same changeset produces `1.1.0` across the board and leaves the still-satisfied `^1.0.0` peer range
+    alone. Nothing warns you — the first post-1.0 minor simply arrives as a major.
+
+    (Doing this before step 1 would not stick: while pre mode is on, `changeset version` rewrites the
+    ranges at the prerelease version on every release.)
+
+5. **Merge it.** `pre.json` is gone, so no pre-release tag is in play at all and the three publish to
    `latest` — this time as a genuinely stable `latest`.
 
-5. **Repoint the stale `alpha` dist-tag — do not delete it.**
+6. **Repoint the stale `alpha` dist-tag — do not delete it.**
 
     ```bash
     npm dist-tag add @oriui/vue@1.0.0 alpha
@@ -119,6 +145,21 @@ Leaving alpha is its own release. Run it in this order.
     `pre.json` tag.
 
 ## Verify
+
+Before the release, locally:
+
+```bash
+npm run gate     # the exact gate release.yml runs (lint → types → test → build → size → publint → attw → smoke → docs)
+npm run smoke    # just the consumer leg: pack the three packages, install the tarballs into a scratch
+                 # dir, import every published entry through its `exports` map. ~15s.
+```
+
+`npm run smoke` is the only thing in the repo that resolves the packages the way a consumer does —
+everything else (vitest, the docs, the e2e harness) aliases `@oriui/*` to `src/`. It is what catches a
+broken `exports` map, a missing `dist`, a tarball without its LICENSE, or a second nested copy of a
+sibling. `ORI_SMOKE_KEEP=1` leaves the scratch install behind to poke at.
+
+After the release, against npm:
 
 ```bash
 npm view @oriui/vue
@@ -142,7 +183,13 @@ npm view @oriui/vue dist-tags        # the release is on `latest`; `alpha` is st
   listed in `files`; `LICENSE` is, so each package keeps its own copy of the root one. `@oriui/vue` and
   `@oriui/headless` also ship `src` (their dist source maps point into it — `.changeset/ship-sources.md`);
   `@oriui/css` ships `dist` only, since it emits no maps and every export resolves inside `dist`.
-  `tests/packaging.test.ts` guards all of that; `npm pack --dry-run` in a package prints the real list.
+  `tests/packaging.test.ts` guards all of that; `npm pack --dry-run` in a package prints the real list;
+  `npm run smoke` proves it by installing the actual tarballs.
+- **`@oriui/vue` declares no runtime `dependencies`.** Both siblings are `peerDependencies` (and
+  `devDependencies`, for the repo build). npm 7+ auto-installs peers, so `npm i @oriui/vue` still lands
+  all three — what changes is that a version mismatch now fails with `ERESOLVE` naming the conflict
+  instead of nesting a second, unreachable copy. See CONTRIBUTING.md › Versioning for the reasoning,
+  and step 4 of the 1.0 cutover for the range widening that has to happen at the freeze.
 - A scoped first publish needs `--access public`; that lives in each package's `publishConfig`, and
   `.changeset/config.json` sets `access: public`.
 - **Troubleshooting** — `402`/`404` on publish = missing `--access public` or no publish rights;
