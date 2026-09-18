@@ -27,7 +27,9 @@ interface ToolbarContext {
     setActive(id: string): void
 }
 
-const TOOLBAR_KEY = Symbol('ori-toolbar')
+// `Symbol.for` so a root and an item resolved from two undeduped copies of this package still meet —
+// a plain Symbol would leave the item inert with no error. Same reasoning as `ORI_HEADLESS`.
+const TOOLBAR_KEY = Symbol.for('ori-toolbar@1')
 
 /** `getContext` throws outside component init (Svelte `lifecycle_outside_component`); swallow → `null`. */
 function safeGetContext<T>(key: symbol): T | null {
@@ -166,7 +168,7 @@ interface ToolbarToggleContext {
     toggle(value: string): void
 }
 
-const TOOLBAR_TOGGLE_KEY = Symbol('ori-toolbar-toggle')
+const TOOLBAR_TOGGLE_KEY = Symbol.for('ori-toolbar-toggle@1')
 
 export interface UseToolbarToggleGroupOptions {
     /** 'single' keeps one value (deselectable, like Radix); 'multiple' keeps a set. */
