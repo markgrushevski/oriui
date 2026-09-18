@@ -70,10 +70,13 @@
         line-height: 1.2;
     }
 
+    /* The danger TEXT tone, never the raw `--ori-color-danger` role: the role is tuned as a fill
+       BACKGROUND and fails body-text AA painted as foreground (~2.4:1 on the dark surface). Applies to
+       the error message below too. */
     .ori-input__required {
         margin-inline-start: 0.15em;
 
-        color: var(--ori-color-danger);
+        color: var(--ori-color-danger-text);
     }
 
     .ori-input__field {
@@ -141,6 +144,6 @@
     }
 
     .ori-input__error {
-        color: var(--ori-color-danger);
+        color: var(--ori-color-danger-text);
     }
 }

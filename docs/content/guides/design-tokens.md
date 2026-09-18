@@ -201,8 +201,8 @@ A variant is a small token group — border, opacity, background, text — set f
 `--ori-color` / `--ori-color-on` / `--ori-color-text` triplet. Because variants read the alias,
 **colour and variant compose freely**: any colour × any variant, no extra rules.
 
-The base `.ori-variant` defaults to a transparent, full-opacity surface inheriting `currentColor`.
-Each `.ori-variant_*` repoints the group:
+There is no paired `.ori-variant` base class — each `.ori-variant_*` sets the whole group on its own,
+and a block without one keeps the defaults it bakes in. Each `.ori-variant_*` repoints the group:
 
 | Variant    | background                                              | text                    | border                  | opacity |
 | ---------- | ------------------------------------------------------- | ----------------------- | ----------------------- | ------- |

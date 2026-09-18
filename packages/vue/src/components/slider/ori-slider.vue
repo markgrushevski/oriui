@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue'
+import { computed, useAttrs, useId } from 'vue'
 import type { ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
@@ -39,7 +39,14 @@ const inField = Boolean(field)
 const uid = useId()
 const id = computed(() => field?.id.value ?? uid)
 const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-const describedBy = computed(() => field?.describedBy.value)
+// A caller's own `aria-describedby` arrives through `$attrs`, and the template binds `v-bind="$attrs"`
+// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
+const attrs = useAttrs()
+const describedBy = computed(() => {
+    const inherited = attrs['aria-describedby'] as string | undefined
+    const ids = [field?.describedBy.value, inherited].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+})
 const isInvalid = computed(() => field?.invalid.value ?? false)
 
 const current = computed(() => modelValue ?? min)

@@ -98,9 +98,9 @@ automatically:
 
 ```html
 <!-- skin + mode live on <html>; only the color pair changes per button -->
-<button class="ori-button ori-variant ori-variant_fill ori-color ori-color_primary">Primary</button>
-<button class="ori-button ori-variant ori-variant_tonal ori-color ori-color_secondary">Secondary</button>
-<button class="ori-button ori-variant ori-variant_outline ori-color ori-color_surface">Surface</button>
+<button class="ori-button ori-variant_fill ori-color_primary">Primary</button>
+<button class="ori-button ori-variant_tonal ori-color_secondary">Secondary</button>
+<button class="ori-button ori-variant_outline ori-color_surface">Surface</button>
 ```
 
 ::
@@ -115,7 +115,7 @@ card, an email-compose pane — without touching the page:
 ```html
 <!-- the whole page is light; this panel renders dark -->
 <section class="ori-theme_dark">
-    <div class="ori-card … ori-color ori-color_surface">Always-dark panel</div>
+    <div class="ori-card … ori-color_surface">Always-dark panel</div>
 </section>
 ```
 

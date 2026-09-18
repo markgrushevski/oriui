@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { colord, extend } from 'colord'
@@ -123,6 +123,85 @@ describe('Design-token contrast (WCAG AA for body text, >= 4.5:1)', () => {
         it(`${label}: ${fg} on ${bg}${debt}`, () => {
             const ratio = contrast(fg, bg)
             expect(ratio, `${label} -> ${ratio.toFixed(2)}:1 (need >= ${floor})`).toBeGreaterThanOrEqual(floor)
+        })
+    }
+})
+
+/**
+ * Role-as-TEXT source guard — the axis the pairings above structurally cannot see. The list they walk is
+ * role/on-role pairs, so a block that paints a role token straight onto the surface (`color:
+ * var(--ori-color-danger)`) is simply not a pairing and never gets measured — that is how every form
+ * block shipped its error / required marker at ~2.4:1 on the dark surface. This guard therefore derives
+ * its subjects FROM the stylesheets instead of a hand-kept list: it reads every CSS source in the css
+ * package and fails on any `color` (or downstream text custom property) fed a raw role token. The AA
+ * arithmetic for the correct `--ori-color-<role>-text` tone stays in e2e/text-contrast.spec.ts — the tone
+ * is relative colour (`oklch(from … )`), which only a real engine can resolve — so what belongs here is
+ * the structural rule: a raw role is a fill BACKGROUND, never a foreground.
+ */
+const ROLE_TOKEN = String.raw`--ori-color-(?:primary|secondary|success|warn|danger|info)(?:-light|-dark)?`
+
+// `(?<![-\w])` keeps the non-text axes out: `border-color` / `background-color` / `caret-color` /
+// `outline-color`, and the `--ori-color*` custom-property declarations, all carry a `-` or word character
+// straight before `color`. Those axes (focus ring, invalid border) deliberately still ride the raw role —
+// a separate WCAG 1.4.11 question, recorded in NOTES.md, not this rule's business.
+const AS_TEXT = String.raw`(?<![-\w])color\s*:\s*var\(\s*(${ROLE_TOKEN})\s*[,)]`
+// The two custom properties that hand a foreground tone to a block downstream; a raw role in either is
+// the same defect one hop away.
+const AS_TEXT_TOKEN = String.raw`(?:--ori-color-text|--ori-variant-text-color)\s*:\s*var\(\s*(${ROLE_TOKEN})\s*[,)]`
+
+// Blank out comments while keeping every newline, so reported line numbers match the file on disk.
+const blankComments = (css: string): string => css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+
+function findRoleAsText(file: string, css: string): string[] {
+    const src = blankComments(css)
+    const hits: string[] = []
+    for (const pattern of [AS_TEXT, AS_TEXT_TOKEN]) {
+        for (const m of src.matchAll(new RegExp(pattern, 'g'))) {
+            const line = src.slice(0, m.index).split('\n').length
+            hits.push(`${file}:${line} -> ${m[0].trim()}`)
+        }
+    }
+    return hits
+}
+
+function cssSources(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+        const full = resolve(dir, entry.name)
+        if (entry.isDirectory()) return cssSources(full)
+        return entry.name.endsWith('.css') ? [full] : []
+    })
+}
+
+const cssRoot = resolve(process.cwd(), 'packages/css/src')
+const sources = cssSources(cssRoot).map((file) => ({
+    file: file.slice(cssRoot.length + 1).replaceAll('\\', '/'),
+    css: readFileSync(file, 'utf8')
+}))
+
+describe('Role tokens are never painted as foreground text', () => {
+    it('sees the whole css package (a guard that scans nothing would pass silently)', () => {
+        expect(sources.length).toBeGreaterThanOrEqual(30)
+        expect(sources.map((s) => s.file)).toEqual(expect.arrayContaining(['components/field.css', 'styles.css']))
+    })
+
+    it('flags a raw role as text and leaves the non-text axes alone (self-check)', () => {
+        expect(findRoleAsText('x.css', '.a { color: var(--ori-color-danger); }')).toHaveLength(1)
+        expect(findRoleAsText('x.css', '.a { --ori-color-text: var(--ori-color-warn); }')).toHaveLength(1)
+        // The AA-safe tone, and the axes that deliberately keep the raw role, must not trip it.
+        expect(findRoleAsText('x.css', '.a { color: var(--ori-color-danger-text); }')).toEqual([])
+        expect(findRoleAsText('x.css', '.a { border-color: var(--ori-color-danger); }')).toEqual([])
+        expect(findRoleAsText('x.css', '.a { --ori-color: var(--ori-color-danger); }')).toEqual([])
+        // A comment quoting the anti-pattern is prose, not a declaration.
+        expect(findRoleAsText('x.css', '/* never color: var(--ori-color-danger) */')).toEqual([])
+    })
+
+    for (const { file, css } of sources) {
+        it(`${file} paints no raw role as text`, () => {
+            const hits = findRoleAsText(file, css)
+            expect(
+                hits,
+                `raw role token used as foreground — use var(--ori-color-<role>-text):\n${hits.join('\n')}`
+            ).toEqual([])
         })
     }
 })

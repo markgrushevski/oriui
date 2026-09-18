@@ -68,6 +68,27 @@ describe('OriCard', () => {
         expect(c).not.toContain('ori-card_icon')
     })
 
+    // A declared prop nothing renders is a compatibility promise with no implementation behind it —
+    // `image` was exactly that (typed, documented, read by neither the template nor card.css). Probe
+    // every prop the component declares: setting it must change the rendered DOM. A future prop that
+    // only bites in combination with something else belongs in the probe mount below (give it the
+    // companion slot / prop), never in an exemption list.
+    it('every declared prop is observable in the rendered output', () => {
+        // The runtime prop options the SFC compiler emits from the type-only `defineProps`.
+        const declared = (OriCard as unknown as { props: Record<string, { type?: unknown } | null> }).props
+        const slots = { 'actions-prepend': '<i></i>', 'actions-append': '<i></i>' }
+        const baseline = mount(OriCard, { slots }).html()
+
+        expect(Object.keys(declared).length).toBeGreaterThan(0)
+
+        for (const [name, definition] of Object.entries(declared)) {
+            const value = definition?.type === Boolean ? true : '__ori_probe__'
+            const html = mount(OriCard, { props: { [name]: value }, slots }).html()
+
+            expect(html, `prop "${name}" changes nothing in the DOM`).not.toBe(baseline)
+        }
+    })
+
     it('has no axe violations', async () => {
         const wrapper = mount(OriCard, {
             props: { title: 'Hello', subtitle: 'World', text: 'Body' },

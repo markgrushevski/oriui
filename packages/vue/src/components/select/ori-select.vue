@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue'
+import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
@@ -71,9 +71,13 @@ const fieldSize = computed(() => field?.size.value ?? size)
 
 // Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
 // id — never reference an element that isn't in the DOM. Inside a field, the field supplies it.
+// A caller's own `aria-describedby` arrives through `$attrs`, and the template binds `v-bind="$attrs"`
+// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
+const attrs = useAttrs()
 const describedBy = computed(() => {
-    if (field) return field.describedBy.value
-    const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean)
+    const inherited = attrs['aria-describedby'] as string | undefined
+    const own = field ? [field.describedBy.value] : [error ? errorId.value : hint ? hintId.value : '', describedby]
+    const ids = [...own, inherited].filter(Boolean)
     return ids.length ? ids.join(' ') : undefined
 })
 </script>
