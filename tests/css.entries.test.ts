@@ -52,6 +52,56 @@ describe('@oriui/css à-la-carte entry points', () => {
         expect(orphans, `component css not imported by styles.css: ${orphans.join(', ')}`).toEqual([])
     })
 
+    // The `./components/*.css` wildcard means every filename in that directory IS a public entry
+    // point — at 1.0 renaming one is a breaking change and adding one is a new API surface. A
+    // wildcard has no reviewable list, so this snapshot is the list: changing it is a deliberate,
+    // visible act in the diff rather than a side effect of adding a file.
+    it('the public per-component entry names are exactly this set', () => {
+        const PUBLIC_ENTRIES = [
+            'accordion',
+            'alert',
+            'anchored',
+            'avatar',
+            'badge',
+            'button',
+            'card',
+            'checkbox',
+            'color-picker',
+            'combobox',
+            'dialog',
+            'divider',
+            'field',
+            'icon',
+            'input',
+            'join',
+            'kbd',
+            'link',
+            'menu',
+            'popover',
+            'progress',
+            'radio',
+            'select',
+            'skeleton',
+            'slider',
+            'spinner',
+            'stack',
+            'surface',
+            'switch',
+            'tabs',
+            'tag',
+            'textarea',
+            'toast',
+            'toolbar',
+            'tooltip'
+        ]
+        const shipped = readdirSync(resolve(pkgDir, 'src/components'))
+            .filter((f) => f.endsWith('.css'))
+            .map((f) => f.replace(/\.css$/, ''))
+            .sort()
+
+        expect(shipped).toEqual(PUBLIC_ENTRIES)
+    })
+
     // ------------------------------------------------------------------
     // Self-contained per-component entries — the dependency map is DERIVED from the vue sources at
     // test time, so it can never silently drift: the moment a component starts rendering a sibling

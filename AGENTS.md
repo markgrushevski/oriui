@@ -42,9 +42,11 @@ tests/               Vitest suite (kept out of src/)
   attribute selectors — the a11y-correct source of truth (matches the headless layer).
 - **Imports:** types from `../../types`, then sibling components (`from '../icon'`). **Never** the root
   barrel `../../` — it creates an import cycle.
-- **Style:** `<style>` is deliberately **not** scoped — global `.ori-*`, cascade-safe via `@layer` + the
-  prefix. Two-tier tokens (raw scale + resolved alias); flat specificity with `:where()`.
-- **Format/lint:** prettier — 4-space, single quotes, semicolons, width 120, no trailing comma. BEM
+- **Style:** an SFC ships **no `<style>` block at all** — a component's CSS lives in
+  `packages/css/src/components/<name>.css` so the style layer stands alone for non-Vue consumers. Global
+  `.ori-*`, cascade-safe via `@layer` + the prefix. Two-tier tokens (raw scale + resolved alias); flat
+  specificity with `:where()`.
+- **Format/lint:** prettier — 4-space, single quotes, **no semicolons**, width 120, no trailing comma. BEM
   selectors + SMACSS property order (stylelint).
 - **Commits:** Conventional Commits, author **Leonid**, **no `Co-Authored-By` trailer**. Group into
   reasonably-sized commits (avoid many tiny ones).
