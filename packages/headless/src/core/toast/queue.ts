@@ -80,7 +80,19 @@ export function createToastQueue(): ToastQueue {
         const base: ToastOptions = typeof options === 'string' ? { text: options } : { ...options }
         const id = ++seq
         // `base` overrides the defaults; `color` falls back to the shortcut's color, overridable by `base`.
-        const item: ToastItem = { id, duration: 4000, closable: true, color: fallbackColor, ...base }
+        // `closable` is deliberately NOT stamped: the queue used to force `true` onto every toast, which
+        // made OriToast's own `closable = false` default unreachable — a caller who said nothing got a
+        // dismiss button anyway, and the two defaults disagreed with the queue silently winning. The one
+        // case that DOES need a default is a toast that never auto-dismisses: without a close button it
+        // cannot be got rid of at all, so a persistent toast opts itself in.
+        const duration = base.duration ?? 4000
+        const item: ToastItem = {
+            id,
+            duration,
+            color: fallbackColor,
+            ...(duration > 0 ? {} : { closable: true }),
+            ...base
+        }
 
         items.push(item)
         if (item.duration && item.duration > 0) {

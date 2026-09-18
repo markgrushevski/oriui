@@ -826,3 +826,24 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 - **Where:** packages/css/src/components/combobox.css (`.ori-combobox__empty`)
 - **What:** `opacity: 0.6` on on-surface text measured 3.69:1 at worst (sumi light). Unlike a placeholder or a disabled option, the empty message is real informational content, so WCAG 1.4.3 applies to it.
 - **Outcome:** faded to 0.7 — the same treatment a field hint carries — which measures 4.87:1 at worst, and the cell was promoted from the printed-but-not-asserted set into the guarded matrix. The guard found this on the first run it could see the element at all, which is the argument for the muted cells being printed rather than hidden in a comment.
+
+## Accepted from the consumer inbound queue (2026-09-18)
+
+Entries that arrived through justpaint's `docs/ISSUES-OUTER.md` — the first two the library took from that
+queue rather than from its own review, which is the path working as designed.
+
+### ORI-I-79 — The toast queue forces a close button the component itself defaults off
+
+`fixed` · severity `should-fix` · source: justpaint JP-O-07, 2026-09-18
+
+- **Where:** packages/headless/src/core/toast/queue.ts:83 against packages/vue/src/components/toast/ori-toast.vue:5
+- **What:** `OriToast` declares `closable = false` and renders the × behind a `v-if`, which is right — but the queue stamped `closable: true` onto every item it enqueued, so the component default was unreachable and a caller who said nothing got a dismiss button anyway. Two defaults disagreed and the queue won silently.
+- **Outcome:** the queue no longer stamps it, so the renderer's own default applies. One exception is kept deliberately: a toast with `duration: 0` never auto-dismisses, so it opts itself into a close button rather than becoming impossible to remove. The docs rows that documented the old behaviour are corrected, and both the core and the Vue tests now pin the new contract (they pinned the old one, which is why it survived).
+
+### ORI-I-80 — A toast has no way to centre its text, and centring it naively lands off-centre
+
+`fixed` · severity `should-fix` · source: justpaint JP-O-08 + the owner noticing it on screen, 2026-09-18
+
+- **Where:** packages/css/src/components/toast.css, packages/vue/src/components/toast/{ori-toast,ori-toaster}.vue
+- **What:** `.ori-toast__text` was `text-align: start` with no prop or token to change it. In a `top-center` stack carrying one-line status messages the text hugs the start edge of a fixed-width card and reads as misaligned. The naive fix is worse than none: `text-align: center` on a flex child centres the text on the space the dismiss button leaves behind, so it lands visibly off-centre — which is exactly what the owner saw.
+- **Outcome:** `align` (`start` | `center`) on both `OriToast` and `OriToaster`, the latter forwarding to the whole stack because alignment is a stack-level look like `position`. Centred alignment takes the dismiss button out of the flex flow and reserves equal inline room on both sides, so the body centres on the CARD. `e2e/toast-align.spec.ts` measures the rendered centres in real Chromium in both writing directions, and carries a counter-example test that fails if the compensation is ever removed. A leading icon deliberately stays in flow — that is a different composition, and it is documented. Residual offset is 1.5px, which is the card's own 4px accent stripe, not the button.
