@@ -31,17 +31,25 @@ const subscribe = (onStoreChange: () => void): (() => void) => queue.subscribe(o
 const getSnapshot = (): readonly ToastItem[] => snapshot
 const getServerSnapshot = (): readonly ToastItem[] => EMPTY
 
+// Built ONCE, beside the queue they close over — which is the module singleton and never changes, so there is
+// nothing per-component to capture. Calling `createToastActions(queue)` in the hook body instead would hand
+// every consumer a fresh `toast` / `dismiss` / ... on every render, re-firing any effect or callback that
+// lists one in its dependency array (the standard React footgun). Hoisted, the identities are stable for the
+// process, so they are safe to depend on — and no memoisation is needed on the consumer's side.
+const actions = createToastActions(queue)
+
 /**
  * Imperative toast queue (React) — the twin of the Vue / Svelte `useToast`, sharing the one module-level
  * queue. Call `toast()` (or a severity shortcut) to push a notification, and render `toasts` once near the
  * app root; each push returns the toast id, which can be passed to `dismiss(id)`. `toasts` is a plain array
  * re-projected through `useSyncExternalStore` on every change (no ref / store — the component re-renders).
+ * The actions carry stable identities across renders and callers — safe to put in a dependency array.
  */
 export function useToast() {
     const toasts = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
     return {
         /** The live queue to render — a plain array, re-projected on every change. */
         toasts,
-        ...createToastActions(queue)
+        ...actions
     }
 }
