@@ -129,6 +129,28 @@
         border-inline-start: 4px solid var(--ori-color);
     }
 
+    /* Centred alignment centres the BODY on the CARD — which means the dismiss button has to leave the
+       flex flow. Left in flow it eats inline space on one side only, so "centred" text lands visibly
+       off-centre; that asymmetry is the defect a consumer reported against a top-center stack. The card
+       reserves the same inline room on both sides instead, so the optical centre is the real centre.
+       A leading icon deliberately STAYS in flow: it is a content marker, not chrome, and a toast with an
+       icon is a different composition — documented on the component page. */
+    .ori-toast_align-center {
+        position: relative;
+
+        text-align: center;
+    }
+
+    .ori-toast_align-center:has(.ori-toast__close) {
+        padding-inline: calc(1.5em + var(--ori-size-gap) * 1.5);
+    }
+
+    .ori-toast_align-center .ori-toast__close {
+        position: absolute;
+        inset-block-start: calc(var(--ori-size-gap) * 1.5);
+        inset-inline-end: calc(var(--ori-size-gap) * 1.5);
+    }
+
     .ori-toast .ori-toast__icon {
         flex-shrink: 0;
 

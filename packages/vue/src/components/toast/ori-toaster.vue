@@ -3,7 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useToast } from '@oriui/headless/vue'
 import OriToast from './ori-toast.vue'
 
-const { position = 'top-right' } = defineProps<{
+const { align = 'start', position = 'top-right' } = defineProps<{
+    /** Body alignment for every toast in the stack — a look of the stack, like `position`. A centred
+     *  stack usually pairs with `top-center` / `bottom-center` and one-line status messages. */
+    align?: 'start' | 'center'
     position?: 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center'
 }>()
 
@@ -31,6 +34,7 @@ onMounted(() => (mounted.value = true))
             <ori-toast
                 v-for="t in toasts"
                 :key="t.id"
+                :align="align"
                 :closable="t.closable"
                 :color="t.color"
                 :icon="t.icon"

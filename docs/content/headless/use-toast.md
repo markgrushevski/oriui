@@ -30,14 +30,14 @@ shares the one queue).
 `toast(options)` (and the severity shortcuts) take either a **string** (its text) or a `ToastOptions`
 object:
 
-| Option     | Type         | Default | Description                                                                        |
-| ---------- | ------------ | ------- | ---------------------------------------------------------------------------------- |
-| `text`     | `string`     | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)            |
-| `title`    | `string`     | —       | Optional bold heading above the text.                                              |
-| `color`    | `ToastColor` | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`. |
-| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.               |
-| `closable` | `boolean`    | `true`  | Show a dismiss button on the toast.                                                |
-| `icon`     | `string`     | —       | SVG path for a leading icon.                                                       |
+| Option     | Type         | Default | Description                                                                                                                                                                                |
+| ---------- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `text`     | `string`     | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)                                                                                                                    |
+| `title`    | `string`     | —       | Optional bold heading above the text.                                                                                                                                                      |
+| `color`    | `ToastColor` | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`.                                                                                                         |
+| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.                                                                                                                       |
+| `closable` | `boolean`    | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
+| `icon`     | `string`     | —       | SVG path for a leading icon.                                                                                                                                                               |
 
 `ToastColor` is `'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'`.
 

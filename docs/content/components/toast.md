@@ -15,7 +15,7 @@ show the look without triggering a notification.
 ## Classes
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-coloured left-border accent, elevation shadow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warn / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; coloured by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
+:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"align","type":"Prop (OriToaster)","description":"start (default) or center — the alignment of every toast in the stack. Pairs with a top-center / bottom-center position for one-line status messages."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-coloured left-border accent, elevation shadow."},{"class":"ori-toast_align-center","type":"Modifier","description":"Centres the body on the CARD: the dismiss button leaves the flex flow and the card reserves equal inline room on both sides, so the text is not pushed off-centre by the button. A leading icon deliberately stays in flow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warn / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; coloured by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/toast.css`. `.ori-toast` and `.ori-toaster`
 both live in `toast.css` — there is no `toaster.css`. Import a foundation (`@oriui/css/base.css` or
@@ -172,7 +172,9 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 
 ## Closable
 
-`closable: true` (the default when called via `useToast()`) renders a dismiss button. Pass `closable: false`
+`closable: true` renders a dismiss button. It is **off by default** — a toast that disappears on its own
+in four seconds does not need one — with a single exception: a toast that never auto-dismisses
+(`duration: 0`) opts itself in, because otherwise nothing could get rid of it. Pass `closable: false`
 to suppress it — useful for short-lived toasts that auto-dismiss quickly.
 
 ::example
@@ -189,7 +191,7 @@ const { info } = useToast()
 </script>
 
 <template>
-    <!-- closable: true is the default from useToast() -->
+    <!-- opt in per toast; a duration: 0 toast gets the button automatically -->
     <OriButton text="Closable" @click="info({ text: 'Dismiss me.', closable: true })" />
     <!-- suppress the button for quick notifications -->
     <OriButton text="No button" @click="info({ text: 'Gone in 4 s.', closable: false })" />
