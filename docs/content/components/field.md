@@ -26,6 +26,11 @@ and helper text (and is inherited by a nested control).
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-field","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl — label + hint + error scale (and the nested control)."},{"class":"ori-field__label · ori-field__required · ori-field__hint · ori-field__error","type":"Part","description":"label / required-asterisk / helper / error elements."},{"class":"ori-field_fluid","type":"Layout","description":"full-width (stretches the field to 100 %)."},{"class":"for · id · aria-describedby · aria-invalid","type":"State","description":"real attributes on the control, not classes — shared with the label and helper."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/field.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## With a control
 
 Wrap any Ori control. The field renders the label and helper; the control renders just its field

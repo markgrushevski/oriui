@@ -22,6 +22,11 @@ inherits thickness and gap from the surrounding context via `--ori-size-gap`.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-divider","type":"Block","description":"Required base class. Renders a subtle horizontal rule using a 25% currentcolor mix."},{"class":"ori-divider_vertical","type":"Modifier","description":"Switches to a vertical rule. Needs a flex/grid parent that provides height; the divider aligns-self: stretch."},{"class":"ori-divider_text","type":"Modifier","description":"Auto-applied when a label is present. Splits the line into two segments around the centered label."},{"class":"ori-divider__label","type":"Part","description":"The centered label span. Rendered inside the block when text or a default slot is supplied."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — repoints --ori-color to a full role color. Omit for the default subtle 25% currentcolor mix."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/divider.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Plain rule
 
 A bare horizontal divider with no label — the most common use: separating sections of a page or a

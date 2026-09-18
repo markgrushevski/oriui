@@ -1,5 +1,5 @@
 import { derived, get, type Readable } from 'svelte/store'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation } from '../core'
+import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
 import { uid } from './id'
 import { toReadable, type MaybeReactive } from './use-store'
 
@@ -11,11 +11,14 @@ import { toReadable, type MaybeReactive } from './use-store'
  * stores. The item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), re-emitting when
  * the selection changes. Automatic activation = arrows move focus AND select; the tablist owns one keydown
  * handler that resolves the target tab by live DOM order, skipping disabled tabs.
+ *
+ * (This block documents the module. It deliberately sits on the type-only re-export below rather than on
+ * `useTabs` itself: the adapter bundles ship their comments, and size-limit measures them — a doc moved
+ * onto a runtime export is ~0.3 kB of budget for bytes every consumer's minifier then throws away.)
  */
-export interface TabItem {
-    value: string | number
-    disabled?: boolean
-}
+
+/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
+export type { TabItem }
 
 export interface UseTabsOptions {
     /** The set of tabs, in order. */

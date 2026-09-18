@@ -24,6 +24,33 @@ describe('OriCard', () => {
         expect(wrapper.attributes('aria-disabled')).toBe('true')
     })
 
+    // `aria-disabled` on a role-less <div> (role=generic) is announced to nobody and inherited by
+    // nothing, and `pointer-events: none` stops only the mouse: the buttons and links inside a
+    // disabled card stayed tab-focusable and Enter-activatable. `inert` is the platform primitive
+    // that actually delivers what the docs claim — pointer AND keyboard AND the accessibility tree.
+    it('disabled makes the whole subtree inert, not just pointer-blocked', () => {
+        const wrapper = mount(OriCard, {
+            props: { title: 'x', disabled: true },
+            slots: { 'actions-append': '<button type="button">Act</button>' }
+        })
+
+        expect(wrapper.attributes('inert')).toBeDefined()
+        expect(wrapper.find('button').exists()).toBe(true)
+    })
+
+    it('an enabled card is not inert', () => {
+        const wrapper = mount(OriCard, { props: { title: 'x' } })
+
+        expect(wrapper.attributes('inert')).toBeUndefined()
+    })
+
+    // Loading is a different state: the card is busy, not unusable, so it must NOT go inert.
+    it('loading does not make the card inert', () => {
+        const wrapper = mount(OriCard, { props: { title: 'x', loading: true } })
+
+        expect(wrapper.attributes('inert')).toBeUndefined()
+    })
+
     it('reflects loading via aria-busy', () => {
         const wrapper = mount(OriCard, { props: { title: 'x', loading: true } })
 

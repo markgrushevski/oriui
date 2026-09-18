@@ -15,7 +15,8 @@ class:
 
 - `disabled` / `aria-disabled` for disabled controls,
 - `aria-busy="true"` for loading,
-- `aria-pressed` / `data-active` for toggles,
+- `aria-pressed` for toggle STATE (the `pressed` prop) — `data-active` is a forced `:active` LOOK and
+  announces nothing,
 - `aria-expanded` + `aria-controls` for disclosures.
 
 This is the accessible source of truth, and because it is plain markup it is **identical across all

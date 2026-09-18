@@ -20,6 +20,11 @@ inherits its color from the surrounding text and its radius from the baked `sm` 
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-kbd","type":"Block","description":"Required base class. Renders as an inline-flex monospace chip with a bottom-heavy border and sm radius baked in."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/kbd.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Single key
 
 Pass the key label via the `text` prop or the default slot.

@@ -5,7 +5,13 @@
    Layer: ori.tokens
    ============================================================ */
 @layer ori.tokens {
-    :root {
+    /* The LIGHT set. Scoped to the same three selectors as the derived colour tones in
+       _themes-color-tokens.css, not to a bare `:root`: a shadow declared only at the root inherits
+       into a `.ori-theme_light` subtree unchanged, so a light region inside a dark page kept the
+       dark theme's heavy shadows. */
+    :root,
+    :root.light,
+    .ori-theme_light {
         --ori-shadow-sm: 0 1px 2px color-mix(in srgb, var(--ori-neutral-900) 8%, transparent);
         --ori-shadow-md:
             0 1px 2px color-mix(in srgb, var(--ori-neutral-900) 6%, transparent),

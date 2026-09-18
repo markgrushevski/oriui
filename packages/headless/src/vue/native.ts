@@ -18,7 +18,8 @@ import type {
  * `useDisclosure`; the contract still lets an app swap in a custom (e.g. Zag-backed) adapter.
  */
 export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions> = () => ({})): DisclosureControl => {
-    const initial = toValue(options)
+    const opts = computed(() => toValue(options) ?? {})
+    const initial = opts.value
     const props: disclosure.DisclosureProps = {
         id: initial.id ?? useId() ?? 'disclosure',
         defaultOpen: initial.defaultOpen,
@@ -27,6 +28,14 @@ export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions>
 
     const service = disclosure.machine(props)
     const version = useService(service)
+
+    // Keep `disabled` reactive past the initial render — `id` / `defaultOpen` seed the machine and are
+    // init-only by design, but `disabled` is live state a consumer binds to (a form that disables its
+    // sections while saving), so the getter form the signature advertises has to actually re-read here.
+    watch(
+        () => opts.value.disabled ?? false,
+        (disabled) => service.send({ type: 'SET_DISABLED', disabled })
+    )
 
     const api = computed(() => {
         void version.value // track machine changes

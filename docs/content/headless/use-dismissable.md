@@ -44,6 +44,10 @@ immediately dismiss it.
 
 Pass the overlay's `open`, its element refs, and a close callback — pick the strategy for your widget:
 
+::example
+
+#vue
+
 ```vue
 <!-- MyMenu.vue — pointerdown-outside (a menu has no single focus anchor) -->
 <script setup lang="ts">
@@ -62,6 +66,8 @@ useDismissable(() => ({
 }))
 </script>
 ```
+
+#svelte
 
 The **Svelte** binding is the same — options are a plain object or a store, and it wires the identical
 listeners over the shared `isTargetOutside`:
@@ -83,6 +89,8 @@ listeners over the shared `isTargetOutside`:
     })));
 </script>
 ```
+
+#react
 
 The **React** binding is the same — options are a plain object (no getter / store), element refs come from
 `useRef`, and it returns nothing; it wires the identical `document` capture listeners over the shared
@@ -116,6 +124,8 @@ function MyMenu() {
     )
 }
 ```
+
+::
 
 ## Accessibility
 

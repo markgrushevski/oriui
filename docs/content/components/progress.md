@@ -22,6 +22,11 @@ A progress bar is a block class plus single-class token utilities. The Vue props
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-progress","type":"Block","description":"Required base class. Renders full-width. Defaults baked in: color primary, radius rounded, height 8 px."},{"class":"ori-progress_sm · ori-progress_md · ori-progress_lg","type":"Size","description":"Track height: 4 px (sm) · 8 px (md, default) · 12 px (lg). ori-progress_* (size sugar)."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — one class repoints the color token; no base class needed."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded (default) — one class repoints the radius token; no base class needed."},{"class":"ori-progress__track","type":"Part","description":"Inner track element (tinted background)."},{"class":"ori-progress__indicator","type":"Part","description":"Fill element; width driven by inline style or data-indeterminate animation."},{"class":"data-indeterminate","type":"State","description":"Present on the indicator when no value is known; triggers the sweep animation."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/progress.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Determinate
 
 Pass a `value` (0–`max`). The fill width and `aria-valuenow` update together.

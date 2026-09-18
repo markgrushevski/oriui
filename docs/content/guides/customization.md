@@ -317,15 +317,23 @@ for the region in **both** modes; to keep a region mode-aware, wrap it in `.ori-
 `.ori-theme_dark` and repoint the `*-light` / `*-dark` source there — that re-resolves the alias on the
 wrapper, per mode.
 
-**Radius and font-size** scope the other way around: their alias is substituted **on each component**
-from the raw step (a card reads `var(--ori-size-radius_lg)` on itself), so on a wrapper you repoint
-the **raw step**, not the alias:
+**Size, radius and font-size** scope the other way around: their alias is substituted **on each
+component** from the raw step (a card reads `var(--ori-size-radius_lg)` on itself, a button
+`var(--ori-size-action_md)`), so on a wrapper you repoint the **raw step**, not the alias:
 
 ```html
-<div style="--ori-size-radius_md: 4px; --ori-font-size_md: 15px">
+<div style="--ori-size-action_md: 2rem; --ori-size-radius_md: 4px; --ori-font-size_md: 15px">
     <!-- panels, menus, inputs in here tighten; buttons keep their pinned `rounded` step -->
 </div>
 ```
+
+`--ori-size-action` is the sharpest case of this rule, because its `:root` default looks like
+something a component reads and nothing does: every action block re-bakes the alias on its own
+element (`.ori-button { --ori-size-action: var(--ori-size-action_md) }`), so setting
+`--ori-size-action` on a wrapper is a **silent no-op**. Repoint `--ori-size-action_md` instead — and
+note it retunes _every_ `md` action control in the subtree, inputs and selects included. That is
+exactly what you want for a tool cluster and wrong for a mixed panel; there, put the size utility
+(`ori-button_sm`) on the individual controls.
 
 Or scope **mode** to a subtree with `.ori-theme_light` / `.ori-theme_dark` — the same selectors the global
 `html.dark` toggle uses, but on any element:

@@ -1,5 +1,5 @@
-import { computed, useId } from 'vue'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation } from '../core'
+import { computed, toValue, useId, type MaybeRefOrGetter } from 'vue'
+import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
 
 // Fallback id source when `useId()` is unavailable (called outside an app context); the composable is
 // intended for component setup, where useId() always resolves.
@@ -9,16 +9,21 @@ let fallbackId = 0
  * Headless WAI-ARIA Tabs (https://www.w3.org/WAI/ARIA/apg/patterns/tabs/, **automatic activation**).
  * Unlike the compositional `useToolbar` (arbitrary slotted items behind provide/inject), Tabs is
  * **data-driven** — the styled component renders a `tabs` array — so this mirrors `useColorPicker` /
- * `useCombobox`: pass the array + the selected value as a getter, get back a `tablist` prop bag plus
- * per-tab / per-panel prop-getters. The tablist owns a single roving keydown handler that resolves the
- * target tab by live DOM order (`querySelectorAll`, robust to reorders) via the shared `../core/roving`
- * index math, **skipping disabled tabs** (the `isEnabled` predicate that core docs call "the Tabs model").
- * Automatic activation = arrows move focus AND select. Real DOM focus, not `aria-activedescendant`.
+ * `useCombobox`: pass the array + the selected value, get back a `tablist` prop bag plus per-tab /
+ * per-panel prop-getters. Options are a `MaybeRefOrGetter` like every sibling composable: a plain object
+ * for a fixed tab set, a ref or a getter when the tabs / selection move. The tablist owns a single roving
+ * keydown handler that resolves the target tab by live DOM order (`querySelectorAll`, robust to reorders)
+ * via the shared `../core/roving` index math, **skipping disabled tabs** (the `isEnabled` predicate that
+ * core docs call "the Tabs model"). Automatic activation = arrows move focus AND select. Real DOM focus,
+ * not `aria-activedescendant`.
+ *
+ * (This block documents the module. It deliberately sits on the type-only re-export below rather than on
+ * `useTabs` itself: the adapter bundles ship their comments, and size-limit measures them — a doc moved
+ * onto a runtime export is ~0.5 kB of budget for bytes every consumer's minifier then throws away.)
  */
-export interface TabItem {
-    value: string | number
-    disabled?: boolean
-}
+
+/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
+export type { TabItem }
 
 export interface UseTabsOptions {
     /** The set of tabs, in order. */
@@ -37,8 +42,8 @@ export interface UseTabsOptions {
     onChange?: (value: string | number) => void
 }
 
-export function useTabs(options: () => UseTabsOptions) {
-    const opts = () => options()
+export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
+    const opts = () => toValue(options)
     const tabs = () => opts().tabs
     const orientation = (): RovingOrientation => opts().orientation ?? 'horizontal'
 

@@ -22,6 +22,11 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warn) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/alert.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 Like Button, the non-fill variants (the default `tonal` included) paint the body text with the
 AA-safe `--ori-color-text` tone rather than the raw role — see
 [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).

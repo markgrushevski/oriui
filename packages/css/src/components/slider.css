@@ -15,12 +15,32 @@
         --ori-color: var(--ori-color-primary);
         --ori-slider-track: color-mix(in srgb, currentcolor 18%, transparent);
         --ori-slider-pct: 0%;
+        /* Painted-track axis. The engine reverses a native <input type=range> under `dir=rtl` — a click
+           a quarter in from the physical left resolves to a value >= 50 — but a gradient has no logical
+           direction keyword, so the axis has to be a knob. Every author-drawn track below (fill, hue
+           spectrum, alpha ramp) reads it, which keeps the paint on the same axis as the thumb in both
+           directions. Measured in e2e/rtl.spec.ts, not assumed. */
+        --ori-slider-axis: to right;
+        /* Transparency-grid tones for the alpha modifier, derived from the theme so a standalone alpha
+           slider gets a mid-neutral checkerboard in dark mode instead of a glaring light one. Declared
+           HERE (not only on .ori-color-picker) because `.ori-slider .ori-slider_alpha` is reachable
+           without a colour picker, and a block must not read a token another block declares. The picker
+           declares the same pair for its own swatch; the values are identical, so the nested slider
+           inside a picker paints the same either way. */
+        --ori-checker-1: color-mix(in srgb, var(--ori-color-on-surface) 12%, var(--ori-color-surface));
+        --ori-checker-2: var(--ori-color-surface);
 
         display: flex;
         flex-direction: column;
         gap: calc(var(--ori-size-gap) / 2);
 
         width: 100%;
+    }
+
+    /* The engine treats the physical RIGHT as the range minimum under RTL, so the paint has to start
+       there too — otherwise the fill sits opposite its own thumb (ORI-I-75). */
+    .ori-slider:dir(rtl) {
+        --ori-slider-axis: to left;
     }
 
     .ori-slider .ori-slider__label {
@@ -57,7 +77,7 @@
         border-radius: 999px;
 
         background: linear-gradient(
-            to right,
+            var(--ori-slider-axis),
             var(--ori-color) var(--ori-slider-pct),
             var(--ori-slider-track) var(--ori-slider-pct)
         );
@@ -139,7 +159,7 @@
        and the thumb goes neutral so it reads over any hue. Used by OriColorPicker. */
     .ori-slider .ori-slider_hue::-webkit-slider-runnable-track {
         background: linear-gradient(
-            to right,
+            var(--ori-slider-axis),
             #ff0000 0%,
             #ffff00 17%,
             #00ff00 33%,
@@ -152,7 +172,7 @@
 
     .ori-slider .ori-slider_hue::-moz-range-track {
         background: linear-gradient(
-            to right,
+            var(--ori-slider-axis),
             #ff0000 0%,
             #ffff00 17%,
             #00ff00 33%,
@@ -176,15 +196,19 @@
     }
 
     /* ---- alpha channel modifier — a transparent→color gradient over a checkerboard (transparency grid).
-       The color end reads the inline --ori-color (the opaque current color) the consumer sets. ---- */
+       The color end reads the inline --ori-color (the opaque current color) the consumer sets. No `var()`
+       fallback on it: --ori-color is declared unconditionally at :root and re-baked by .ori-slider above,
+       so the fallback arm was unreachable AND misleading — an unset alpha track paints the primary accent,
+       never the black the old `var(--ori-color, #000000)` advertised. A component that needs its own
+       default declares a block-local token instead (--ori-checker-* above). ---- */
     .ori-slider .ori-slider_alpha::-webkit-slider-runnable-track {
         background-image:
-            linear-gradient(to right, transparent, var(--ori-color, #000000)),
+            linear-gradient(var(--ori-slider-axis), transparent, var(--ori-color)),
             conic-gradient(
-                var(--ori-checker-1, #c8c8c8) 25%,
-                var(--ori-checker-2, #ffffff) 0 50%,
-                var(--ori-checker-1, #c8c8c8) 0 75%,
-                var(--ori-checker-2, #ffffff) 0
+                var(--ori-checker-1) 25%,
+                var(--ori-checker-2) 0 50%,
+                var(--ori-checker-1) 0 75%,
+                var(--ori-checker-2) 0
             );
         background-size:
             auto,
@@ -193,12 +217,12 @@
 
     .ori-slider .ori-slider_alpha::-moz-range-track {
         background-image:
-            linear-gradient(to right, transparent, var(--ori-color, #000000)),
+            linear-gradient(var(--ori-slider-axis), transparent, var(--ori-color)),
             conic-gradient(
-                var(--ori-checker-1, #c8c8c8) 25%,
-                var(--ori-checker-2, #ffffff) 0 50%,
-                var(--ori-checker-1, #c8c8c8) 0 75%,
-                var(--ori-checker-2, #ffffff) 0
+                var(--ori-checker-1) 25%,
+                var(--ori-checker-2) 0 50%,
+                var(--ori-checker-1) 0 75%,
+                var(--ori-checker-2) 0
             );
         background-size:
             auto,

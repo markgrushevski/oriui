@@ -55,6 +55,10 @@ Spread `tablistProps` on the list, then `v-for` the `tabs` — a `<button>` per 
 `getTabProps(tab, i)`, and a panel per tab with `getPanelProps(tab, i)`. This is exactly what the styled
 [`OriTabs`](/components/tabs) wraps.
 
+::example
+
+#vue
+
 ```vue
 <!-- MyTabs.vue -->
 <script setup lang="ts">
@@ -88,6 +92,8 @@ const { tablistProps, getTabProps, getPanelProps } = useTabs(() => ({
 </template>
 ```
 
+#svelte
+
 The **Svelte** binding is the same — the prop bags are `Readable` stores you auto-subscribe with `$`, the
 item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), event handlers are lowercased
 (`onkeydown` / `onclick`), and options are a plain object (or a store), not a getter:
@@ -113,6 +119,8 @@ item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), event
     <div {...$getPanelProps(tab, i)}><slot name={tab.value} /></div>
 {/each}
 ```
+
+#react
 
 The **React** binding is the same — the control is plain values (no `$` / `.value`), the item / panel
 getters are plain functions (`getTabProps(tab, i)`), handlers use React casing (`onKeyDown` / `onClick` /
@@ -150,6 +158,8 @@ function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boo
     )
 }
 ```
+
+::
 
 ## Accessibility
 

@@ -26,6 +26,51 @@ Or drop it in with no build step at all:
 <link rel="stylesheet" href="https://unpkg.com/@oriui/css/dist/styles.css" />
 ```
 
+## À-la-carte imports
+
+`@oriui/css` is the **default**, and it ships everything: the reset, the tokens and skins, the
+utilities, and all 34 component blocks. If you render only a few components, import a **foundation**
+first and then the blocks you use:
+
+```ts
+import '@oriui/css/base.css' // or '@oriui/css/tokens.css' — bring your own reset
+import '@oriui/css/components/button.css'
+import '@oriui/css/components/card.css'
+```
+
+The foundation is not optional. It declares the cascade-layer order the component files rely on, and
+it is where every token utility lives — `ori-color_*`, `ori-variant_*`, `ori-size-radius_*`,
+`ori-font-size_*`, `ori-size-gap_*`. A component file carries its own block and nothing else, so
+`ori-color_danger` on a button is a no-op without it.
+
+| Entry                              | Layer order | Reset | Tokens + skins | Utilities | Component blocks   |
+| ---------------------------------- | :---------: | :---: | :------------: | :-------: | ------------------ |
+| `@oriui/css` (= `styles.css`)      |     yes     |  yes  |      yes       |    yes    | all                |
+| `@oriui/css/base.css`              |     yes     |  yes  |      yes       |    yes    | —                  |
+| `@oriui/css/tokens.css`            |     yes     |   —   |      yes       |    yes    | —                  |
+| `@oriui/css/reset.css`             |      —      |  yes  |       —        |     —     | —                  |
+| `@oriui/css/components/<name>.css` |      —      |   —   |       —        |     —     | one (deps inlined) |
+
+**The entry set is not one file per component.** Every component page names the file its classes ship
+in; these are the blocks whose file does not follow from the name:
+
+- `.ori-toaster` ships in `toast.css` — there is no `toaster.css`.
+- `.ori-radio-group` ships in `radio.css`.
+- `.ori-cluster` ships in `stack.css`.
+- `.ori-badge-anchor` ships in `badge.css`.
+- `.ori-spinner` ships as `spinner.css` **and** is inlined into `button.css`, `toolbar.css` and
+  `color-picker.css` — the components that render a spinner themselves.
+- `.ori-anchored`, the shared placement primitive, ships as `anchored.css` and is inlined into
+  `combobox.css`, `menu.css`, `popover.css` and `tooltip.css`, so those never need it imported.
+
+The inlining is deliberate: per-component files are **self-contained**, so nothing renders
+half-styled. Importing two files with overlapping dependencies duplicates those rules harmlessly —
+identical rules in the same `@layer` resolve identically, and gzip absorbs most of the byte cost.
+
+> Under TypeScript 6's `noUncheckedSideEffectImports`, a bare CSS subpath import is an error unless
+> the compiler can type it. Either set `noUncheckedSideEffectImports: false`, or add an ambient
+> `declare module '@oriui/css/*.css';` (most bundler-first setups already ship one).
+
 ## How the classes compose
 
 Every component is a **block class** plus **single-class token utilities** — one class repoints one

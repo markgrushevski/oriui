@@ -275,6 +275,30 @@ describe('useTheme (Vue)', () => {
         wrapper.unmount()
         expect(media.mql.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
     })
+
+    // The mirror of the Svelte twin's escape hatch (see the Svelte block below). `onScopeDispose` no-ops
+    // outside an effect scope — a `useTheme()` in a plain `.ts` module, a store, or a test — which is
+    // exactly where the MutationObserver + matchMedia listener would otherwise live for the whole page
+    // life with nothing able to stop it. This IS that call site: no component, no scope.
+    it('destroy detaches the OS-scheme listener when there is no scope to dispose', () => {
+        const media = stubMatchMedia(false)
+        const api = useTheme({ default: 'auto', storageKey: null })
+
+        expect(media.mql.removeEventListener).not.toHaveBeenCalled()
+
+        api.destroy()
+        expect(media.mql.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
+
+        // Idempotent — a later scope teardown firing after an explicit destroy must not throw.
+        expect(() => api.destroy()).not.toThrow()
+    })
+
+    it('does not warn about the missing scope, now that destroy is the documented answer', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const api = useTheme({ default: 'light', storageKey: null })
+        api.destroy()
+        expect(warn).not.toHaveBeenCalled()
+    })
 })
 
 // ---------------------------------------------------------------------------

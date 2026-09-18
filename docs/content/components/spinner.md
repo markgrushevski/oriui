@@ -22,6 +22,12 @@ radius — a spinner only takes a size and an optional color.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-spinner_* (size)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default; bare ori-spinner without a size modifier inherits its size from the surrounding font"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/spinner.css`. `.ori-spinner` is also inlined
+into `button.css`, `toolbar.css` and `color-picker.css`, so those already carry it. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Sizes
 
 `xs` → `xxl`, plus the default `text` which inherits its size from the surrounding font.

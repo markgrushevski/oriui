@@ -115,12 +115,17 @@
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);
     }
 
+    /* The danger TONE, not the raw role. Status roles are shared by both themes (one hue, no -dark
+       variant), so the raw #b91c1c fill colour is only ever tuned for the light surface: as a border it
+       measured 2.08-2.85:1 on the dark surfaces, under the 3:1 WCAG 1.4.11 bar for a UI boundary. The
+       -text tone is the same hue with its lightness clamped per theme, which is the precedent the
+       outline variant already set at _themes-variant.css (`--ori-variant-border-color`). */
     .ori-input__field[aria-invalid='true'] {
-        border-color: var(--ori-color-danger);
+        border-color: var(--ori-color-danger-text);
     }
 
     .ori-input__field[aria-invalid='true']:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger) 25%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger-text) 25%, transparent);
     }
 
     .ori-input__field:disabled {

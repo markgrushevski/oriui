@@ -24,6 +24,11 @@ base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to t
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/accordion.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Anatomy
 
 ```
@@ -309,12 +314,23 @@ planned.)
 
 ### Props
 
-| Prop       | Type                                                                    | Default     | Description                                                                                                                                                                                         |
-| ---------- | ----------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor`                                                            | `'primary'` | Accent color for the open item's title and the rotating chevron. Repoints `--ori-color` via the `ori-color_<color>` utility class on the wrapper.                                                   |
-| `items`    | `Array<{ value: string \| number; title: string; disabled?: boolean }>` | —           | **Required.** The disclosure items. `value` is used as the `:key`; `title` is the summary text; `disabled` sets `aria-disabled="true"` + `tabindex="-1"` and blocks pointer events on that trigger. |
-| `multiple` | `boolean`                                                               | `false`     | `false` = exclusive single-open (shared `name`, browser closes siblings). `true` = each item opens/closes independently (no shared `name`).                                                         |
-| `radius`   | `RadiusSize`                                                            | `'md'`      | Optional corner radius for the accordion container. Attaches `ori-size-radius_<radius>` when set; the bare block bakes in `md` as its default.                                                      |
+| Prop       | Type              | Default     | Description                                                                                                                                                                                         |
+| ---------- | ----------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor`      | `'primary'` | Accent color for the open item's title and the rotating chevron. Repoints `--ori-color` via the `ori-color_<color>` utility class on the wrapper.                                                   |
+| `items`    | `AccordionItem[]` | —           | **Required.** The disclosure items. `value` is used as the `:key`; `title` is the summary text; `disabled` sets `aria-disabled="true"` + `tabindex="-1"` and blocks pointer events on that trigger. |
+| `multiple` | `boolean`         | `false`     | `false` = exclusive single-open (shared `name`, browser closes siblings). `true` = each item opens/closes independently (no shared `name`).                                                         |
+| `radius`   | `RadiusSize`      | `'md'`      | Optional corner radius for the accordion container. Attaches `ori-size-radius_<radius>` when set; the bare block bakes in `md` as its default.                                                      |
+
+`AccordionItem` is exported — `import type { AccordionItem } from '@oriui/vue'`:
+
+```ts
+import type { AccordionItem } from '@oriui/vue'
+
+const items: AccordionItem[] = [
+    { value: 'shipping', title: 'Shipping' },
+    { value: 'returns', title: 'Returns', disabled: true }
+]
+```
 
 ### Events & attributes
 

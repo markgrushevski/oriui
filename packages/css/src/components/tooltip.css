@@ -20,13 +20,18 @@
            only when you need an explicit pair. */
         --ori-anchor: --ori-tooltip-anchor;
 
-        /* Default neutral chip: an inverse surface so the tip reads on any page background. These are
-           DEDICATED defaults, deliberately not var(--ori-color) / var(--ori-color-on) — those aliases
-           are globally defined (currentColor at :root), so a var() fallback never fires and bg + text
-           would come from two different sources (a host app with near-ink ambient color rendered the
-           text invisible). The color-role rule below repoints the PAIR from one role source. */
-        --ori-tooltip-bg: var(--ori-neutral-900);
-        --ori-tooltip-color: var(--ori-neutral-50);
+        /* Default chip: the page INVERTED — the page ink as the fill, the page itself as the label.
+           That is a contrast-checked pair by construction (it is the background/on-background pairing
+           the token guard already measures, read backwards), and it tracks theme and skin, so the chip
+           stays legible on any page. The literal neutral ramp it replaced could not: neutral-900 on the
+           dark page measured 1.04:1, a chip invisible against what it floated over.
+           Deliberately NOT var(--ori-color) / var(--ori-color-on) — those aliases are globally defined
+           (currentColor at :root), so a var() fallback never fires and bg + text would come from two
+           different sources (a host app with near-ink ambient color rendered the text invisible). The
+           role tokens below have real values at every level, so they do not have that failure mode.
+           The color-role rule further down repoints the PAIR from one role source. */
+        --ori-tooltip-bg: var(--ori-color-on-background);
+        --ori-tooltip-color: var(--ori-color-background);
         --ori-tooltip-gap: 0.5em;
         --ori-tooltip-arrow: 0.375em;
 

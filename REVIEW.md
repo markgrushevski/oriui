@@ -64,8 +64,9 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 - [ ] Specificity stays flat — `:where()`, no `.a.a_b` stacking; dynamic state via **attribute selectors**,
       not extra classes.
 - [ ] Hover is wrapped in `@media (hover: hover)`; state colours derive via `color-mix(in srgb, …)`.
-- [ ] `<style>` is unscoped, `ori-`-prefixed, and the markup works as standalone `.ori-*` — the css layer
-      ships without Vue.
+- [ ] The SFC ships **no `<style>` block at all** — the component's CSS is a new
+      `packages/css/src/components/<name>.css`, wrapped in `@layer ori.components` and imported by
+      `styles.css`, so the markup works as standalone `.ori-*` and the css layer ships without Vue.
 
 ### SSR & correctness
 
@@ -80,13 +81,17 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 
 ### Docs
 
-- [ ] Single-source page: a class-reference table + **live Vue/HTML examples**; the component is
-      registered globally for MDC and added to the sidebar.
+- [ ] Single-source page: a class-reference table + **live Vue/HTML examples**, and the à-la-carte import
+      line for the stylesheet that actually carries the block (not always one file per component —
+      `.ori-toaster` ships in `toast.css`, `.ori-radio-group` in `radio.css`).
+- [ ] Every registry the new component has to appear in, not just the first one: the global MDC
+      registration, the sidebar, and the `nuxt-llms` config that feeds `/llms.txt`.
 
 ### Build & packaging
 
 - [ ] `vue-tsc` clean; `@oriui/*` stay **external** in the lib build; tree-shakeable (importing one
-      component doesn't pull the others).
+      component doesn't pull the others) — now measured, not assumed: `.size-limit.json` holds a
+      single-component import against the all-exports ceiling, so `npm run size` is the check.
 
 ## Sign-off
 

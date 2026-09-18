@@ -81,6 +81,10 @@ a `ComputedRef`; bind it with `v-bind`. The `get*` / `set*` and the action membe
 Bind each part's prop bag with `v-bind`, render `items`, and pass the same `index` you iterate with into
 `getOptionProps`:
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { useCombobox } from '@oriui/headless/vue'
@@ -121,6 +125,8 @@ The machine keeps no notion of validation, `v-model`, or blur-to-close — those
 styled [`OriCombobox`](/components/combobox) wraps exactly this pattern and layers the form contract
 (label / hint / error / `required`), `v-model` sync, and `@blur="setOpen(false)"` on top.
 
+#svelte
+
 The **Svelte** binding is the same — the composable returns stores (auto-subscribe with `$`), and the
 item prop-getters are a store of a function (`$getOptionProps(item, i)`):
 
@@ -158,6 +164,8 @@ item prop-getters are a store of a function (`$getOptionProps(item, i)`):
 
 In Svelte the options are a `MaybeReactive` — pass a store instead of a plain object to react to a
 changing option list or `disabled`.
+
+#react
 
 The **React** binding is the same — the control is plain values (no `$` / `.value`), and the item
 prop-getters are plain functions (`getOptionProps(item, i)`):
@@ -202,6 +210,8 @@ function FruitPicker() {
     )
 }
 ```
+
+::
 
 ## Accessibility
 

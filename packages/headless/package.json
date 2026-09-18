@@ -9,6 +9,9 @@
         "directory": "packages/headless"
     },
     "type": "module",
+    "engines": {
+        "node": ">=22"
+    },
     "sideEffects": false,
     "files": [
         "CHANGELOG.md",
@@ -43,6 +46,7 @@
     },
     "scripts": {
         "build": "tsdown",
+        "prepack": "npm run build",
         "types": "tsc --noEmit"
     },
     "peerDependencies": {

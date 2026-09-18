@@ -23,6 +23,11 @@ one class repoints `--ori-size-gap`, no cascade conflict. The Vue props in
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-stack","type":"Block","description":"Flex column. Children stack top-to-bottom, separated by the gap token."},{"class":"ori-cluster","type":"Block","description":"Flex row that wraps. Children flow left-to-right and wrap; cross-axis centered by default."},{"class":"ori-size-gap_*","type":"Gap","description":"zero · xs · sm · <b>md</b> · lg · xl — repoints --ori-size-gap on the container."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/stack.css`. `.ori-cluster` lives in
+`stack.css`, not a file of its own. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`)
+first — the token utilities (`ori-color_*`, `ori-size-radius_*`, …) live there, not in the component file. The
+full bundle `@oriui/css` is the default and already carries both; see [à-la-carte imports](/guides/css).
+
 ## Vertical stack
 
 Children laid out in a column, separated by `gap`. Default gap is `md` when the `gap` prop is

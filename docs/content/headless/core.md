@@ -115,10 +115,12 @@ The same core powers each binding, so a primitive behaves the same everywhere.
 
 - **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
 - **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behaviour is re-implemented.
+- **React** — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behaviour is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
 
 ## See also
 
-- The Vue composables — [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
+- The composables (each page carries the Vue, Svelte and React binding side by side) —
+  [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
   [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) ·
   [useToolbar](/headless/use-toolbar) · [useColorPicker](/headless/use-color-picker) ·
   [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
