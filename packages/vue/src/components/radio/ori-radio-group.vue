@@ -3,7 +3,8 @@ import { computed, useId } from 'vue'
 import type { ActionSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
-interface RadioOption {
+/** One radio in `<OriRadioGroup>`'s `options` prop. */
+export interface RadioOption {
     label: string
     value: string | number
     disabled?: boolean

@@ -136,5 +136,9 @@ export interface HeadlessAdapters {
     menu?: MenuAdapter
 }
 
-/** Context key the resolver reads; set by `provideHeadless()`. */
-export const ORI_HEADLESS = Symbol('ori-headless')
+/**
+ * Context key the resolver reads; set by `provideHeadless()`. `Symbol.for` (matching the Vue contract),
+ * so two undeduped copies of this package share one key instead of silently missing each other — see
+ * the note on the Vue `ORI_HEADLESS`.
+ */
+export const ORI_HEADLESS = Symbol.for('ori-headless@1')

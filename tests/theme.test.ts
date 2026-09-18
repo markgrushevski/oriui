@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils'
 import { get } from 'svelte/store'
 import { applyTheme, flushThemeInvalidation, createThemeController, type ThemeController } from '@oriui/headless'
 import { useTheme } from '@oriui/headless/vue'
-import { useTheme as useThemeSvelte } from '@oriui/headless/svelte'
+import { useTheme as useThemeSvelte, type ThemeStore } from '@oriui/headless/svelte'
 
 // The theme controller flips the `ori-theme_{light,dark}` class and force-restyles a subtree to defeat a
 // Chromium invalidation bug (see core theme.ts). happy-dom has no real style engine, so the invalidation
@@ -14,17 +14,23 @@ import { useTheme as useThemeSvelte } from '@oriui/headless/svelte'
 // never fires a scheme change), same as tests/token.test.ts.
 
 const KEY = 'ori-test-theme'
-const cleanup: ThemeController[] = []
+const cleanup: (ThemeController | ThemeStore)[] = []
 
-/** Stub matchMedia with a controllable `matches` + a captured `change` listener the test can fire. */
+/**
+ * Stub matchMedia with a controllable `matches` + captured `change` listeners the test can fire.
+ * `removeEventListener` really detaches — a no-op stub would keep delivering scheme changes to a
+ * torn-down controller, which is exactly the lifetime bug these tests have to be able to see.
+ */
 function stubMatchMedia(matches: boolean) {
-    let listener: ((e: { matches: boolean }) => void) | undefined
+    const listeners = new Set<(e: { matches: boolean }) => void>()
     const mql = {
         matches,
         addEventListener: vi.fn((_: string, l: (e: { matches: boolean }) => void) => {
-            listener = l
+            listeners.add(l)
         }),
-        removeEventListener: vi.fn()
+        removeEventListener: vi.fn((_: string, l: (e: { matches: boolean }) => void) => {
+            listeners.delete(l)
+        })
     }
     vi.stubGlobal(
         'matchMedia',
@@ -34,7 +40,7 @@ function stubMatchMedia(matches: boolean) {
         mql,
         fire(next: boolean) {
             mql.matches = next
-            listener?.({ matches: next })
+            for (const listener of [...listeners]) listener({ matches: next })
         }
     }
 }
@@ -275,15 +281,29 @@ describe('useTheme (Vue)', () => {
 // Svelte adapter
 // ---------------------------------------------------------------------------
 
+// The controller's lifetime follows the COMPONENT (`safeOnDestroy`), never the store's subscriber count —
+// an `{#if}` around markup that reads `$theme` takes the count to 0 and back to 1, and a teardown there
+// leaves `auto` with no matchMedia listener for the rest of the component's life. The component leg itself
+// is not exercisable in this suite (there is no Svelte component harness, and vitest resolves `svelte` to
+// its SERVER build, where `onDestroy` outside a render throws and `safeOnDestroy` swallows it — the same
+// limitation svelte-adapter.test.ts documents for context). What IS exercisable, and is what these specs
+// pin: the store no longer disposes anything, `auto` survives a resubscribe, and the explicit `destroy`
+// escape hatch — the one a module-scope caller needs — really detaches.
 describe('useTheme (Svelte)', () => {
+    const make = (options?: Parameters<typeof useThemeSvelte>[0]) => {
+        const theme = useThemeSvelte(options)
+        cleanup.push(theme)
+        return theme
+    }
+
     it('the store carries the setting + resolved theme, applied eagerly', () => {
-        const theme = useThemeSvelte({ default: 'dark', storageKey: null })
+        const theme = make({ default: 'dark', storageKey: null })
         expect(get(theme)).toEqual({ theme: 'dark', resolvedTheme: 'dark' })
         expect(document.documentElement.classList.contains('ori-theme_dark')).toBe(true)
     })
 
     it('setters update the store', () => {
-        const theme = useThemeSvelte({ default: 'light', storageKey: null })
+        const theme = make({ default: 'light', storageKey: null })
         const seen: string[] = []
         const stop = theme.subscribe((s) => seen.push(s.resolvedTheme))
 
@@ -294,11 +314,45 @@ describe('useTheme (Svelte)', () => {
         expect(seen).toEqual(['light', 'dark', 'light'])
     })
 
-    it('tears down the controller with the last subscriber', () => {
+    it('keeps auto following the OS scheme across an unsubscribe / resubscribe cycle', () => {
         const media = stubMatchMedia(false)
-        const theme = useThemeSvelte({ default: 'auto', storageKey: null })
-        const stop = theme.subscribe(() => {})
+        const theme = make({ default: 'auto', storageKey: null })
+
+        // An `{#if}` around markup that reads `$theme`: the subscriber count drops to 0 …
+        theme.subscribe(() => {})()
+        // … and comes back when the branch renders again.
+        const seen: string[] = []
+        const stop = theme.subscribe((state) => seen.push(state.resolvedTheme))
+
+        media.fire(true) // the OS flips to dark
+
+        expect(seen).toEqual(['light', 'dark'])
+        expect(document.documentElement.classList.contains('ori-theme_dark')).toBe(true)
         stop()
+    })
+
+    it('re-seeds a new subscriber with what changed while the store was dormant', () => {
+        const media = stubMatchMedia(false)
+        const theme = make({ default: 'auto', storageKey: null })
+
+        theme.subscribe(() => {})() // subscribe / unsubscribe: the store goes dormant, the controller runs on
+        media.fire(true)
+        theme.setTheme('auto') // (a sibling component driving the theme while no one renders `$theme`)
+
+        expect(get(theme).resolvedTheme).toBe('dark')
+    })
+
+    it('survives the last subscriber; destroy detaches the OS-scheme listener', () => {
+        const media = stubMatchMedia(false)
+        const theme = make({ default: 'auto', storageKey: null })
+
+        theme.subscribe(() => {})()
+        expect(media.mql.removeEventListener).not.toHaveBeenCalled()
+
+        theme.destroy()
         expect(media.mql.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
+
+        // Idempotent — the component teardown firing after an explicit destroy must not throw.
+        expect(() => theme.destroy()).not.toThrow()
     })
 })

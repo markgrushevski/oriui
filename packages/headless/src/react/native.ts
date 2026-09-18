@@ -13,9 +13,10 @@ import type {
     UseMenuOptions
 } from './contract'
 
-// A stable SSR-safe base id from React's `useId`, with the colons React wraps ids in (`:r0:`) stripped so
-// the derived `ori-<id>-<part>` ids stay valid CSS selectors, matching the Vue (`useId`) / Svelte (`uid`)
-// bases. `options.id` wins when provided.
+// A stable SSR-safe base id from React's `useId`, with the colons stripped so the derived
+// `ori-<id>-<part>` ids stay valid CSS selectors, matching the Vue (`useId`) / Svelte (`uid`) bases.
+// React 18 wraps ids in colons (`:r0:`); 19.2 mints `_r_0_` instead, which needs no stripping — the
+// replace covers both and must stay for React 18 consumers. `options.id` wins when provided.
 function useBaseId(explicit: string | undefined): string {
     const autoId = useId().replace(/:/g, '')
     return explicit ?? autoId

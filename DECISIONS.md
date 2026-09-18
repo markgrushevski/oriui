@@ -912,3 +912,84 @@ integration (an adversarial a11y + correctness review shaped these):
   Any future composite made of Ori form controls must do the same.
 - **Size-less controls don't scale.** Slider and ColorPicker have no `size` variant, so a field's
   `size` scales only its label + helper for them (documented on the field page).
+
+## `@oriui/css` component stylesheet FILENAMES are public API (the `./components/*.css` wildcard)
+
+The à-la-carte scheme exports `"./components/*.css": "./dist/components/*.css"` — a wildcard, so **every
+file that lands in `dist/components/` is a published entry point**. At 1.0 that makes each filename a
+compatibility promise: renaming `color-picker.css` is a breaking change, and a new file is new public API
+the moment it is emitted. That is easy to forget precisely because a wildcard has no list to review.
+
+**Decided: keep the wildcard, pin the list in a test.** The alternative — enumerating 35 explicit export
+entries — buys the same guarantee and costs a manual edit per component, which is the kind of hand-kept
+registry this project has repeatedly found rotting (see the closed-list contrast guard that let a 2.4:1
+error message ship). Instead `tests/css.entries.test.ts` asserts the exact set of per-component entry names.
+Adding or renaming a component stylesheet now fails that test, so it becomes a deliberate line in the diff
+and a reviewer sees a public-API change rather than a file rename.
+
+Consequences to keep in mind:
+
+- The build emits one file per component (`packages/css/build.mjs`), so **any partial or helper stylesheet
+  that ever gets emitted into `components/` becomes public too**. Shared pieces belong in the foundation
+  entries (`base.css` / `tokens.css`), never as a `components/*.css` file.
+- **An entry filename is not a component name, and not always a block name either** — do not build tooling
+  that derives one from the other (the consumer tried, and it produced a false positive; see ISSUES-INNER.md
+  ORI-I-40). Today's divergences: `OriToaster` ships in `toast.css` (`.ori-toaster` + the transition
+  classes), `OriRadioGroup` in `radio.css`, `.ori-cluster` in `stack.css`, `.ori-badge-anchor` in
+  `badge.css`, and `toolbar.css` additionally carries a `.ori-button` rule. Entries are also deliberately
+  self-contained, so a block can appear in several files (`.ori-spinner` is inlined into `button.css` and
+  `toolbar.css` as well as shipping as `spinner.css`). The filename is what consumers import, so it is the
+  thing that cannot move — but a completeness check has to reason about **selectors present in the
+  concatenated sheets**, never about one import per component.
+- `@oriui/vue` consumers are unaffected either way — they get the full sheet. This surface exists for the
+  direct-CSS audience (htmx / Astro / React / plain HTML), which is also the audience least able to absorb a
+  rename.
+
+## Injection keys are `Symbol.for('…@<major>')` — global, but scoped to the major
+
+Every provide/inject key the packages own — `ORI_HEADLESS` (Vue + Svelte), the two toolbar context keys in
+each adapter, and `oriFieldKey` in `@oriui/vue` — is a **registered** symbol, not a module-local one.
+
+The bug it fixes: a module-local `Symbol('ori-headless')` is identity-scoped to the module instance, so when
+npm cannot dedupe the package (a transitive duplicate, two lockfile entries, a monorepo with mismatched
+ranges), a root provides under one symbol and a child injects under a different one. Nothing throws — the
+child silently falls back to the native engine, or to a toolbar's no-context default. It is invisible
+precisely where it matters, and the exact-version internal pins (`@oriui/vue` depends on exact
+`@oriui/headless`) make a duplicate copy MORE likely, not less.
+
+**The `@<major>` suffix is the non-obvious half.** `Symbol.for` is cross-realm AND cross-version: a v1 copy
+and a v2 copy of this package would compute the SAME key from a bare `'ori-field'`. During an incremental
+major migration a v2 `OriField` would then satisfy a v1 control's `inject` with a shape it was never typed
+against — a wrong-shape hit, which is worse than today's bug, because today's miss at least falls back
+safely. `@1` keeps same-major duplicates interoperable (the case we are fixing) and lets majors miss each
+other (the case where missing is correct).
+
+Consequences:
+
+- **The suffix must be bumped at 2.0.** A forgotten bump silently reinstates the cross-major hazard, years
+  later, in someone else's app. `tests/headless-adapter-swap.test.ts` reads the major from the package
+  manifest and scans `packages/*/src` for `Symbol.for(…)` literals, so the version bump turns the suite red
+  until the keys follow. That guard is the only thing standing between a future maintainer and a silent
+  regression — do not delete it as redundant.
+- These four descriptions now live in the process-wide registry shared with every library on the page.
+  `ori-headless@1`, `ori-toolbar@1`, `ori-toolbar-toggle@1`, `ori-field@1` are namespaced enough that a
+  collision would have to be deliberate.
+- `oriFieldKey` is not exported from the `@oriui/vue` barrel, so its duplicate scenario is two copies of
+  `@oriui/vue` rather than of the headless package.
+
+## Svelte `useTheme` exposes `destroy()`; the other two adapters do not
+
+A framework deviation of the same kind as React's `ToolbarProvider` (recorded above): the shape differs
+because the host's lifecycle primitive does, not because the behaviour does.
+
+The controller owns a `MutationObserver` and a `matchMedia` listener, so something has to tear it down.
+Tying that to the **store's subscriber count** was wrong and shipped broken: an ordinary `{#if}` around
+markup reading `$theme` drops the count to zero, destroys the controller, and `auto` mode is dead for the
+rest of the session — silently, because the store still resolves. Teardown now rides on `onDestroy`, which
+ties the controller to the component, matching Vue's `onScopeDispose`.
+
+`onDestroy` only exists during component init, so a `useTheme()` called at **module scope** has nothing to
+hang teardown on. Rather than leak, the Svelte store exposes `destroy()` for that caller — documented on
+the use-theme page. Vue has the mirror-image hole (`onScopeDispose` also no-ops outside an effect scope)
+and does **not** expose an escape hatch today; that asymmetry is recorded in ISSUES-INNER.md rather than
+papered over here.
