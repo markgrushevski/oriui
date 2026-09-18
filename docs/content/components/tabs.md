@@ -213,7 +213,15 @@ Set `disabled: true` on individual tab items to lock those tabs. Disabled tabs a
 
 ## Panel slots — per-tab content
 
-Use a named slot matching the tab's `value` to give each panel its own markup. A scoped `#default="{ tab }"` slot is the fallback for shared/uniform content across all panels.
+Use a `#panel-<value>` slot to give each panel its own markup. A scoped `#default="{ tab }"` slot is the fallback for shared/uniform content across all panels.
+
+The fallback is rendered **once per panel**, with that panel's tab in scope — so a template that ignores the
+scope produces N identical copies, `id` attributes included. With two tabs and a login form in `#default`,
+the form exists twice and `document.getElementById('email')` resolves to whichever copy comes first in
+document order, which is the **hidden** panel whenever the active tab is not the first one: a `<label for>`
+in the visible panel then points at an input nobody can reach. Content that is genuinely the same for every
+tab belongs outside `<OriTabs>`; content that differs belongs in `#panel-<value>`. Use the fallback for
+templates that actually read `{ tab }`.
 
 ::example
 :ori-tabs{:tabs='[{"value":"preview","label":"Preview"},{"value":"code","label":"Code"},{"value":"docs","label":"Docs"}]'}
@@ -405,8 +413,8 @@ to the root `div.ori-tabs`.
 
 ### Slots
 
-| Slot      | Scope                                                                     | Description                                                                                                                                                              |
-| --------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tab`     | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Tab trigger.** Custom content for the tab button — icon, count badge, and the like. Applies to every tab; read the per-tab item from scope. Falls back to `tab.label`. |
-| `<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot by the tab's value (e.g. `#account` for value `'account'`). Numeric values are stringified for the slot name.        |
-| `default` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered for any tab that has no matching named slot — one shared template for uniform content. Read the per-panel tab from scope.   |
+| Slot            | Scope                                                                     | Description                                                                                                                                                                                                                                                                                              |
+| --------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tab`           | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Tab trigger.** Custom content for the tab button — icon, count badge, and the like. Applies to every tab; read the per-tab item from scope. Falls back to `tab.label`.                                                                                                                                 |
+| `panel-<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot `panel-` plus the tab's value (e.g. `#panel-account` for value `'account'`). Numeric values are stringified for the slot name. The prefix keeps caller data out of the reserved `#tab` / `#default` namespace.                                       |
+| `default`       | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered into **every** panel that has no matching named slot, with that panel's tab in scope — so a template that ignores the scope is duplicated N times, `id`s and all. Read the per-panel tab from scope, or put genuinely shared content outside the component. |
