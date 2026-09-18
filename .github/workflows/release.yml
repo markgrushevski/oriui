@@ -71,3 +71,17 @@ jobs:
                   publish: npm run release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # npm runs the publish non-foreground, so when it fails the diagnostics go to its own debug
+            # log and the step above shows only an exit code — that is what hid the rc.18 prepack crash
+            # (ORI-I-83), and npm can even exit 0 on a failure it only wrote there. The log is discarded
+            # with the runner, so print it whenever the publish did not go green. npm redacts
+            # credentials in this log; the OIDC exchange uses a short-lived token in any case.
+            - name: npm debug log (the publish's real error)
+              if: failure()
+              run: |
+                  for log in ~/.npm/_logs/*-debug-0.log; do
+                      echo "::group::$log"
+                      cat "$log"
+                      echo "::endgroup::"
+                  done
