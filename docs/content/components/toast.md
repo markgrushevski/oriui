@@ -29,11 +29,11 @@ notifications; each auto-dismisses after 4 seconds unless sticky.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { success, error, warn, info, toast } = useToast();
+const { success, error, warn, info, toast } = useToast()
 
-const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z';
+const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 </script>
 
 <template>
@@ -79,9 +79,9 @@ Four severity shortcuts preset a color; the plain `toast()` call has no color cl
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { success, error, warn, info, toast } = useToast();
+const { success, error, warn, info, toast } = useToast()
 </script>
 
 <template>
@@ -131,11 +131,11 @@ Pass `title` for a bold heading and `icon` (SVG path) for a coloured leading ico
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { success, error, info } = useToast();
+const { success, error, info } = useToast()
 
-const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z';
+const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 </script>
 
 <template>
@@ -177,9 +177,9 @@ to suppress it — useful for short-lived toasts that auto-dismiss quickly.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { info } = useToast();
+const { info } = useToast()
 </script>
 
 <template>
@@ -217,9 +217,9 @@ until the user clicks the dismiss button or you call `dismiss(id)` / `clear()` m
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { toast, warn } = useToast();
+const { toast, warn } = useToast()
 </script>
 
 <template>
@@ -261,15 +261,15 @@ a specific toast early, or call `clear()` to flush the entire queue.
 
 ```vue
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { toast, dismiss, clear } = useToast();
+const { toast, dismiss, clear } = useToast()
 
 async function saveAndConfirm() {
-    const id = toast({ text: 'Saving…', duration: 0 });
-    await save();
-    dismiss(id);
-    toast({ text: 'Saved!', color: 'success' });
+    const id = toast({ text: 'Saving…', duration: 0 })
+    await save()
+    dismiss(id)
+    toast({ text: 'Saved!', color: 'success' })
 }
 </script>
 ```
@@ -310,9 +310,9 @@ it anywhere; no Vue injection or plugin registration required. Its behaviour is 
 `@oriui/headless/svelte`; this `@oriui/vue` re-export is unchanged.
 
 ```ts
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { toasts, toast, success, error, warn, info, dismiss, clear } = useToast();
+const { toasts, toast, success, error, warn, info, dismiss, clear } = useToast()
 ```
 
 | Return value | Type / signature                              | Description                                                                    |

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const NuxtLink = resolveComponent('NuxtLink');
+const NuxtLink = resolveComponent('NuxtLink')
 
 const features = [
     {
@@ -14,7 +14,7 @@ const features = [
         title: 'Accessible by default',
         text: 'Real disabled and aria state, focus-visible rings, and contrast-checked on-color tokens. A portfolio-grade, a11y-first foundation.'
     }
-];
+]
 </script>
 
 <template>

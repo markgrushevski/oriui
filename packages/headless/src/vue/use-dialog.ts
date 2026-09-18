@@ -1,6 +1,6 @@
-import { inject, type MaybeRefOrGetter } from 'vue';
-import { ORI_HEADLESS, type DialogControl, type UseDialogOptions } from './contract';
-import { nativeDialog } from './native';
+import { inject, type MaybeRefOrGetter } from 'vue'
+import { ORI_HEADLESS, type DialogControl, type UseDialogOptions } from './contract'
+import { nativeDialog } from './native'
 
 /**
  * Resolve the active Dialog behavior. Components call this and stay engine-agnostic: it returns
@@ -10,7 +10,7 @@ import { nativeDialog } from './native';
  * extra dependency — Zag is an optional per-widget swap, not a requirement.
  */
 export function useDialog(options?: MaybeRefOrGetter<UseDialogOptions>): DialogControl {
-    const adapters = inject(ORI_HEADLESS, null);
-    const adapter = adapters?.dialog ?? nativeDialog;
-    return adapter(options);
+    const adapters = inject(ORI_HEADLESS, null)
+    const adapter = adapters?.dialog ?? nativeDialog
+    return adapter(options)
 }

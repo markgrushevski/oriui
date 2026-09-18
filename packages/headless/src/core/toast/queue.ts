@@ -12,85 +12,85 @@
 
 /** The palette roles a toast can carry. Mirrors `@oriui/vue`'s `ThemeColor`; the core can't import up the
  *  dependency graph (vue → headless), so this small, stable union is duplicated here. */
-export type ToastColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info';
+export type ToastColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'
 
 export interface ToastOptions {
     /** Show a dismiss button on the toast. */
-    closable?: boolean;
+    closable?: boolean
     /** Semantic color role — drives the accent and the live-region assertiveness. */
-    color?: ToastColor;
+    color?: ToastColor
     /** Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed. */
-    duration?: number;
+    duration?: number
     /** SVG path for a leading icon. */
-    icon?: string;
+    icon?: string
     /** Body message. */
-    text?: string;
+    text?: string
     /** Optional bold heading above the text. */
-    title?: string;
+    title?: string
 }
 
 export interface ToastItem extends ToastOptions {
-    id: number;
+    id: number
 }
 
 export interface ToastQueue {
     /** A fresh snapshot of the current toasts (immutable — adapters mirror it into their reactivity). */
-    getToasts(): readonly ToastItem[];
+    getToasts(): readonly ToastItem[]
     /** Push a toast (string = its text). `fallbackColor` is the default color a severity shortcut supplies. */
-    push(options: ToastOptions | string, fallbackColor?: ToastColor): number;
+    push(options: ToastOptions | string, fallbackColor?: ToastColor): number
     /** Remove a toast by id (and cancel its timer); a no-op for an unknown id. */
-    dismiss(id: number): void;
+    dismiss(id: number): void
     /** Empty the queue and cancel every timer. */
-    clear(): void;
+    clear(): void
     /** Subscribe to any change (no-arg listener); returns an unsubscribe. */
-    subscribe(listener: () => void): () => void;
+    subscribe(listener: () => void): () => void
 }
 
 export function createToastQueue(): ToastQueue {
-    const items: ToastItem[] = [];
-    const timers = new Map<number, ReturnType<typeof setTimeout>>();
-    const listeners = new Set<() => void>();
-    let seq = 0;
+    const items: ToastItem[] = []
+    const timers = new Map<number, ReturnType<typeof setTimeout>>()
+    const listeners = new Set<() => void>()
+    let seq = 0
 
-    const notify = (): void => listeners.forEach((listener) => listener());
+    const notify = (): void => listeners.forEach((listener) => listener())
 
     function dismiss(id: number): void {
-        const timer = timers.get(id);
+        const timer = timers.get(id)
         if (timer !== undefined) {
-            clearTimeout(timer);
-            timers.delete(id);
+            clearTimeout(timer)
+            timers.delete(id)
         }
-        const index = items.findIndex((t) => t.id === id);
+        const index = items.findIndex((t) => t.id === id)
         if (index !== -1) {
-            items.splice(index, 1);
-            notify();
+            items.splice(index, 1)
+            notify()
         }
     }
 
     function clear(): void {
-        timers.forEach((timer) => clearTimeout(timer));
-        timers.clear();
+        timers.forEach((timer) => clearTimeout(timer))
+        timers.clear()
         if (items.length > 0) {
-            items.splice(0);
-            notify();
+            items.splice(0)
+            notify()
         }
     }
 
     function push(options: ToastOptions | string, fallbackColor?: ToastColor): number {
-        const base: ToastOptions = typeof options === 'string' ? { text: options } : { ...options };
-        const id = ++seq;
+        const base: ToastOptions = typeof options === 'string' ? { text: options } : { ...options }
+        const id = ++seq
         // `base` overrides the defaults; `color` falls back to the shortcut's color, overridable by `base`.
-        const item: ToastItem = { id, duration: 4000, closable: true, color: fallbackColor, ...base };
+        const item: ToastItem = { id, duration: 4000, closable: true, color: fallbackColor, ...base }
 
-        items.push(item);
+        items.push(item)
         if (item.duration && item.duration > 0) {
             timers.set(
                 id,
                 setTimeout(() => dismiss(id), item.duration)
-            );
+            )
         }
-        notify();
-        return id;
+        notify()
+        return id
     }
 
     return {
@@ -99,12 +99,12 @@ export function createToastQueue(): ToastQueue {
         dismiss,
         clear,
         subscribe(listener) {
-            listeners.add(listener);
+            listeners.add(listener)
             return () => {
-                listeners.delete(listener);
-            };
+                listeners.delete(listener)
+            }
         }
-    };
+    }
 }
 
 /**
@@ -121,5 +121,5 @@ export function createToastActions(queue: ToastQueue) {
         info: (options: ToastOptions | string) => queue.push(options, 'info'),
         dismiss: (id: number) => queue.dismiss(id),
         clear: () => queue.clear()
-    };
+    }
 }

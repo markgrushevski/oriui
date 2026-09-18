@@ -1,8 +1,8 @@
-import { inject, type MaybeRefOrGetter } from 'vue';
-import { ORI_HEADLESS, type ComboboxControl, type UseComboboxOptions } from './contract';
-import { nativeCombobox } from './native';
+import { inject, type MaybeRefOrGetter } from 'vue'
+import { ORI_HEADLESS, type ComboboxControl, type UseComboboxOptions } from './contract'
+import { nativeCombobox } from './native'
 
-export type { UseComboboxOptions } from './contract';
+export type { UseComboboxOptions } from './contract'
 
 /**
  * Resolve the active Combobox behavior. Components call this and stay engine-agnostic: it returns
@@ -12,7 +12,7 @@ export type { UseComboboxOptions } from './contract';
  * prop bags + visible items, or use the styled `OriCombobox`.
  */
 export function useCombobox(options: MaybeRefOrGetter<UseComboboxOptions>): ComboboxControl {
-    const adapters = inject(ORI_HEADLESS, null);
-    const adapter = adapters?.combobox ?? nativeCombobox;
-    return adapter(options);
+    const adapters = inject(ORI_HEADLESS, null)
+    const adapter = adapters?.combobox ?? nativeCombobox
+    return adapter(options)
 }

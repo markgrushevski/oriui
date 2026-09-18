@@ -1,1 +1,1 @@
-export { default as OriPopover } from './ori-popover.vue';
+export { default as OriPopover } from './ori-popover.vue'

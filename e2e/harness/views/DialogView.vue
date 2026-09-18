@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OriDialog } from '@oriui/vue';
+import { OriDialog } from '@oriui/vue'
 
 // The dialog ships its own close button (the FIRST focusable), so two inputs in the default slot give
 // exactly three focusables (close + first + last) for the Tab-cycle / focus-trap assertions. The

@@ -1,9 +1,9 @@
-import { provide, type App } from 'vue';
-import { ORI_HEADLESS, type HeadlessAdapters } from './contract';
+import { provide, type App } from 'vue'
+import { ORI_HEADLESS, type HeadlessAdapters } from './contract'
 
 /** Provide headless adapters to a component subtree (call inside `setup`). */
 export function provideHeadless(adapters: HeadlessAdapters): void {
-    provide(ORI_HEADLESS, adapters);
+    provide(ORI_HEADLESS, adapters)
 }
 
 /**
@@ -12,6 +12,6 @@ export function provideHeadless(adapters: HeadlessAdapters): void {
  */
 export const OriHeadless = {
     install(app: App, adapters: HeadlessAdapters = {}): void {
-        app.provide(ORI_HEADLESS, adapters);
+        app.provide(ORI_HEADLESS, adapters)
     }
-};
+}

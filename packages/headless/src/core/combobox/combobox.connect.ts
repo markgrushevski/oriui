@@ -1,33 +1,33 @@
-import type { NormalizeProps, PropTypes } from '../types';
-import { anatomy } from './combobox.anatomy';
-import type { ComboboxService } from './combobox.machine';
-import type { ComboboxItem } from './combobox.types';
+import type { NormalizeProps, PropTypes } from '../types'
+import { anatomy } from './combobox.anatomy'
+import type { ComboboxService } from './combobox.machine'
+import type { ComboboxItem } from './combobox.types'
 
-const parts = anatomy.build();
+const parts = anatomy.build()
 
 export interface ComboboxOptionState {
-    highlighted: boolean;
-    selected: boolean;
+    highlighted: boolean
+    selected: boolean
 }
 
 export interface ComboboxApi<T extends PropTypes = PropTypes> {
-    open: boolean;
-    value: string | null;
-    inputValue: string;
-    highlightedValue: string | null;
-    setOpen(open: boolean): void;
-    setInputValue(value: string): void;
-    select(item: ComboboxItem): void;
-    clear(): void;
-    getRootProps(): T['element'];
-    getLabelProps(): T['element'];
-    getControlProps(): T['element'];
-    getInputProps(): T['element'];
-    getTriggerProps(): T['button'];
-    getClearTriggerProps(): T['button'];
-    getListboxProps(): T['element'];
-    getOptionProps(item: ComboboxItem, index: number): T['element'];
-    getOptionState(item: ComboboxItem): ComboboxOptionState;
+    open: boolean
+    value: string | null
+    inputValue: string
+    highlightedValue: string | null
+    setOpen(open: boolean): void
+    setInputValue(value: string): void
+    select(item: ComboboxItem): void
+    clear(): void
+    getRootProps(): T['element']
+    getLabelProps(): T['element']
+    getControlProps(): T['element']
+    getInputProps(): T['element']
+    getTriggerProps(): T['button']
+    getClearTriggerProps(): T['button']
+    getListboxProps(): T['element']
+    getOptionProps(item: ComboboxItem, index: number): T['element']
+    getOptionState(item: ComboboxItem): ComboboxOptionState
 }
 
 /**
@@ -43,26 +43,26 @@ export function connect<T extends PropTypes>(
     normalize: NormalizeProps<T>,
     collection: ComboboxItem[]
 ): ComboboxApi<T> {
-    const { open, value, inputValue, highlightedValue, disabled } = service.getState();
-    const { scope } = service;
-    const labelId = scope.getId('label');
-    const inputId = scope.getId('input');
-    const listboxId = scope.getId('listbox');
-    const optionId = (index: number) => scope.getId(`option-${index}`);
+    const { open, value, inputValue, highlightedValue, disabled } = service.getState()
+    const { scope } = service
+    const labelId = scope.getId('label')
+    const inputId = scope.getId('input')
+    const listboxId = scope.getId('listbox')
+    const optionId = (index: number) => scope.getId(`option-${index}`)
 
-    const enabled = collection.filter((item) => !item.disabled);
-    const highlightedIndex = highlightedValue === null ? -1 : collection.findIndex((i) => i.value === highlightedValue);
-    const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue);
+    const enabled = collection.filter((item) => !item.disabled)
+    const highlightedIndex = highlightedValue === null ? -1 : collection.findIndex((i) => i.value === highlightedValue)
+    const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue)
 
-    const send = service.send;
+    const send = service.send
     function highlightAt(cursor: number): void {
-        if (enabled.length === 0) return;
-        const item = enabled[(cursor + enabled.length) % enabled.length];
-        if (item) send({ type: 'HIGHLIGHT', value: item.value });
+        if (enabled.length === 0) return
+        const item = enabled[(cursor + enabled.length) % enabled.length]
+        if (item) send({ type: 'HIGHLIGHT', value: item.value })
     }
     function selectItem(item: ComboboxItem): void {
-        if (item.disabled) return;
-        send({ type: 'SELECT', value: item.value, label: item.label });
+        if (item.disabled) return
+        send({ type: 'SELECT', value: item.value, label: item.label })
     }
 
     return {
@@ -71,23 +71,23 @@ export function connect<T extends PropTypes>(
         inputValue,
         highlightedValue,
         setOpen(next) {
-            send({ type: next ? 'OPEN' : 'CLOSE' });
+            send({ type: next ? 'OPEN' : 'CLOSE' })
         },
         setInputValue(next) {
-            send({ type: 'SET_INPUT', value: next });
+            send({ type: 'SET_INPUT', value: next })
         },
         select(item) {
-            selectItem(item);
+            selectItem(item)
         },
         clear() {
-            send({ type: 'CLEAR' });
+            send({ type: 'CLEAR' })
         },
 
         getRootProps() {
             return normalize.element({
                 ...parts.root.attrs,
                 'data-state': open ? 'open' : 'closed'
-            });
+            })
         },
 
         getLabelProps() {
@@ -95,7 +95,7 @@ export function connect<T extends PropTypes>(
                 ...parts.label.attrs,
                 id: labelId,
                 for: inputId
-            });
+            })
         },
 
         getControlProps() {
@@ -103,7 +103,7 @@ export function connect<T extends PropTypes>(
                 ...parts.control.attrs,
                 'data-state': open ? 'open' : 'closed',
                 'data-disabled': disabled ? '' : undefined
-            });
+            })
         },
 
         getInputProps() {
@@ -119,48 +119,48 @@ export function connect<T extends PropTypes>(
                 disabled: disabled || undefined,
                 value: inputValue,
                 onInput(event: Event) {
-                    send({ type: 'SET_INPUT', value: (event.target as HTMLInputElement).value });
+                    send({ type: 'SET_INPUT', value: (event.target as HTMLInputElement).value })
                 },
                 onKeydown(event: KeyboardEvent) {
                     switch (event.key) {
                         case 'ArrowDown':
-                            event.preventDefault();
-                            if (!open) send({ type: 'OPEN' });
-                            highlightAt(open ? enabledCursor + 1 : 0);
-                            break;
+                            event.preventDefault()
+                            if (!open) send({ type: 'OPEN' })
+                            highlightAt(open ? enabledCursor + 1 : 0)
+                            break
                         case 'ArrowUp':
-                            event.preventDefault();
-                            if (!open) send({ type: 'OPEN' });
-                            highlightAt(open ? enabledCursor - 1 : enabled.length - 1);
-                            break;
+                            event.preventDefault()
+                            if (!open) send({ type: 'OPEN' })
+                            highlightAt(open ? enabledCursor - 1 : enabled.length - 1)
+                            break
                         case 'Enter':
                             if (open && highlightedValue !== null) {
-                                event.preventDefault();
-                                const item = collection.find((i) => i.value === highlightedValue);
-                                if (item) selectItem(item);
+                                event.preventDefault()
+                                const item = collection.find((i) => i.value === highlightedValue)
+                                if (item) selectItem(item)
                             }
-                            break;
+                            break
                         case 'Escape':
                             if (open) {
-                                event.preventDefault();
-                                send({ type: 'CLOSE' });
+                                event.preventDefault()
+                                send({ type: 'CLOSE' })
                             }
-                            break;
+                            break
                         case 'Home':
                             if (open) {
-                                event.preventDefault();
-                                highlightAt(0);
+                                event.preventDefault()
+                                highlightAt(0)
                             }
-                            break;
+                            break
                         case 'End':
                             if (open) {
-                                event.preventDefault();
-                                highlightAt(enabled.length - 1);
+                                event.preventDefault()
+                                highlightAt(enabled.length - 1)
                             }
-                            break;
+                            break
                     }
                 }
-            });
+            })
         },
 
         getTriggerProps() {
@@ -173,9 +173,9 @@ export function connect<T extends PropTypes>(
                 'aria-expanded': open,
                 disabled: disabled || undefined,
                 onClick() {
-                    send({ type: open ? 'CLOSE' : 'OPEN' });
+                    send({ type: open ? 'CLOSE' : 'OPEN' })
                 }
-            });
+            })
         },
 
         getClearTriggerProps() {
@@ -186,9 +186,9 @@ export function connect<T extends PropTypes>(
                 'aria-label': 'Clear selection',
                 disabled: disabled || undefined,
                 onClick() {
-                    send({ type: 'CLEAR' });
+                    send({ type: 'CLEAR' })
                 }
-            });
+            })
         },
 
         getListboxProps() {
@@ -198,12 +198,12 @@ export function connect<T extends PropTypes>(
                 role: 'listbox',
                 'aria-labelledby': labelId,
                 hidden: !open
-            });
+            })
         },
 
         getOptionProps(item, index) {
-            const selected = item.value === value;
-            const highlighted = item.value === highlightedValue;
+            const selected = item.value === value
+            const highlighted = item.value === highlightedValue
             return normalize.element({
                 ...parts.option.attrs,
                 id: optionId(index),
@@ -213,21 +213,21 @@ export function connect<T extends PropTypes>(
                 'data-highlighted': highlighted ? '' : undefined,
                 'data-state': selected ? 'checked' : 'unchecked',
                 onClick() {
-                    selectItem(item);
+                    selectItem(item)
                 },
                 onPointermove() {
                     if (!item.disabled && highlightedValue !== item.value) {
-                        send({ type: 'HIGHLIGHT', value: item.value });
+                        send({ type: 'HIGHLIGHT', value: item.value })
                     }
                 }
-            });
+            })
         },
 
         getOptionState(item) {
             return {
                 highlighted: item.value === highlightedValue,
                 selected: item.value === value
-            };
+            }
         }
-    };
+    }
 }

@@ -5,18 +5,18 @@
 // OriToolbarToggleGroup (mutually exclusive, deselectable). MDC's inline/block syntax can bind a
 // v-model but cannot wire arbitrary @click handlers, so this wrapper is needed for the Bold/Italic half
 // (same reason MenuDemo/DialogDemo exist — see their comments).
-import { ref } from 'vue';
+import { ref } from 'vue'
 import {
     OriToolbar,
     OriToolbarButton,
     OriToolbarSeparator,
     OriToolbarToggleGroup,
     OriToolbarToggleItem
-} from '@oriui/vue';
+} from '@oriui/vue'
 
-const bold = ref(false);
-const italic = ref(false);
-const align = ref('left');
+const bold = ref(false)
+const italic = ref(false)
+const align = ref('left')
 </script>
 
 <template>

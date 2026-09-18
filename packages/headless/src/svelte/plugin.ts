@@ -1,5 +1,5 @@
-import { getContext, setContext } from 'svelte';
-import { ORI_HEADLESS, type HeadlessAdapters } from './contract';
+import { getContext, setContext } from 'svelte'
+import { ORI_HEADLESS, type HeadlessAdapters } from './contract'
 
 /**
  * Provide headless adapters to a Svelte component subtree — the Svelte twin of the Vue
@@ -7,7 +7,7 @@ import { ORI_HEADLESS, type HeadlessAdapters } from './contract';
  * `provideHeadless({ disclosure: zagDisclosure })`. With no adapter the native one is used.
  */
 export function provideHeadless(adapters: HeadlessAdapters): void {
-    setContext(ORI_HEADLESS, adapters);
+    setContext(ORI_HEADLESS, adapters)
 }
 
 /**
@@ -17,8 +17,8 @@ export function provideHeadless(adapters: HeadlessAdapters): void {
  */
 export function getHeadless(): HeadlessAdapters | null {
     try {
-        return getContext<HeadlessAdapters>(ORI_HEADLESS) ?? null;
+        return getContext<HeadlessAdapters>(ORI_HEADLESS) ?? null
     } catch {
-        return null;
+        return null
     }
 }

@@ -1,4 +1,4 @@
-import { createAnatomy } from '../anatomy';
+import { createAnatomy } from '../anatomy'
 
 export const anatomy = createAnatomy('combobox', [
     'root',
@@ -9,4 +9,4 @@ export const anatomy = createAnatomy('combobox', [
     'clearTrigger',
     'listbox',
     'option'
-] as const);
+] as const)

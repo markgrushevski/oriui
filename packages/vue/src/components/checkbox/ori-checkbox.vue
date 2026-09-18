@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue';
-import type { ActionSize, ThemeColor } from '../../types';
+import { computed, useId } from 'vue'
+import type { ActionSize, ThemeColor } from '../../types'
 
 // OriCheckbox — a real <input type="checkbox"> kept in the DOM for free keyboard/a11y/form behavior,
 // visually hidden over a styled box. v-model accepts a boolean (single) or an array (native group via
 // the `value` prop). State is the native attribute; the accent + focus ring come from the ori-color
 // token, and the focus ring rides :focus-visible on the box.
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 const {
     color = 'primary',
@@ -14,21 +14,21 @@ const {
     id,
     size = 'md'
 } = defineProps<{
-    color?: ThemeColor;
-    disabled?: boolean;
-    id?: string;
-    invalid?: boolean;
-    label?: string;
-    required?: boolean;
-    size?: ActionSize;
+    color?: ThemeColor
+    disabled?: boolean
+    id?: string
+    invalid?: boolean
+    label?: string
+    required?: boolean
+    size?: ActionSize
     /** Bound to the array model for a native checkbox group; omit for a single boolean. */
-    value?: string | number;
-}>();
+    value?: string | number
+}>()
 
-const model = defineModel<boolean | (string | number)[]>();
+const model = defineModel<boolean | (string | number)[]>()
 
-const uid = useId();
-const fieldId = computed(() => id ?? uid);
+const uid = useId()
+const fieldId = computed(() => id ?? uid)
 </script>
 
 <template>

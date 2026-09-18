@@ -14,17 +14,17 @@
  * `checkbox` / `button` inputs are excluded — they act on Space/Enter, not arrows.
  */
 export function ownsArrowKeys(el: HTMLElement): boolean {
-    const tag = el.tagName;
-    if (tag === 'TEXTAREA' || tag === 'SELECT') return true;
+    const tag = el.tagName
+    if (tag === 'TEXTAREA' || tag === 'SELECT') return true
     if (tag === 'INPUT') {
-        const type = (el as HTMLInputElement).type;
+        const type = (el as HTMLInputElement).type
         // Everything but checkbox/button uses arrows — text/number/date to edit, range to change, radio
         // to move within its group.
-        if (type !== 'checkbox' && type !== 'button') return true;
+        if (type !== 'checkbox' && type !== 'button') return true
     }
-    if (el.isContentEditable) return true;
+    if (el.isContentEditable) return true
 
-    const role = el.getAttribute('role');
+    const role = el.getAttribute('role')
     if (
         role === 'slider' ||
         role === 'spinbutton' ||
@@ -34,9 +34,9 @@ export function ownsArrowKeys(el: HTMLElement): boolean {
         role === 'combobox' ||
         role === 'textbox'
     ) {
-        return true;
+        return true
     }
 
     // A composite widget can expose its role on an ANCESTOR while focus sits on a descendant control.
-    return el.closest('[role="radiogroup"], [role="menu"], [role="listbox"], [role="grid"], [role="tree"]') !== null;
+    return el.closest('[role="radiogroup"], [role="menu"], [role="listbox"], [role="grid"], [role="tree"]') !== null
 }

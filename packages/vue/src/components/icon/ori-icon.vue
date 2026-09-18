@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type { ActionSize, ThemeColor } from '../../types';
+import type { ActionSize, ThemeColor } from '../../types'
 
 const { size = 'text' } = defineProps<{
-    color?: ThemeColor;
-    icon?: string;
-    inline?: boolean;
-    label?: string;
-    size?: ActionSize;
-    spaced?: boolean;
-}>();
+    color?: ThemeColor
+    icon?: string
+    inline?: boolean
+    label?: string
+    size?: ActionSize
+    spaced?: boolean
+}>()
 </script>
 
 <template>

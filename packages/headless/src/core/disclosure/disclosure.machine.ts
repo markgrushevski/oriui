@@ -1,11 +1,11 @@
-import { createMachine, type Service } from '../machine';
-import { createScope } from '../scope';
-import type { DisclosureContext, DisclosureEvent, DisclosureProps } from './disclosure.types';
+import { createMachine, type Service } from '../machine'
+import { createScope } from '../scope'
+import type { DisclosureContext, DisclosureEvent, DisclosureProps } from './disclosure.types'
 
-export type DisclosureService = Service<DisclosureContext, DisclosureEvent>;
+export type DisclosureService = Service<DisclosureContext, DisclosureEvent>
 
 export function machine(props: DisclosureProps): DisclosureService {
-    const scope = createScope({ id: props.id });
+    const scope = createScope({ id: props.id })
 
     return createMachine<DisclosureContext, DisclosureEvent>(
         {
@@ -16,18 +16,18 @@ export function machine(props: DisclosureProps): DisclosureService {
             reducer(context, event) {
                 switch (event.type) {
                     case 'TOGGLE':
-                        return context.disabled ? context : { ...context, open: !context.open };
+                        return context.disabled ? context : { ...context, open: !context.open }
                     case 'OPEN':
-                        return context.open ? context : { ...context, open: true };
+                        return context.open ? context : { ...context, open: true }
                     case 'CLOSE':
-                        return !context.open ? context : { ...context, open: false };
+                        return !context.open ? context : { ...context, open: false }
                     case 'SET':
-                        return context.open === event.open ? context : { ...context, open: event.open };
+                        return context.open === event.open ? context : { ...context, open: event.open }
                     default:
-                        return context;
+                        return context
                 }
             }
         },
         scope
-    );
+    )
 }

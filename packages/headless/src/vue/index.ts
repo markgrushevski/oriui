@@ -1,14 +1,14 @@
 // Engine-agnostic resolvers components consume
-export { useDisclosure } from './use-disclosure';
-export { useDialog } from './use-dialog';
+export { useDisclosure } from './use-disclosure'
+export { useDialog } from './use-dialog'
 
 // Headless behaviors built directly on the core engine
-export { useCombobox, type UseComboboxOptions } from './use-combobox';
-export type { ComboboxItem } from '../core';
+export { useCombobox, type UseComboboxOptions } from './use-combobox'
+export type { ComboboxItem } from '../core'
 
 // Headless menu (WAI-ARIA menu-button + roving tabindex) built on the core engine
-export { useMenu, type UseMenuOptions } from './use-menu';
-export type { MenuItem } from '../core';
+export { useMenu, type UseMenuOptions } from './use-menu'
+export type { MenuItem } from '../core'
 
 // Headless toolbar (WAI-ARIA toolbar — compositional roving tabindex, not a machine)
 export {
@@ -19,35 +19,35 @@ export {
     useToolbarToggleItem,
     type UseToolbarOptions,
     type UseToolbarToggleGroupOptions
-} from './use-toolbar';
+} from './use-toolbar'
 
 // Headless tabs (WAI-ARIA tabs — automatic activation; data-driven roving tabindex, not a machine)
-export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs';
+export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs'
 
 // Headless toast queue — a framework-agnostic singleton projected into a Vue reactive array
-export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast';
+export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
 
 // Headless dismiss layer — outside-pointerdown / focus-out close for non-platform overlays (Menu/Combobox)
-export { useDismissable, type UseDismissableOptions } from './use-dismissable';
+export { useDismissable, type UseDismissableOptions } from './use-dismissable'
 
 // Headless color picker — compositional sRGB + 2D-area helpers (not a machine); Vue binding
-export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
-export type { ColorFormat, HSVA } from '../core/color-picker';
+export { useColorPicker, type UseColorPickerOptions } from './use-color-picker'
+export type { ColorFormat, HSVA } from '../core/color-picker'
 
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
-export { useToken, useThemeColor } from './use-token';
+export { useToken, useThemeColor } from './use-token'
 
 // Theme controller — light/dark + auto + persistence, with the runtime-toggle invalidation fix
-export { useTheme, type UseThemeReturn } from './use-theme';
-export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core';
+export { useTheme, type UseThemeReturn } from './use-theme'
+export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core'
 
 // Adapter selection
-export { provideHeadless, OriHeadless } from './plugin';
+export { provideHeadless, OriHeadless } from './plugin'
 
 // Built-in native adapters (defaults) + the low-level bridge for writing your own
-export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native';
-export { useService } from './use-machine';
-export { normalizeProps, type VuePropTypes } from './normalize-props';
+export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native'
+export { useService } from './use-machine'
+export { normalizeProps, type VuePropTypes } from './normalize-props'
 
 // Contract
 export {
@@ -63,4 +63,4 @@ export {
     type MenuControl,
     type MenuAdapter,
     type HeadlessAdapters
-} from './contract';
+} from './contract'

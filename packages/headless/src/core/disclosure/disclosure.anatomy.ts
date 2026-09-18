@@ -1,3 +1,3 @@
-import { createAnatomy } from '../anatomy';
+import { createAnatomy } from '../anatomy'
 
-export const anatomy = createAnatomy('disclosure', ['root', 'trigger', 'content']);
+export const anatomy = createAnatomy('disclosure', ['root', 'trigger', 'content'])

@@ -36,9 +36,9 @@ drives its own `ref`.
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const volume = ref(60);
-const brightness = ref(40);
+import { ref } from 'vue'
+const volume = ref(60)
+const brightness = ref(40)
 </script>
 
 <template>
@@ -212,14 +212,14 @@ the user releases the thumb or commits a keyboard step, carrying the settled `nu
 
 ```vue
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const opacity = ref(100);
-const undoStack = [];
+const opacity = ref(100)
+const undoStack = []
 
 function commit(value) {
     // record ONE undo step for the whole drag — not one per tick
-    undoStack.push({ opacity: value });
+    undoStack.push({ opacity: value })
 }
 </script>
 

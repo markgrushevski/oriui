@@ -2,15 +2,15 @@
  * Framework-neutral prop dictionary produced by a `connect()` prop-getter and handed to a
  * per-framework `normalizeProps` before it is spread onto an element.
  */
-export type Dict = Record<string, unknown>;
+export type Dict = Record<string, unknown>
 
 /**
  * Branding interface: each framework adapter widens these to its own element/attribute types
  * (Vue's `HTMLAttributes`, Svelte's, React's). The core only relies on the shape, not the types.
  */
 export interface PropTypes {
-    element: Record<string, unknown>;
-    button: Record<string, unknown>;
+    element: Record<string, unknown>
+    button: Record<string, unknown>
 }
 
 /**
@@ -18,8 +18,8 @@ export interface PropTypes {
  * a framework's binding convention (e.g. Svelte lowercases `onClick` -> `onclick`).
  */
 export interface NormalizeProps<T extends PropTypes = PropTypes> {
-    element(props: Dict): T['element'];
-    button(props: Dict): T['button'];
+    element(props: Dict): T['element']
+    button(props: Dict): T['button']
 }
 
 /**
@@ -30,5 +30,5 @@ export function createNormalizer<T extends PropTypes = PropTypes>(transform: (pr
     return {
         element: transform as NormalizeProps<T>['element'],
         button: transform as NormalizeProps<T>['button']
-    };
+    }
 }

@@ -1,40 +1,40 @@
 <script setup lang="ts">
 // Overrides Nuxt Content's default ProsePre: wraps highlighted code in a card with a language
 // label and a copy button. `code` is the raw (un-highlighted) text, ideal for the clipboard.
-import { ref, type StyleValue } from 'vue';
+import { ref, type StyleValue } from 'vue'
 
 const props = defineProps<{
-    code?: string;
-    language?: string | null;
-    filename?: string | null;
-    highlights?: number[];
-    meta?: string | null;
-    class?: string;
-    style?: StyleValue;
-}>();
+    code?: string
+    language?: string | null
+    filename?: string | null
+    highlights?: number[]
+    meta?: string | null
+    class?: string
+    style?: StyleValue
+}>()
 
-const copied = ref(false);
-let timer: ReturnType<typeof setTimeout> | undefined;
+const copied = ref(false)
+let timer: ReturnType<typeof setTimeout> | undefined
 
 async function copy() {
-    const text = props.code ?? '';
+    const text = props.code ?? ''
     try {
         if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(text)
         } else {
             // Fallback for insecure contexts / older browsers.
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
+            const ta = document.createElement('textarea')
+            ta.value = text
+            ta.style.position = 'fixed'
+            ta.style.opacity = '0'
+            document.body.appendChild(ta)
+            ta.select()
+            document.execCommand('copy')
+            ta.remove()
         }
-        copied.value = true;
-        clearTimeout(timer);
-        timer = setTimeout(() => (copied.value = false), 1400);
+        copied.value = true
+        clearTimeout(timer)
+        timer = setTimeout(() => (copied.value = false), 1400)
     } catch {
         // clipboard unavailable — no-op
     }

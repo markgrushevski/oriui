@@ -135,12 +135,12 @@ choice and sets the attributes synchronously:
 <script>
     // runs before first paint — no flash of the wrong theme
     // (the storage keys are yours to choose — these mirror this site's convention)
-    var skin = localStorage.getItem('ori-skin');
-    var theme = localStorage.getItem('ori-theme'); // 'auto' | 'light' | 'dark' | null
+    var skin = localStorage.getItem('ori-skin')
+    var theme = localStorage.getItem('ori-theme') // 'auto' | 'light' | 'dark' | null
     // RESOLVE the setting — it may be 'auto' (or unset); don't just test for 'dark'.
-    var dark = theme === 'dark' || ((!theme || theme === 'auto') && matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.add(dark ? 'ori-theme_dark' : 'ori-theme_light');
-    if (skin) document.documentElement.setAttribute('data-ori-skin', skin);
+    var dark = theme === 'dark' || ((!theme || theme === 'auto') && matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.classList.add(dark ? 'ori-theme_dark' : 'ori-theme_light')
+    if (skin) document.documentElement.setAttribute('data-ori-skin', skin)
 </script>
 ```
 
@@ -165,12 +165,12 @@ applies each change through the fix:
 
 ```vue
 <script setup lang="ts">
-import { useTheme } from '@oriui/headless/vue';
+import { useTheme } from '@oriui/headless/vue'
 
 const { resolvedTheme, setTheme, toggleTheme, cycleTheme } = useTheme({
     storageKey: 'ori-theme', // persisted to localStorage; null to disable
     default: 'auto' // 'auto' follows prefers-color-scheme live; or 'light' / 'dark'
-});
+})
 </script>
 
 <template>
@@ -189,10 +189,10 @@ Have your own theme store, or vanilla JS? Call the low-level **`applyTheme`** ex
 have toggled the class:
 
 ```ts
-import { applyTheme } from '@oriui/headless';
+import { applyTheme } from '@oriui/headless'
 
 // sets ori-theme_{dark,light} on <html> AND re-resolves the components — the drop-in for classList.toggle
-applyTheme(isDark ? 'dark' : 'light');
+applyTheme(isDark ? 'dark' : 'light')
 ```
 
 The same invalidation applies to **any** runtime change of an inherited colour token: if you switch

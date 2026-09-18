@@ -1,4 +1,4 @@
-let counter = 0;
+let counter = 0
 
 /**
  * Generate a process-unique base id for a headless instance. Vue sources this from `useId()`
@@ -7,6 +7,6 @@ let counter = 0;
  * — a bare counter can drift when the two renders differ in order (see `scope.ts`).
  */
 export function uid(prefix: string): string {
-    counter += 1;
-    return `${prefix}-${counter}`;
+    counter += 1
+    return `${prefix}-${counter}`
 }

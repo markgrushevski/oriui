@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, provide, ref, watch } from 'vue';
-import { useColorPicker } from '@oriui/headless/vue';
-import type { ColorFormat } from '@oriui/headless/vue';
-import { OriSlider } from '../slider';
-import { OriInput } from '../input';
-import { OriButton } from '../button';
-import { oriFieldKey, useOriField } from '../field/context';
+import { computed, provide, ref, watch } from 'vue'
+import { useColorPicker } from '@oriui/headless/vue'
+import type { ColorFormat } from '@oriui/headless/vue'
+import { OriSlider } from '../slider'
+import { OriInput } from '../input'
+import { OriButton } from '../button'
+import { oriFieldKey, useOriField } from '../field/context'
 
 // OriColorPicker — an INLINE saturation/value + hue (+ optional alpha) + hex + presets panel. It is
 // open-state-agnostic: to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger
@@ -24,42 +24,42 @@ const {
     presets
 } = defineProps<{
     /** Add an alpha channel — a checkerboard slider and `#rrggbbaa` / `rgba()` / `hsla()` output. */
-    alpha?: boolean;
-    disabled?: boolean;
+    alpha?: boolean
+    disabled?: boolean
     /** Show an eyedropper trigger (EyeDropper API; auto-hidden where the browser lacks it). */
-    eyedropper?: boolean;
+    eyedropper?: boolean
     /** Associate the submitted value's hidden input with a form by id (when not a descendant of it). */
-    form?: string;
+    form?: string
     /** Output format for the emitted string (default `'hex'`). */
-    format?: ColorFormat;
+    format?: ColorFormat
     /** Accessible name for the whole control (→ `aria-label`). */
-    label?: string;
+    label?: string
     /** Submit the current color under this field name via a hidden input (a color always has a value). */
-    name?: string;
+    name?: string
     /** Preset swatches — a `string[]` of colors, rendered as a single-select roving listbox. */
-    presets?: string[];
-}>();
+    presets?: string[]
+}>()
 
-const model = defineModel<string>();
-const emit = defineEmits<{ change: [value: string] }>();
+const model = defineModel<string>()
+const emit = defineEmits<{ change: [value: string] }>()
 
 // A color-picker names itself via aria-label(ledby), so inside an OriField it points at the field's
 // label id + adopts its describedby / disabled; standalone it keeps its own `label` → aria-label. It has
 // no size / required / invalid concept, so those field bits don't apply. `isDisabled` feeds the engine.
-const field = useOriField();
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
-const isInvalid = computed(() => field?.invalid.value ?? false);
-const labelledBy = computed(() => field?.labelId.value);
-const describedBy = computed(() => field?.describedBy.value);
+const field = useOriField()
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
+const isInvalid = computed(() => field?.invalid.value ?? false)
+const labelledBy = computed(() => field?.labelId.value)
+const describedBy = computed(() => field?.describedBy.value)
 // Keep the own aria-label unless the field actually supplies a labelledby (a label-less field must not
 // blank the picker's name).
-const ariaLabel = computed(() => (labelledBy.value ? undefined : label));
+const ariaLabel = computed(() => (labelledBy.value ? undefined : label))
 
 // This picker COMPOSES field-aware children (OriSlider ×2, OriInput hex, OriButton eyedropper). Since
 // the field context flows via provide/inject to the whole subtree, shield the children so they render
 // standalone — otherwise each adopts field.id (duplicate ids) and the hex error is suppressed. The
 // picker's OWN isDisabled is forwarded to them explicitly below so field-disabled still propagates.
-provide(oriFieldKey, undefined);
+provide(oriFieldKey, undefined)
 
 const cp = useColorPicker(() => ({
     value: model.value,
@@ -69,32 +69,32 @@ const cp = useColorPicker(() => ({
     disabled: isDisabled.value,
     presets,
     onInput: (next) => {
-        model.value = next;
+        model.value = next
     },
     onChange: (next) => emit('change', next)
-}));
+}))
 
 // A single-path eyedropper glyph (MDI-style) for the pick-from-screen trigger.
 const EYEDROPPER_ICON =
-    'M19.35 11.72 17.22 13.85 15.81 12.43 8.1 20.14 3.5 22 2 20.5 3.86 15.9 11.57 8.19 10.15 6.78 12.28 4.65 19.35 11.72M16.76 3C17.93 1.83 19.83 1.83 21 3 22.17 4.17 22.17 6.07 21 7.24L19.08 9.16 14.84 4.92 16.76 3Z';
+    'M19.35 11.72 17.22 13.85 15.81 12.43 8.1 20.14 3.5 22 2 20.5 3.86 15.9 11.57 8.19 10.15 6.78 12.28 4.65 19.35 11.72M16.76 3C17.93 1.83 19.83 1.83 21 3 22.17 4.17 22.17 6.07 21 7.24L19.08 9.16 14.84 4.92 16.76 3Z'
 
 // The hex field holds a local draft so a partial entry isn't reformatted mid-type; it commits on
 // blur / Enter. cp.hex changes (drag, hue, preset) re-seed the draft.
-const hexDraft = ref(cp.hex.value);
-const hexInvalid = ref(false);
+const hexDraft = ref(cp.hex.value)
+const hexInvalid = ref(false)
 watch(
     () => cp.hex.value,
     (hex) => {
-        hexDraft.value = hex;
-        hexInvalid.value = false;
+        hexDraft.value = hex
+        hexInvalid.value = false
     }
-);
+)
 function onHexInput(next: string | undefined): void {
-    hexDraft.value = next ?? '';
-    hexInvalid.value = false;
+    hexDraft.value = next ?? ''
+    hexInvalid.value = false
 }
 function commitHex(): void {
-    hexInvalid.value = !cp.setHex(hexDraft.value);
+    hexInvalid.value = !cp.setHex(hexDraft.value)
 }
 </script>
 

@@ -32,22 +32,22 @@ imperative handlers. A component spreads the prop bags onto its markup — it ne
 keyboard, or ARIA. For the native disclosure engine the shape is `DisclosureApi`:
 
 ```ts
-import { disclosure, createNormalizer } from '@oriui/headless';
+import { disclosure, createNormalizer } from '@oriui/headless'
 
 // `connect()` lives in core but the prop normalizer is per-framework. A binding
 // imports its own (Vue's `normalizeProps` from @oriui/headless/vue); here we build a
 // minimal pass-through to keep the example self-contained.
-const normalizeProps = createNormalizer((props) => props);
+const normalizeProps = createNormalizer((props) => props)
 
-const service = disclosure.machine({ id: 'demo', defaultOpen: false });
-const api = disclosure.connect(service, normalizeProps);
+const service = disclosure.machine({ id: 'demo', defaultOpen: false })
+const api = disclosure.connect(service, normalizeProps)
 
-api.open; // boolean
-api.getRootProps(); // { data-scope, data-part, data-state }
-api.getTriggerProps(); // { data-scope, data-part, id, type, aria-controls, aria-expanded, onClick, … }
-api.getContentProps(); // { data-scope, data-part, id, role: 'region', aria-labelledby, hidden, data-state }
-api.setOpen(true);
-api.toggle();
+api.open // boolean
+api.getRootProps() // { data-scope, data-part, data-state }
+api.getTriggerProps() // { data-scope, data-part, id, type, aria-controls, aria-expanded, onClick, … }
+api.getContentProps() // { data-scope, data-part, id, role: 'region', aria-labelledby, hidden, data-state }
+api.setOpen(true)
+api.toggle()
 ```
 
 Every part bag (root, trigger, content) carries the anatomy's `data-scope` / `data-part` attrs, and
@@ -103,10 +103,10 @@ swapping an engine per primitive — e.g. a custom or Zag-backed adapter for a g
 without changing a component's template:
 
 ```ts
-import { OriHeadless } from '@oriui/headless/vue';
+import { OriHeadless } from '@oriui/headless/vue'
 
 // Each defaults to native; register an adapter only to override the one you want.
-app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox });
+app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox })
 ```
 
 ## Frameworks

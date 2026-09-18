@@ -17,7 +17,7 @@ a dialog now has a **zero-dependency native default** — the browser's `<dialog
 ## Import
 
 ```ts
-import { useDialog } from '@oriui/headless/vue';
+import { useDialog } from '@oriui/headless/vue'
 ```
 
 No adapter needs to be registered — `useDialog` resolves the native engine by default. Swapping a custom
@@ -58,18 +58,18 @@ Render a real `<dialog>`, bind `dialogProps`, and drive `showModal()` / `close()
 
 ```vue
 <script setup lang="ts">
-import { useTemplateRef, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/headless/vue';
+import { useTemplateRef, watchPostEffect } from 'vue'
+import { useDialog } from '@oriui/headless/vue'
 
-const dlg = useDialog(() => ({ modal: true }));
+const dlg = useDialog(() => ({ modal: true }))
 
-const dialogEl = useTemplateRef<HTMLDialogElement>('dialog');
+const dialogEl = useTemplateRef<HTMLDialogElement>('dialog')
 watchPostEffect(() => {
-    const el = dialogEl.value;
-    if (!el) return;
-    if (dlg.open.value && !el.open) el.showModal();
-    else if (!dlg.open.value && el.open) el.close();
-});
+    const el = dialogEl.value
+    if (!el) return
+    if (dlg.open.value && !el.open) el.showModal()
+    else if (!dlg.open.value && el.open) el.close()
+})
 </script>
 
 <template>
@@ -118,21 +118,21 @@ The **React** binding is the same — the control is plain values (no `$` / `.va
 `close()` from `open` in an effect:
 
 ```tsx
-import { useRef, useEffect } from 'react';
-import { useDialog } from '@oriui/headless/react';
+import { useRef, useEffect } from 'react'
+import { useDialog } from '@oriui/headless/react'
 
 function Confirm() {
-    const dialogRef = useRef<HTMLDialogElement>(null);
+    const dialogRef = useRef<HTMLDialogElement>(null)
     const { open, triggerProps, dialogProps, titleProps, descriptionProps, closeTriggerProps } = useDialog({
         modal: true
-    });
+    })
 
     useEffect(() => {
-        const el = dialogRef.current;
-        if (!el) return;
-        if (open && !el.open) el.showModal();
-        else if (!open && el.open) el.close();
-    }, [open]);
+        const el = dialogRef.current
+        if (!el) return
+        if (open && !el.open) el.showModal()
+        else if (!open && el.open) el.close()
+    }, [open])
 
     return (
         <>
@@ -143,7 +143,7 @@ function Confirm() {
                 <button {...closeTriggerProps}>Close</button>
             </dialog>
         </>
-    );
+    )
 }
 ```
 
@@ -156,13 +156,13 @@ example a Zag-backed adapter for a genuinely hard widget), without touching your
 
 ```ts
 // main.ts
-import { createApp } from 'vue';
-import { OriHeadless } from '@oriui/headless/vue';
-import { myDialog } from './headless/my-dialog'; // optional custom adapter
+import { createApp } from 'vue'
+import { OriHeadless } from '@oriui/headless/vue'
+import { myDialog } from './headless/my-dialog' // optional custom adapter
 
-const app = createApp(App);
-app.use(OriHeadless, { dialog: myDialog });
-app.mount('#app');
+const app = createApp(App)
+app.use(OriHeadless, { dialog: myDialog })
+app.mount('#app')
 ```
 
 `useDialog` resolves that adapter (or one from `provideHeadless` inside a subtree), falling back to the

@@ -6,17 +6,17 @@
  * `getRootNode` is the seam for future DOM queries (focus management, shadow DOM); kept minimal now.
  */
 export interface Scope {
-    id: string;
-    getId(part: string): string;
-    getRootNode(): Document | ShadowRoot;
+    id: string
+    getId(part: string): string
+    getRootNode(): Document | ShadowRoot
 }
 
 export function createScope(options: { id: string; getRootNode?: () => Document | ShadowRoot }): Scope {
-    const { id, getRootNode } = options;
+    const { id, getRootNode } = options
 
     return {
         id,
         getId: (part) => `ori-${id}-${part}`,
         getRootNode: getRootNode ?? (() => document)
-    };
+    }
 }

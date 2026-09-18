@@ -1,1 +1,1 @@
-export { default as OriTextarea } from './ori-textarea.vue';
+export { default as OriTextarea } from './ori-textarea.vue'

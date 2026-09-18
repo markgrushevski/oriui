@@ -16,7 +16,7 @@ npm install @oriui/vue
 
 ```vue
 <script setup>
-import { OriButton } from '@oriui/vue';
+import { OriButton } from '@oriui/vue'
 </script>
 
 <template>
@@ -27,7 +27,7 @@ import { OriButton } from '@oriui/vue';
 Import the stylesheet once, for example in your entry file:
 
 ```ts
-import '@oriui/css';
+import '@oriui/css'
 ```
 
 That is all — components are themeable through design tokens, with light/dark and swappable

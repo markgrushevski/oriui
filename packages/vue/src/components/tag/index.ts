@@ -1,1 +1,1 @@
-export { default as OriTag } from './ori-tag.vue';
+export { default as OriTag } from './ori-tag.vue'

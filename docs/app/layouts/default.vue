@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue'
 
-const { init } = useOriTheme();
-const { init: initFramework } = useOriFramework();
+const { init } = useOriTheme()
+const { init: initFramework } = useOriFramework()
 
 // The home page is a landing: no sidebar, nav behind the burger, full-bleed hero.
-const route = useRoute();
-const isHome = computed(() => route.path === '/');
+const route = useRoute()
+const isHome = computed(() => route.path === '/')
 
 // Top-level header links → the three sections.
 const nav = [
@@ -14,7 +14,7 @@ const nav = [
     { label: 'Guides', to: '/guides/design-tokens' },
     { label: 'Components', to: '/components/button' },
     { label: 'Headless', to: '/headless/core' }
-];
+]
 
 // The navigation tree (desktop sidebar + mobile drawer share it via <NavTree>).
 const sections = [
@@ -134,14 +134,14 @@ const sections = [
             }
         ]
     }
-];
+]
 
-const drawerOpen = ref(false);
+const drawerOpen = ref(false)
 
 onMounted(() => {
-    init();
-    initFramework();
-});
+    init()
+    initFramework()
+})
 </script>
 
 <template>

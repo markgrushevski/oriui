@@ -1,1 +1,1 @@
-export { default as OriTooltip } from './ori-tooltip.vue';
+export { default as OriTooltip } from './ori-tooltip.vue'

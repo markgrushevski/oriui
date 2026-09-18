@@ -2,88 +2,88 @@
 // A ⌘K / Ctrl-K command palette for searching the docs. It consumes the engine-agnostic
 // useDialog() contract directly (a second, richer consumer than OriDialog) — so the focus trap,
 // scroll lock, Escape, and aria-modal all come from the native <dialog> the contract defaults to.
-import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch, watchPostEffect } from 'vue';
-import { useDialog } from '@oriui/headless/vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch, watchPostEffect } from 'vue'
+import { useDialog } from '@oriui/headless/vue'
 
 interface Doc {
-    path: string;
-    title: string;
-    description?: string;
+    path: string
+    title: string
+    description?: string
 }
 
-const dlg = useDialog(() => ({ modal: true }));
-const query = ref('');
-const activeIndex = ref(0);
-const inputEl = ref<HTMLInputElement>();
-const dialogEl = useTemplateRef<HTMLDialogElement>('dialog');
+const dlg = useDialog(() => ({ modal: true }))
+const query = ref('')
+const activeIndex = ref(0)
+const inputEl = ref<HTMLInputElement>()
+const dialogEl = useTemplateRef<HTMLDialogElement>('dialog')
 
 // Drive the native <dialog> from the contract's open state (showModal gives the focus trap,
 // ::backdrop, top-layer and Esc for free). `flush: 'post'` runs after the element is in the DOM.
 watchPostEffect(() => {
-    const el = dialogEl.value;
-    if (!el) return;
-    if (dlg.open.value && !el.open) el.showModal();
-    else if (!dlg.open.value && el.open) el.close();
-});
+    const el = dialogEl.value
+    if (!el) return
+    if (dlg.open.value && !el.open) el.showModal()
+    else if (!dlg.open.value && el.open) el.close()
+})
 
 const { data } = await useAsyncData('cmdk-index', () =>
     queryCollection('docs').select('path', 'title', 'description').all()
-);
-const docs = computed<Doc[]>(() => (data.value as Doc[] | null) ?? []);
+)
+const docs = computed<Doc[]>(() => (data.value as Doc[] | null) ?? [])
 
 const results = computed(() => {
-    const q = query.value.trim().toLowerCase();
-    if (!q) return docs.value;
+    const q = query.value.trim().toLowerCase()
+    if (!q) return docs.value
     return docs.value.filter(
         (d) =>
             d.title?.toLowerCase().includes(q) ||
             d.path?.toLowerCase().includes(q) ||
             d.description?.toLowerCase().includes(q)
-    );
-});
+    )
+})
 
-watch(results, () => (activeIndex.value = 0));
+watch(results, () => (activeIndex.value = 0))
 watch(
     () => dlg.open.value,
     (isOpen) => {
-        if (isOpen) nextTick(() => inputEl.value?.focus());
+        if (isOpen) nextTick(() => inputEl.value?.focus())
     }
-);
+)
 
 function open() {
-    query.value = '';
-    activeIndex.value = 0;
-    dlg.setOpen(true);
+    query.value = ''
+    activeIndex.value = 0
+    dlg.setOpen(true)
 }
 
 function go(path: string) {
-    dlg.setOpen(false);
-    navigateTo(path);
+    dlg.setOpen(false)
+    navigateTo(path)
 }
 
 function onInputKeydown(e: KeyboardEvent) {
     if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        activeIndex.value = Math.min(activeIndex.value + 1, results.value.length - 1);
+        e.preventDefault()
+        activeIndex.value = Math.min(activeIndex.value + 1, results.value.length - 1)
     } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        activeIndex.value = Math.max(activeIndex.value - 1, 0);
+        e.preventDefault()
+        activeIndex.value = Math.max(activeIndex.value - 1, 0)
     } else if (e.key === 'Enter') {
-        e.preventDefault();
-        const r = results.value[activeIndex.value];
-        if (r) go(r.path);
+        e.preventDefault()
+        const r = results.value[activeIndex.value]
+        if (r) go(r.path)
     }
 }
 
 function onGlobalKeydown(e: KeyboardEvent) {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        open();
+        e.preventDefault()
+        open()
     }
 }
 
-onMounted(() => document.addEventListener('keydown', onGlobalKeydown));
-onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
+onMounted(() => document.addEventListener('keydown', onGlobalKeydown))
+onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown))
 </script>
 
 <template>

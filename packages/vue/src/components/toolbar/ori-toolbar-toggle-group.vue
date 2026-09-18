@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useToolbarToggleGroup } from '@oriui/headless/vue';
+import { useToolbarToggleGroup } from '@oriui/headless/vue'
 
 // OriToolbarToggleGroup — a role="group" of mutually-related toggle buttons layered over the toolbar's
 // flat roving order (its OriToolbarToggleItem children are still toolbar items, reached by the same
@@ -7,19 +7,19 @@ import { useToolbarToggleGroup } from '@oriui/headless/vue';
 // selection with `v-model` (a string for single, string[] for multiple).
 const { label, type = 'single' } = defineProps<{
     /** Accessible name for the group (→ aria-label). */
-    label?: string;
-    type?: 'single' | 'multiple';
-}>();
+    label?: string
+    type?: 'single' | 'multiple'
+}>()
 
-const model = defineModel<string | string[]>();
+const model = defineModel<string | string[]>()
 
 const { groupProps } = useToolbarToggleGroup({
     type: () => type,
     value: () => model.value,
     onChange: (value) => {
-        model.value = value;
+        model.value = value
     }
-});
+})
 </script>
 
 <template>

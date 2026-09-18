@@ -1,6 +1,6 @@
-import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitest/config';
-import vue from '@vitejs/plugin-vue';
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitest/config'
+import vue from '@vitejs/plugin-vue'
 
 // Dedicated test config, intentionally separate from vite.config.js: the library build's
 // lib/externals/preserveModules options must never leak into the test run. Here we only need
@@ -31,4 +31,4 @@ export default defineConfig({
             reporter: ['text', 'html', 'lcov']
         }
     }
-});
+})

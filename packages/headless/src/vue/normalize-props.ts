@@ -1,8 +1,8 @@
-import { createNormalizer, type Dict, type PropTypes } from '../core';
+import { createNormalizer, type Dict, type PropTypes } from '../core'
 
 export interface VuePropTypes extends PropTypes {
-    element: Record<string, unknown>;
-    button: Record<string, unknown>;
+    element: Record<string, unknown>
+    button: Record<string, unknown>
 }
 
 // Vue keeps `onXxx` listener keys and accepts aria-/data- attributes verbatim when spread with
@@ -13,16 +13,16 @@ const propMap: Record<string, string> = {
     htmlFor: 'for',
     defaultValue: 'value',
     defaultChecked: 'checked'
-};
+}
 
 export const normalizeProps = createNormalizer<VuePropTypes>((props: Dict) => {
-    const result: Dict = {};
+    const result: Dict = {}
 
     for (const key in props) {
-        const value = props[key];
-        if (value === undefined) continue;
-        result[propMap[key] ?? key] = value;
+        const value = props[key]
+        if (value === undefined) continue
+        result[propMap[key] ?? key] = value
     }
 
-    return result;
-});
+    return result
+})

@@ -1,5 +1,5 @@
-import axe from 'axe-core';
-import { expect } from 'vitest';
+import axe from 'axe-core'
+import { expect } from 'vitest'
 
 /**
  * Run axe-core against a mounted component's root element and assert zero violations.
@@ -16,8 +16,8 @@ export async function expectNoA11yViolations(element: Element): Promise<void> {
             'landmark-one-main': { enabled: false },
             'page-has-heading-one': { enabled: false }
         }
-    });
+    })
 
-    const summary = violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length} node[s])`);
-    expect(summary).toEqual([]);
+    const summary = violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length} node[s])`)
+    expect(summary).toEqual([])
 }

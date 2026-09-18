@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useToast } from '@oriui/vue';
+import { useToast } from '@oriui/vue'
 
-const { success, error, warn, info, toast } = useToast();
+const { success, error, warn, info, toast } = useToast()
 
-const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z';
+const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 </script>
 
 <template>

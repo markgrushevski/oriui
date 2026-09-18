@@ -1,17 +1,17 @@
-import { onScopeDispose, ref, type Ref } from 'vue';
-import { createThemeController, type ThemeControllerOptions, type ThemeMode, type ThemeSetting } from '../core';
+import { onScopeDispose, ref, type Ref } from 'vue'
+import { createThemeController, type ThemeControllerOptions, type ThemeMode, type ThemeSetting } from '../core'
 
 export interface UseThemeReturn {
     /** The current SETTING (`'auto' | 'light' | 'dark'`) — reactive. */
-    theme: Ref<ThemeSetting>;
+    theme: Ref<ThemeSetting>
     /** The RESOLVED theme on the DOM (`'light' | 'dark'`) — reactive; tracks the OS scheme in `auto`. */
-    resolvedTheme: Ref<ThemeMode>;
+    resolvedTheme: Ref<ThemeMode>
     /** Set the setting (`'auto'` re-follows the OS), apply it, and persist. */
-    setTheme: (setting: ThemeSetting) => void;
+    setTheme: (setting: ThemeSetting) => void
     /** Toggle the resolved theme light ⇄ dark (pins an explicit setting). */
-    toggleTheme: () => void;
+    toggleTheme: () => void
     /** Cycle `auto → light → dark → auto`. */
-    cycleTheme: () => void;
+    cycleTheme: () => void
 }
 
 /**
@@ -29,19 +29,19 @@ export interface UseThemeReturn {
  * `ori-theme_*` class before first paint to avoid a flash / hydration mismatch.
  */
 export function useTheme(options: ThemeControllerOptions = {}): UseThemeReturn {
-    const controller = createThemeController(options);
-    const theme = ref(controller.get()) as Ref<ThemeSetting>;
-    const resolvedTheme = ref(controller.resolved()) as Ref<ThemeMode>;
+    const controller = createThemeController(options)
+    const theme = ref(controller.get()) as Ref<ThemeSetting>
+    const resolvedTheme = ref(controller.resolved()) as Ref<ThemeMode>
 
     const stop = controller.subscribe((setting, resolved) => {
-        theme.value = setting;
-        resolvedTheme.value = resolved;
-    });
+        theme.value = setting
+        resolvedTheme.value = resolved
+    })
 
     onScopeDispose(() => {
-        stop();
-        controller.destroy();
-    });
+        stop()
+        controller.destroy()
+    })
 
     return {
         theme,
@@ -49,5 +49,5 @@ export function useTheme(options: ThemeControllerOptions = {}): UseThemeReturn {
         setTheme: (setting) => controller.set(setting),
         toggleTheme: () => controller.toggle(),
         cycleTheme: () => controller.cycle()
-    };
+    }
 }

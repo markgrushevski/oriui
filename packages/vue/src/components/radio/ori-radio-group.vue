@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue';
-import type { ActionSize, ThemeColor } from '../../types';
-import { useOriField } from '../field/context';
+import { computed, useId } from 'vue'
+import type { ActionSize, ThemeColor } from '../../types'
+import { useOriField } from '../field/context'
 
 interface RadioOption {
-    label: string;
-    value: string | number;
-    disabled?: boolean;
+    label: string
+    value: string | number
+    disabled?: boolean
 }
 
 // OriRadioGroup — a "choose one" control. A role="radiogroup" container names the set via
@@ -22,34 +22,34 @@ const {
     required = false,
     size = 'md'
 } = defineProps<{
-    color?: ThemeColor;
-    disabled?: boolean;
-    inline?: boolean;
-    label?: string;
+    color?: ThemeColor
+    disabled?: boolean
+    inline?: boolean
+    label?: string
     /** Shared radio `name`; auto-generated (useId) when omitted. */
-    name?: string;
-    options?: RadioOption[];
-    required?: boolean;
-    size?: ActionSize;
-}>();
+    name?: string
+    options?: RadioOption[]
+    required?: boolean
+    size?: ActionSize
+}>()
 
-const model = defineModel<string | number>();
+const model = defineModel<string | number>()
 
 // When nested in an OriField, the field owns the group's name + a11y wiring; standalone the group
 // wires its own (behaviour unchanged). A radiogroup names itself via aria-labelledby, so it points at
 // the field's label id rather than a `<label for>`.
-const field = useOriField();
-const inField = Boolean(field);
+const field = useOriField()
+const inField = Boolean(field)
 
-const uid = useId();
-const groupName = computed(() => name ?? uid);
-const ownLabelId = computed(() => `${uid}-label`);
-const labelledBy = computed(() => (field ? field.labelId.value : label ? ownLabelId.value : undefined));
-const describedBy = computed(() => field?.describedBy.value);
-const isInvalid = computed(() => field?.invalid.value ?? false);
-const isRequired = computed(() => required || (field?.required.value ?? false));
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
-const groupSize = computed(() => field?.size.value ?? size);
+const uid = useId()
+const groupName = computed(() => name ?? uid)
+const ownLabelId = computed(() => `${uid}-label`)
+const labelledBy = computed(() => (field ? field.labelId.value : label ? ownLabelId.value : undefined))
+const describedBy = computed(() => field?.describedBy.value)
+const isInvalid = computed(() => field?.invalid.value ?? false)
+const isRequired = computed(() => required || (field?.required.value ?? false))
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
+const groupSize = computed(() => field?.size.value ?? size)
 </script>
 
 <template>

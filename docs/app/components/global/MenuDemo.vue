@@ -3,22 +3,22 @@
 // can't fill the `#trigger` scoped slot or pass the `items` prop, so — same approach as `:dialog-demo`
 // / `:popover-demo` — this component wraps OriMenu with a real button trigger + sample items for a
 // single inline drop-in tag.
-import { ref } from 'vue';
-import { OriButton, OriMenu } from '@oriui/vue';
-import type { AnchoredPlacement } from '@oriui/vue';
+import { ref } from 'vue'
+import { OriButton, OriMenu } from '@oriui/vue'
+import type { AnchoredPlacement } from '@oriui/vue'
 
 const { placement = 'bottom-start' } = defineProps<{
-    placement?: AnchoredPlacement;
-}>();
+    placement?: AnchoredPlacement
+}>()
 
 const items = [
     { value: 'new', label: 'New file' },
     { value: 'open', label: 'Open…' },
     { value: 'rename', label: 'Rename', disabled: true },
     { value: 'delete', label: 'Delete' }
-];
+]
 
-const selected = ref<string | null>(null);
+const selected = ref<string | null>(null)
 </script>
 
 <template>

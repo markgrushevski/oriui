@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { isTargetOutside } from '../core';
+import { useEffect, useRef } from 'react'
+import { isTargetOutside } from '../core'
 
 /**
  * Headless dismiss layer (React) — the shared "close the overlay on an outside interaction" glue for
@@ -14,43 +14,43 @@ import { isTargetOutside } from '../core';
  */
 export interface UseDismissableOptions {
     /** Attach the dismiss listeners only while this is true (typically the overlay's `open`). */
-    enabled: boolean;
+    enabled: boolean
     /** The overlay's own elements — an interaction inside ANY of them does NOT dismiss. */
-    elements: () => (HTMLElement | null | undefined)[];
+    elements: () => (HTMLElement | null | undefined)[]
     /** Called to dismiss — typically `() => setOpen(false)`. */
-    onDismiss: () => void;
+    onDismiss: () => void
     /** Close on a `pointerdown` outside `elements` (default false). */
-    pointerDownOutside?: boolean;
+    pointerDownOutside?: boolean
     /** Close when focus lands outside `elements` (default false). */
-    focusOutside?: boolean;
+    focusOutside?: boolean
 }
 
 export function useDismissable(options: UseDismissableOptions): void {
-    const { enabled, pointerDownOutside = false, focusOutside = false } = options;
+    const { enabled, pointerDownOutside = false, focusOutside = false } = options
 
     // Mirror the newest options into a ref every render so the (rarely re-subscribed) document listener
     // reads the current `elements()` / `onDismiss` — never a stale closure — while the subscribe effect below
     // re-runs only when the listener *set* changes (enabled / which strategies), not on every options change.
-    const latest = useRef(options);
+    const latest = useRef(options)
     useEffect(() => {
-        latest.current = options;
-    });
+        latest.current = options
+    })
 
     useEffect(() => {
-        if (!enabled) return;
+        if (!enabled) return
 
         const handler = (event: Event): void => {
-            const o = latest.current;
-            if (isTargetOutside(event.target as Node | null, o.elements())) o.onDismiss();
-        };
-        const types: string[] = [];
-        if (pointerDownOutside) types.push('pointerdown');
-        if (focusOutside) types.push('focusin');
+            const o = latest.current
+            if (isTargetOutside(event.target as Node | null, o.elements())) o.onDismiss()
+        }
+        const types: string[] = []
+        if (pointerDownOutside) types.push('pointerdown')
+        if (focusOutside) types.push('focusin')
         // Capture phase (like Radix DismissableLayer / Floating-UI useDismiss) so an outside handler that
         // `stopPropagation()`s the event before it bubbles can't defeat the dismiss. The effect runs after
         // commit — the React parity for the Vue twin's `flush: 'post'` / the Svelte microtask defer — so the
         // interaction that opened the overlay has finished dispatching and can't immediately self-dismiss it.
-        types.forEach((type) => document.addEventListener(type, handler, true));
-        return () => types.forEach((type) => document.removeEventListener(type, handler, true));
-    }, [enabled, pointerDownOutside, focusOutside]);
+        types.forEach((type) => document.addEventListener(type, handler, true))
+        return () => types.forEach((type) => document.removeEventListener(type, handler, true))
+    }, [enabled, pointerDownOutside, focusOutside])
 }

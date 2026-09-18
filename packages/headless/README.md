@@ -25,9 +25,9 @@ npm install @oriui/headless
 ## Use — Vue
 
 ```ts
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 
-const d = useDisclosure();
+const d = useDisclosure()
 // d.open  → ComputedRef<boolean>
 // d.setOpen(bool) · d.toggle()
 // spread the prop bags onto your own elements:
@@ -43,9 +43,9 @@ changes. (`useToolbar` / `useColorPicker` are compositional helpers, not adapter
 ## Use — Svelte
 
 ```ts
-import { useDisclosure } from '@oriui/headless/svelte';
+import { useDisclosure } from '@oriui/headless/svelte'
 
-const d = useDisclosure();
+const d = useDisclosure()
 // d.open  → Readable<boolean>  (auto-subscribe with $open)
 // d.setOpen(bool) · d.toggle()
 // spread the prop bags onto your own elements:  <button {...$triggerProps}>
@@ -66,7 +66,7 @@ to the composable so the server and client markup match.
 The core is framework-agnostic building blocks, so you can write an adapter for any framework:
 
 ```ts
-import { combobox } from '@oriui/headless';
+import { combobox } from '@oriui/headless'
 // combobox.machine · combobox.connect · combobox.anatomy — the contract every adapter implements
 ```
 
@@ -80,14 +80,14 @@ and before mount (the first client frame renders without it); in dev builds, a t
 fails to resolve warns once per token.
 
 ```ts
-import { useThemeColor } from '@oriui/headless/vue'; // or /svelte — same surface, stores instead of refs
+import { useThemeColor } from '@oriui/headless/vue' // or /svelte — same surface, stores instead of refs
 
-const brand = useThemeColor('primary'); // resolves --ori-color-primary, e.g. 'rgb(25, 118, 210)'
+const brand = useThemeColor('primary') // resolves --ori-color-primary, e.g. 'rgb(25, 118, 210)'
 onMounted(() => {
-    engine = createEngine(canvasEl.value);
-    engine.setColor(brand.value || null); // seed the initial resolved color
-});
-watch(brand, (c) => engine?.setColor(c || null)); // theme/skin flips re-push automatically
+    engine = createEngine(canvasEl.value)
+    engine.setColor(brand.value || null) // seed the initial resolved color
+})
+watch(brand, (c) => engine?.setColor(c || null)) // theme/skin flips re-push automatically
 ```
 
 The core exports the primitives directly: `resolveToken('--ori-color-primary')` (one-shot) and

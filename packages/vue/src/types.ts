@@ -1,84 +1,84 @@
 /* ==================== Sizes ==================== */
 
 interface BlockSizes {
-    xs: string;
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
+    xs: string
+    sm: string
+    md: string
+    lg: string
+    xl: string
 }
 
 interface ScreenSizes extends BlockSizes {
-    xxl: string;
+    xxl: string
 }
 
 interface ActionSizes extends BlockSizes {
-    text: string;
-    xxl: string;
+    text: string
+    xxl: string
 }
 
 interface ActionSpaceSizes extends BlockSizes {
-    text: string;
-    xxl: string;
+    text: string
+    xxl: string
 }
 
 interface GapSizes extends BlockSizes {
-    zero: string;
+    zero: string
 }
 
 interface RadiusSizes extends BlockSizes {
-    zero: string;
-    rounded: string;
+    zero: string
+    rounded: string
 }
 
-export type Sizes = BlockSizes & ScreenSizes & ActionSizes & ActionSpaceSizes & GapSizes & RadiusSizes;
+export type Sizes = BlockSizes & ScreenSizes & ActionSizes & ActionSpaceSizes & GapSizes & RadiusSizes
 
-export type BlockSize = keyof BlockSizes;
-export type ScreenSize = keyof ScreenSizes;
-export type ActionSize = keyof ActionSizes;
-export type ActionSpaceSize = keyof ActionSpaceSizes;
-export type GapSize = keyof GapSizes;
-export type RadiusSize = keyof RadiusSizes;
-export type Size = keyof Sizes;
+export type BlockSize = keyof BlockSizes
+export type ScreenSize = keyof ScreenSizes
+export type ActionSize = keyof ActionSizes
+export type ActionSpaceSize = keyof ActionSpaceSizes
+export type GapSize = keyof GapSizes
+export type RadiusSize = keyof RadiusSizes
+export type Size = keyof Sizes
 
 /* ==================== Positions ==================== */
 
-export type CenterPosition = 'center';
-export type InlinePosition = 'right' | 'left';
-export type BlockPosition = 'top' | 'bottom';
-export type CustomPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-export type CenteredPosition = BlockPosition | InlinePosition;
-export type Position = CenterPosition | CenteredPosition | CustomPosition;
+export type CenterPosition = 'center'
+export type InlinePosition = 'right' | 'left'
+export type BlockPosition = 'top' | 'bottom'
+export type CustomPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+export type CenteredPosition = BlockPosition | InlinePosition
+export type Position = CenterPosition | CenteredPosition | CustomPosition
 
 /** The 12-value anchored-panel placement grid for overlays (popover, menu, …): a bare side centers on
  *  the cross axis; `-start` / `-end` align to the trigger's start / end edge (logical, RTL-aware). */
-export type AnchoredSide = 'top' | 'bottom' | 'left' | 'right';
-export type AnchoredPlacement = AnchoredSide | `${AnchoredSide}-start` | `${AnchoredSide}-end`;
+export type AnchoredSide = 'top' | 'bottom' | 'left' | 'right'
+export type AnchoredPlacement = AnchoredSide | `${AnchoredSide}-start` | `${AnchoredSide}-end`
 
 /* ==================== Colors ==================== */
 
 interface SeverityColors {
-    success: string;
-    warn: string;
-    danger: string;
-    info: string;
+    success: string
+    warn: string
+    danger: string
+    info: string
 }
 
 interface ThemeColors extends SeverityColors {
-    primary: string;
-    secondary: string;
-    surface: string;
-    background: string;
+    primary: string
+    secondary: string
+    surface: string
+    background: string
 }
 
-export type SeverityColor = keyof SeverityColors;
-export type ThemeColor = keyof ThemeColors;
+export type SeverityColor = keyof SeverityColors
+export type ThemeColor = keyof ThemeColors
 
 /* ==================== Variants ==================== */
 
-export type Variant = 'fill' | 'tonal' | 'outline' | 'text' | 'plain';
+export type Variant = 'fill' | 'tonal' | 'outline' | 'text' | 'plain'
 
 /* ==================== Utility ==================== */
 
 /** Library utility type. Recursively makes all properties partial. */
-export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T

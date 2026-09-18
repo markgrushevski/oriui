@@ -22,7 +22,7 @@ core adapter is simply the default. It is the first behavior to fully exercise t
 ## Import
 
 ```ts
-import { useCombobox } from '@oriui/headless/vue';
+import { useCombobox } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -44,9 +44,9 @@ Each option is a `ComboboxItem` — `value` is the stable identity, `label` is w
 
 ```ts
 interface ComboboxItem {
-    value: string;
-    label: string;
-    disabled?: boolean;
+    value: string
+    label: string
+    disabled?: boolean
 }
 ```
 
@@ -83,7 +83,7 @@ Bind each part's prop bag with `v-bind`, render `items`, and pass the same `inde
 
 ```vue
 <script setup lang="ts">
-import { useCombobox } from '@oriui/headless/vue';
+import { useCombobox } from '@oriui/headless/vue'
 
 const cb = useCombobox(() => ({
     options: [
@@ -91,7 +91,7 @@ const cb = useCombobox(() => ({
         { label: 'Banana', value: 'banana' },
         { label: 'Cherry', value: 'cherry' }
     ]
-}));
+}))
 </script>
 
 <template>
@@ -163,7 +163,7 @@ The **React** binding is the same — the control is plain values (no `$` / `.va
 prop-getters are plain functions (`getOptionProps(item, i)`):
 
 ```tsx
-import { useCombobox } from '@oriui/headless/react';
+import { useCombobox } from '@oriui/headless/react'
 
 function FruitPicker() {
     const {
@@ -182,7 +182,7 @@ function FruitPicker() {
             { label: 'Banana', value: 'banana' },
             { label: 'Cherry', value: 'cherry' }
         ]
-    });
+    })
 
     return (
         <div {...rootProps}>
@@ -199,7 +199,7 @@ function FruitPicker() {
                 </ul>
             </div>
         </div>
-    );
+    )
 }
 ```
 

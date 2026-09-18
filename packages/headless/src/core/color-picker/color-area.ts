@@ -11,19 +11,19 @@
 
 export interface AreaPosition {
     /** Saturation, 0 (left) → 1 (right). */
-    x: number;
+    x: number
     /** Value / brightness, 0 (bottom) → 1 (top). */
-    y: number;
+    y: number
 }
 
 export interface AreaRect {
-    left: number;
-    top: number;
-    width: number;
-    height: number;
+    left: number
+    top: number
+    width: number
+    height: number
 }
 
-const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n);
+const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n)
 
 /**
  * Map a pointer position (client x/y) within the area's bounding rect to `{ x, y } ∈ [0,1]²`. The DOM y
@@ -31,18 +31,18 @@ const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n);
  * so a drag past the edge pins to the border.
  */
 export function resolveAreaPosition(pointer: { x: number; y: number }, rect: AreaRect): AreaPosition {
-    const x = rect.width === 0 ? 0 : (pointer.x - rect.left) / rect.width;
-    const y = rect.height === 0 ? 0 : (pointer.y - rect.top) / rect.height;
-    return { x: clamp01(x), y: clamp01(1 - y) };
+    const x = rect.width === 0 ? 0 : (pointer.x - rect.left) / rect.width
+    const y = rect.height === 0 ? 0 : (pointer.y - rect.top) / rect.height
+    return { x: clamp01(x), y: clamp01(1 - y) }
 }
 
 export interface StepOptions {
     /** Fine step per arrow press (default 0.01 = 1%). */
-    step?: number;
+    step?: number
     /** Shift (or Page keys) multiply the step (default 10× → 10%). */
-    shift?: boolean;
+    shift?: boolean
     /** RTL swaps the horizontal Left/Right → saturation mapping. */
-    rtl?: boolean;
+    rtl?: boolean
 }
 
 /**
@@ -51,40 +51,40 @@ export interface StepOptions {
  * large step; Home/End jump saturation to its ends. Up increases brightness (y). Everything clamps.
  */
 export function stepAreaPosition(pos: AreaPosition, key: string, opts: StepOptions = {}): AreaPosition | null {
-    const step = opts.step ?? 0.01;
-    const big = step * 10;
-    const forward = opts.rtl ? 'ArrowLeft' : 'ArrowRight';
-    const backward = opts.rtl ? 'ArrowRight' : 'ArrowLeft';
-    const d = opts.shift ? big : step;
+    const step = opts.step ?? 0.01
+    const big = step * 10
+    const forward = opts.rtl ? 'ArrowLeft' : 'ArrowRight'
+    const backward = opts.rtl ? 'ArrowRight' : 'ArrowLeft'
+    const d = opts.shift ? big : step
 
-    let { x, y } = pos;
+    let { x, y } = pos
     switch (key) {
         case forward:
-            x += d;
-            break;
+            x += d
+            break
         case backward:
-            x -= d;
-            break;
+            x -= d
+            break
         case 'ArrowUp':
-            y += d;
-            break;
+            y += d
+            break
         case 'ArrowDown':
-            y -= d;
-            break;
+            y -= d
+            break
         case 'PageUp':
-            y += big;
-            break;
+            y += big
+            break
         case 'PageDown':
-            y -= big;
-            break;
+            y -= big
+            break
         case 'Home':
-            x = 0;
-            break;
+            x = 0
+            break
         case 'End':
-            x = 1;
-            break;
+            x = 1
+            break
         default:
-            return null;
+            return null
     }
-    return { x: clamp01(x), y: clamp01(y) };
+    return { x: clamp01(x), y: clamp01(y) }
 }

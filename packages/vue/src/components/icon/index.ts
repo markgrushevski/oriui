@@ -1,1 +1,1 @@
-export { default as OriIcon } from './ori-icon.vue';
+export { default as OriIcon } from './ori-icon.vue'

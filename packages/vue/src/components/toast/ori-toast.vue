@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import type { ThemeColor } from '../../types';
-import { OriIcon } from '../icon';
+import type { ThemeColor } from '../../types'
+import { OriIcon } from '../icon'
 
 const { closable = false, color = 'surface' } = defineProps<{
-    closable?: boolean;
-    color?: ThemeColor;
-    icon?: string;
-    text?: string;
-    title?: string;
-}>();
+    closable?: boolean
+    color?: ThemeColor
+    icon?: string
+    text?: string
+    title?: string
+}>()
 
-defineEmits<{ close: [] }>();
+defineEmits<{ close: [] }>()
 </script>
 
 <template>
