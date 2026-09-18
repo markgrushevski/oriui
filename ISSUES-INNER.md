@@ -22,11 +22,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-01 — The swap contract is typed as opaque prop bags, but consumers depend on specific keys inside them
 
-`confirmed` · severity `blocker-for-1.0` · rebuttal `downgraded` · source: paired review 2026-09-18 (headless/opaque-prop-bags-hide-the-real-contract)
+`fixed` · severity `blocker-for-1.0` · rebuttal `downgraded` · source: paired review 2026-09-18 (headless/opaque-prop-bags-hide-the-real-contract)
 
 - **Where:** packages/headless/src/vue/contract.ts:11-18,42-51,70-90,105-118; packages/vue/src/components/menu/ori-menu.vue:37,47; packages/vue/src/components/combobox/ori-combobox.vue:120,122
 - **What:** The swap tests spread the native adapter, so they prove the injection seam routes but never that the _published_ contract is sufficient to drive OriMenu/OriCombobox. Separately, three unchecked `as string` casts (ori-combobox.vue:120,122; ori-menu.vue:37) encode an assumption about bag contents that lives only in prose.
 - **Fix:** Do the test, skip the type surgery. Write ONE from-scratch fake menu adapter that implements MenuControl without touching nativeMenu, mount OriMenu on it, and assert focus-return and roving still work; whatever the fake must invent to pass is the real contract, and it belongs in the MenuControl JSDoc as an explicit 'an adapter MUST emit `id` on triggerProps and `data-highlighted` on the highlighted item bag' clause.…
+
+- **Outcome:** Closed by the Tier-1 batch: `tests/headless-contract-requirements.test.ts` drives OriMenu and OriCombobox from fakes written FROM SCRATCH (never spreading the native adapter), with one omission test per hidden requirement — drop `triggerProps.id` and focus is stranded in the closed menu; drop `data-highlighted` and roving focus never moves; drop `inputProps.id` and `aria-describedby` resolves to the literal string `undefined-hint`. The resulting MUST lists are now in the MenuControl / ComboboxControl JSDoc. Still open by explicit ruling: the three unchecked `as string` casts remain — they are now backed by tests rather than prose, but they still lie to the type system.
 
 ### ORI-I-02 — Vue's `useDisclosure` accepts a reactive getter it never re-reads; `disabled` can never change
 
@@ -38,11 +40,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-03 — Svelte `useTheme` tears the controller down when the last store subscriber leaves, permanently breaking `auto`
 
-`confirmed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (headless/svelte-usetheme-destroys-on-last-unsubscribe)
+`fixed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (headless/svelte-usetheme-destroys-on-last-unsubscribe)
 
 - **Where:** packages/headless/src/svelte/use-theme.ts:37-43; packages/headless/src/core/theme.ts:169-177
 - **What:** `useTheme` ties the controller's lifetime to Svelte's store subscriber count, not to the component's lifetime. A subscriber count that drops to 0 and back to 1 — an ordinary `{#if}` around markup that reads `$theme` — calls `controller.destroy()` and then re-subscribes to a controller whose `matchMedia` listener is gone, so `auto` silently stops following the OS scheme for the rest of the component's life.
 - **Fix:** Their safeOnDestroy fix is right but incomplete: safeOnDestroy is a no-op when useTheme is called outside component init (module scope), which is exactly the case the current design was covering, so that path would leak the matchMedia listener forever. Ship both halves: (1) create the controller once per call and tear it down via safeOnDestroy, leaving the readable's stop() to only unsubscribe; (2) document that a…
+
+- **Outcome:** Closed by the Tier-1 batch: teardown moved off the store subscriber count onto `onDestroy`, so the controller lives as long as the component. Because `onDestroy` does not exist outside component init, the store also exposes `destroy()` for module-scope callers — a deliberate framework deviation recorded in DECISIONS.md and documented on the use-theme page.
 
 ### ORI-I-04 — Five different "how do I pass options" idioms are about to be frozen into one package
 
@@ -62,11 +66,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-06 — React `useToast` hands back new function identities on every render for a module-level singleton
 
-`confirmed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (headless/react-usetoast-unstable-action-identities)
+`fixed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (headless/react-usetoast-unstable-action-identities)
 
 - **Where:** packages/headless/src/react/use-toast.ts:40-47; packages/headless/src/core/toast/queue.ts:115-125
 - **What:** `useToast()` calls `createToastActions(queue)` inside the hook body, so `toast` / `success` / `dismiss` / `clear` are fresh closures on every render even though the queue they close over is a module-level singleton that never changes. That is the standard React footgun: `useEffect(() => { toast('saved') }, [toast])` re-fires forever, and any memoised child taking `toast` as a prop re-renders on every parent render.
 - **Fix:** Exactly their fix — hoist `const actions = createToastActions(queue)` to module scope beside the queue and return `{ toasts, ...actions }` — plus their identity assertion. While there, check the Svelte twin for the same shape, since it shares the createToastActions factory.
+
+- **Outcome:** Closed by the Tier-1 batch: the actions are hoisted to module scope beside the singleton queue, so every caller gets the same seven functions for the life of the process; the hook JSDoc now says they are safe in a dependency array. Verified RED first.
 
 ### ORI-I-07 — The three adapters' option interfaces are copy-pasted, with nothing pinning them together
 
@@ -128,11 +134,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-14 — Four collection-item types are unexported, one is documented but missing from the barrel, and `TabItem` collides by name with an incompatible type in @oriui/headless
 
-`confirmed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (vue/collection-item-types-unexported)
+`fixed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (vue/collection-item-types-unexported)
 
 - **Where:** packages/vue/src/components/tabs/ori-tabs.vue:6-10; packages/headless/src/vue/use-tabs.ts:18-21; radio/ori-radio-group.vue:6-10; select/ori-select.vue:6-10; accordion/ori-accordion.vue:5-9; menu/ori-menu.vue:3,23; menu/index.ts;…
 - **What:** Five item shapes are local interfaces where one sibling re-exports its own, and menu.md:319/:337 names a type the styled barrel does not forward. Worth doing before 1.0 because it is free, not because it freezes anything.
 - **Fix:** Re-export from each component barrel, mirroring combobox/index.ts:2, rather than hoisting five shapes into types.ts — types.ts is 84 lines of cross-cutting token vocabulary (sizes, colors, variants, placements) and per-component item shapes do not belong in it. For Tabs, write `interface TabItem extends HeadlessTabItem { label: string }` and export that name: the inheritance documents the relationship and makes the…
+
+- **Outcome:** Closed by the Tier-1 batch: four local interfaces exported and re-exported from their component barrels (`TabItem`, `SelectOption`, `RadioOption`, `AccordionItem` — Menu and Combobox turned out to re-use the headless types, not declare their own), and the menu barrel now forwards the type its docs already named. The cross-package `TabItem` collision is resolved by the styled one deriving from the headless one. `tests/item-types.test.ts` fails if an export is lost.
 
 ### ORI-I-15 — Ruling on (b): deferring `useControllable` is defensible (the retrofit is mostly additive), but three per-component policies freeze and cannot be fixed additively
 
@@ -348,6 +356,34 @@ must not be re-reported as a new finding.
 - **What:** justpaint ships OriBadge and OriSkeleton unstyled because its hand-maintained à-la-carte list in main.ts:6-24 is missing badge.css and skeleton.css — an app bug, one line to fix. The oriUI-side residue is documentation, not packaging: grep of docs/content for 'oriui/css/components' returns ZERO hits, so the à-la-carte path exists only in packages/css/README.md:35-55 and is invisible on the docs site where a consumer…
 - **Fix:** Fix justpaint's main.ts. In oriUI, do the free half: add the à-la-carte import line to each component docs page (the class table is already there) and a line to overview/get-started saying the full bundle is the default for styled Vue consumers. If a machine check is still wanted later, `@oriui/css/manifest.json` (component → required files) is additive and can ship in any 1.x — it does not need to precede the…
 
+- **Update 2026-09-18 (from the consumer, after it built the guard):** the app-side half is fixed
+  (justpaint `81474fe`), and building it surfaced a correction to the design above. A completeness check
+  **cannot be filename-based**: `OriSpinner` looked like a third unstyled component because `spinner.css` is
+  not imported, but `.ori-spinner` is inlined into `button.css` and `toolbar.css`, which are. The invariant
+  is therefore about **selectors present in the concatenated sheets**, not about one import per component —
+  which is a direct consequence of the self-contained-entry rule this package deliberately adopted (see
+  `tests/css.entries.test.ts`, "per-component css inlines every block its vue component renders"). So if
+  oriUI ever ships the `manifest.json` suggested above, it must map component → **required selectors**, or
+  map component → the file that actually carries it, not component → its own filename. justpaint's
+  `apps/web/scripts/check-styles.mjs` is a working reference implementation.
+  Block-to-file divergences, inventoried so a manifest does not have to rediscover them: `.ori-toaster` →
+  `toast.css`, `.ori-radio-group` → `radio.css`, `.ori-cluster` → `stack.css`, `.ori-badge-anchor` →
+  `badge.css`; `toolbar.css` additionally carries a `.ori-button` rule, and `.ori-spinner` is inlined into
+  both `button.css` and `toolbar.css` besides shipping as `spinner.css`.
+- **Correction (same day, after the consumer checked its own guard):** file-name divergence turns out NOT to
+  be the gap. A guard that never derives a filename — concatenate every stylesheet the package defines
+  ("does oriUI define this class at all") versus only the stylesheets the app imports ("does the app load
+  it") — is immune to it, which is how justpaint's script is built. The residual gap is narrower and
+  real: a component whose **block name does not follow from its component name** is underivable, and the
+  guard can only abstain. Today's instances are the toolbar sub-components — `OriToolbarButton` and
+  `OriToolbarToggleItem` render no eponymous block at all (they compose `OriButton`), and
+  `OriToolbarSeparator` renders `.ori-toolbar__separator`, a BEM element of the toolbar block (an earlier note here said `.ori-toolbar-item`; that string is the `data-ori-toolbar-item` marker ATTRIBUTE, not a class, and no such class exists). The consequence is muted because `toolbar.css` inlines
+  `.ori-button`, but the derivation abstains, so an app that renders only toolbar buttons is unguarded. That
+  — not the filenames — is the case a component → required-selectors manifest removes by construction.
+- **Spec note for that manifest:** selector presence needs a **boundary rule**, not a substring test.
+  `.ori-badge` matches inside `.ori-badge-anchor` (a different block), and naive shapes like `".ori-x "` /
+  `".ori-x,"` miss both a minified `.ori-x{` and `.ori-x:hover`.
+
 ### ORI-I-41 — `OriButton active` announces nothing and paints the same pixels as hover — the toggle contract is incomplete in both dimensions
 
 `confirmed` · severity `blocker-for-1.0` · rebuttal `downgraded` · source: paired review 2026-09-18 (consumer/button-active-no-pressed-affordance)
@@ -524,10 +560,12 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 
 ### ORI-I-62 — The headline 1.0 promise — three adapters, one identical surface — is asserted in the docs and verified by no test
 
-`unconfirmed` · kind `cross-module-interaction` · source: paired review 2026-09-18 (completeness critic)
+`fixed` · kind `cross-module-interaction` · source: paired review 2026-09-18 (completeness critic)
 
 - **Why it matters:** docs/content/overview/installation.md:83 states 'The surface is identical across the three: same options, same prop bags, same ARIA', and README.md:55 repeats it ('same machines, same keyboard handling, same ARIA wiring; only the reactive wrapper differs'). That claim is what 1.0 freezes, and it spans the headless and packaging modules — so it fell between them. The headless…
 - **How to check:** Write one table-driven test that drives each widget through all three adapters with identical options and diffs the normalized prop bags after case-folding React's casing — the same shape as the existing normalizeProps tests, one level up. Start with useTabs and useDisclosure, where the bags are pure data. Any key present in one adapter and absent in another is the finding;…
+
+- **Outcome:** Closed by the Tier-1 batch: `tests/adapter-parity.test.ts` drives the same options through all three adapters for the five widgets behind the `HeadlessAdapters` contract and diffs the normalised prop bags, plus a compile-time block that makes option-interface drift a `test:types` failure. Coverage boundary stated in the file header: useToolbar / useColorPicker / useToast / useTheme / useToken are outside the contract and outside this test.
 
 ### ORI-I-63 — Nobody opened docs/app: the site's framework switcher knows only Vue and Svelte, four months after React shipped
 
@@ -582,3 +620,45 @@ it earns a `confirmed` status — do not act on them as if they were findings.
 - **Where:** e2e/text-contrast.spec.ts (markup builder, ~lines 32-47)
 - **What:** The Chromium contrast guard builds its probe markup from button / link / tag / alert / tabs only. Every form block — field, input, select, textarea, combobox — is outside it, which is the second reason the danger-as-text defect survived a suite that advertises executable AA coverage.
 - **Fix:** Add a form row to the probe markup so hint, error and required text are measured in the real engine across every skin and both themes.
+
+## Opened by the Tier-1 batch (2026-09-18)
+
+### ORI-I-70 — Vue `useTheme` has the mirror-image teardown hole and no escape hatch
+
+`confirmed` · severity `should-fix` · source: Tier-1 svelte-theme agent, 2026-09-18
+
+- **Where:** packages/headless/src/vue/use-theme.ts:41
+- **What:** The Svelte twin was fixed to tie teardown to the component and to expose `destroy()` for module-scope callers. Vue relies on `onScopeDispose`, which also no-ops outside an effect scope — so a `useTheme()` called at module scope leaks its MutationObserver and matchMedia listener for the life of the page, and unlike Svelte there is no documented way to dispose it.
+- **Fix:** Mirror the Svelte shape: keep `onScopeDispose` when there is a scope, return a `destroy()` for when there is not, and say so on the use-theme page. Additive, so it can land in any 1.x — but the asymmetry between two adapters of the same composable is exactly the kind of thing a parity test should eventually assert.
+
+### ORI-I-71 — Vue's `useTabs` takes a getter only, while every sibling takes `MaybeRefOrGetter`
+
+`confirmed` · severity `should-fix` · source: Tier-1 parity agent, 2026-09-18
+
+- **Where:** packages/headless/src/vue/use-tabs.ts:40 against use-disclosure.ts:10, use-combobox.ts:14, use-menu.ts
+- **What:** One composable in the Vue adapter demands `() => UseTabsOptions` where the others accept a plain object, a ref or a getter. A consumer who passes an object gets a type error with no hint that this one composable is different. This is the concrete, defensible half of the "five idioms" finding (ORI-I-04).
+- **Fix:** Widen to `MaybeRefOrGetter<UseTabsOptions>` — widening a parameter type is not a breaking change, so it can land after 1.0, but the inconsistency is cheapest to erase before anyone writes code against it.
+
+### ORI-I-72 — Svelte's `nativeDialog` publishes `dialogProps` as a static store
+
+`confirmed` · severity `should-fix` · source: Tier-1 parity agent, 2026-09-18
+
+- **Where:** packages/headless/src/svelte/native.ts:73 against vue/native.ts:82
+- **What:** Vue exposes `dialogProps` as a `computed` and React re-projects it on every render, so both track changing options; the Svelte adapter publishes a `readable({...})` built once. The parity test caught it as a shape difference, not as a wrong value, so nothing is currently broken — but a future option that must reach `dialogProps` reactively would silently not.
+- **Fix:** Derive it from the same store the other members derive from. Verify against the parity test, which will then compare equal on structure as well as content.
+
+### ORI-I-73 — The headless `TabItem` is declared three times, once per adapter
+
+`confirmed` · severity `should-fix` · source: Tier-1 item-types agent, 2026-09-18
+
+- **Where:** packages/headless/src/vue/use-tabs.ts:18, svelte/use-tabs.ts:15, react/use-tabs.ts:13
+- **What:** The styled `TabItem` collision was resolved by deriving from the headless type — but the headless type itself exists in triplicate with no shared declaration, so the three adapters can drift apart silently. Same class of problem as ORI-I-07 (triplicated option interfaces), one level down.
+- **Fix:** Declare it once in `core` and re-export from each adapter, the way the item types for combobox and menu already work. The new compile-time block in the parity test turns any future drift into a `test:types` failure, so this is now visible rather than silent — fixing it is cleanup, not urgency.
+
+### ORI-I-74 — Docs describe the collection item shapes inline instead of naming the exported types
+
+`confirmed` · severity `nit` · source: Tier-1 item-types agent, 2026-09-18
+
+- **Where:** docs/content/components/tabs.md:377, select.md:430, accordion.md:315
+- **What:** The four item types are exported from their barrels now, but the docs still inline the shape as `Array<{ … }>` and never say the type has a name or where to import it from — so a consumer still hand-writes the shape.
+- **Fix:** Name the type in the props table and show the import line once per page. Pure docs, additive.

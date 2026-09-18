@@ -66,7 +66,23 @@ export interface UseComboboxOptions {
     filter?: (item: ComboboxItem, query: string) => boolean
 }
 
-/** The shape a combobox UI consumes, regardless of which engine (native core / Zag / custom) produced it. */
+/**
+ * The shape a combobox UI consumes, regardless of which engine (native core / Zag / custom) produced it.
+ *
+ * The prop bags are typed as opaque records, but `OriCombobox` reaches inside two of them, so a
+ * replacement adapter MUST emit these keys — miss one and the component degrades silently, with no error
+ * and no warning:
+ *
+ * - `inputProps.id` — becomes the visible input's `id` (standalone, i.e. outside an `OriField`) and the
+ *   stem of the generated hint / error ids. Missing → the input has no id, the label's `for` dangles and
+ *   `aria-describedby` points at `"undefined-hint"`.
+ * - `labelProps.id` — names the popup: the component copies it to the listbox's `aria-labelledby`.
+ *   Missing → the listbox has no accessible name.
+ * - `labelProps.for` — must equal `inputProps.id`, since the two are rendered onto different elements.
+ *
+ * `tests/headless-contract-requirements.test.ts` drives OriCombobox from an adapter written from scratch
+ * (never spreading `nativeCombobox`) and fails if this list stops being sufficient.
+ */
 export interface ComboboxControl {
     open: ComputedRef<boolean>
     value: ComputedRef<string | null>
@@ -101,7 +117,25 @@ export interface UseMenuOptions {
     onSelect?: (value: string) => void
 }
 
-/** The shape a menu UI consumes, regardless of which engine produced it. */
+/**
+ * The shape a menu UI consumes, regardless of which engine produced it.
+ *
+ * The prop bags are typed as opaque records, but `OriMenu` reaches inside them to do the two things a
+ * framework-agnostic projection cannot do itself — move real DOM focus, and hand it back. A replacement
+ * adapter MUST therefore emit these keys; miss one and the component degrades silently, with no error and
+ * no warning:
+ *
+ * - `triggerProps.id` — the component resolves the trigger via `document.getElementById` to return focus
+ *   when the menu closes. Missing → focus is stranded inside the closed menu.
+ * - `data-highlighted` on the highlighted item's bag only (any value, `''` by convention) — the component
+ *   finds the item to focus with `querySelector('[data-highlighted]')`. Missing → roving focus never moves.
+ * - `tabindex` on the item bags — `0` on the highlighted item, `-1` on the rest (roving tabindex). Items
+ *   render as `<div>`s, so without a tabindex the `.focus()` above is a no-op in a real browser.
+ * - `contentProps.tabindex` — `-1`, so the panel itself can take focus on open while nothing is highlighted.
+ *
+ * `tests/headless-contract-requirements.test.ts` drives OriMenu from an adapter written from scratch
+ * (never spreading `nativeMenu`) and fails if this list stops being sufficient.
+ */
 export interface MenuControl {
     open: ComputedRef<boolean>
     highlightedValue: ComputedRef<string | null>
@@ -131,5 +165,18 @@ export interface HeadlessAdapters {
     menu?: MenuAdapter
 }
 
-/** Injection key the resolver reads; set by the OriHeadless plugin / provideHeadless(). */
-export const ORI_HEADLESS: InjectionKey<HeadlessAdapters> = Symbol('ori-headless')
+/**
+ * Injection key the resolver reads; set by the OriHeadless plugin / provideHeadless().
+ *
+ * `Symbol.for`, not `Symbol`: when npm cannot dedupe this package (a transitive duplicate, two lockfile
+ * entries, an exact pin that blocks hoisting) each copy evaluates its own module scope. A plain `Symbol`
+ * would give them different keys, so a `provide` from one copy would be invisible to an `inject` from the
+ * other — silently, with the component falling back to the native engine. The registry key interns.
+ *
+ * The `@1` is the MAJOR this contract shape belongs to, and must be bumped with the major. The registry
+ * is global and cross-realm, so an unversioned key would also intern across majors — during an
+ * incremental v1 -> v2 migration a v2 provider would satisfy a v1 `inject` with a shape it was never
+ * typed against. Versioning keeps undeduped copies of ONE major interoperable (the case this fixes) and
+ * lets two majors coexist by missing each other, which is the safe direction: a miss falls back.
+ */
+export const ORI_HEADLESS: InjectionKey<HeadlessAdapters> = Symbol.for('ori-headless@1')

@@ -25,7 +25,9 @@ export interface OriFieldContext {
 
 // Value may be `undefined` — a composite control (e.g. OriColorPicker) provides `undefined` to shield
 // its own field-aware children from an ancestor field.
-export const oriFieldKey: InjectionKey<OriFieldContext | undefined> = Symbol('ori-field')
+// `Symbol.for` so an `OriField` and a control resolved from two undeduped copies of this package still
+// meet — a plain Symbol would silently drop the control back to standalone wiring, with no error.
+export const oriFieldKey: InjectionKey<OriFieldContext | undefined> = Symbol.for('ori-field@1')
 
 /**
  * Read the surrounding `OriField` context, if any. Text controls (OriInput / OriSelect / OriTextarea)

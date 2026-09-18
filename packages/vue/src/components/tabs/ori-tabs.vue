@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { watch } from 'vue'
-import { useTabs } from '@oriui/headless/vue'
+import { useTabs, type TabItem as HeadlessTabItem } from '@oriui/headless/vue'
 import type { ThemeColor } from '../../types'
 
-interface TabItem {
-    value: string | number
+/**
+ * A tab in `<OriTabs>` — the headless `TabItem` (behaviour: identity + disabled) plus the display
+ * string this styled shell renders. Deriving rather than redeclaring keeps the two layers one type:
+ * `tabs` is handed straight to `useTabs` below, so the assignability was always load-bearing.
+ */
+export interface TabItem extends HeadlessTabItem {
     label: string
-    disabled?: boolean
 }
 
 // OriTabs — an accessible tabs widget driven by the headless `useTabs` (WAI-ARIA tabs, automatic
