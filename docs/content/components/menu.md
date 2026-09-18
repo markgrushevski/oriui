@@ -320,6 +320,15 @@ behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/
 | `disabled`  | `boolean`                                                              | `false`          | Disables the trigger and blocks opening the menu.                                  |
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier. |
 
+`MenuItem` is the behaviour layer's own type, re-exported unchanged — import it from either entry to
+annotate your array:
+
+```ts
+import { type MenuItem } from '@oriui/vue' // or '@oriui/headless/vue'
+
+const items: MenuItem[] = [{ value: 'copy', label: 'Copy' }, { value: 'paste' }]
+```
+
 ### Events & attributes
 
 | Event    | Payload  | Fired when                                                                                                                          |

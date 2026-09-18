@@ -3,7 +3,8 @@ import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
-interface SelectOption {
+/** One `<option>` in `<OriSelect>`'s `options` prop. */
+export interface SelectOption {
     label: string
     value: string | number
     disabled?: boolean

@@ -2,7 +2,8 @@
 import { computed, useId } from 'vue'
 import type { RadiusSize, ThemeColor } from '../../types'
 
-interface AccordionItem {
+/** One disclosure in `<OriAccordion>`'s `items` prop. `title` is the `<summary>` text. */
+export interface AccordionItem {
     value: string | number
     title: string
     disabled?: boolean
