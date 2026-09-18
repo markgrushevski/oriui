@@ -72,6 +72,26 @@ describe('every package rebuilds before it is packed', () => {
         expect(manifest(dir).scripts?.prepack).toBe('npm run build')
         expect(manifest(dir).scripts?.build, 'prepack points at a build script that does not exist').toBeTruthy()
     })
+
+    // The other half of that hook: the AUTOMATED path must NOT take the rebuild. `changeset publish`
+    // packs all three workspaces in parallel, and @oriui/headless's build (tsdown, `clean: true`) empties
+    // the very dist that @oriui/vue's declaration emit resolves @oriui/headless from — so overlapping
+    // packs make vue-tsc exit 2 and the fixed group half-publishes. That is what 1.0.0-rc.18 did
+    // (ORI-I-83). The release script builds the graph in dependency order and publishes THAT artifact
+    // with the pack scripts off; these assertions are what stop `changeset publish` being wired back in.
+    it('the release script builds in order, then publishes without re-running the pack scripts', () => {
+        const release: string = rootManifest.scripts.release
+        expect(release, 'the release script stopped building before it publishes').toMatch(/^npm run build &&/)
+        expect(release, 'publishing through `changeset publish` again lets the parallel packs race').not.toMatch(
+            /changeset\s+publish/
+        )
+        expect(release).toContain('node scripts/publish.mjs')
+
+        const wrapper = readFileSync(resolve(root, 'scripts/publish.mjs'), 'utf8')
+        expect(wrapper, 'the publish wrapper stopped disabling the per-package prepack rebuild').toMatch(
+            /npm_config_ignore_scripts:\s*'true'/
+        )
+    })
 })
 
 /**

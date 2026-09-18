@@ -54,10 +54,15 @@ const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 // Core engine
 // ---------------------------------------------------------------------------
 
-// A MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (60 files,
-// parallel workers) the default 1s waitFor window is a wall-clock race rather than a statement about
-// behaviour — this test flaked exactly once that way. The assertion is unchanged; only the window grows.
+// A MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (65 files,
+// parallel workers) a short waitFor window is a wall-clock race rather than a statement about
+// behaviour. Two numbers, and the relationship between them is the whole point: widening the window
+// alone does NOTHING, because vitest's own per-test budget (5s by default) expires first and reports
+// the test — not the wait — as timed out. So every test that waits on the observer states a budget
+// that the window fits comfortably inside. Raising `testTimeout` globally would buy the same thing by
+// slackening every unrelated test, which is how a genuine hang stops being visible.
 const OBSERVER_WAIT = { timeout: 5000, interval: 20 }
+const OBSERVER_BUDGET = 20_000
 
 describe('resolveToken (core)', () => {
     it('resolves a token through a var() alias chain to the computed color', () => {
@@ -122,19 +127,23 @@ describe('resolveToken (core)', () => {
 })
 
 describe('observeTheme (core)', () => {
-    it('fires on a :root class change and a :root style change', async () => {
-        const callback = vi.fn()
-        const stop = observeTheme(callback)
+    it(
+        'fires on a :root class change and a :root style change',
+        async () => {
+            const callback = vi.fn()
+            const stop = observeTheme(callback)
 
-        document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(1), OBSERVER_WAIT)
+            document.documentElement.classList.add('dark')
+            await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(1), OBSERVER_WAIT)
 
-        document.documentElement.style.setProperty('--ori-test-inline', 'red')
-        await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2), OBSERVER_WAIT)
+            document.documentElement.style.setProperty('--ori-test-inline', 'red')
+            await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2), OBSERVER_WAIT)
 
-        stop()
-        document.documentElement.style.removeProperty('--ori-test-inline')
-    })
+            stop()
+            document.documentElement.style.removeProperty('--ori-test-inline')
+        },
+        OBSERVER_BUDGET
+    )
 
     it('the unsubscribe disconnects the observer', async () => {
         const callback = vi.fn()
@@ -206,14 +215,18 @@ describe('useToken (Vue)', () => {
         wrapper.unmount()
     })
 
-    it('re-resolves when the theme observer fires (:root class toggle)', async () => {
-        const { wrapper, value } = mountToken('--ori-test-brand')
-        expect(value()).toBe(BRAND_LIGHT)
+    it(
+        're-resolves when the theme observer fires (:root class toggle)',
+        async () => {
+            const { wrapper, value } = mountToken('--ori-test-brand')
+            expect(value()).toBe(BRAND_LIGHT)
 
-        document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(value()).toBe(BRAND_DARK), OBSERVER_WAIT)
-        wrapper.unmount()
-    })
+            document.documentElement.classList.add('dark')
+            await vi.waitFor(() => expect(value()).toBe(BRAND_DARK), OBSERVER_WAIT)
+            wrapper.unmount()
+        },
+        OBSERVER_BUDGET
+    )
 
     it('re-resolves when the token getter changes', async () => {
         const { wrapper, value } = mountToken('--ori-test-brand')
@@ -271,19 +284,23 @@ describe('useToken (Svelte)', () => {
         expect(seen).toEqual([BRAND_LIGHT, ACCENT])
     })
 
-    it('re-resolves when the theme observer fires, and tears down with the last subscriber', async () => {
-        const value = useTokenSvelte('--ori-test-brand')
-        const seen: string[] = []
-        const stop = value.subscribe((v) => seen.push(v))
+    it(
+        're-resolves when the theme observer fires, and tears down with the last subscriber',
+        async () => {
+            const value = useTokenSvelte('--ori-test-brand')
+            const seen: string[] = []
+            const stop = value.subscribe((v) => seen.push(v))
 
-        document.documentElement.classList.add('dark')
-        await vi.waitFor(() => expect(seen).toContain(BRAND_DARK), OBSERVER_WAIT)
+            document.documentElement.classList.add('dark')
+            await vi.waitFor(() => expect(seen).toContain(BRAND_DARK), OBSERVER_WAIT)
 
-        stop()
-        document.documentElement.classList.remove('dark')
-        await settle()
-        expect(seen).toEqual([BRAND_LIGHT, BRAND_DARK])
-    })
+            stop()
+            document.documentElement.classList.remove('dark')
+            await settle()
+            expect(seen).toEqual([BRAND_LIGHT, BRAND_DARK])
+        },
+        OBSERVER_BUDGET
+    )
 
     it('useThemeColor resolves --ori-color-<role> and follows a role store', () => {
         vi.spyOn(console, 'warn').mockImplementation(() => {}) // the missing role below warns in dev mode
