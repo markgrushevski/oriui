@@ -202,7 +202,11 @@
     .ori-combobox__empty {
         padding: 0.4em 0.6em;
 
-        opacity: 0.6;
+        /* Real informational content ("No results"), not a disabled or decorative element — so it carries
+           the same fade as a field hint (0.7) rather than the deeper one used for unavailable options.
+           At 0.6 it measured 3.69:1 on the tightest skin, below WCAG 1.4.3; the e2e contrast guard now
+           asserts this cell instead of only printing it. */
+        opacity: 0.7;
         font-size: var(--ori-font-size);
     }
 

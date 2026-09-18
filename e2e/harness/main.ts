@@ -3,6 +3,7 @@ import ColorPickerView from './views/ColorPickerView.vue'
 import ComboboxView from './views/ComboboxView.vue'
 import DialogView from './views/DialogView.vue'
 import MenuView from './views/MenuView.vue'
+import PerfCollectionsView from './views/PerfCollectionsView.vue'
 import ToolbarView from './views/ToolbarView.vue'
 import '@oriui/css'
 
@@ -15,6 +16,7 @@ const views: Record<string, Component> = {
     combobox: ComboboxView,
     dialog: DialogView,
     menu: MenuView,
+    perf: PerfCollectionsView,
     toolbar: ToolbarView
 }
 
