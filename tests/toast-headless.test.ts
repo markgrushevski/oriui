@@ -33,11 +33,25 @@ describe('createToastQueue (core engine)', () => {
         const q = createToastQueue()
         const id = q.push('hello')
         expect(typeof id).toBe('number')
-        expect(q.getToasts()[0]).toMatchObject({ id, text: 'hello', duration: 4000, closable: true })
+        // `closable` is deliberately NOT stamped: the queue must not out-vote OriToast's own default,
+        // or a caller who says nothing gets a dismiss button they never asked for.
+        expect(q.getToasts()[0]).toMatchObject({ id, text: 'hello', duration: 4000 })
+        expect(q.getToasts()[0].closable).toBeUndefined()
 
         q.push({ text: 'c', closable: false, duration: 2000 })
         expect(q.getToasts()[1]).toMatchObject({ text: 'c', closable: false, duration: 2000 })
         expect(new Set(q.getToasts().map((t) => t.id)).size).toBe(2)
+    })
+
+    it('a toast that never auto-dismisses opts itself into a close button', () => {
+        const q = createToastQueue()
+        // duration 0 means no timer at all — without a dismiss affordance it could never be got rid of.
+        q.push({ text: 'stuck', duration: 0 })
+        expect(q.getToasts()[0].closable).toBe(true)
+
+        // ...and an explicit choice still wins, even that one.
+        q.push({ text: 'stuck but bare', duration: 0, closable: false })
+        expect(q.getToasts()[1].closable).toBe(false)
     })
 
     it('fallbackColor supplies the default color; explicit color overrides it', () => {

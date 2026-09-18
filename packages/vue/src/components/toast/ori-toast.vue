@@ -2,7 +2,14 @@
 import type { ThemeColor } from '../../types'
 import { OriIcon } from '../icon'
 
-const { closable = false, color = 'surface' } = defineProps<{
+const {
+    align = 'start',
+    closable = false,
+    color = 'surface'
+} = defineProps<{
+    /** Where the body sits in the card. `center` also lifts the dismiss button out of the flex flow, so
+     *  the text is centred on the CARD rather than on the space the button leaves behind. */
+    align?: 'start' | 'center'
     closable?: boolean
     color?: ThemeColor
     icon?: string
@@ -14,7 +21,10 @@ defineEmits<{ close: [] }>()
 </script>
 
 <template>
-    <div :class="['ori-toast', { [`ori-color_${color}`]: color }]" :role="color === 'danger' ? 'alert' : 'status'">
+    <div
+        :class="['ori-toast', { [`ori-color_${color}`]: color, 'ori-toast_align-center': align === 'center' }]"
+        :role="color === 'danger' ? 'alert' : 'status'"
+    >
         <slot name="icon">
             <ori-icon v-if="icon" :icon="icon" class="ori-toast__icon" />
         </slot>

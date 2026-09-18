@@ -25,7 +25,8 @@ describe('useToast() store', () => {
         expect(toasts[0].id).toBe(id)
         expect(toasts[0].text).toBe('hello')
         expect(toasts[0].duration).toBe(4000)
-        expect(toasts[0].closable).toBe(true)
+        // not stamped — OriToast's own `closable = false` default is what applies (see toast-headless.test.ts)
+        expect(toasts[0].closable).toBeUndefined()
     })
 
     it('toast(object) merges over defaults', () => {
@@ -510,5 +511,35 @@ describe('OriToaster component', () => {
             wrapper.unmount()
             document.body.innerHTML = ''
         }
+    })
+})
+
+describe('OriToast alignment', () => {
+    it('defaults to start alignment and carries no alignment class', () => {
+        const wrapper = mount(OriToast, { props: { text: 'Saved.' } })
+
+        expect(wrapper.classes()).not.toContain('ori-toast_align-center')
+    })
+
+    it(`align='center' adds the modifier the stylesheet keys the compensation off`, () => {
+        const wrapper = mount(OriToast, { props: { align: 'center', text: 'Saved.' } })
+
+        expect(wrapper.classes()).toContain('ori-toast_align-center')
+    })
+
+    it('the toaster forwards its alignment to every toast in the stack', async () => {
+        const { toast } = useToast()
+        const wrapper = mount(OriToaster, {
+            props: { align: 'center', position: 'top-center' },
+            attachTo: document.body
+        })
+        toast('Saved.')
+        toast('Copied image')
+        await nextTick()
+
+        const cards = document.querySelectorAll('.ori-toast')
+        expect(cards).toHaveLength(2)
+        for (const card of cards) expect(card.classList.contains('ori-toast_align-center')).toBe(true)
+        wrapper.unmount()
     })
 })
