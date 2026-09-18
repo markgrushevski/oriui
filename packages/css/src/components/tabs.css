@@ -35,7 +35,7 @@
         flex-direction: row;
         gap: 0.25em;
 
-        border-bottom: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        border-bottom: 1px solid var(--ori-color-outline);
     }
 
     .ori-tabs_vertical .ori-tabs__list {
@@ -46,7 +46,7 @@
            rule has to be the PANEL-FACING edge — physical right in LTR, physical left in RTL. The
            selected-tab indicator below already uses inset-inline-end, and a physical border here put
            the two on opposite edges under dir=rtl (guarded by e2e/rtl.spec.ts). */
-        border-inline-end: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        border-inline-end: 1px solid var(--ori-color-outline);
         border-bottom: 0;
     }
 
