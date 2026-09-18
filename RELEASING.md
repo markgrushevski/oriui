@@ -65,20 +65,27 @@ token via `id-token: write`. No `NPM_TOKEN` secret, nothing to rotate every 90 d
    internal deps and updating `CHANGELOG.md`.
 
 3. **Merge the "Version Packages" PR.** That push runs `npm run release`
-   (`npm run build && changeset publish`), publishing the bumped packages to npm in dependency order
-   via **Trusted Publishing (OIDC)** — no token, provenance attached — and tags the release commit.
+   (`npm run build && node scripts/publish.mjs`), publishing the bumped packages to npm in dependency
+   order via **Trusted Publishing (OIDC)** — no token, provenance attached — and tags the release commit.
    They land on **`latest`** (see the dist-tag note above), not on `alpha`.
 
 ### Local equivalents (manual fallback)
 
 ```bash
 npm run version    # changeset version + lockfile sync  (the "Version Packages" step)
-npm run release    # build + changeset publish → latest dist-tag  (needs npm login / OTP locally)
+npm run release    # build + publish → latest dist-tag  (needs npm login / OTP locally)
 ```
 
 Each package also has a `prepack` hook that runs its own build, so `npm publish` and `npm pack` produce
 a fresh `dist` whichever command you type — `dist` is gitignored, and before that hook existed a manual
 `npm publish` from a clean checkout would have shipped a package with nothing in it.
+
+> **One package at a time, though.** `changeset publish` packs all three at once, and their builds share
+> a filesystem: `@oriui/headless` cleans `packages/headless/dist` while `@oriui/vue`'s declaration emit is
+> reading it, which half-published 1.0.0-rc.18 (ORI-I-83). So the release script builds the graph in
+> dependency order and then publishes _that_ artifact through `scripts/publish.mjs`, which sets
+> `npm_config_ignore_scripts=true` for the packs changesets performs. If you ever publish by hand, pack
+> the packages one at a time — or build first and pass `--ignore-scripts` yourself.
 
 ## Cut the 1.0 (exiting pre mode)
 

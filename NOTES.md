@@ -718,3 +718,39 @@ opaque black, which made a 2.1:1 switch thumb measure 21:1 and look perfect. Pai
 canvas over the real backdrop and read the pixel instead; that also composites translucent layers, which a
 parser cannot do at all. (Pair this with the entry above about runtime theme toggling: measure after a
 fresh load, or force a `display: none` reflow flush per permutation.)
+
+## A `prepack` hook is a build in a place you do not control the scheduling of
+
+`changeset publish` packs every package **in parallel** (the `Publishing "…"` lines share a millisecond
+in the run log). In a workspace where one package's build output is another's build input, that turns
+per-package `prepack` builds into a race: `@oriui/headless` builds with tsdown's `clean: true`, so it
+empties `packages/headless/dist` while `@oriui/vue`'s `vue-tsc -p tsconfig.build.json` — which resolves
+`@oriui/headless` from exactly that directory — is reading it. Result: `TS2307` on every headless import
+and **exit code 2**, which is `DiagnosticsPresent_OutputsGenerated`, not a crash.
+
+Three things that made it expensive to diagnose (ORI-I-83, it half-published 1.0.0-rc.18):
+
+- **npm hides the output of lifecycle scripts.** The workflow log showed the `prepack` banner, then
+  `npm error code 2` and nothing in between — the diagnostics went to `~/.npm/_logs/*-debug-0.log`, which
+  the runner throws away. `--foreground-scripts` is what surfaces them.
+- **It cannot reproduce serially.** `npm pack -w @oriui/vue`, twice in a row, from a clean tree: always
+  green. Only concurrent packs lose. The cheap repro is to stage the race by hand — move
+  `packages/headless/dist` aside and run the vue build.
+- **The gate does not cover it.** Everything ahead of the publish built, measured and smoke-installed a
+  `dist`; `prepack` then threw that away and rebuilt, so the published bytes were never the measured
+  bytes. Publishing with `npm_config_ignore_scripts=true` after one ordered build fixes both problems at
+  once — the artifact ships as gated, and nothing rebuilds under a neighbour's feet.
+
+## Widening a `vi.waitFor` window past the test's own budget does nothing
+
+`vi.waitFor(fn, { timeout: 5000 })` inside a test that has vitest's default 5s `testTimeout` cannot
+ever use that window: the enclosing budget expires first, and the report reads `Test timed out in
+5000ms` — pointing at the test, not at the wait, so it looks like the assertion is wrong rather than
+the clock. A waitFor window is only real if the test states a budget comfortably larger than it
+(`it(name, fn, 20_000)`).
+
+Worth knowing alongside it: a suite that is green in isolation and flaky in the full run is usually
+saying the budget is too tight, not that the behaviour is wrong. `tests/token.test.ts` waits on
+happy-dom MutationObserver deliveries, which are macrotasks — 20 runs of the file alone never flake,
+while 65 files across parallel workers can starve a worker for seconds. Raise the budget on the tests
+that genuinely wait; raising `testTimeout` globally hides real hangs everywhere else.
