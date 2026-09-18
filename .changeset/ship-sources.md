@@ -1,7 +1,6 @@
 ---
 '@oriui/vue': patch
 '@oriui/headless': patch
-'@oriui/css': patch
 ---
 
 Ship `src` alongside `dist` so the published declaration maps (`.d.ts.map`) and JS sourcemaps
@@ -9,4 +8,6 @@ Ship `src` alongside `dist` so the published declaration maps (`.d.ts.map`) and 
 `../src/…` source that wasn't in the package — go-to-definition (and JS debugging) dead-ended, and some
 editors (notably WebStorm) degraded a component's model while chasing the missing source. Now
 go-to-definition on an `Ori*` component or a headless composable lands on the real, commented source.
-The `exports` map still routes all imports to `dist`; the extra `src` files are inert.
+The `exports` map still routes all imports to `dist`; the extra `src` files are inert. This applies to
+the two JS packages only — `@oriui/css` emits no source maps and nothing in it resolves into `src`, so
+it ships `dist` alone.
