@@ -92,8 +92,8 @@ function Details() {
 ```
 
 > `@oriui/css` is framework-free — the same `.ori-*` classes and tokens style this markup in React / Next
-> today, no adapter needed. The React adapter here adds the _behaviour_ (this slice ships `useDisclosure` +
-> `useTabs`; the rest follow).
+> today, no adapter needed. The React adapter here adds the _behaviour_ — every composable on this site
+> ships a React twin, at parity with Vue and Svelte.
 
 ## Adapter
 

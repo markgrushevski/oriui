@@ -10,7 +10,9 @@ contract, so you can add another later without reworking what you built.
 ## Requirements
 
 - **Node ≥ 22** and a bundler (Vite, webpack, Nuxt, …) for the Vue layers.
-- **Vue 3.5+** for the styled and headless layers (the components use reactive props destructure).
+- **Vue 3.5+** for the styled layer (the components use reactive props destructure).
+- For the headless layer, **any one of** Vue 3.5+, Svelte 5, or React 18/19 — one adapter per framework,
+  each an optional peer, so you only carry your own.
 - The **CSS layer needs none of the above** — it is a plain stylesheet and classes.
 
 ## Styled components — `@oriui/vue`
@@ -61,7 +63,7 @@ Or straight from a CDN, no install at all:
 The full class reference and copy-pasteable markup live in [Using the CSS layer](/guides/css) and on
 each component page — flip any example to its **HTML** tab.
 
-## The headless layer — `@oriui/headless/vue`
+## The headless layer — `@oriui/headless`
 
 Behavior without markup: composables for open state, keyboard, focus, and ARIA. Installing `@oriui/vue`
 already pulls this in transitively, but you can install it on its own:
@@ -70,9 +72,17 @@ already pulls this in transitively, but you can install it on its own:
 npm install @oriui/headless
 ```
 
+One framework-agnostic core, one thin adapter per framework — import the one you use:
+
 ```ts
-import { useDisclosure } from '@oriui/headless/vue'
+import { useDisclosure } from '@oriui/headless/vue' // Vue 3.5+   → ComputedRefs
+import { useDisclosure } from '@oriui/headless/svelte' // Svelte 5   → stores
+import { useDisclosure } from '@oriui/headless/react' // React 18/19 → plain values
 ```
+
+The surface is identical across the three: same options, same prop bags, same ARIA. In a React app you
+pair it with `@oriui/css` for the look — that combination gives you the full design system on React or
+Next without Vue.
 
 Both `useDisclosure` and `useDialog` work out of the box on zero-dependency native engines — no
 adapter, no extra install. `useDialog` runs on the native `<dialog>` element, so the focus trap,
