@@ -375,3 +375,46 @@ describe('Derived theme tokens are re-declared per theme, not inherited', () => 
         })
     }
 })
+
+/**
+ * Structure has a name now. Borders, dividers and control edges derive from `--ori-color-outline` /
+ * `--ori-color-outline-strong` instead of each block inventing its own `currentcolor` percentage — that
+ * divergence is what left a consumer with nothing to repoint and no way to know our numbers.
+ *
+ * The guard is narrow on purpose: it polices the STRUCTURAL properties only. A background tint at 4-14%
+ * is a different axis (hover, zebra, a progress track) and must stay a per-component mix, because a token
+ * that covered both would be a name that lies about what it controls.
+ */
+describe('Structural borders read the outline token, never a hand-rolled mix', () => {
+    const STRUCTURAL =
+        /^\s*(?:border[a-z-]*|outline[a-z-]*|--ori-[a-z-]+-border)\s*:\s*[^;]*color-mix\(in srgb,\s*currentcolor/gm
+
+    for (const { file: name, css } of sources) {
+        // The token file itself is where the two mixes legitimately live.
+        if (name.includes('_themes-color-tokens')) continue
+        // Named exception, reviewable rather than silent: the checkbox and radio box edge is a THIRD
+        // structural weight (40%) — the unfilled interactive target has to read as an affordance, and
+        // dropping it to the 28% control edge visibly weakens it. Whether 40% is itself enough for the
+        // 3:1 non-text bar is a separate, measured question (ISSUES-INNER), not a token question.
+        if (name.endsWith('checkbox.css') || name.endsWith('radio.css')) continue
+
+        it(`${name} has no hand-rolled structural mix`, () => {
+            const offenders = [...blankComments(css).matchAll(STRUCTURAL)].map((m) => m[0].trim())
+
+            expect(
+                offenders,
+                `use var(--ori-color-outline) / var(--ori-color-outline-strong):\n${offenders.join('\n')}`
+            ).toEqual([])
+        })
+    }
+
+    it('the matcher sees a hand-rolled border and ignores a background tint', () => {
+        const bad = ['.x {', '    border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);', '}'].join('\n')
+        const fine = ['.x {', '    background-color: color-mix(in srgb, currentcolor 12%, transparent);', '}'].join(
+            '\n'
+        )
+
+        expect([...blankComments(bad).matchAll(STRUCTURAL)]).toHaveLength(1)
+        expect([...blankComments(fine).matchAll(STRUCTURAL)]).toHaveLength(0)
+    })
+})

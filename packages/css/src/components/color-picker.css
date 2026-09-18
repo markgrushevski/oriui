@@ -127,7 +127,7 @@
         width: 2rem;
         height: 2rem;
 
-        border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+        border: 1px solid var(--ori-color-outline-strong);
         border-radius: var(--ori-color-picker-radius);
 
         /* No `var()` fallback on --ori-color: it is declared unconditionally at :root as `currentColor`
@@ -176,7 +176,7 @@
         height: 1.5rem;
         padding: 0;
 
-        border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+        border: 1px solid var(--ori-color-outline-strong);
         border-radius: var(--ori-color-picker-preset-radius);
 
         /* Inline --ori-color per chip; no fallback arm — see the swatch above. */
