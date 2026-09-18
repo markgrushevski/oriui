@@ -85,8 +85,11 @@ const { tablistProps, getTabProps, getPanelProps } = useTabs(() => ({
             <button v-for="(tab, i) in tabs" :key="tab.value" v-bind="getTabProps(tab, i)">{{ tab.label }}</button>
         </div>
 
+        <!-- Prefix data-derived slot names (`panel-${tab.value}`) if your component also has reserved
+             slots: Vue resolves both from one flat namespace, so a tab valued "tab" would otherwise
+             render your tab-label template into its own panel. `<OriTabs>` uses `#panel-<value>`. -->
         <div v-for="(tab, i) in tabs" :key="tab.value" v-bind="getPanelProps(tab, i)">
-            <slot :name="tab.value" />
+            <slot :name="`panel-${tab.value}`" />
         </div>
     </div>
 </template>
@@ -116,7 +119,7 @@ item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), event
 </div>
 
 {#each tabs as tab, i (tab.value)}
-    <div {...$getPanelProps(tab, i)}><slot name={tab.value} /></div>
+    <div {...$getPanelProps(tab, i)}><slot name={`panel-${tab.value}`} /></div>
 {/each}
 ```
 
