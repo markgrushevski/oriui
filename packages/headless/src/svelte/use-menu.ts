@@ -1,9 +1,9 @@
-import { getHeadless } from './plugin';
-import { nativeMenu } from './native';
-import type { MenuControl, UseMenuOptions } from './contract';
-import type { MaybeReactive } from './use-store';
+import { getHeadless } from './plugin'
+import { nativeMenu } from './native'
+import type { MenuControl, UseMenuOptions } from './contract'
+import type { MaybeReactive } from './use-store'
 
-export type { UseMenuOptions } from './contract';
+export type { UseMenuOptions } from './contract'
 
 /**
  * Resolve the active Menu behavior (Svelte) — the twin of the Vue `useMenu`. Returns whichever adapter
@@ -15,6 +15,6 @@ export type { UseMenuOptions } from './contract';
  * react to external changes. Build any UI on top, or use the styled `OriMenu`.
  */
 export function useMenu(options: MaybeReactive<UseMenuOptions>): MenuControl {
-    const adapter = getHeadless()?.menu ?? nativeMenu;
-    return adapter(options);
+    const adapter = getHeadless()?.menu ?? nativeMenu
+    return adapter(options)
 }

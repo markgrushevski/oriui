@@ -1,6 +1,6 @@
-import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 // Minimal Vite app that mounts the real @oriui/vue components for the Playwright interaction specs.
 // The @oriui/* aliases mirror vitest.config.js exactly (source, not dist) so the harness exercises the
@@ -20,4 +20,4 @@ export default defineConfig({
         }
     },
     plugins: [vue()]
-});
+})

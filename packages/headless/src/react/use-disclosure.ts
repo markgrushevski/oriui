@@ -1,6 +1,6 @@
-import { useHeadless } from './plugin';
-import { nativeDisclosure } from './native';
-import type { DisclosureControl, UseDisclosureOptions } from './contract';
+import { useHeadless } from './plugin'
+import { nativeDisclosure } from './native'
+import type { DisclosureControl, UseDisclosureOptions } from './contract'
 
 /**
  * Resolve the active Disclosure behaviour. Components call this and stay engine-agnostic: it returns
@@ -11,7 +11,7 @@ import type { DisclosureControl, UseDisclosureOptions } from './contract';
  * pick adapters once at the root; see plugin.ts.)
  */
 export function useDisclosure(options: UseDisclosureOptions = {}): DisclosureControl {
-    const adapters = useHeadless();
-    const adapter = adapters?.disclosure ?? nativeDisclosure;
-    return adapter(options);
+    const adapters = useHeadless()
+    const adapter = adapters?.disclosure ?? nativeDisclosure
+    return adapter(options)
 }

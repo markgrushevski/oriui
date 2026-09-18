@@ -1,1 +1,1 @@
-export { default as OriStack } from './ori-stack.vue';
+export { default as OriStack } from './ori-stack.vue'

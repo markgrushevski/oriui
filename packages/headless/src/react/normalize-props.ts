@@ -1,8 +1,8 @@
-import { createNormalizer, type Dict, type PropTypes } from '../core';
+import { createNormalizer, type Dict, type PropTypes } from '../core'
 
 export interface ReactPropTypes extends PropTypes {
-    element: Record<string, unknown>;
-    button: Record<string, unknown>;
+    element: Record<string, unknown>
+    button: Record<string, unknown>
 }
 
 // React spells a few DOM attributes in camelCase. The neutral dict already uses React-style `className`
@@ -18,7 +18,7 @@ const attrMap: Record<string, string> = {
     contenteditable: 'contentEditable',
     class: 'className',
     for: 'htmlFor'
-};
+}
 
 // The neutral dict uses Vue-style handler keys (`onClick`, `onKeydown`), which match React for single-word
 // events but not multi-word ones (`onKeydown` → React `onKeyDown`). Map the compound events oriUI emits;
@@ -39,26 +39,26 @@ const eventMap: Record<string, string> = {
     onMousemove: 'onMouseMove',
     onMouseenter: 'onMouseEnter',
     onMouseleave: 'onMouseLeave'
-};
+}
 
 // React binds handlers as PascalCase props and spells a few attributes in camelCase. So: drop `undefined`
 // (absent attributes don't render), rename the compound event keys + the camelCase attributes, and pass
 // everything else (aria-/data-/`onClick`/`id`/`role`/`hidden`/`disabled`/…) through untouched.
 export const normalizeProps = createNormalizer<ReactPropTypes>((props: Dict) => {
-    const result: Dict = {};
+    const result: Dict = {}
 
     for (const key in props) {
-        const value = props[key];
-        if (value === undefined) continue;
+        const value = props[key]
+        if (value === undefined) continue
 
         if (key in eventMap) {
-            result[eventMap[key] as string] = value;
+            result[eventMap[key] as string] = value
         } else if (key in attrMap) {
-            result[attrMap[key] as string] = value;
+            result[attrMap[key] as string] = value
         } else {
-            result[key] = value;
+            result[key] = value
         }
     }
 
-    return result;
-});
+    return result
+})

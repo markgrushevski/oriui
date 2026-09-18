@@ -1,1 +1,1 @@
-export { default as OriCheckbox } from './ori-checkbox.vue';
+export { default as OriCheckbox } from './ori-checkbox.vue'

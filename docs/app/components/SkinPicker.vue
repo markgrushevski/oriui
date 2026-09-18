@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useOriTheme, SKINS, type SkinId, type Theme } from '../composables/useOriTheme';
+import { computed, ref } from 'vue'
+import { useOriTheme, SKINS, type SkinId, type Theme } from '../composables/useOriTheme'
 
 // A combined theme picker: every skin in both light and dark (e.g. "Ori Light", "Ori Dark"). Picking
 // one sets the skin (data-ori-skin) and the mode (html.dark) together — zero runtime, two attribute
 // writes. This is the docs' showcase of the token/skin architecture. Outside-click close is the only
 // scripted bit; the dropdown is a native <details>, so it works without JS.
-const { theme, skin, setTheme, setSkin } = useOriTheme();
-const root = ref<HTMLDetailsElement>();
+const { theme, skin, setTheme, setSkin } = useOriTheme()
+const root = ref<HTMLDetailsElement>()
 
-const MODES: Theme[] = ['light', 'dark'];
-const modeLabel = (m: Theme) => (m === 'dark' ? 'Dark' : 'Light');
-const fallbackSkin = SKINS[0]!;
+const MODES: Theme[] = ['light', 'dark']
+const modeLabel = (m: Theme) => (m === 'dark' ? 'Dark' : 'Light')
+const fallbackSkin = SKINS[0]!
 
 const options = computed(() =>
     SKINS.flatMap((s) =>
         MODES.map((m) => ({ key: `${s.id}-${m}`, id: s.id, mode: m, label: s.label, swatches: s.swatches }))
     )
-);
+)
 
-const current = computed(() => SKINS.find((s) => s.id === skin.value) ?? fallbackSkin);
+const current = computed(() => SKINS.find((s) => s.id === skin.value) ?? fallbackSkin)
 
 function pick(id: SkinId, mode: Theme) {
-    setSkin(id);
-    setTheme(mode);
-    if (root.value) root.value.open = false;
+    setSkin(id)
+    setTheme(mode)
+    if (root.value) root.value.open = false
 }
 
 function onDocPointerDown(e: PointerEvent) {
-    if (root.value && !root.value.contains(e.target as Node)) root.value.open = false;
+    if (root.value && !root.value.contains(e.target as Node)) root.value.open = false
 }
 
 function onToggle() {
-    if (root.value?.open) document.addEventListener('pointerdown', onDocPointerDown);
-    else document.removeEventListener('pointerdown', onDocPointerDown);
+    if (root.value?.open) document.addEventListener('pointerdown', onDocPointerDown)
+    else document.removeEventListener('pointerdown', onDocPointerDown)
 }
 </script>
 

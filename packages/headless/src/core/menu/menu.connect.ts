@@ -1,27 +1,27 @@
-import type { NormalizeProps, PropTypes } from '../types';
-import { anatomy } from './menu.anatomy';
-import type { MenuService } from './menu.machine';
-import type { MenuItem } from './menu.types';
+import type { NormalizeProps, PropTypes } from '../types'
+import { anatomy } from './menu.anatomy'
+import type { MenuService } from './menu.machine'
+import type { MenuItem } from './menu.types'
 
-const parts = anatomy.build();
+const parts = anatomy.build()
 
 export interface MenuItemState {
-    highlighted: boolean;
+    highlighted: boolean
 }
 
 export interface MenuApi<T extends PropTypes = PropTypes> {
-    open: boolean;
-    highlightedValue: string | null;
-    setOpen(open: boolean): void;
-    highlight(value: string | null): void;
+    open: boolean
+    highlightedValue: string | null
+    setOpen(open: boolean): void
+    highlight(value: string | null): void
     /** Move the highlight relative to the current one (wraps), among enabled items. */
-    highlightFirst(): void;
-    highlightLast(): void;
-    getTriggerProps(): T['button'];
-    getContentProps(): T['element'];
-    getItemProps(item: MenuItem, index: number): T['element'];
-    getSeparatorProps(): T['element'];
-    getItemState(item: MenuItem): MenuItemState;
+    highlightFirst(): void
+    highlightLast(): void
+    getTriggerProps(): T['button']
+    getContentProps(): T['element']
+    getItemProps(item: MenuItem, index: number): T['element']
+    getSeparatorProps(): T['element']
+    getItemState(item: MenuItem): MenuItemState
 }
 
 /**
@@ -40,45 +40,45 @@ export function connect<T extends PropTypes>(
     collection: MenuItem[],
     onSelect?: (value: string) => void
 ): MenuApi<T> {
-    const { open, highlightedValue, disabled } = service.getState();
-    const { scope } = service;
-    const triggerId = scope.getId('trigger');
-    const contentId = scope.getId('content');
-    const itemId = (index: number) => scope.getId(`item-${index}`);
+    const { open, highlightedValue, disabled } = service.getState()
+    const { scope } = service
+    const triggerId = scope.getId('trigger')
+    const contentId = scope.getId('content')
+    const itemId = (index: number) => scope.getId(`item-${index}`)
 
-    const enabled = collection.filter((item) => !item.disabled);
-    const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue);
+    const enabled = collection.filter((item) => !item.disabled)
+    const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue)
 
-    const send = service.send;
+    const send = service.send
     function highlightAt(cursor: number): void {
-        if (enabled.length === 0) return;
-        const item = enabled[(cursor + enabled.length) % enabled.length];
-        if (item) send({ type: 'HIGHLIGHT', value: item.value });
+        if (enabled.length === 0) return
+        const item = enabled[(cursor + enabled.length) % enabled.length]
+        if (item) send({ type: 'HIGHLIGHT', value: item.value })
     }
     function openAndHighlight(edge: 'first' | 'last'): void {
-        send({ type: 'OPEN' });
-        highlightAt(edge === 'first' ? 0 : enabled.length - 1);
+        send({ type: 'OPEN' })
+        highlightAt(edge === 'first' ? 0 : enabled.length - 1)
     }
     function activate(item: MenuItem): void {
-        if (item.disabled) return;
-        onSelect?.(item.value);
-        send({ type: 'CLOSE' });
+        if (item.disabled) return
+        onSelect?.(item.value)
+        send({ type: 'CLOSE' })
     }
 
     return {
         open,
         highlightedValue,
         setOpen(next) {
-            send({ type: next ? 'OPEN' : 'CLOSE' });
+            send({ type: next ? 'OPEN' : 'CLOSE' })
         },
         highlight(value) {
-            send({ type: 'HIGHLIGHT', value });
+            send({ type: 'HIGHLIGHT', value })
         },
         highlightFirst() {
-            highlightAt(0);
+            highlightAt(0)
         },
         highlightLast() {
-            highlightAt(enabled.length - 1);
+            highlightAt(enabled.length - 1)
         },
 
         getTriggerProps() {
@@ -92,23 +92,23 @@ export function connect<T extends PropTypes>(
                 'data-state': open ? 'open' : 'closed',
                 disabled: disabled || undefined,
                 onClick() {
-                    send({ type: open ? 'CLOSE' : 'OPEN' });
+                    send({ type: open ? 'CLOSE' : 'OPEN' })
                 },
                 onKeydown(event: KeyboardEvent) {
                     switch (event.key) {
                         case 'ArrowDown':
                         case 'Enter':
                         case ' ':
-                            event.preventDefault();
-                            openAndHighlight('first');
-                            break;
+                            event.preventDefault()
+                            openAndHighlight('first')
+                            break
                         case 'ArrowUp':
-                            event.preventDefault();
-                            openAndHighlight('last');
-                            break;
+                            event.preventDefault()
+                            openAndHighlight('last')
+                            break
                     }
                 }
-            });
+            })
         },
 
         getContentProps() {
@@ -124,44 +124,44 @@ export function connect<T extends PropTypes>(
                 onKeydown(event: KeyboardEvent) {
                     switch (event.key) {
                         case 'ArrowDown':
-                            event.preventDefault();
-                            highlightAt(enabledCursor + 1);
-                            break;
+                            event.preventDefault()
+                            highlightAt(enabledCursor + 1)
+                            break
                         case 'ArrowUp':
-                            event.preventDefault();
-                            highlightAt(enabledCursor - 1);
-                            break;
+                            event.preventDefault()
+                            highlightAt(enabledCursor - 1)
+                            break
                         case 'Home':
-                            event.preventDefault();
-                            highlightAt(0);
-                            break;
+                            event.preventDefault()
+                            highlightAt(0)
+                            break
                         case 'End':
-                            event.preventDefault();
-                            highlightAt(enabled.length - 1);
-                            break;
+                            event.preventDefault()
+                            highlightAt(enabled.length - 1)
+                            break
                         case 'Enter':
                         case ' ': {
-                            if (highlightedValue === null) break;
-                            event.preventDefault();
-                            const item = collection.find((i) => i.value === highlightedValue);
-                            if (item) activate(item);
-                            break;
+                            if (highlightedValue === null) break
+                            event.preventDefault()
+                            const item = collection.find((i) => i.value === highlightedValue)
+                            if (item) activate(item)
+                            break
                         }
                         case 'Escape':
-                            event.preventDefault();
-                            send({ type: 'CLOSE' });
-                            break;
+                            event.preventDefault()
+                            send({ type: 'CLOSE' })
+                            break
                         case 'Tab':
                             // Tabbing out closes the menu (focus returns to the trigger via the adapter).
-                            send({ type: 'CLOSE' });
-                            break;
+                            send({ type: 'CLOSE' })
+                            break
                     }
                 }
-            });
+            })
         },
 
         getItemProps(item, index) {
-            const highlighted = item.value === highlightedValue;
+            const highlighted = item.value === highlightedValue
             return normalize.element({
                 ...parts.item.attrs,
                 id: itemId(index),
@@ -170,14 +170,14 @@ export function connect<T extends PropTypes>(
                 'aria-disabled': item.disabled || undefined,
                 'data-highlighted': highlighted ? '' : undefined,
                 onClick() {
-                    activate(item);
+                    activate(item)
                 },
                 onPointermove() {
                     if (!item.disabled && highlightedValue !== item.value) {
-                        send({ type: 'HIGHLIGHT', value: item.value });
+                        send({ type: 'HIGHLIGHT', value: item.value })
                     }
                 }
-            });
+            })
         },
 
         getSeparatorProps() {
@@ -185,11 +185,11 @@ export function connect<T extends PropTypes>(
                 ...parts.separator.attrs,
                 role: 'separator',
                 'aria-orientation': 'horizontal'
-            });
+            })
         },
 
         getItemState(item) {
-            return { highlighted: item.value === highlightedValue };
+            return { highlighted: item.value === highlightedValue }
         }
-    };
+    }
 }

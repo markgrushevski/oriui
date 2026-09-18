@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { useTabs } from '@oriui/headless/vue';
-import type { ThemeColor } from '../../types';
+import { watch } from 'vue'
+import { useTabs } from '@oriui/headless/vue'
+import type { ThemeColor } from '../../types'
 
 interface TabItem {
-    value: string | number;
-    label: string;
-    disabled?: boolean;
+    value: string | number
+    label: string
+    disabled?: boolean
 }
 
 // OriTabs — an accessible tabs widget driven by the headless `useTabs` (WAI-ARIA tabs, automatic
@@ -25,14 +25,14 @@ const {
     tabs
 } = defineProps<{
     /** Active-tab accent (indicator + focus ring). */
-    color?: ThemeColor;
+    color?: ThemeColor
     /** Accessible name for the tablist (→ `aria-label`; WAI-ARIA recommends naming a tablist). */
-    label?: string;
-    orientation?: 'horizontal' | 'vertical';
-    tabs: TabItem[];
-}>();
+    label?: string
+    orientation?: 'horizontal' | 'vertical'
+    tabs: TabItem[]
+}>()
 
-const model = defineModel<string | number>();
+const model = defineModel<string | number>()
 
 const { selectedValue, tablistProps, getTabProps, getPanelProps } = useTabs(() => ({
     tabs,
@@ -40,9 +40,9 @@ const { selectedValue, tablistProps, getTabProps, getPanelProps } = useTabs(() =
     orientation,
     label,
     onChange: (value) => {
-        model.value = value;
+        model.value = value
     }
-}));
+}))
 
 // Seed / recover the caller's v-model to the resolved selection (a component policy — keeps the parent's
 // bound value valid without forcing them to seed it). `selectedValue` collapses an invalid bound value
@@ -52,10 +52,10 @@ const { selectedValue, tablistProps, getTabProps, getPanelProps } = useTabs(() =
 watch(
     [selectedValue, () => model.value],
     ([resolved, current]) => {
-        if (resolved !== undefined && resolved !== current) model.value = resolved;
+        if (resolved !== undefined && resolved !== current) model.value = resolved
     },
     { immediate: true }
-);
+)
 </script>
 
 <template>

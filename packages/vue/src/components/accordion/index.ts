@@ -1,1 +1,1 @@
-export { default as OriAccordion } from './ori-accordion.vue';
+export { default as OriAccordion } from './ori-accordion.vue'

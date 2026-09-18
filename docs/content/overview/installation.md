@@ -25,7 +25,7 @@ Import a component where you use it, and the stylesheet **once** at your app ent
 
 ```vue
 <script setup lang="ts">
-import { OriButton } from '@oriui/vue';
+import { OriButton } from '@oriui/vue'
 </script>
 
 <template>
@@ -35,7 +35,7 @@ import { OriButton } from '@oriui/vue';
 
 ```ts
 // main.ts — once, anywhere in your entry
-import '@oriui/css';
+import '@oriui/css'
 ```
 
 That single import ships the tokens, the base styles, and every component's classes. Theme and skin
@@ -49,7 +49,7 @@ with **htmx, Astro, or plain HTML**.
 From a bundler:
 
 ```ts
-import '@oriui/css';
+import '@oriui/css'
 ```
 
 Or straight from a CDN, no install at all:
@@ -71,7 +71,7 @@ npm install @oriui/headless
 ```
 
 ```ts
-import { useDisclosure } from '@oriui/headless/vue';
+import { useDisclosure } from '@oriui/headless/vue'
 ```
 
 Both `useDisclosure` and `useDialog` work out of the box on zero-dependency native engines — no
@@ -83,10 +83,10 @@ Zag-backed adapter for a genuinely hard widget — without touching your markup:
 
 ```ts
 // main.ts
-import { OriHeadless } from '@oriui/headless/vue';
-import { myDialog } from './headless/my-dialog'; // optional custom adapter
+import { OriHeadless } from '@oriui/headless/vue'
+import { myDialog } from './headless/my-dialog' // optional custom adapter
 
-app.use(OriHeadless, { dialog: myDialog });
+app.use(OriHeadless, { dialog: myDialog })
 ```
 
 See [@oriui/headless](/headless/core) for the contract and [useDialog](/headless/use-dialog) for the full

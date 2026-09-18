@@ -1,6 +1,6 @@
-import { getHeadless } from './plugin';
-import { nativeDisclosure } from './native';
-import type { DisclosureControl, UseDisclosureOptions } from './contract';
+import { getHeadless } from './plugin'
+import { nativeDisclosure } from './native'
+import type { DisclosureControl, UseDisclosureOptions } from './contract'
 
 /**
  * Resolve the active Disclosure behavior. Components call this and stay engine-agnostic: it returns
@@ -8,6 +8,6 @@ import type { DisclosureControl, UseDisclosureOptions } from './contract';
  * `../core` adapter when none is configured.
  */
 export function useDisclosure(options?: UseDisclosureOptions): DisclosureControl {
-    const adapter = getHeadless()?.disclosure ?? nativeDisclosure;
-    return adapter(options);
+    const adapter = getHeadless()?.disclosure ?? nativeDisclosure
+    return adapter(options)
 }

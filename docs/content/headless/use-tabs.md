@@ -20,7 +20,7 @@ helpers plus a defensive selection resolver.
 ## Import
 
 ```ts
-import { useTabs } from '@oriui/headless/vue';
+import { useTabs } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -58,20 +58,20 @@ Spread `tablistProps` on the list, then `v-for` the `tabs` — a `<button>` per 
 ```vue
 <!-- MyTabs.vue -->
 <script setup lang="ts">
-import { useTabs } from '@oriui/headless/vue';
+import { useTabs } from '@oriui/headless/vue'
 
 const { tabs } = defineProps<{
-    tabs: { value: string; label: string; disabled?: boolean }[];
-}>();
-const model = defineModel<string>();
+    tabs: { value: string; label: string; disabled?: boolean }[]
+}>()
+const model = defineModel<string>()
 
 const { tablistProps, getTabProps, getPanelProps } = useTabs(() => ({
     tabs,
     value: model.value,
     onChange: (value) => {
-        model.value = value as string;
+        model.value = value as string
     }
-}));
+}))
 </script>
 
 <template>
@@ -120,16 +120,16 @@ getters are plain functions (`getTabProps(tab, i)`), handlers use React casing (
 classes in React / Next today:
 
 ```tsx
-import { useState } from 'react';
-import { useTabs } from '@oriui/headless/react';
+import { useState } from 'react'
+import { useTabs } from '@oriui/headless/react'
 
 function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boolean }[] }) {
-    const [value, setValue] = useState(tabs[0]?.value);
+    const [value, setValue] = useState(tabs[0]?.value)
     const { tablistProps, getTabProps, getPanelProps } = useTabs({
         tabs,
         value,
         onChange: (v) => setValue(v as string)
-    });
+    })
 
     return (
         <div>
@@ -147,7 +147,7 @@ function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boo
                 </div>
             ))}
         </div>
-    );
+    )
 }
 ```
 

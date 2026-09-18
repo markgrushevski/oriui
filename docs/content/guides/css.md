@@ -17,7 +17,7 @@ see the exact markup.
 From a bundler, import the stylesheet once:
 
 ```ts
-import '@oriui/css';
+import '@oriui/css'
 ```
 
 Or drop it in with no build step at all:

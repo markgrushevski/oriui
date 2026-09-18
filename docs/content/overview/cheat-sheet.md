@@ -17,8 +17,8 @@ npm install @oriui/headless     # headless composables (focus / keyboard / ARIA)
 ```
 
 ```ts
-import '@oriui/css'; // the stylesheet, once (e.g. in your entry file)
-import { OriButton } from '@oriui/vue';
+import '@oriui/css' // the stylesheet, once (e.g. in your entry file)
+import { OriButton } from '@oriui/vue'
 ```
 
 ## Two ways to use it

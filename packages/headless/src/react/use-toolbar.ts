@@ -11,8 +11,8 @@ import {
     type KeyboardEvent,
     type ReactElement,
     type ReactNode
-} from 'react';
-import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, type RovingOrientation } from '../core';
+} from 'react'
+import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, type RovingOrientation } from '../core'
 
 /**
  * Headless WAI-ARIA Toolbar (https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) — the React twin of the
@@ -37,47 +37,47 @@ import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, 
  */
 
 interface ToolbarContextValue {
-    orientation: RovingOrientation;
+    orientation: RovingOrientation
     /** The id of the single roving-tabbable item (`tabIndex` 0); everything else is -1. */
-    activeId: string | null;
-    register(id: string): void;
-    unregister(id: string): void;
-    setActive(id: string): void;
+    activeId: string | null
+    register(id: string): void
+    unregister(id: string): void
+    setActive(id: string): void
 }
 
-const ToolbarContext = createContext<ToolbarContextValue | null>(null);
+const ToolbarContext = createContext<ToolbarContextValue | null>(null)
 
 export interface UseToolbarOptions {
     /** 'horizontal' (default) navigates with Left/Right; 'vertical' with Up/Down. */
-    orientation?: RovingOrientation;
+    orientation?: RovingOrientation
     /** Whether arrow navigation wraps first<->last (default true; the APG reference example wraps). */
-    loop?: boolean;
+    loop?: boolean
     /** Text direction — RTL swaps the horizontal Left/Right mapping (default 'ltr'). */
-    dir?: RovingDirection;
+    dir?: RovingDirection
     /** Accessible name → `aria-label`. A toolbar MUST be named (this or an `aria-labelledby` you pass). */
-    label?: string;
+    label?: string
 }
 
 export function useToolbar(options: UseToolbarOptions = {}) {
-    const orientation = options.orientation ?? 'horizontal';
-    const loop = options.loop ?? true;
-    const dir = options.dir ?? 'ltr';
+    const orientation = options.orientation ?? 'horizontal'
+    const loop = options.loop ?? true
+    const dir = options.dir ?? 'ltr'
 
     // Registered item ids in mount order; the single tabbable item defaults to the first registered.
-    const [registered, setRegistered] = useState<string[]>([]);
-    const [explicitActive, setExplicitActive] = useState<string | null>(null);
-    const activeId = explicitActive ?? registered[0] ?? null;
+    const [registered, setRegistered] = useState<string[]>([])
+    const [explicitActive, setExplicitActive] = useState<string | null>(null)
+    const activeId = explicitActive ?? registered[0] ?? null
 
     // Stable registry mutators (functional updates → no deps): an item's registration effect keys off these,
     // so it runs once on mount / once on unmount even as the context object below changes identity.
     const register = useCallback((id: string) => {
-        setRegistered((ids) => (ids.includes(id) ? ids : [...ids, id]));
-    }, []);
+        setRegistered((ids) => (ids.includes(id) ? ids : [...ids, id]))
+    }, [])
     const unregister = useCallback((id: string) => {
-        setRegistered((ids) => ids.filter((x) => x !== id));
-        setExplicitActive((active) => (active === id ? null : active));
-    }, []);
-    const setActive = useCallback((id: string) => setExplicitActive(id), []);
+        setRegistered((ids) => ids.filter((x) => x !== id))
+        setExplicitActive((active) => (active === id ? null : active))
+    }, [])
+    const setActive = useCallback((id: string) => setExplicitActive(id), [])
 
     // The context object: STABLE methods + the reactive `activeId` / `orientation`. Memoised on the reactive
     // parts so its identity changes exactly when items must re-project their roving tabIndex, while
@@ -85,45 +85,45 @@ export function useToolbar(options: UseToolbarOptions = {}) {
     const context = useMemo<ToolbarContextValue>(
         () => ({ orientation, activeId, register, unregister, setActive }),
         [orientation, activeId, register, unregister, setActive]
-    );
+    )
 
     // A stable Provider (identity never changes → no child remount) that reads the LIVE context each render
     // via a ref — the root component re-renders on every registry change, so the ref is always current. The
     // write-then-read happens within one synchronous render pass (parent writes, the child Provider reads),
     // so it can't tear under concurrent rendering.
-    const contextRef = useRef(context);
-    contextRef.current = context;
+    const contextRef = useRef(context)
+    contextRef.current = context
     const ToolbarProvider = useCallback(
         ({ children }: { children: ReactNode }): ReactElement =>
             createElement(ToolbarContext.Provider, { value: contextRef.current }, children),
         []
-    );
+    )
 
     // Bound once on the toolbar root → currentTarget IS the root (no element ref needed). Resolve the target
     // by live DOM order, yielding entirely to a composite child that owns the arrow keys.
     const onKeyDown = useCallback(
         (event: KeyboardEvent<HTMLElement>): void => {
-            const intent = rovingIntent(event.key, orientation, dir);
-            if (!intent) return;
+            const intent = rovingIntent(event.key, orientation, dir)
+            if (!intent) return
 
-            const root = event.currentTarget;
-            const target = event.target as HTMLElement;
+            const root = event.currentTarget
+            const target = event.target as HTMLElement
             // Yield entirely to a control that owns arrow keys (slider/textbox/radio group placed in the bar).
-            if (ownsArrowKeys(target)) return;
+            if (ownsArrowKeys(target)) return
 
-            const items = Array.from(root.querySelectorAll<HTMLElement>('[data-ori-toolbar-item]'));
-            if (items.length === 0) return;
+            const items = Array.from(root.querySelectorAll<HTMLElement>('[data-ori-toolbar-item]'))
+            if (items.length === 0) return
 
-            const current = target.closest<HTMLElement>('[data-ori-toolbar-item]');
-            const from = current ? items.indexOf(current) : -1;
-            const to = resolveRovingIndex(intent, from, items.length, loop);
-            if (to < 0) return;
+            const current = target.closest<HTMLElement>('[data-ori-toolbar-item]')
+            const from = current ? items.indexOf(current) : -1
+            const to = resolveRovingIndex(intent, from, items.length, loop)
+            if (to < 0) return
 
-            event.preventDefault();
-            items[to]?.focus();
+            event.preventDefault()
+            items[to]?.focus()
         },
         [orientation, dir, loop]
-    );
+    )
 
     const toolbarProps = {
         role: 'toolbar' as const,
@@ -131,9 +131,9 @@ export function useToolbar(options: UseToolbarOptions = {}) {
         'aria-orientation': orientation === 'vertical' ? ('vertical' as const) : undefined,
         'aria-label': options.label,
         onKeyDown
-    };
+    }
 
-    return { toolbarProps, ToolbarProvider };
+    return { toolbarProps, ToolbarProvider }
 }
 
 /**
@@ -143,30 +143,30 @@ export function useToolbar(options: UseToolbarOptions = {}) {
  * the active tab stop. Inert (all -1 / no registration) outside a `useToolbar` root.
  */
 export function useToolbarItem() {
-    const ctx = useContext(ToolbarContext);
+    const ctx = useContext(ToolbarContext)
     // `useId()` is SSR-stable; strip the colons React wraps ids in so it stays a valid attribute/selector.
-    const id = useId().replace(/:/g, '');
+    const id = useId().replace(/:/g, '')
 
     // Registration is a mount/unmount effect (no synchronous child-setup phase in React). Key off the STABLE
     // `register` / `unregister` — not the whole `ctx`, whose identity changes on every `activeId` update — so
     // this runs once on mount and once on unmount, never churning the registry order.
-    const register = ctx?.register;
-    const unregister = ctx?.unregister;
+    const register = ctx?.register
+    const unregister = ctx?.unregister
     useEffect(() => {
-        if (!register || !unregister) return;
-        register(id);
-        return () => unregister(id);
-    }, [register, unregister, id]);
+        if (!register || !unregister) return
+        register(id)
+        return () => unregister(id)
+    }, [register, unregister, id])
 
-    const isActive = ctx?.activeId === id;
+    const isActive = ctx?.activeId === id
 
     const itemProps = {
         'data-ori-toolbar-item': '',
         tabIndex: isActive ? 0 : -1,
         onFocus: () => ctx?.setActive(id)
-    };
+    }
 
-    return { itemProps, isActive };
+    return { itemProps, isActive }
 }
 
 /**
@@ -175,25 +175,25 @@ export function useToolbarItem() {
  * component re-renders when the orientation changes (the Vue twin returns a getter, Svelte a store).
  */
 export function useToolbarOrientation(): RovingOrientation {
-    return useContext(ToolbarContext)?.orientation ?? 'horizontal';
+    return useContext(ToolbarContext)?.orientation ?? 'horizontal'
 }
 
 // --- Toggle group --------------------------------------------------------------------------------
 
 interface ToolbarToggleContextValue {
-    isPressed(value: string): boolean;
-    toggle(value: string): void;
+    isPressed(value: string): boolean
+    toggle(value: string): void
 }
 
-const ToolbarToggleContext = createContext<ToolbarToggleContextValue | null>(null);
+const ToolbarToggleContext = createContext<ToolbarToggleContextValue | null>(null)
 
 export interface UseToolbarToggleGroupOptions {
     /** 'single' keeps one value (deselectable, like Radix); 'multiple' keeps a set. */
-    type: 'single' | 'multiple';
+    type: 'single' | 'multiple'
     /** Current value: a string (or undefined) for 'single', a string[] for 'multiple'. Controlled. */
-    value: string | string[] | undefined;
+    value: string | string[] | undefined
     /** Commit the next value (wire to your controlled state). */
-    onChange: (value: string | string[] | undefined) => void;
+    onChange: (value: string | string[] | undefined) => void
 }
 
 /**
@@ -203,39 +203,39 @@ export interface UseToolbarToggleGroupOptions {
  * still toolbar items and reachable by the same arrow navigation. Controlled — pass `value` / `onChange`.
  */
 export function useToolbarToggleGroup(options: UseToolbarToggleGroupOptions) {
-    const { type, value, onChange } = options;
+    const { type, value, onChange } = options
 
     // `isPressed` / `toggle` close over the current `type` / `value` (and the latest `onChange`), so the
     // context re-derives when the selection changes → toggle items re-project `aria-pressed`.
     const context = useMemo<ToolbarToggleContextValue>(
         () => ({
             isPressed(v) {
-                return type === 'multiple' ? Array.isArray(value) && value.includes(v) : value === v;
+                return type === 'multiple' ? Array.isArray(value) && value.includes(v) : value === v
             },
             toggle(v) {
                 if (type === 'multiple') {
-                    const set = new Set(Array.isArray(value) ? value : []);
-                    if (set.has(v)) set.delete(v);
-                    else set.add(v);
-                    onChange([...set]);
+                    const set = new Set(Array.isArray(value) ? value : [])
+                    if (set.has(v)) set.delete(v)
+                    else set.add(v)
+                    onChange([...set])
                 } else {
-                    onChange(value === v ? undefined : v);
+                    onChange(value === v ? undefined : v)
                 }
             }
         }),
         [type, value, onChange]
-    );
+    )
 
-    const contextRef = useRef(context);
-    contextRef.current = context;
+    const contextRef = useRef(context)
+    contextRef.current = context
     const ToggleGroupProvider = useCallback(
         ({ children }: { children: ReactNode }): ReactElement =>
             createElement(ToolbarToggleContext.Provider, { value: contextRef.current }, children),
         []
-    );
+    )
 
-    const groupProps = { role: 'group' as const };
-    return { groupProps, ToggleGroupProvider };
+    const groupProps = { role: 'group' as const }
+    return { groupProps, ToggleGroupProvider }
 }
 
 /**
@@ -245,16 +245,16 @@ export function useToolbarToggleGroup(options: UseToolbarToggleGroupOptions) {
  * without one).
  */
 export function useToolbarToggleItem(value: string) {
-    const toggle = useContext(ToolbarToggleContext);
-    const { itemProps: base, isActive } = useToolbarItem();
+    const toggle = useContext(ToolbarToggleContext)
+    const { itemProps: base, isActive } = useToolbarItem()
 
-    const pressed = toggle?.isPressed(value) ?? false;
+    const pressed = toggle?.isPressed(value) ?? false
 
     const itemProps = {
         ...base,
         'aria-pressed': pressed,
         onClick: () => toggle?.toggle(value)
-    };
+    }
 
-    return { itemProps, pressed, isActive };
+    return { itemProps, pressed, isActive }
 }

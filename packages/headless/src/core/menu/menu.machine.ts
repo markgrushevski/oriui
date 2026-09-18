@@ -1,8 +1,8 @@
-import { createMachine, type Service } from '../machine';
-import { createScope } from '../scope';
-import type { MenuContext, MenuEvent, MenuProps } from './menu.types';
+import { createMachine, type Service } from '../machine'
+import { createScope } from '../scope'
+import type { MenuContext, MenuEvent, MenuProps } from './menu.types'
 
-export type MenuService = Service<MenuContext, MenuEvent>;
+export type MenuService = Service<MenuContext, MenuEvent>
 
 /**
  * The menu state machine — open state + the roving-highlighted item. Like the combobox machine it is a
@@ -12,7 +12,7 @@ export type MenuService = Service<MenuContext, MenuEvent>;
  * and the adapter invokes the item's callback.
  */
 export function machine(props: MenuProps): MenuService {
-    const scope = createScope({ id: props.id });
+    const scope = createScope({ id: props.id })
 
     return createMachine<MenuContext, MenuEvent>(
         {
@@ -24,24 +24,24 @@ export function machine(props: MenuProps): MenuService {
             reducer(context, event) {
                 switch (event.type) {
                     case 'OPEN':
-                        return context.open ? context : { ...context, open: true };
+                        return context.open ? context : { ...context, open: true }
                     case 'CLOSE':
                         return !context.open && context.highlightedValue === null
                             ? context
-                            : { ...context, open: false, highlightedValue: null };
+                            : { ...context, open: false, highlightedValue: null }
                     case 'HIGHLIGHT':
                         return context.highlightedValue === event.value
                             ? context
-                            : { ...context, highlightedValue: event.value };
+                            : { ...context, highlightedValue: event.value }
                     case 'SET_DISABLED':
                         return context.disabled === event.disabled
                             ? context
-                            : { ...context, disabled: event.disabled, open: event.disabled ? false : context.open };
+                            : { ...context, disabled: event.disabled, open: event.disabled ? false : context.open }
                     default:
-                        return context;
+                        return context
                 }
             }
         },
         scope
-    );
+    )
 }

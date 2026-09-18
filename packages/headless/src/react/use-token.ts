@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { observeTheme, resolveToken } from '../core';
+import { useEffect, useState } from 'react'
+import { observeTheme, resolveToken } from '../core'
 
 /**
  * Reactive bridge to a resolved `--ori-*` token — the React twin of the Vue / Svelte `useToken`, for
@@ -36,15 +36,15 @@ import { observeTheme, resolveToken } from '../core';
 export function useToken(token: string): string {
     // Neutral default '' during SSR and the first client render (they must agree — no hydration mismatch);
     // the DOM probe only runs after mount, in the effect below.
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState('')
 
     useEffect(() => {
-        const resolve = (): void => setValue(resolveToken(token));
-        resolve(); // resolve on mount + whenever `token` changes (it is a dependency of this effect)
-        return observeTheme(resolve); // re-resolve on theme flips; the returned unsubscribe tears the observer down
-    }, [token]);
+        const resolve = (): void => setValue(resolveToken(token))
+        resolve() // resolve on mount + whenever `token` changes (it is a dependency of this effect)
+        return observeTheme(resolve) // re-resolve on theme flips; the returned unsubscribe tears the observer down
+    }, [token])
 
-    return value;
+    return value
 }
 
 /**
@@ -52,5 +52,5 @@ export function useToken(token: string): string {
  * `--ori-color-primary` (re-resolves when `color` changes, like any React prop).
  */
 export function useThemeColor(color: string): string {
-    return useToken(`--ori-color-${color}`);
+    return useToken(`--ori-color-${color}`)
 }

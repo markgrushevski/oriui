@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from 'tsdown'
 
 export default defineConfig({
     // Four entries → dist/core/* (the framework-agnostic engine, the `.` export), dist/vue/* (the Vue
@@ -14,4 +14,4 @@ export default defineConfig({
     // Emit .js/.d.ts (tsdown defaults to .mjs on the node platform) to match the exports map; the
     // `vue` / `svelte` / `react` peerDependencies are auto-externalized.
     fixedExtension: false
-});
+})

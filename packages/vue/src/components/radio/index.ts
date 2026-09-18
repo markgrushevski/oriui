@@ -1,1 +1,1 @@
-export { default as OriRadioGroup } from './ori-radio-group.vue';
+export { default as OriRadioGroup } from './ori-radio-group.vue'

@@ -1,1 +1,1 @@
-export { default as OriDivider } from './ori-divider.vue';
+export { default as OriDivider } from './ori-divider.vue'

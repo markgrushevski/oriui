@@ -1,6 +1,6 @@
-import { derived, readable, type Readable } from 'svelte/store';
-import { observeTheme, resolveToken } from '../core';
-import { toReadable, type MaybeReactive } from './use-store';
+import { derived, readable, type Readable } from 'svelte/store'
+import { observeTheme, resolveToken } from '../core'
+import { toReadable, type MaybeReactive } from './use-store'
 
 /**
  * Reactive bridge to a resolved `--ori-*` token — the Svelte twin of the Vue `useToken`, for consumers
@@ -27,21 +27,21 @@ import { toReadable, type MaybeReactive } from './use-store';
  * ```
  */
 export function useToken(token: MaybeReactive<string>): Readable<string> {
-    const token$ = toReadable(token);
+    const token$ = toReadable(token)
 
     return readable('', (set) => {
-        let current = '';
+        let current = ''
         const unsubscribeToken = token$.subscribe((next) => {
-            current = next;
-            set(resolveToken(next));
-        });
-        const unsubscribeTheme = observeTheme(() => set(resolveToken(current)));
+            current = next
+            set(resolveToken(next))
+        })
+        const unsubscribeTheme = observeTheme(() => set(resolveToken(current)))
 
         return () => {
-            unsubscribeToken();
-            unsubscribeTheme();
-        };
-    });
+            unsubscribeToken()
+            unsubscribeTheme()
+        }
+    })
 }
 
 /**
@@ -49,5 +49,5 @@ export function useToken(token: MaybeReactive<string>): Readable<string> {
  * `--ori-color-primary` (reactive when `color` is a store).
  */
 export function useThemeColor(color: MaybeReactive<string>): Readable<string> {
-    return useToken(derived(toReadable(color), (role) => `--ori-color-${role}`));
+    return useToken(derived(toReadable(color), (role) => `--ori-color-${role}`))
 }

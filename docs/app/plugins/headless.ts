@@ -1,4 +1,4 @@
-import { OriHeadless, nativeDisclosure } from '@oriui/headless/vue';
+import { OriHeadless, nativeDisclosure } from '@oriui/headless/vue'
 
 // Pick the headless engine per primitive. Both disclosure and dialog default to oriUI's
 // zero-dependency native engines (the dialog runs on the platform <dialog> element), so this map is
@@ -7,5 +7,5 @@ import { OriHeadless, nativeDisclosure } from '@oriui/headless/vue';
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.use(OriHeadless, {
         disclosure: nativeDisclosure
-    });
-});
+    })
+})

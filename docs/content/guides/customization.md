@@ -350,7 +350,7 @@ components, no rewrite.
 Import oriUI once (the stylesheet, or the Vue package which includes it):
 
 ```ts
-import '@oriui/css'; // or: import '@oriui/vue' for the Vue components
+import '@oriui/css' // or: import '@oriui/vue' for the Vue components
 ```
 
 Then add one `:root` block to your stylesheet:
@@ -400,10 +400,10 @@ package ships the bridge — `useToken` / `useThemeColor` from `@oriui/headless/
 its computed value and re-resolve on every skin / mode flip:
 
 ```ts
-import { useThemeColor } from '@oriui/headless/vue';
+import { useThemeColor } from '@oriui/headless/vue'
 
-const brand = useThemeColor('primary'); // resolved --ori-color-primary; '' until mounted (SSR-safe)
-watch(brand, (c) => engine.setColor(c || fallback)); // skin/mode flips re-push automatically
+const brand = useThemeColor('primary') // resolved --ori-color-primary; '' until mounted (SSR-safe)
+watch(brand, (c) => engine.setColor(c || fallback)) // skin/mode flips re-push automatically
 ```
 
 Colors-only for now — the probe resolves through the `color` property, so the token must resolve to a

@@ -19,7 +19,7 @@ machine composables, a toast queue has no ARIA prop-getters — the live-region 
 ## Import
 
 ```ts
-import { useToast } from '@oriui/headless/vue';
+import { useToast } from '@oriui/headless/vue'
 ```
 
 `@oriui/vue` re-exports the same `useToast`, so `import { useToast } from '@oriui/vue'` is equivalent (and
@@ -59,9 +59,9 @@ Call `toast()` from anywhere, and render the queue once. The styled
 ```vue
 <!-- MyToaster.vue — render the queue (what OriToaster wraps) -->
 <script setup lang="ts">
-import { useToast } from '@oriui/headless/vue';
+import { useToast } from '@oriui/headless/vue'
 
-const { toasts, dismiss } = useToast();
+const { toasts, dismiss } = useToast()
 </script>
 
 <template>
@@ -76,11 +76,11 @@ const { toasts, dismiss } = useToast();
 
 ```ts
 // anywhere — a component, a store, an interceptor
-import { useToast } from '@oriui/headless/vue';
+import { useToast } from '@oriui/headless/vue'
 
-const { toast, success, error } = useToast();
-success('Saved');
-error({ title: 'Upload failed', text: 'Try again', duration: 0 }); // 0 = stay until dismissed
+const { toast, success, error } = useToast()
+success('Saved')
+error({ title: 'Upload failed', text: 'Try again', duration: 0 }) // 0 = stay until dismissed
 ```
 
 The **Svelte** binding is the same imperative API; `toasts` is a `readable` store you subscribe with `$`:
@@ -107,11 +107,11 @@ component (rules of hooks) to get the queue and the actions, then push from an e
 styles the markup with the same `.ori-toast` classes in React / Next today:
 
 ```tsx
-import { useToast } from '@oriui/headless/react';
+import { useToast } from '@oriui/headless/react'
 
 // Render the queue once near the app root.
 function MyToaster() {
-    const { toasts, dismiss } = useToast();
+    const { toasts, dismiss } = useToast()
 
     return (
         <div className="my-toaster">
@@ -122,17 +122,17 @@ function MyToaster() {
                 </div>
             ))}
         </div>
-    );
+    )
 }
 
 // Push from anywhere you can call the hook — the single module-level queue reaches the one <MyToaster />.
 function SaveButton() {
-    const { success, error } = useToast();
+    const { success, error } = useToast()
     return (
         <button onClick={() => success('Saved')} onDoubleClick={() => error({ title: 'Oops', duration: 0 })}>
             Save
         </button>
-    );
+    )
 }
 ```
 

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 import {
     OriToolbar,
     OriToolbarButton,
     OriToolbarSeparator,
     OriToolbarToggleGroup,
     OriToolbarToggleItem
-} from '@oriui/vue';
+} from '@oriui/vue'
 
 // A real horizontal OriToolbar for the roving-focus e2e: four action buttons (one DISABLED), a
 // separator, and a single-select toggle group. Plain `before`/`after` buttons bracket the toolbar so the
@@ -14,11 +14,11 @@ import {
 // and arrow keys never escape. Each action button pushes its id into `activated` (mirrored to
 // [data-testid=activated]) so the spec can assert the disabled item never activates while an enabled one
 // does. The toggle-group items are toolbar items too, so arrow navigation traverses into them.
-const activated = ref<string[]>([]);
-const align = ref<string>();
+const activated = ref<string[]>([])
+const align = ref<string>()
 
 function activate(id: string): void {
-    activated.value = [...activated.value, id];
+    activated.value = [...activated.value, id]
 }
 </script>
 

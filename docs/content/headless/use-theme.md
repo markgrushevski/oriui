@@ -21,7 +21,7 @@ For the conceptual guide — skins, subtree scoping, and the flash-free initial 
 ## Import
 
 ```ts
-import { useTheme } from '@oriui/headless/vue';
+import { useTheme } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -52,13 +52,13 @@ Reactive state plus imperative setters.
 
 ```vue
 <script setup lang="ts">
-import { useTheme } from '@oriui/headless/vue';
+import { useTheme } from '@oriui/headless/vue'
 
 // setTheme(mode) and toggleTheme() are also returned — see Returns.
 const { theme, resolvedTheme, cycleTheme } = useTheme({
     storageKey: 'ori-theme',
     default: 'auto'
-});
+})
 </script>
 
 <template>
@@ -91,20 +91,20 @@ client render show the neutral default and there is no hydration mismatch (the p
 value lands right after mount — see **SSR & the initial theme** below):
 
 ```tsx
-import { useTheme } from '@oriui/headless/react';
+import { useTheme } from '@oriui/headless/react'
 
 function ThemeToggle() {
     // setTheme(mode) and toggleTheme() are also returned — see Returns.
     const { theme, resolvedTheme, cycleTheme } = useTheme({
         storageKey: 'ori-theme',
         default: 'auto'
-    });
+    })
 
     return (
         <button onClick={cycleTheme}>
             Theme: {theme} ({resolvedTheme})
         </button>
-    );
+    )
 }
 ```
 
@@ -114,10 +114,10 @@ function ThemeToggle() {
 or plain JS — call **`applyTheme`** exactly where you'd toggle the class; it carries the fix:
 
 ```ts
-import { applyTheme } from '@oriui/headless';
+import { applyTheme } from '@oriui/headless'
 
 // sets ori-theme_{dark,light} on <html> AND re-resolves the components
-applyTheme(isDark ? 'dark' : 'light');
+applyTheme(isDark ? 'dark' : 'light')
 ```
 
 `createThemeController(options)` is the vanilla engine behind `useTheme` (same options →
@@ -135,9 +135,9 @@ in a tiny inline `<head>` script before any stylesheet paints:
 <script>
     // runs before first paint. useTheme persists the SETTING, which may be 'auto' — RESOLVE it,
     // don't just test for the 'dark' string (matches default: 'auto').
-    var s = localStorage.getItem('ori-theme'); // 'auto' | 'light' | 'dark' | null
-    var dark = s === 'dark' || ((!s || s === 'auto') && matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.add(dark ? 'ori-theme_dark' : 'ori-theme_light');
+    var s = localStorage.getItem('ori-theme') // 'auto' | 'light' | 'dark' | null
+    var dark = s === 'dark' || ((!s || s === 'auto') && matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.classList.add(dark ? 'ori-theme_dark' : 'ori-theme_light')
 </script>
 ```
 

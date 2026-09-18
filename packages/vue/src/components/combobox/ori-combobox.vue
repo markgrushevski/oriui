@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, mergeProps, ref, useId, useSlots, watch, watchEffect } from 'vue';
-import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue';
-import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
-import { useOriField } from '../field/context';
+import { computed, mergeProps, ref, useId, useSlots, watch, watchEffect } from 'vue'
+import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
+import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
+import { useOriField } from '../field/context'
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
@@ -13,7 +13,7 @@ import { useOriField } from '../field/context';
 // native attributes (autocomplete, …) fall through to the visible <input> via inheritAttrs:false +
 // $attrs; `name` is a real prop instead, so the form submits the selected VALUE through a hidden input
 // (the visible input only carries the label text) — see the hidden <input> below.
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 const {
     clearable = false,
@@ -34,45 +34,45 @@ const {
     size = 'md'
 } = defineProps<{
     /** Show a clear button while there is a selection. */
-    clearable?: boolean;
-    color?: ThemeColor;
+    clearable?: boolean
+    color?: ThemeColor
     /** Extra element id(s) to append to aria-describedby (e.g. a shared form note). */
-    describedby?: string;
-    disabled?: boolean;
+    describedby?: string
+    disabled?: boolean
     /** Error message: rendered below the control (role=alert) and flips it to aria-invalid. */
-    error?: string;
+    error?: string
     /** Filter predicate; default = case-insensitive substring on the label. */
-    filter?: (item: ComboboxItem, query: string) => boolean;
-    fluid?: boolean;
+    filter?: (item: ComboboxItem, query: string) => boolean
+    fluid?: boolean
     /** Associate the submitted value's hidden input with a form by id (when not a descendant of it). */
-    form?: string;
+    form?: string
     /** Helper text below the control; hidden while an error is shown. */
-    hint?: string;
-    id?: string;
-    invalid?: boolean;
-    label?: string;
+    hint?: string
+    id?: string
+    invalid?: boolean
+    label?: string
     /** Submit the selected value under this field name via a hidden input; the visible input is text-only. */
-    name?: string;
+    name?: string
     /** Text shown when the filter matches nothing. */
-    noResultsText?: string;
-    options: ComboboxItem[];
-    placeholder?: string;
-    radius?: RadiusSize;
-    required?: boolean;
-    size?: ActionSize;
-}>();
+    noResultsText?: string
+    options: ComboboxItem[]
+    placeholder?: string
+    radius?: RadiusSize
+    required?: boolean
+    size?: ActionSize
+}>()
 
-const model = defineModel<string | null>();
+const model = defineModel<string | null>()
 
 // Per-instance anchor-name tethers the fixed listbox to the control (CSS Anchor Positioning + flip).
-const anchorName = `--ori-combobox-${useId()}`;
+const anchorName = `--ori-combobox-${useId()}`
 
 // When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
 // label / hint / error; standalone the control wires its own (behaviour unchanged). `isDisabled` is
 // read by the composable below, so it is declared before useCombobox.
-const field = useOriField();
-const inField = Boolean(field);
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false));
+const field = useOriField()
+const inField = Boolean(field)
+const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
 
 const {
     open,
@@ -97,41 +97,41 @@ const {
     inputValue: model.value != null ? (options.find((o) => o.value === model.value)?.label ?? '') : '',
     disabled: isDisabled.value,
     filter
-}));
+}))
 
 // Two-way sync between v-model and the machine selection (equality-guarded so the watchers settle).
 watch(selectedValue, (next) => {
-    if (next !== model.value) model.value = next;
-});
+    if (next !== model.value) model.value = next
+})
 watch(
     () => model.value,
     (next) => {
-        if (next === selectedValue.value) return;
-        const item = next != null ? options.find((o) => o.value === next) : undefined;
-        if (item) select(item);
-        else clear();
+        if (next === selectedValue.value) return
+        const item = next != null ? options.find((o) => o.value === next) : undefined
+        if (item) select(item)
+        else clear()
     }
-);
+)
 
 // hint / error live in this SFC (the machine doesn't know about validation); wire aria-describedby +
 // aria-invalid onto the headless input, and label the listbox only when a visible label exists. Inside a
 // field, the field owns the id / label / hint / error / required / invalid / size wiring instead.
-const slots = useSlots();
-const ownInputId = computed(() => inputProps.value.id as string);
-const inputElId = computed(() => field?.id.value ?? ownInputId.value);
-const labelId = computed(() => labelProps.value.id as string);
-const hasLabel = computed(() => Boolean(label) || Boolean(slots.label));
-const listboxLabelledBy = computed(() => (field ? field.labelId.value : hasLabel.value ? labelId.value : undefined));
-const hintId = computed(() => `${ownInputId.value}-hint`);
-const errorId = computed(() => `${ownInputId.value}-error`);
-const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)));
-const isRequired = computed(() => required || (field?.required.value ?? false));
-const fieldSize = computed(() => field?.size.value ?? size);
+const slots = useSlots()
+const ownInputId = computed(() => inputProps.value.id as string)
+const inputElId = computed(() => field?.id.value ?? ownInputId.value)
+const labelId = computed(() => labelProps.value.id as string)
+const hasLabel = computed(() => Boolean(label) || Boolean(slots.label))
+const listboxLabelledBy = computed(() => (field ? field.labelId.value : hasLabel.value ? labelId.value : undefined))
+const hintId = computed(() => `${ownInputId.value}-hint`)
+const errorId = computed(() => `${ownInputId.value}-error`)
+const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)))
+const isRequired = computed(() => required || (field?.required.value ?? false))
+const fieldSize = computed(() => field?.size.value ?? size)
 const describedBy = computed(() => {
-    if (field) return field.describedBy.value;
-    const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean);
-    return ids.length ? ids.join(' ') : undefined;
-});
+    if (field) return field.describedBy.value
+    const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+})
 
 // `required` must guard the SELECTION, not the visible input's label text. Typing a non-matching query
 // never commits a value, so a native `required` on the text field would report VALID while the form
@@ -139,20 +139,20 @@ const describedBy = computed(() => {
 // wrongly BLOCK a form that does hold a value). A `type=hidden` input can't participate in constraint
 // validation, so mirror the rule onto the visible input via setCustomValidity — invalid iff required and
 // nothing is selected, regardless of the typed text.
-const inputEl = ref<HTMLInputElement>();
+const inputEl = ref<HTMLInputElement>()
 watchEffect(() => {
-    inputEl.value?.setCustomValidity(isRequired.value && !selectedValue.value ? 'Please select an option.' : '');
-});
+    inputEl.value?.setCustomValidity(isRequired.value && !selectedValue.value ? 'Please select an option.' : '')
+})
 
 // Keyboard clear path (WCAG 2.1.1): the clear button is a pointer affordance (tabindex -1), so give
 // keyboard users an equivalent — Escape clears the committed selection when the listbox is already
 // closed (while open, the headless handler uses Escape to close). Only active while `clearable`.
 const onInputKeydown = (event: KeyboardEvent) => {
     if (event.key === 'Escape' && clearable && !open.value && selectedValue.value) {
-        event.preventDefault();
-        clear();
+        event.preventDefault()
+        clear()
     }
-};
+}
 
 // Outside-dismissal via the shared headless dismiss layer (replaces the input's @blur). Both strategies:
 // `focusOutside` closes on Tab-away / a click that moves focus out (focus lives on the input via
@@ -160,14 +160,14 @@ const onInputKeydown = (event: KeyboardEvent) => {
 // blurs to <body> and fires no focusin — so focus-out alone would miss it). Clicks INSIDE the control (the
 // @mousedown.prevent trigger / clear / options) are covered by `elements`, and those guards hold focus on
 // the input for aria-activedescendant, independent of dismiss.
-const controlEl = ref<HTMLElement>();
+const controlEl = ref<HTMLElement>()
 useDismissable(() => ({
     enabled: open.value,
     elements: () => [controlEl.value],
     onDismiss: () => setOpen(false),
     pointerDownOutside: true,
     focusOutside: true
-}));
+}))
 </script>
 
 <template>

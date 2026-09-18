@@ -36,8 +36,8 @@ npm install @oriui/headless     # headless composables
 ## Use it — Vue
 
 ```ts
-import '@oriui/css'; // the stylesheet, once (e.g. in your entry file)
-import { OriButton } from '@oriui/vue';
+import '@oriui/css' // the stylesheet, once (e.g. in your entry file)
+import { OriButton } from '@oriui/vue'
 ```
 
 ```vue

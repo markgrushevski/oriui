@@ -1,10 +1,10 @@
-import { createApp, type Component } from 'vue';
-import ColorPickerView from './views/ColorPickerView.vue';
-import ComboboxView from './views/ComboboxView.vue';
-import DialogView from './views/DialogView.vue';
-import MenuView from './views/MenuView.vue';
-import ToolbarView from './views/ToolbarView.vue';
-import '@oriui/css';
+import { createApp, type Component } from 'vue'
+import ColorPickerView from './views/ColorPickerView.vue'
+import ComboboxView from './views/ComboboxView.vue'
+import DialogView from './views/DialogView.vue'
+import MenuView from './views/MenuView.vue'
+import ToolbarView from './views/ToolbarView.vue'
+import '@oriui/css'
 
 // The harness mounts exactly ONE interactive component, chosen by `location.hash` (#colorpicker /
 // #combobox / #dialog / #menu / #toolbar), against the real @oriui/vue source + built @oriui/css. Each Playwright interaction
@@ -16,13 +16,13 @@ const views: Record<string, Component> = {
     dialog: DialogView,
     menu: MenuView,
     toolbar: ToolbarView
-};
-
-function currentView(): Component {
-    const key = location.hash.replace(/^#/, '');
-    return views[key] ?? ComboboxView;
 }
 
-window.addEventListener('hashchange', () => location.reload());
+function currentView(): Component {
+    const key = location.hash.replace(/^#/, '')
+    return views[key] ?? ComboboxView
+}
 
-createApp(currentView()).mount('#app');
+window.addEventListener('hashchange', () => location.reload())
+
+createApp(currentView()).mount('#app')
