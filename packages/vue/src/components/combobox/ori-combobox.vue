@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, mergeProps, ref, useId, useSlots, watch, watchEffect } from 'vue'
+import { computed, mergeProps, ref, useAttrs, useId, useSlots, watch, watchEffect } from 'vue'
 import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
@@ -127,9 +127,13 @@ const errorId = computed(() => `${ownInputId.value}-error`)
 const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)))
 const isRequired = computed(() => required || (field?.required.value ?? false))
 const fieldSize = computed(() => field?.size.value ?? size)
+// A caller's own `aria-describedby` arrives through `$attrs`, and the visible input merges `$attrs`
+// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
+const attrs = useAttrs()
 const describedBy = computed(() => {
-    if (field) return field.describedBy.value
-    const ids = [error ? errorId.value : hint ? hintId.value : '', describedby].filter(Boolean)
+    const inherited = attrs['aria-describedby'] as string | undefined
+    const own = field ? [field.describedBy.value] : [error ? errorId.value : hint ? hintId.value : '', describedby]
+    const ids = [...own, inherited].filter(Boolean)
     return ids.length ? ids.join(' ') : undefined
 })
 

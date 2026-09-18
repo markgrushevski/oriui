@@ -324,6 +324,24 @@ describe('OriCombobox', () => {
         expect(errW.find('.ori-combobox__hint').exists()).toBe(false)
     })
 
+    it('joins a caller-supplied aria-describedby instead of clobbering it', () => {
+        const wrapper = mount(OriCombobox, {
+            props: { options: OPTIONS, label: 'Fruit', hint: 'Pick a fruit' },
+            attrs: { 'aria-describedby': 'form-note' }
+        })
+        const ids = (wrapper.find('input[role="combobox"]').attributes('aria-describedby') ?? '').split(' ')
+
+        expect(ids).toContain('form-note')
+        expect(ids).toContain(wrapper.find('.ori-combobox__hint').attributes('id'))
+
+        // …and it survives on its own when the component renders no hint/error
+        const bare = mount(OriCombobox, {
+            props: { options: OPTIONS, label: 'Fruit' },
+            attrs: { 'aria-describedby': 'form-note' }
+        })
+        expect(bare.find('input[role="combobox"]').attributes('aria-describedby')).toBe('form-note')
+    })
+
     it('required renders the asterisk + aria-required and guards the SELECTION (not the typed text)', async () => {
         const wrapper = mountCb({ required: true })
         await wrapper.vm.$nextTick()
