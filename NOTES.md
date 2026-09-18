@@ -754,3 +754,20 @@ saying the budget is too tight, not that the behaviour is wrong. `tests/token.te
 happy-dom MutationObserver deliveries, which are macrotasks — 20 runs of the file alone never flake,
 while 65 files across parallel workers can starve a worker for seconds. Raise the budget on the tests
 that genuinely wait; raising `testTimeout` globally hides real hangs everywhere else.
+
+## A fresh publish is not visible on the registry for minutes — a 404 is not evidence
+
+After a successful publish, `npm view <pkg> dist-tags` can keep serving the previous state, and so can a
+direct `https://registry.npmjs.org/<pkg>` fetch — **including one with a cache-buster query, and
+including the version endpoint `/<pkg>/<version>`, which 404s**. The package document carries
+`Cache-Control: public, max-age=300`, misses are cached the same way, and `time.modified` in the cached
+document keeps pointing at the previous publish, which makes the stale answer look authoritative.
+
+Measured on the 1.0.0-rc.18 release: the workflow published at 17:10:30, four independent reads still
+said "not published" at 17:12–17:14, and the registry's own recorded publish time came out as 17:12:37.
+
+The consequence worth remembering is not the lag itself but what it invites: a half-published group is a
+real failure mode here (ORI-I-83), so a 404 right after a release reads as confirmation of it. Take the
+workflow's own publish step as the primary evidence — `npm publish` exiting 0 inside `changeset publish`
+— and re-read the registry minutes later before concluding anything. A release gate that fails on an
+immediate registry read would fail good releases, which is why no such check exists.
