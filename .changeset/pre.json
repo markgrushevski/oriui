@@ -1,10 +1,10 @@
 {
     "mode": "pre",
-    "tag": "alpha",
+    "tag": "rc",
     "initialVersions": {
-        "@oriui/css": "1.0.0-alpha.1",
-        "@oriui/headless": "1.0.0-alpha.1",
-        "@oriui/vue": "1.0.0-alpha.1"
+        "@oriui/css": "1.0.0-alpha.17",
+        "@oriui/headless": "1.0.0-alpha.17",
+        "@oriui/vue": "1.0.0-alpha.17"
     },
     "changesets": [
         "catalog-consistency-polish",
