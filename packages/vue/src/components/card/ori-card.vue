@@ -13,7 +13,6 @@ const {
     color?: ThemeColor
     disabled?: boolean
     fluid?: boolean
-    image?: string
     loading?: boolean
     prependAvatar?: string
     prependIcon?: string

@@ -3,17 +3,13 @@
    Single-class: `.ori-variant_fill` sets the full cluster (border / opacity / bg / text) on its own —
    no paired `.ori-variant` base is needed. The cluster reads the color axis (--ori-color /
    --ori-color-on), so color is the ROLE and variant is the MAPPING (which surface the accent paints).
-   The bare `.ori-variant` default below is kept as a plain fallback for an element that opts into the
-   system without picking a value (and for backward compatibility with `ori-variant ori-variant_*`).
+   There is deliberately NO bare `.ori-variant` base rule (the `.ori-color` axis has none either).
+   It would not be a harmless opt-in: this layer outranks `ori.components`, so a base that zeroed the
+   cluster STRIPPED whatever fill a block bakes in — `.ori-button.ori-variant` painted transparent
+   with a `currentColor` label, bypassing the AA-checked `--ori-color-on` pairing. Left unmatched,
+   legacy `ori-variant ori-variant_*` markup keeps rendering and the bare class is a true no-op.
    ============================================================ */
 @layer ori.utilities {
-    .ori-variant {
-        --ori-variant-border-color: transparent;
-        --ori-variant-opacity: 1;
-        --ori-variant-bg-color: transparent;
-        --ori-variant-text-color: currentColor;
-    }
-
     .ori-variant_fill {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
