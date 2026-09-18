@@ -771,3 +771,23 @@ real failure mode here (ORI-I-83), so a 404 right after a release reads as confi
 workflow's own publish step as the primary evidence — `npm publish` exiting 0 inside `changeset publish`
 — and re-read the registry minutes later before concluding anything. A release gate that fails on an
 immediate registry read would fail good releases, which is why no such check exists.
+
+## `opacity` on a container that wraps a caller's slot is a contrast bug waiting to happen
+
+`opacity` is a group fade: it composites the element and everything inside it, so putting one on a wrapper
+applies it to content the component did not author — buttons, inputs, links — and it MULTIPLIES with any
+fade those carry of their own. `.ori-dialog__body { opacity: 0.85 }` met `.ori-field__hint { opacity: 0.7 }`
+and produced 0.595, taking a primary fill button to 3.35:1 and the hint to 3.95:1 (ORI-I-85).
+
+What makes it expensive is that it is invisible to every guard that does not rasterise:
+
+- the **token test** walks role/on-role PAIRS and never renders — the button's pair measured 5.43:1 and was
+  telling the truth;
+- **axe** reads declared colours, so it sees the same honest pair;
+- the **e2e contrast probe** did rasterise, but no probe had an opacity ANCESTOR — it only ever carried its
+  own fade. A defect class the fixture cannot express is a defect class the suite cannot catch.
+
+The rule this leaves: secondary text is a leaf with its own tone (`__subtitle`, `__hint`), never a fade over
+a region. If a wrapper must dim, the contrast has to be measured composited, with a probe that puts the real
+ancestors above it. Dark themes will usually pass while light ones fail, so a single-theme check proves
+nothing here.
