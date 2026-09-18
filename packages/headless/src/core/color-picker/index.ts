@@ -15,11 +15,5 @@ export {
     type RGB,
     type HSVA,
     type ColorFormat
-} from './color';
-export {
-    resolveAreaPosition,
-    stepAreaPosition,
-    type AreaPosition,
-    type AreaRect,
-    type StepOptions
-} from './color-area';
+} from './color'
+export { resolveAreaPosition, stepAreaPosition, type AreaPosition, type AreaRect, type StepOptions } from './color-area'

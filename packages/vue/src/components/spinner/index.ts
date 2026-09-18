@@ -1,1 +1,1 @@
-export { default as OriSpinner } from './ori-spinner.vue';
+export { default as OriSpinner } from './ori-spinner.vue'

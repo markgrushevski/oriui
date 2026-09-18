@@ -1,6 +1,6 @@
-import { onDestroy } from 'svelte';
-import { readable, type Readable } from 'svelte/store';
-import type { Service } from '../core';
+import { onDestroy } from 'svelte'
+import { readable, type Readable } from 'svelte/store'
+import type { Service } from '../core'
 
 /**
  * Bridge a core Service's `subscribe()` to Svelte reactivity — the Svelte twin of the Vue adapter's
@@ -12,16 +12,16 @@ import type { Service } from '../core';
  */
 export function connectStore<Context, Event, T>(service: Service<Context, Event>, select: () => T): Readable<T> {
     return readable(select(), (set) => {
-        set(select());
-        return service.subscribe(() => set(select()));
-    });
+        set(select())
+        return service.subscribe(() => set(select()))
+    })
 }
 
 /** Either a plain value (snapshot) or a Svelte store (reactive) — the Svelte twin of Vue's `MaybeRefOrGetter`. */
-export type MaybeReactive<T> = T | Readable<T>;
+export type MaybeReactive<T> = T | Readable<T>
 
 function isReadable<T>(input: MaybeReactive<T>): input is Readable<T> {
-    return input != null && typeof (input as { subscribe?: unknown }).subscribe === 'function';
+    return input != null && typeof (input as { subscribe?: unknown }).subscribe === 'function'
 }
 
 /**
@@ -30,7 +30,7 @@ function isReadable<T>(input: MaybeReactive<T>): input is Readable<T> {
  * store to have the composable react to external changes (option list, disabled, …).
  */
 export function toReadable<T>(input: MaybeReactive<T>): Readable<T> {
-    return isReadable(input) ? input : readable(input);
+    return isReadable(input) ? input : readable(input)
 }
 
 /**
@@ -39,8 +39,8 @@ export function toReadable<T>(input: MaybeReactive<T>): Readable<T> {
  * (a plain `connectStore` only tracks the machine). Distinct values each tick so `derived` always re-runs.
  */
 export function serviceVersion<Context, Event>(service: Service<Context, Event>): Readable<number> {
-    let n = 0;
-    return readable(0, (set) => service.subscribe(() => set((n += 1))));
+    let n = 0
+    return readable(0, (set) => service.subscribe(() => set((n += 1))))
 }
 
 /**
@@ -50,7 +50,7 @@ export function serviceVersion<Context, Event>(service: Service<Context, Event>)
  */
 export function safeOnDestroy(teardown: () => void): void {
     try {
-        onDestroy(teardown);
+        onDestroy(teardown)
     } catch {
         // not in a component — nothing to hook.
     }

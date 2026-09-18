@@ -1,7 +1,7 @@
-import { createContext, createElement, useContext, type ReactElement, type ReactNode } from 'react';
-import type { HeadlessAdapters } from './contract';
+import { createContext, createElement, useContext, type ReactElement, type ReactNode } from 'react'
+import type { HeadlessAdapters } from './contract'
 
-const HeadlessContext = createContext<HeadlessAdapters | null>(null);
+const HeadlessContext = createContext<HeadlessAdapters | null>(null)
 
 /**
  * Provide headless adapters to a React subtree — the React twin of the Vue `provideHeadless()` /
@@ -14,10 +14,10 @@ const HeadlessContext = createContext<HeadlessAdapters | null>(null);
  * between renders. (Written with `createElement` so this file stays plain `.ts`, no JSX build step.)
  */
 export function OriHeadlessProvider(props: { adapters: HeadlessAdapters; children: ReactNode }): ReactElement {
-    return createElement(HeadlessContext.Provider, { value: props.adapters }, props.children);
+    return createElement(HeadlessContext.Provider, { value: props.adapters }, props.children)
 }
 
 /** Resolve the adapters set for the current subtree, or `null` when none were provided. */
 export function useHeadless(): HeadlessAdapters | null {
-    return useContext(HeadlessContext);
+    return useContext(HeadlessContext)
 }

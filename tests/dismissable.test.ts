@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { effectScope, nextTick, ref } from 'vue';
-import { derived, writable } from 'svelte/store';
-import { isTargetOutside } from '@oriui/headless';
-import { useDismissable as useDismissableVue } from '@oriui/headless/vue';
-import { useDismissable as useDismissableSvelte } from '@oriui/headless/svelte';
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { effectScope, nextTick, ref } from 'vue'
+import { derived, writable } from 'svelte/store'
+import { isTargetOutside } from '@oriui/headless'
+import { useDismissable as useDismissableVue } from '@oriui/headless/vue'
+import { useDismissable as useDismissableSvelte } from '@oriui/headless/svelte'
 
 // The shared dismiss layer: a pure `isTargetOutside` predicate + Vue/Svelte composables that attach the
 // `document` pointerdown / focusin listeners while enabled. Exercised directly by dispatching events inside
@@ -11,32 +11,32 @@ import { useDismissable as useDismissableSvelte } from '@oriui/headless/svelte';
 // tests/menu.test.ts, the Combobox focus-out by tests/combobox.test.ts.)
 
 afterEach(() => {
-    document.body.innerHTML = '';
-});
+    document.body.innerHTML = ''
+})
 
 describe('isTargetOutside (core)', () => {
     it('is false inside any element, true when outside all', () => {
-        const parent = document.createElement('div');
-        const child = document.createElement('span');
-        parent.appendChild(child);
-        const other = document.createElement('div');
+        const parent = document.createElement('div')
+        const child = document.createElement('span')
+        parent.appendChild(child)
+        const other = document.createElement('div')
 
-        expect(isTargetOutside(child, [parent])).toBe(false);
-        expect(isTargetOutside(child, [null, undefined, parent])).toBe(false);
-        expect(isTargetOutside(other, [parent])).toBe(true);
-        expect(isTargetOutside(null, [parent])).toBe(true); // a null target counts as outside
-    });
-});
+        expect(isTargetOutside(child, [parent])).toBe(false)
+        expect(isTargetOutside(child, [null, undefined, parent])).toBe(false)
+        expect(isTargetOutside(other, [parent])).toBe(true)
+        expect(isTargetOutside(null, [parent])).toBe(true) // a null target counts as outside
+    })
+})
 
 describe('useDismissable (Vue)', () => {
     it('pointerdown outside dismisses; inside does not; disabling removes the listener', async () => {
-        const inside = document.createElement('div');
-        const outside = document.createElement('div');
-        document.body.append(inside, outside);
-        const onDismiss = vi.fn();
-        const enabled = ref(true);
+        const inside = document.createElement('div')
+        const outside = document.createElement('div')
+        document.body.append(inside, outside)
+        const onDismiss = vi.fn()
+        const enabled = ref(true)
 
-        const scope = effectScope();
+        const scope = effectScope()
         scope.run(() =>
             useDismissableVue(() => ({
                 enabled: enabled.value,
@@ -44,80 +44,78 @@ describe('useDismissable (Vue)', () => {
                 onDismiss,
                 pointerDownOutside: true
             }))
-        );
-        await nextTick(); // flush: 'post' attach
+        )
+        await nextTick() // flush: 'post' attach
 
-        inside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-        expect(onDismiss).not.toHaveBeenCalled();
+        inside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        expect(onDismiss).not.toHaveBeenCalled()
 
-        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-        expect(onDismiss).toHaveBeenCalledTimes(1);
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(1)
 
-        enabled.value = false;
-        await nextTick();
-        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-        expect(onDismiss).toHaveBeenCalledTimes(1); // detached
+        enabled.value = false
+        await nextTick()
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(1) // detached
 
-        scope.stop();
-    });
+        scope.stop()
+    })
 
     it('only the requested strategy is wired (focusOutside → ignores pointerdown)', async () => {
-        const outside = document.createElement('div');
-        document.body.append(outside);
-        const onDismiss = vi.fn();
+        const outside = document.createElement('div')
+        document.body.append(outside)
+        const onDismiss = vi.fn()
 
-        const scope = effectScope();
-        scope.run(() =>
-            useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss, focusOutside: true }))
-        );
-        await nextTick();
+        const scope = effectScope()
+        scope.run(() => useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss, focusOutside: true })))
+        await nextTick()
 
-        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-        expect(onDismiss).not.toHaveBeenCalled(); // pointerdown not wired
-        outside.dispatchEvent(new Event('focusin', { bubbles: true }));
-        expect(onDismiss).toHaveBeenCalledTimes(1);
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        expect(onDismiss).not.toHaveBeenCalled() // pointerdown not wired
+        outside.dispatchEvent(new Event('focusin', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(1)
 
-        scope.stop();
-    });
+        scope.stop()
+    })
 
     it('stops listening after the scope disposes', async () => {
-        const outside = document.createElement('div');
-        document.body.append(outside);
-        const onDismiss = vi.fn();
+        const outside = document.createElement('div')
+        document.body.append(outside)
+        const onDismiss = vi.fn()
 
-        const scope = effectScope();
+        const scope = effectScope()
         scope.run(() =>
             useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss, pointerDownOutside: true }))
-        );
-        await nextTick();
-        scope.stop();
+        )
+        await nextTick()
+        scope.stop()
 
-        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }));
-        expect(onDismiss).not.toHaveBeenCalled();
-    });
-});
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        expect(onDismiss).not.toHaveBeenCalled()
+    })
+})
 
 describe('useDismissable (Svelte)', () => {
     it('focusin outside dismisses; inside does not; toggling enabled attaches/detaches', async () => {
-        const inside = document.createElement('div');
-        const outside = document.createElement('div');
-        document.body.append(inside, outside);
-        const onDismiss = vi.fn();
-        const enabled = writable(true);
+        const inside = document.createElement('div')
+        const outside = document.createElement('div')
+        document.body.append(inside, outside)
+        const onDismiss = vi.fn()
+        const enabled = writable(true)
 
         useDismissableSvelte(
             derived(enabled, (e) => ({ enabled: e, elements: () => [inside], onDismiss, focusOutside: true }))
-        );
-        await Promise.resolve(); // the attach is deferred a microtask (parity with the Vue flush: 'post')
+        )
+        await Promise.resolve() // the attach is deferred a microtask (parity with the Vue flush: 'post')
 
-        inside.dispatchEvent(new Event('focusin', { bubbles: true }));
-        expect(onDismiss).not.toHaveBeenCalled();
+        inside.dispatchEvent(new Event('focusin', { bubbles: true }))
+        expect(onDismiss).not.toHaveBeenCalled()
 
-        outside.dispatchEvent(new Event('focusin', { bubbles: true }));
-        expect(onDismiss).toHaveBeenCalledTimes(1);
+        outside.dispatchEvent(new Event('focusin', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(1)
 
-        enabled.set(false); // stop() is synchronous
-        outside.dispatchEvent(new Event('focusin', { bubbles: true }));
-        expect(onDismiss).toHaveBeenCalledTimes(1); // detached
-    });
-});
+        enabled.set(false) // stop() is synchronous
+        outside.dispatchEvent(new Event('focusin', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(1) // detached
+    })
+})

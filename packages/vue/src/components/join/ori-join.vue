@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 const { as = 'div' } = defineProps<{
     /** An HTML tag name, a Component name or Component class reference. */
-    as?: string | object;
-    vertical?: boolean;
-}>();
+    as?: string | object
+    vertical?: boolean
+}>()
 </script>
 
 <template>

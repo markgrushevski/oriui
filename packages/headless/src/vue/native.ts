@@ -1,7 +1,7 @@
-import { computed, ref, toValue, useId, watch, type MaybeRefOrGetter } from 'vue';
-import { combobox, disclosure, menu, type ComboboxItem } from '../core';
-import { normalizeProps } from './normalize-props';
-import { useService } from './use-machine';
+import { computed, ref, toValue, useId, watch, type MaybeRefOrGetter } from 'vue'
+import { combobox, disclosure, menu, type ComboboxItem } from '../core'
+import { normalizeProps } from './normalize-props'
+import { useService } from './use-machine'
 import type {
     ComboboxControl,
     DialogControl,
@@ -11,27 +11,27 @@ import type {
     UseDialogOptions,
     UseDisclosureOptions,
     UseMenuOptions
-} from './contract';
+} from './contract'
 
 /**
  * Native oriUI Disclosure adapter — built on the in-house `../core` machine. The default behind
  * `useDisclosure`; the contract still lets an app swap in a custom (e.g. Zag-backed) adapter.
  */
 export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions> = () => ({})): DisclosureControl => {
-    const initial = toValue(options);
+    const initial = toValue(options)
     const props: disclosure.DisclosureProps = {
         id: initial.id ?? useId() ?? 'disclosure',
         defaultOpen: initial.defaultOpen,
         disabled: initial.disabled
-    };
+    }
 
-    const service = disclosure.machine(props);
-    const version = useService(service);
+    const service = disclosure.machine(props)
+    const version = useService(service)
 
     const api = computed(() => {
-        void version.value; // track machine changes
-        return disclosure.connect(service, normalizeProps);
-    });
+        void version.value // track machine changes
+        return disclosure.connect(service, normalizeProps)
+    })
 
     return {
         open: computed(() => api.value.open),
@@ -40,8 +40,8 @@ export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions>
         contentProps: computed(() => api.value.getContentProps()),
         setOpen: (open: boolean) => service.send({ type: 'SET', open }),
         toggle: () => service.send({ type: 'TOGGLE' })
-    };
-};
+    }
+}
 
 /**
  * Native oriUI Dialog adapter — zero dependencies, built on the platform `<dialog>` element. It owns
@@ -52,17 +52,17 @@ export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions>
  * swap in a custom (e.g. Zag-backed) dialog adapter per project.
  */
 export const nativeDialog = (options: MaybeRefOrGetter<UseDialogOptions> = () => ({})): DialogControl => {
-    const opts = computed(() => toValue(options) ?? {});
-    const baseId = opts.value.id ?? useId() ?? 'ori-dialog';
-    const titleId = `${baseId}-title`;
-    const descriptionId = `${baseId}-description`;
+    const opts = computed(() => toValue(options) ?? {})
+    const baseId = opts.value.id ?? useId() ?? 'ori-dialog'
+    const titleId = `${baseId}-title`
+    const descriptionId = `${baseId}-description`
 
-    const open = ref(opts.value.defaultOpen ?? false);
+    const open = ref(opts.value.defaultOpen ?? false)
 
     function setOpen(value: boolean): void {
-        if (open.value === value) return;
-        open.value = value;
-        opts.value.onOpenChange?.(value);
+        if (open.value === value) return
+        open.value = value
+        opts.value.onOpenChange?.(value)
     }
 
     return {
@@ -89,17 +89,17 @@ export const nativeDialog = (options: MaybeRefOrGetter<UseDialogOptions> = () =>
                 opts.value.closeOnInteractOutside === false
                     ? undefined
                     : (event: MouseEvent) => {
-                          if (event.currentTarget === event.target) setOpen(false);
+                          if (event.currentTarget === event.target) setOpen(false)
                       }
         })),
         titleProps: computed(() => ({ id: titleId })),
         descriptionProps: computed(() => ({ id: descriptionId })),
         closeTriggerProps: computed(() => ({ onClick: () => setOpen(false) }))
-    };
-};
+    }
+}
 
 const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
-    item.label.toLowerCase().includes(query.trim().toLowerCase());
+    item.label.toLowerCase().includes(query.trim().toLowerCase())
 
 /**
  * Native oriUI Combobox adapter — the WAI-ARIA listbox-combobox on the in-house `../core` state machine
@@ -107,40 +107,40 @@ const defaultComboboxFilter = (item: ComboboxItem, query: string): boolean =>
  * lets an app swap a custom / Zag-backed one per project without touching the component markup.
  */
 export const nativeCombobox = (options: MaybeRefOrGetter<UseComboboxOptions>): ComboboxControl => {
-    const opts = computed(() => toValue(options));
-    const init = opts.value;
+    const opts = computed(() => toValue(options))
+    const init = opts.value
 
     const service = combobox.machine({
         id: init.id ?? useId() ?? 'combobox',
         defaultValue: init.value ?? null,
         defaultInputValue: init.inputValue ?? '',
         disabled: init.disabled
-    });
-    const version = useService(service);
+    })
+    const version = useService(service)
 
     // Keep `disabled` reactive past the initial render.
     watch(
         () => opts.value.disabled ?? false,
         (disabled) => service.send({ type: 'SET_DISABLED', disabled })
-    );
+    )
 
     // Visible items: filter by the current input — but show the whole list when the input is empty or
     // still equals the committed selection's label (so picking an option doesn't collapse the list to
     // one). The collection drives both navigation and the active-descendant id.
     const items = computed<ComboboxItem[]>(() => {
-        void version.value;
-        const { inputValue, value } = service.getState();
-        const all = opts.value.options;
-        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined;
-        if (inputValue.trim() === '' || inputValue === selectedLabel) return all;
-        const filter = opts.value.filter ?? defaultComboboxFilter;
-        return all.filter((item) => filter(item, inputValue));
-    });
+        void version.value
+        const { inputValue, value } = service.getState()
+        const all = opts.value.options
+        const selectedLabel = value !== null ? all.find((option) => option.value === value)?.label : undefined
+        if (inputValue.trim() === '' || inputValue === selectedLabel) return all
+        const filter = opts.value.filter ?? defaultComboboxFilter
+        return all.filter((item) => filter(item, inputValue))
+    })
 
     const api = computed(() => {
-        void version.value;
-        return combobox.connect(service, normalizeProps, items.value);
-    });
+        void version.value
+        return combobox.connect(service, normalizeProps, items.value)
+    })
 
     return {
         open: computed(() => api.value.open),
@@ -161,35 +161,35 @@ export const nativeCombobox = (options: MaybeRefOrGetter<UseComboboxOptions>): C
         setInputValue: (next: string) => api.value.setInputValue(next),
         select: (item: ComboboxItem) => api.value.select(item),
         clear: () => api.value.clear()
-    };
-};
+    }
+}
 
 /**
  * Native oriUI Menu adapter — the WAI-ARIA menu-button + roving tabindex on the `../core` machine. The
  * default behind `useMenu`; swappable via the OriHeadless contract like the others.
  */
 export const nativeMenu = (options: MaybeRefOrGetter<UseMenuOptions>): MenuControl => {
-    const opts = computed(() => toValue(options));
-    const init = opts.value;
+    const opts = computed(() => toValue(options))
+    const init = opts.value
 
     const service = menu.machine({
         id: init.id ?? useId() ?? 'menu',
         disabled: init.disabled
-    });
-    const version = useService(service);
+    })
+    const version = useService(service)
 
     // Keep `disabled` reactive past the initial render.
     watch(
         () => opts.value.disabled ?? false,
         (disabled) => service.send({ type: 'SET_DISABLED', disabled })
-    );
+    )
 
-    const items = computed(() => opts.value.items);
+    const items = computed(() => opts.value.items)
 
     const api = computed(() => {
-        void version.value;
-        return menu.connect(service, normalizeProps, items.value, opts.value.onSelect);
-    });
+        void version.value
+        return menu.connect(service, normalizeProps, items.value, opts.value.onSelect)
+    })
 
     return {
         open: computed(() => api.value.open),
@@ -204,5 +204,5 @@ export const nativeMenu = (options: MaybeRefOrGetter<UseMenuOptions>): MenuContr
         highlight: (value: string | null) => api.value.highlight(value),
         highlightFirst: () => api.value.highlightFirst(),
         highlightLast: () => api.value.highlightLast()
-    };
-};
+    }
+}

@@ -1,12 +1,12 @@
 // Engine-agnostic resolvers components consume
-export { useDisclosure } from './use-disclosure';
-export { useDialog } from './use-dialog';
+export { useDisclosure } from './use-disclosure'
+export { useDialog } from './use-dialog'
 
 // Headless behaviors built directly on the core engine
-export { useCombobox, type UseComboboxOptions } from './use-combobox';
-export type { ComboboxItem } from '../core';
-export { useMenu, type UseMenuOptions } from './use-menu';
-export type { MenuItem } from '../core';
+export { useCombobox, type UseComboboxOptions } from './use-combobox'
+export type { ComboboxItem } from '../core'
+export { useMenu, type UseMenuOptions } from './use-menu'
+export type { MenuItem } from '../core'
 
 // Headless toolbar (WAI-ARIA toolbar — compositional roving tabindex over Svelte context, not a machine)
 export {
@@ -17,35 +17,35 @@ export {
     useToolbarToggleItem,
     type UseToolbarOptions,
     type UseToolbarToggleGroupOptions
-} from './use-toolbar';
+} from './use-toolbar'
 
 // Headless tabs (WAI-ARIA tabs — automatic activation; data-driven roving tabindex over stores)
-export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs';
+export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs'
 
 // Headless toast queue — a framework-agnostic singleton projected into a Svelte readable store
-export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast';
+export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
 
 // Headless color picker — sRGB + 2D-area helpers projected into Svelte stores (twin of the Vue binding)
-export { useColorPicker, type UseColorPickerOptions } from './use-color-picker';
+export { useColorPicker, type UseColorPickerOptions } from './use-color-picker'
 
 // Headless dismiss layer — outside-pointerdown / focus-out close for non-platform overlays (twin of Vue)
-export { useDismissable, type UseDismissableOptions } from './use-dismissable';
+export { useDismissable, type UseDismissableOptions } from './use-dismissable'
 
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive
-export { useToken, useThemeColor } from './use-token';
+export { useToken, useThemeColor } from './use-token'
 
 // Theme controller — light/dark + auto + persistence, with the runtime-toggle invalidation fix
-export { useTheme, type ThemeState, type ThemeStore } from './use-theme';
-export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core';
+export { useTheme, type ThemeState, type ThemeStore } from './use-theme'
+export type { ThemeMode, ThemeSetting, ThemeControllerOptions } from '../core'
 
 // Adapter selection (Svelte context)
-export { provideHeadless, getHeadless } from './plugin';
+export { provideHeadless, getHeadless } from './plugin'
 
 // Built-in native adapters (defaults) + the low-level bridge for writing your own
-export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native';
-export { connectStore } from './use-store';
-export { normalizeProps, type SveltePropTypes } from './normalize-props';
-export { uid } from './id';
+export { nativeDisclosure, nativeDialog, nativeCombobox, nativeMenu } from './native'
+export { connectStore } from './use-store'
+export { normalizeProps, type SveltePropTypes } from './normalize-props'
+export { uid } from './id'
 
 // Contract
 export {
@@ -61,4 +61,4 @@ export {
     type MenuControl,
     type MenuAdapter,
     type HeadlessAdapters
-} from './contract';
+} from './contract'

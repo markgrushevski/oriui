@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const volume = ref(60);
-const brightness = ref(40);
+const volume = ref(60)
+const brightness = ref(40)
 </script>
 
 <template>

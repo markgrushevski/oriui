@@ -1,5 +1,5 @@
-import { onMounted, onUnmounted, shallowRef, type ShallowRef } from 'vue';
-import type { Service } from '../core';
+import { onMounted, onUnmounted, shallowRef, type ShallowRef } from 'vue'
+import type { Service } from '../core'
 
 /**
  * Bridge a core Service's `subscribe()` to Vue reactivity. Returns a version ref that bumps on
@@ -8,16 +8,16 @@ import type { Service } from '../core';
  * server render uses the machine's initial state, which matches the first client render).
  */
 export function useService<Context, Event>(service: Service<Context, Event>): ShallowRef<number> {
-    const version = shallowRef(0);
-    let unsubscribe: (() => void) | undefined;
+    const version = shallowRef(0)
+    let unsubscribe: (() => void) | undefined
 
     onMounted(() => {
         unsubscribe = service.subscribe(() => {
-            version.value++;
-        });
-    });
+            version.value++
+        })
+    })
 
-    onUnmounted(() => unsubscribe?.());
+    onUnmounted(() => unsubscribe?.())
 
-    return version;
+    return version
 }

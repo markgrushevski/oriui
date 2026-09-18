@@ -1,1 +1,1 @@
-export { default as OriDialog } from './ori-dialog.vue';
+export { default as OriDialog } from './ori-dialog.vue'

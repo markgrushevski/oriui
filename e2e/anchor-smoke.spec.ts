@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 // Feasibility + capability probe: confirms this Chromium actually renders CSS Anchor Positioning
 // (anchor-name / position-anchor / position-area). If this passes, e2e can verify the real geometry of
@@ -10,17 +10,17 @@ const HTML = `<!doctype html><html><head><style>
 </style></head><body>
   <button id="anchor">Trigger</button>
   <div id="floater">Panel</div>
-</body></html>`;
+</body></html>`
 
 test('headless chromium renders CSS anchor positioning', async ({ page }) => {
-    await page.setContent(HTML);
-    const anchor = await page.locator('#anchor').boundingBox();
-    const floater = await page.locator('#floater').boundingBox();
+    await page.setContent(HTML)
+    const anchor = await page.locator('#anchor').boundingBox()
+    const floater = await page.locator('#floater').boundingBox()
 
-    expect(anchor).not.toBeNull();
-    expect(floater).not.toBeNull();
+    expect(anchor).not.toBeNull()
+    expect(floater).not.toBeNull()
     // position-area block-end → the floater sits below the anchor's bottom edge.
-    expect(floater!.y).toBeGreaterThanOrEqual(anchor!.y + anchor!.height - 1);
+    expect(floater!.y).toBeGreaterThanOrEqual(anchor!.y + anchor!.height - 1)
     // span-inline-end → the floater's inline-start aligns to the anchor's start (left) edge.
-    expect(Math.abs(floater!.x - anchor!.x)).toBeLessThan(2);
-});
+    expect(Math.abs(floater!.x - anchor!.x)).toBeLessThan(2)
+})

@@ -1,6 +1,6 @@
-import { useHeadless } from './plugin';
-import { nativeDialog } from './native';
-import type { DialogControl, UseDialogOptions } from './contract';
+import { useHeadless } from './plugin'
+import { nativeDialog } from './native'
+import type { DialogControl, UseDialogOptions } from './contract'
 
 /**
  * Resolve the active Dialog behaviour. Returns whichever adapter the app provided via
@@ -10,7 +10,7 @@ import type { DialogControl, UseDialogOptions } from './contract';
  * requirement. (Rules of hooks: the resolved adapter must be stable across a component's lifetime.)
  */
 export function useDialog(options: UseDialogOptions = {}): DialogControl {
-    const adapters = useHeadless();
-    const adapter = adapters?.dialog ?? nativeDialog;
-    return adapter(options);
+    const adapters = useHeadless()
+    const adapter = adapters?.dialog ?? nativeDialog
+    return adapter(options)
 }

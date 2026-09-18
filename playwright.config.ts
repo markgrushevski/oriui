@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 
 // Playwright drives a real (headless) Chromium — it renders CSS Anchor Positioning + the Popover API,
 // which happy-dom (the Vitest env) cannot. So e2e covers exactly what the unit suite can't: the visual
@@ -28,4 +28,4 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }
-});
+})

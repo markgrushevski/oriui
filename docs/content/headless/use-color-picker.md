@@ -25,7 +25,7 @@ helpers as the toolbar (`rovingIntent` / `resolveRovingIndex`) for the preset li
 ## Import
 
 ```ts
-import { useColorPicker } from '@oriui/headless/vue';
+import { useColorPicker } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -101,14 +101,14 @@ and render `presets` as the roving listbox.
 
 ```vue
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useColorPicker } from '@oriui/headless/vue';
-import type { ColorFormat } from '@oriui/headless/vue';
+import { ref, watch } from 'vue'
+import { useColorPicker } from '@oriui/headless/vue'
+import type { ColorFormat } from '@oriui/headless/vue'
 
-const { format = 'hex', presets } = defineProps<{ format?: ColorFormat; presets?: string[] }>();
+const { format = 'hex', presets } = defineProps<{ format?: ColorFormat; presets?: string[] }>()
 
-const model = defineModel<string>();
-const emit = defineEmits<{ change: [value: string] }>();
+const model = defineModel<string>()
+const emit = defineEmits<{ change: [value: string] }>()
 
 // Options are a GETTER, so value / format stay reactive. onInput drives v-model (live),
 // onChange commits (one undo entry).
@@ -117,19 +117,19 @@ const cp = useColorPicker(() => ({
     format,
     presets,
     onInput: (next) => {
-        model.value = next;
+        model.value = next
     },
     onChange: (next) => emit('change', next)
-}));
+}))
 
 // The hex field holds a local draft so a partial entry isn't reformatted mid-type; cp.hex re-seeds it.
-const hexDraft = ref(cp.hex.value);
+const hexDraft = ref(cp.hex.value)
 watch(
     () => cp.hex.value,
     (hex) => {
-        hexDraft.value = hex;
+        hexDraft.value = hex
     }
-);
+)
 </script>
 
 <template>
@@ -221,17 +221,17 @@ object (not a getter or store) re-read every render, so `value` / `format` / `di
 `@oriui/css` styles the markup with the same `.ori-color-picker` classes in React / Next today:
 
 ```tsx
-import { useEffect, useState } from 'react';
-import { useColorPicker } from '@oriui/headless/react';
+import { useEffect, useState } from 'react'
+import { useColorPicker } from '@oriui/headless/react'
 
 function MyColorPicker({ presets }: { presets?: string[] }) {
-    const [color, setColor] = useState('#3366ff');
+    const [color, setColor] = useState('#3366ff')
     // onInput streams live (drives the controlled value); onChange commits (one undo entry).
-    const cp = useColorPicker({ value: color, presets, onInput: setColor, onChange: setColor });
+    const cp = useColorPicker({ value: color, presets, onInput: setColor, onChange: setColor })
 
     // The hex field holds a local draft so a partial entry isn't reformatted mid-type; cp.hex re-seeds it.
-    const [hexDraft, setHexDraft] = useState(cp.hex);
-    useEffect(() => setHexDraft(cp.hex), [cp.hex]);
+    const [hexDraft, setHexDraft] = useState(cp.hex)
+    useEffect(() => setHexDraft(cp.hex), [cp.hex])
 
     return (
         <div role="group">
@@ -276,7 +276,7 @@ function MyColorPicker({ presets }: { presets?: string[] }) {
                 </div>
             ) : null}
         </div>
-    );
+    )
 }
 ```
 

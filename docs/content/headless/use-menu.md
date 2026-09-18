@@ -20,7 +20,7 @@ machine** (no adapter to register unless you want to swap one), and the composab
 ## Import
 
 ```ts
-import { useMenu, type MenuItem } from '@oriui/headless/vue';
+import { useMenu, type MenuItem } from '@oriui/headless/vue'
 ```
 
 ## Options
@@ -38,9 +38,9 @@ Each `MenuItem` is a plain object — `value` is the stable identity and the `on
 
 ```ts
 interface MenuItem {
-    value: string; // stable identity + the value passed to onSelect
-    label?: string; // display text; falls back to value
-    disabled?: boolean; // skipped by roving navigation and selection
+    value: string // stable identity + the value passed to onSelect
+    label?: string // display text; falls back to value
+    disabled?: boolean // skipped by roving navigation and selection
 }
 ```
 
@@ -75,53 +75,53 @@ things a framework-agnostic projection can't do itself:
 
 ```vue
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, useTemplateRef, watch } from 'vue';
-import { useMenu, type MenuItem } from '@oriui/headless/vue';
+import { nextTick, onBeforeUnmount, useTemplateRef, watch } from 'vue'
+import { useMenu, type MenuItem } from '@oriui/headless/vue'
 
 const items: MenuItem[] = [
     { value: 'new', label: 'New file' },
     { value: 'open', label: 'Open…' },
     { value: 'delete', label: 'Delete', disabled: true }
-];
+]
 
-const m = useMenu(() => ({ items, onSelect: (value) => console.log(value) }));
+const m = useMenu(() => ({ items, onSelect: (value) => console.log(value) }))
 
-const contentRef = useTemplateRef<HTMLElement>('content');
+const contentRef = useTemplateRef<HTMLElement>('content')
 const triggerEl = (): HTMLElement | null => {
-    const id = m.triggerProps.value.id as string | undefined;
-    return id ? document.getElementById(id) : null;
-};
+    const id = m.triggerProps.value.id as string | undefined
+    return id ? document.getElementById(id) : null
+}
 
 // Roving tabindex: move real DOM focus to the highlighted item whenever it changes while open.
 watch(
     () => m.highlightedValue.value,
     async () => {
-        if (!m.open.value) return;
-        await nextTick();
-        contentRef.value?.querySelector<HTMLElement>('[data-highlighted]')?.focus();
+        if (!m.open.value) return
+        await nextTick()
+        contentRef.value?.querySelector<HTMLElement>('[data-highlighted]')?.focus()
     }
-);
+)
 
 // On open, focus the menu and wire outside-click; on close, return focus to the trigger.
 const onOutside = (event: PointerEvent): void => {
-    const target = event.target as Node;
-    if (contentRef.value?.contains(target) || triggerEl()?.contains(target)) return;
-    m.setOpen(false);
-};
+    const target = event.target as Node
+    if (contentRef.value?.contains(target) || triggerEl()?.contains(target)) return
+    m.setOpen(false)
+}
 watch(
     () => m.open.value,
     async (open) => {
         if (open) {
-            await nextTick();
-            if (m.highlightedValue.value === null) contentRef.value?.focus();
-            document.addEventListener('pointerdown', onOutside);
+            await nextTick()
+            if (m.highlightedValue.value === null) contentRef.value?.focus()
+            document.addEventListener('pointerdown', onOutside)
         } else {
-            document.removeEventListener('pointerdown', onOutside);
-            triggerEl()?.focus();
+            document.removeEventListener('pointerdown', onOutside)
+            triggerEl()?.focus()
         }
     }
-);
-onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutside));
+)
+onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutside))
 </script>
 
 <template>
@@ -181,11 +181,11 @@ The **React** binding is the same — the control is plain values (no `$` / `.va
 highlighted item in an effect (`getItemProps(item, i)` is a plain function):
 
 ```tsx
-import { useRef, useEffect } from 'react';
-import { useMenu } from '@oriui/headless/react';
+import { useRef, useEffect } from 'react'
+import { useMenu } from '@oriui/headless/react'
 
 function Actions() {
-    const contentRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null)
     const { open, highlightedValue, items, triggerProps, contentProps, getItemProps } = useMenu({
         id: 'actions',
         items: [
@@ -194,13 +194,13 @@ function Actions() {
             { value: 'delete', label: 'Delete', disabled: true }
         ],
         onSelect: (value) => console.log(value)
-    });
+    })
 
     // Roving tabindex: a projection can't touch the DOM, so move real focus to the highlighted item.
     useEffect(() => {
         if (open && highlightedValue != null)
-            contentRef.current?.querySelector<HTMLElement>('[data-highlighted]')?.focus();
-    }, [open, highlightedValue]);
+            contentRef.current?.querySelector<HTMLElement>('[data-highlighted]')?.focus()
+    }, [open, highlightedValue])
 
     return (
         <>
@@ -213,7 +213,7 @@ function Actions() {
                 ))}
             </div>
         </>
-    );
+    )
 }
 ```
 

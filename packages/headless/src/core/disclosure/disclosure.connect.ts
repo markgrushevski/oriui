@@ -1,17 +1,17 @@
-import type { NormalizeProps, PropTypes } from '../types';
-import { anatomy } from './disclosure.anatomy';
-import type { DisclosureService } from './disclosure.machine';
+import type { NormalizeProps, PropTypes } from '../types'
+import { anatomy } from './disclosure.anatomy'
+import type { DisclosureService } from './disclosure.machine'
 
-const parts = anatomy.build();
+const parts = anatomy.build()
 
 export interface DisclosureApi<T extends PropTypes = PropTypes> {
     /** Whether the content is currently expanded. */
-    open: boolean;
-    setOpen(open: boolean): void;
-    toggle(): void;
-    getRootProps(): T['element'];
-    getTriggerProps(): T['button'];
-    getContentProps(): T['element'];
+    open: boolean
+    setOpen(open: boolean): void
+    toggle(): void
+    getRootProps(): T['element']
+    getTriggerProps(): T['button']
+    getContentProps(): T['element']
 }
 
 /**
@@ -23,24 +23,24 @@ export function connect<T extends PropTypes>(
     service: DisclosureService,
     normalize: NormalizeProps<T>
 ): DisclosureApi<T> {
-    const { open, disabled } = service.getState();
-    const { scope } = service;
-    const triggerId = scope.getId('trigger');
-    const contentId = scope.getId('content');
+    const { open, disabled } = service.getState()
+    const { scope } = service
+    const triggerId = scope.getId('trigger')
+    const contentId = scope.getId('content')
 
     return {
         open,
         setOpen(next) {
-            service.send({ type: 'SET', open: next });
+            service.send({ type: 'SET', open: next })
         },
         toggle() {
-            service.send({ type: 'TOGGLE' });
+            service.send({ type: 'TOGGLE' })
         },
         getRootProps() {
             return normalize.element({
                 ...parts.root.attrs,
                 'data-state': open ? 'open' : 'closed'
-            });
+            })
         },
         getTriggerProps() {
             return normalize.button({
@@ -53,9 +53,9 @@ export function connect<T extends PropTypes>(
                 'data-disabled': disabled ? '' : undefined,
                 disabled: disabled || undefined,
                 onClick() {
-                    service.send({ type: 'TOGGLE' });
+                    service.send({ type: 'TOGGLE' })
                 }
-            });
+            })
         },
         getContentProps() {
             return normalize.element({
@@ -65,7 +65,7 @@ export function connect<T extends PropTypes>(
                 'aria-labelledby': triggerId,
                 hidden: !open,
                 'data-state': open ? 'open' : 'closed'
-            });
+            })
         }
-    };
+    }
 }

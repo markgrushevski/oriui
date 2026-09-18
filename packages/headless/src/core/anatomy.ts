@@ -6,14 +6,14 @@
  */
 
 export interface AnatomyPart {
-    attrs: { 'data-scope': string; 'data-part': string };
-    selector: string;
+    attrs: { 'data-scope': string; 'data-part': string }
+    selector: string
 }
 
 export interface Anatomy<Part extends string> {
-    name: string;
-    parts: readonly Part[];
-    build(): Record<Part, AnatomyPart>;
+    name: string
+    parts: readonly Part[]
+    build(): Record<Part, AnatomyPart>
 }
 
 export function createAnatomy<const Parts extends readonly string[]>(
@@ -24,14 +24,14 @@ export function createAnatomy<const Parts extends readonly string[]>(
         name,
         parts,
         build() {
-            const result = {} as Record<Parts[number], AnatomyPart>;
+            const result = {} as Record<Parts[number], AnatomyPart>
             for (const part of parts) {
                 result[part as Parts[number]] = {
                     attrs: { 'data-scope': name, 'data-part': part },
                     selector: `[data-scope="${name}"][data-part="${part}"]`
-                };
+                }
             }
-            return result;
+            return result
         }
-    };
+    }
 }

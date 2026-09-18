@@ -35,9 +35,9 @@ color; `v-model` is the lowercase hex string.
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const color = ref('#3366ff');
-const palette = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#111827'];
+import { ref } from 'vue'
+const color = ref('#3366ff')
+const palette = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#111827']
 </script>
 
 <template>
@@ -54,8 +54,8 @@ The panel is open-state-agnostic — drop it inside [OriPopover](/components/pop
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const color = ref('#3366ff');
+import { ref } from 'vue'
+const color = ref('#3366ff')
 </script>
 
 <template>

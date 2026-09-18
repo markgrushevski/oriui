@@ -24,7 +24,7 @@ npm install @oriui/css
 Import once (bundler), then use the classes anywhere:
 
 ```js
-import '@oriui/css';
+import '@oriui/css'
 ```
 
 ```html
@@ -50,9 +50,9 @@ files rely on. What each entry contains:
 components don't need it: each block declares its own box-sizing / UA neutralization.
 
 ```js
-import '@oriui/css/base.css';
-import '@oriui/css/components/button.css';
-import '@oriui/css/components/card.css';
+import '@oriui/css/base.css'
+import '@oriui/css/components/button.css'
+import '@oriui/css/components/card.css'
 ```
 
 Per-component files are **self-contained**: the blocks a component renders are inlined (`button.css`

@@ -1,1 +1,1 @@
-export { default as OriSkeleton } from './ori-skeleton.vue';
+export { default as OriSkeleton } from './ori-skeleton.vue'

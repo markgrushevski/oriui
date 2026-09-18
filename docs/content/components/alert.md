@@ -204,8 +204,8 @@ the alert. The button label defaults to `"Dismiss"` and is configurable via `clo
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
-const visible = ref(true);
+import { ref } from 'vue'
+const visible = ref(true)
 </script>
 
 <template>

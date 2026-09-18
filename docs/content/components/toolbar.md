@@ -264,10 +264,10 @@ it; pass `true` or `false` explicitly to make an item a toggle.
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const bold = ref(true);
-const italic = ref(false);
+const bold = ref(true)
+const italic = ref(false)
 </script>
 
 <template>
@@ -417,9 +417,9 @@ the group itself does not add a stop.
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const align = ref('left');
+const align = ref('left')
 </script>
 
 <template>
@@ -490,9 +490,9 @@ once. Bold, italic, and underline are the canonical case: independent, freely co
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const styles = ref<string[]>([]);
+const styles = ref<string[]>([])
 </script>
 
 <template>
@@ -572,11 +572,11 @@ into one bar with a single Tab stop.
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const bold = ref(false);
-const italic = ref(false);
-const align = ref('left');
+const bold = ref(false)
+const italic = ref(false)
+const align = ref('left')
 </script>
 
 <template>
@@ -847,12 +847,12 @@ plus Vue `provide` / `inject` composition, not a state machine, so there is noth
 
 ```vue
 <script setup lang="ts">
-import { useToolbar, useToolbarItem } from '@oriui/headless/vue';
+import { useToolbar, useToolbarItem } from '@oriui/headless/vue'
 
 // The same engine OriToolbar / OriToolbarButton are built on — useToolbarItem() registers the
 // calling component with the roving context and returns its tabindex plus the DOM marker the root's
 // keydown handler navigates by.
-const { toolbarRef, toolbarProps } = useToolbar({ label: () => 'Custom toolbar' });
+const { toolbarRef, toolbarProps } = useToolbar({ label: () => 'Custom toolbar' })
 </script>
 
 <template>
@@ -867,10 +867,10 @@ const { toolbarRef, toolbarProps } = useToolbar({ label: () => 'Custom toolbar' 
 ```vue
 <!-- MyToolbarButton.vue -->
 <script setup lang="ts">
-import { useToolbarItem } from '@oriui/headless/vue';
+import { useToolbarItem } from '@oriui/headless/vue'
 
-defineProps<{ text: string }>();
-const { itemProps } = useToolbarItem();
+defineProps<{ text: string }>()
+const { itemProps } = useToolbarItem()
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useId } from 'vue';
-import type { AnchoredPlacement, ThemeColor } from '../../types';
+import { useId } from 'vue'
+import type { AnchoredPlacement, ThemeColor } from '../../types'
 
 // OriTooltip — a CSS-driven tooltip overlay, native-first: no JS state machine and no positioning
 // engine. The default slot is the trigger; the .ori-tooltip__bubble[role="tooltip"] is always in the
@@ -26,14 +26,14 @@ const {
     content,
     placement = 'top'
 } = defineProps<{
-    color?: ThemeColor;
+    color?: ThemeColor
     /** Tooltip text. For rich content use the #content slot instead (it takes precedence). */
-    content?: string;
-    placement?: AnchoredPlacement;
-}>();
+    content?: string
+    placement?: AnchoredPlacement
+}>()
 
 // SSR-safe id (Vue 3.5) so the trigger's aria-describedby always targets the bubble.
-const bubbleId = useId();
+const bubbleId = useId()
 </script>
 
 <template>

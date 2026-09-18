@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { RadiusSize } from '../../types';
+import type { RadiusSize } from '../../types'
 
 // OriSurface — a minimal ELEVATED floating-surface primitive: a lifted panel (surface background +
 // optional hairline + radius + a mode-aware elevation shadow) with NO padding or content semantics of
@@ -14,14 +14,14 @@ const {
     radius = 'lg'
 } = defineProps<{
     /** An HTML tag name, a Component name, or a Component class reference (default `div`). */
-    as?: string | object;
+    as?: string | object
     /** A hairline border around the surface (default `true`). */
-    bordered?: boolean;
+    bordered?: boolean
     /** Elevation shadow depth — maps to `--ori-shadow-{sm,md,lg}`. */
-    elevation?: 'sm' | 'md' | 'lg';
+    elevation?: 'sm' | 'md' | 'lg'
     /** Corner radius; repoints `--ori-size-radius` via the utility (default `lg`). */
-    radius?: RadiusSize;
-}>();
+    radius?: RadiusSize
+}>()
 </script>
 
 <template>

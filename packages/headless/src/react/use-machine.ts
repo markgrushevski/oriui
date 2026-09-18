@@ -1,5 +1,5 @@
-import { useSyncExternalStore } from 'react';
-import type { Service } from '../core';
+import { useSyncExternalStore } from 'react'
+import type { Service } from '../core'
 
 /**
  * Bridge a core Service's `subscribe()` to React — the React twin of the Vue adapter's `useService`
@@ -12,5 +12,5 @@ import type { Service } from '../core';
  * matches the first client render).
  */
 export function useService<Context, Event>(service: Service<Context, Event>): Context {
-    return useSyncExternalStore(service.subscribe, service.getState, service.getState);
+    return useSyncExternalStore(service.subscribe, service.getState, service.getState)
 }

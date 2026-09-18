@@ -1,5 +1,5 @@
-import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue';
-import type { DialogControl, UseDialogOptions } from '@oriui/headless/vue';
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
+import type { DialogControl, UseDialogOptions } from '@oriui/headless/vue'
 
 /**
  * A minimal in-memory DialogAdapter conforming to oriUI's headless contract, used to prove the
@@ -10,14 +10,14 @@ import type { DialogControl, UseDialogOptions } from '@oriui/headless/vue';
  * drives showModal()/close() from `open`, so this fake needs no DOM behaviour of its own.
  */
 export function fakeDialog(options?: MaybeRefOrGetter<UseDialogOptions>): DialogControl {
-    const opts = computed(() => toValue(options) ?? {});
-    const open = ref(opts.value.defaultOpen ?? false);
-    const id = opts.value.id ?? 'test-dialog';
+    const opts = computed(() => toValue(options) ?? {})
+    const open = ref(opts.value.defaultOpen ?? false)
+    const id = opts.value.id ?? 'test-dialog'
 
     function setOpen(value: boolean): void {
-        if (open.value === value) return;
-        open.value = value;
-        opts.value.onOpenChange?.(value);
+        if (open.value === value) return
+        open.value = value
+        opts.value.onOpenChange?.(value)
     }
 
     return {
@@ -38,5 +38,5 @@ export function fakeDialog(options?: MaybeRefOrGetter<UseDialogOptions>): Dialog
         titleProps: computed(() => ({ id: `${id}-title` })),
         descriptionProps: computed(() => ({ id: `${id}-desc` })),
         closeTriggerProps: computed(() => ({ onClick: () => setOpen(false) }))
-    };
+    }
 }

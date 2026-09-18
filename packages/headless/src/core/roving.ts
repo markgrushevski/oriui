@@ -6,11 +6,11 @@
  * and the orientation/direction → key mapping that the WAI-ARIA Toolbar pattern prescribes.
  */
 
-export type RovingOrientation = 'horizontal' | 'vertical';
-export type RovingDirection = 'ltr' | 'rtl';
+export type RovingOrientation = 'horizontal' | 'vertical'
+export type RovingDirection = 'ltr' | 'rtl'
 
 /** A navigation intent resolved from a keyboard event, independent of orientation/direction. */
-export type RovingIntent = 'next' | 'prev' | 'first' | 'last';
+export type RovingIntent = 'next' | 'prev' | 'first' | 'last'
 
 /**
  * Map a keyboard key to a roving intent for the given orientation + text direction, or `null` when the
@@ -22,21 +22,21 @@ export function rovingIntent(
     orientation: RovingOrientation = 'horizontal',
     dir: RovingDirection = 'ltr'
 ): RovingIntent | null {
-    if (key === 'Home') return 'first';
-    if (key === 'End') return 'last';
+    if (key === 'Home') return 'first'
+    if (key === 'End') return 'last'
 
     if (orientation === 'vertical') {
-        if (key === 'ArrowDown') return 'next';
-        if (key === 'ArrowUp') return 'prev';
-        return null;
+        if (key === 'ArrowDown') return 'next'
+        if (key === 'ArrowUp') return 'prev'
+        return null
     }
 
     // Horizontal: RTL swaps the visual meaning of Left/Right.
-    const forward = dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
-    const backward = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
-    if (key === forward) return 'next';
-    if (key === backward) return 'prev';
-    return null;
+    const forward = dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
+    const backward = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
+    if (key === forward) return 'next'
+    if (key === backward) return 'prev'
+    return null
 }
 
 /**
@@ -57,38 +57,38 @@ export function resolveRovingIndex(
     loop = true,
     isEnabled?: (index: number) => boolean
 ): number {
-    if (count <= 0) return -1;
+    if (count <= 0) return -1
 
     if (!isEnabled) {
         // No skip predicate: the original single-step behavior (the toolbar visits disabled items).
-        if (intent === 'first') return 0;
-        if (intent === 'last') return count - 1;
+        if (intent === 'first') return 0
+        if (intent === 'last') return count - 1
 
-        const step = intent === 'next' ? 1 : -1;
-        let next = from + step;
+        const step = intent === 'next' ? 1 : -1
+        let next = from + step
 
-        if (from < 0) next = intent === 'next' ? 0 : count - 1;
+        if (from < 0) next = intent === 'next' ? 0 : count - 1
 
-        if (next < 0) return loop ? count - 1 : 0;
-        if (next >= count) return loop ? 0 : count - 1;
-        return next;
+        if (next < 0) return loop ? count - 1 : 0
+        if (next >= count) return loop ? 0 : count - 1
+        return next
     }
 
     // Skip-disabled scan: walk in the intent's direction to the nearest ENABLED index (up to a full pass).
     const scan = (start: number, step: 1 | -1): number => {
         for (let i = 0; i < count; i += 1) {
-            let index = start + step * i;
-            if (loop) index = ((index % count) + count) % count;
-            else if (index < 0 || index >= count) return -1;
-            if (isEnabled(index)) return index;
+            let index = start + step * i
+            if (loop) index = ((index % count) + count) % count
+            else if (index < 0 || index >= count) return -1
+            if (isEnabled(index)) return index
         }
-        return -1;
-    };
+        return -1
+    }
 
-    if (intent === 'first') return scan(0, 1);
-    if (intent === 'last') return scan(count - 1, -1);
+    if (intent === 'first') return scan(0, 1)
+    if (intent === 'last') return scan(count - 1, -1)
 
-    const step = intent === 'next' ? 1 : -1;
-    const start = from < 0 ? (intent === 'next' ? 0 : count - 1) : from + step;
-    return scan(start, step);
+    const step = intent === 'next' ? 1 : -1
+    const start = from < 0 ? (intent === 'next' ? 0 : count - 1) : from + step
+    return scan(start, step)
 }

@@ -27,7 +27,7 @@ import {
     useToolbarOrientation,
     useToolbarToggleGroup,
     useToolbarToggleItem
-} from '@oriui/headless/vue';
+} from '@oriui/headless/vue'
 ```
 
 The module exports five composables. `useToolbar` is the root — its options and return are below; the
@@ -119,18 +119,18 @@ styled [`OriToolbar`](/components/toolbar) / `OriToolbarButton` wrap.
 ```vue
 <!-- MyToolbar.vue — the root: owns orientation / loop / dir + the roving keydown handler -->
 <script setup lang="ts">
-import { useToolbar } from '@oriui/headless/vue';
+import { useToolbar } from '@oriui/headless/vue'
 
 const { label = 'Formatting', orientation = 'horizontal' } = defineProps<{
-    label?: string;
-    orientation?: 'horizontal' | 'vertical';
-}>();
+    label?: string
+    orientation?: 'horizontal' | 'vertical'
+}>()
 
 // Pass getters so orientation / label stay reactive (vue/no-setup-props-reactivity-loss).
 const { toolbarProps } = useToolbar({
     label: () => label,
     orientation: () => orientation
-});
+})
 </script>
 
 <template>
@@ -144,12 +144,12 @@ const { toolbarProps } = useToolbar({
 ```vue
 <!-- MyToolbarButton.vue — an item: registers with the roving context, spreads itemProps -->
 <script setup lang="ts">
-import { useToolbarItem } from '@oriui/headless/vue';
+import { useToolbarItem } from '@oriui/headless/vue'
 
-defineProps<{ text: string }>();
+defineProps<{ text: string }>()
 
 // itemProps carries data-ori-toolbar-item + the roving tabindex + onFocus.
-const { itemProps } = useToolbarItem();
+const { itemProps } = useToolbarItem()
 </script>
 
 <template>
@@ -171,18 +171,18 @@ plus `useToolbarToggleItem` children (`OriToolbarToggleGroup` / `OriToolbarToggl
 ```vue
 <!-- MyToggleGroup.vue -->
 <script setup lang="ts">
-import { useToolbarToggleGroup } from '@oriui/headless/vue';
+import { useToolbarToggleGroup } from '@oriui/headless/vue'
 
-const { type = 'single' } = defineProps<{ type?: 'single' | 'multiple' }>();
-const model = defineModel<string | string[]>();
+const { type = 'single' } = defineProps<{ type?: 'single' | 'multiple' }>()
+const model = defineModel<string | string[]>()
 
 const { groupProps } = useToolbarToggleGroup({
     type: () => type,
     value: () => model.value,
     onChange: (value) => {
-        model.value = value;
+        model.value = value
     }
-});
+})
 </script>
 
 <template>
@@ -195,12 +195,12 @@ const { groupProps } = useToolbarToggleGroup({
 ```vue
 <!-- MyToggleItem.vue -->
 <script setup lang="ts">
-import { useToolbarToggleItem } from '@oriui/headless/vue';
+import { useToolbarToggleItem } from '@oriui/headless/vue'
 
-const { value } = defineProps<{ value: string }>();
+const { value } = defineProps<{ value: string }>()
 
 // itemProps = roving props + aria-pressed (from the group) + the toggling onClick.
-const { itemProps } = useToolbarToggleItem(() => value);
+const { itemProps } = useToolbarToggleItem(() => value)
 </script>
 
 <template>
@@ -245,23 +245,23 @@ The **React** binding is the same two pieces — but because a React context nee
 `.ori-toolbar` classes in React / Next today:
 
 ```tsx
-import { useToolbar, useToolbarItem } from '@oriui/headless/react';
-import type { ReactNode } from 'react';
+import { useToolbar, useToolbarItem } from '@oriui/headless/react'
+import type { ReactNode } from 'react'
 
 function Toolbar({ children, label = 'Formatting' }: { children: ReactNode; label?: string }) {
-    const { toolbarProps, ToolbarProvider } = useToolbar({ label });
+    const { toolbarProps, ToolbarProvider } = useToolbar({ label })
     // No element ref: the keydown handler resolves the root from event.currentTarget.
     return (
         <ToolbarProvider>
             <div {...toolbarProps}>{children}</div>
         </ToolbarProvider>
-    );
+    )
 }
 
 function ToolbarButton({ text }: { text: string }) {
     // itemProps carries data-ori-toolbar-item + the roving tabIndex + onFocus.
-    const { itemProps } = useToolbarItem();
-    return <button {...itemProps}>{text}</button>;
+    const { itemProps } = useToolbarItem()
+    return <button {...itemProps}>{text}</button>
 }
 
 // <Toolbar label="Formatting">
@@ -276,25 +276,25 @@ A **toggle group** works the same way — `useToolbarToggleGroup` returns a `Tog
 `onClick`). It is controlled — pass `value` / `onChange`:
 
 ```tsx
-import { useToolbarToggleGroup, useToolbarToggleItem } from '@oriui/headless/react';
-import { useState, type ReactNode } from 'react';
+import { useToolbarToggleGroup, useToolbarToggleItem } from '@oriui/headless/react'
+import { useState, type ReactNode } from 'react'
 
 function ToggleGroup({ children }: { children: ReactNode }) {
-    const [value, setValue] = useState<string | string[] | undefined>();
-    const { groupProps, ToggleGroupProvider } = useToolbarToggleGroup({ type: 'single', value, onChange: setValue });
+    const [value, setValue] = useState<string | string[] | undefined>()
+    const { groupProps, ToggleGroupProvider } = useToolbarToggleGroup({ type: 'single', value, onChange: setValue })
     return (
         <ToggleGroupProvider>
             <div {...groupProps} aria-label="Text style">
                 {children}
             </div>
         </ToggleGroupProvider>
-    );
+    )
 }
 
 function ToggleItem({ value, children }: { value: string; children: ReactNode }) {
     // itemProps = roving props + aria-pressed (from the group) + the toggling onClick.
-    const { itemProps } = useToolbarToggleItem(value);
-    return <button {...itemProps}>{children}</button>;
+    const { itemProps } = useToolbarToggleItem(value)
+    return <button {...itemProps}>{children}</button>
 }
 ```
 

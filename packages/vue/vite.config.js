@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 // No CSS flows through this build: SFCs are script+template only, all component styles
 // ship from @oriui/css (see CLAUDE.md) — so no css/postcss options and no lib-inject-css.
@@ -26,4 +26,4 @@ export default defineConfig({
         }
     },
     esbuild: { sourcemap: 'external' }
-});
+})

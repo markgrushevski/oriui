@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { createThemeController } from '../core';
-import type { ThemeController, ThemeControllerOptions, ThemeMode, ThemeSetting } from '../core';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { createThemeController } from '../core'
+import type { ThemeController, ThemeControllerOptions, ThemeMode, ThemeSetting } from '../core'
 
 export interface UseThemeReturn {
     /** The current SETTING (`'auto' | 'light' | 'dark'`) — plain value, re-rendered on change. */
-    theme: ThemeSetting;
+    theme: ThemeSetting
     /** The RESOLVED theme on the DOM (`'light' | 'dark'`); tracks the OS scheme in `auto`. */
-    resolvedTheme: ThemeMode;
+    resolvedTheme: ThemeMode
     /** Set the setting (`'auto'` re-follows the OS), apply it, and persist. */
-    setTheme: (setting: ThemeSetting) => void;
+    setTheme: (setting: ThemeSetting) => void
     /** Toggle the resolved theme light ⇄ dark (pins an explicit setting). */
-    toggleTheme: () => void;
+    toggleTheme: () => void
     /** Cycle `auto → light → dark → auto`. */
-    cycleTheme: () => void;
+    cycleTheme: () => void
 }
 
 // The neutral, SSR-safe resolution of a setting WITHOUT touching matchMedia — `auto`/`light` render as
@@ -20,7 +20,7 @@ export interface UseThemeReturn {
 // `resolve` / `prefersDark`). This is what the server and the first client render both show, so the
 // controller's real (persisted / OS-resolved) value only lands in a post-mount `useEffect` — no
 // hydration mismatch.
-const neutralResolved = (setting: ThemeSetting): ThemeMode => (setting === 'dark' ? 'dark' : 'light');
+const neutralResolved = (setting: ThemeSetting): ThemeMode => (setting === 'dark' ? 'dark' : 'light')
 
 /**
  * React twin of the Vue / Svelte `useTheme` — the headless {@link createThemeController} (light/dark with
@@ -46,35 +46,35 @@ const neutralResolved = (setting: ThemeSetting): ThemeMode => (setting === 'dark
 export function useTheme(options: ThemeControllerOptions = {}): UseThemeReturn {
     // Capture options once (init-only, like the Vue/Svelte twins) so a fresh options object per render
     // never recreates the controller; the mount effect reads this first-render value.
-    const optionsRef = useRef(options);
-    const controllerRef = useRef<ThemeController | null>(null);
+    const optionsRef = useRef(options)
+    const controllerRef = useRef<ThemeController | null>(null)
 
     const [state, setState] = useState<{ theme: ThemeSetting; resolvedTheme: ThemeMode }>(() => {
-        const setting = optionsRef.current.default ?? 'auto';
-        return { theme: setting, resolvedTheme: neutralResolved(setting) };
-    });
+        const setting = optionsRef.current.default ?? 'auto'
+        return { theme: setting, resolvedTheme: neutralResolved(setting) }
+    })
 
     useEffect(() => {
         // Client-only: creating the controller applies the persisted / default theme and starts the
         // OS-scheme listener. Sync React to its real state immediately (reconciling the neutral SSR
         // default), then keep in step via its subscription.
-        const controller = createThemeController(optionsRef.current);
-        controllerRef.current = controller;
-        setState({ theme: controller.get(), resolvedTheme: controller.resolved() });
-        const stop = controller.subscribe((theme, resolvedTheme) => setState({ theme, resolvedTheme }));
+        const controller = createThemeController(optionsRef.current)
+        controllerRef.current = controller
+        setState({ theme: controller.get(), resolvedTheme: controller.resolved() })
+        const stop = controller.subscribe((theme, resolvedTheme) => setState({ theme, resolvedTheme }))
 
         return () => {
-            stop();
-            controller.destroy();
-            controllerRef.current = null;
-        };
-    }, []);
+            stop()
+            controller.destroy()
+            controllerRef.current = null
+        }
+    }, [])
 
     // Setters delegate to the live controller; they no-op before mount (controller not yet created) and
     // after unmount, so a stray call can never touch the DOM off-screen. `?.` guards the null ref.
-    const setTheme = useCallback((setting: ThemeSetting) => controllerRef.current?.set(setting), []);
-    const toggleTheme = useCallback(() => controllerRef.current?.toggle(), []);
-    const cycleTheme = useCallback(() => controllerRef.current?.cycle(), []);
+    const setTheme = useCallback((setting: ThemeSetting) => controllerRef.current?.set(setting), [])
+    const toggleTheme = useCallback(() => controllerRef.current?.toggle(), [])
+    const cycleTheme = useCallback(() => controllerRef.current?.cycle(), [])
 
-    return { theme: state.theme, resolvedTheme: state.resolvedTheme, setTheme, toggleTheme, cycleTheme };
+    return { theme: state.theme, resolvedTheme: state.resolvedTheme, setTheme, toggleTheme, cycleTheme }
 }

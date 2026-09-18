@@ -1,9 +1,9 @@
-import { getHeadless } from './plugin';
-import { nativeCombobox } from './native';
-import type { ComboboxControl, UseComboboxOptions } from './contract';
-import type { MaybeReactive } from './use-store';
+import { getHeadless } from './plugin'
+import { nativeCombobox } from './native'
+import type { ComboboxControl, UseComboboxOptions } from './contract'
+import type { MaybeReactive } from './use-store'
 
-export type { UseComboboxOptions } from './contract';
+export type { UseComboboxOptions } from './contract'
 
 /**
  * Resolve the active Combobox behavior (Svelte) — the twin of the Vue `useCombobox`. Returns whichever
@@ -16,6 +16,6 @@ export type { UseComboboxOptions } from './contract';
  * store to react to external changes. Build any UI on top, or use the styled `OriCombobox`.
  */
 export function useCombobox(options: MaybeReactive<UseComboboxOptions>): ComboboxControl {
-    const adapter = getHeadless()?.combobox ?? nativeCombobox;
-    return adapter(options);
+    const adapter = getHeadless()?.combobox ?? nativeCombobox
+    return adapter(options)
 }

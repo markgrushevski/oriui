@@ -1,6 +1,6 @@
-import { test, expect, type Page } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+import { test, expect, type Page } from '@playwright/test'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 
 // rem-scaling contract, both halves of the px → rem token migration:
 //   1. DEFAULT-ROOT REGRESSION — at the browser-default root (16px) every key dimension computes the
@@ -11,8 +11,8 @@ import path from 'node:path';
 //      browser font-size preference, not only zoom. What must NOT scale stays put: 1px hairline
 //      borders and the 9999px `rounded` pill cap are px on purpose.
 // Reuses the reset-independence fixture (real markup for every component) + the built dist bundle.
-const STYLES = path.resolve('packages/css/dist/styles.css');
-const FIXTURE = readFileSync(path.resolve('e2e/fixtures/reset-independence.html'), 'utf8');
+const STYLES = path.resolve('packages/css/dist/styles.css')
+const FIXTURE = readFileSync(path.resolve('e2e/fixtures/reset-independence.html'), 'utf8')
 
 // One probe per token family, on fixture nodes whose computed geometry resolves the raw scale:
 // action (button height), font (md on button, derived sm on tag), gap (md on stack, derived xl as
@@ -90,48 +90,48 @@ const PROBES = [
         base: '9999px',
         scaled: '9999px'
     }
-];
+]
 
 async function measure(page: Page): Promise<Record<string, string>> {
     return page.evaluate(
         (probes: { name: string; selector: string; property: string }[]) => {
-            const values: Record<string, string> = {};
+            const values: Record<string, string> = {}
             for (const probe of probes) {
-                const el = document.querySelector(probe.selector);
-                if (!el) throw new Error(`probe target missing: ${probe.selector}`);
-                values[probe.name] = getComputedStyle(el).getPropertyValue(probe.property);
+                const el = document.querySelector(probe.selector)
+                if (!el) throw new Error(`probe target missing: ${probe.selector}`)
+                values[probe.name] = getComputedStyle(el).getPropertyValue(probe.property)
             }
-            return values;
+            return values
         },
         PROBES.map(({ name, selector, property }) => ({ name, selector, property }))
-    );
+    )
 }
 
 test.describe('rem token scales — pixel-identical at the 16px default, ×1.25 at a 20px root', () => {
     test.beforeEach(async ({ page }) => {
-        await page.setViewportSize({ width: 1280, height: 720 });
+        await page.setViewportSize({ width: 1280, height: 720 })
         await page.setContent(
             `<!doctype html><html><head></head><body><main id="fixture">${FIXTURE}</main></body></html>`
-        );
-        await page.addStyleTag({ path: STYLES });
+        )
+        await page.addStyleTag({ path: STYLES })
         // Surfaces transition colors on stylesheet load — freeze, so computed reads are settled values.
-        await page.addStyleTag({ content: '* { transition: none !important; animation: none !important; }' });
-    });
+        await page.addStyleTag({ content: '* { transition: none !important; animation: none !important; }' })
+    })
 
     test('default root (16px): every probe computes the exact historical px value', async ({ page }) => {
-        const values = await measure(page);
+        const values = await measure(page)
         for (const probe of PROBES) {
-            expect(values[probe.name], `${probe.name} — ${probe.property} of ${probe.selector}`).toBe(probe.base);
+            expect(values[probe.name], `${probe.name} — ${probe.property} of ${probe.selector}`).toBe(probe.base)
         }
-    });
+    })
 
     test('20px root: rem probes scale by exactly 1.25, px hairlines and the pill cap do not', async ({ page }) => {
         await page.evaluate(() => {
-            document.documentElement.style.fontSize = '20px';
-        });
-        const values = await measure(page);
+            document.documentElement.style.fontSize = '20px'
+        })
+        const values = await measure(page)
         for (const probe of PROBES) {
-            expect(values[probe.name], `${probe.name} — ${probe.property} of ${probe.selector}`).toBe(probe.scaled);
+            expect(values[probe.name], `${probe.name} — ${probe.property} of ${probe.selector}`).toBe(probe.scaled)
         }
-    });
-});
+    })
+})

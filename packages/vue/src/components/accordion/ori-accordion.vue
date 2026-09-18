@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue';
-import type { RadiusSize, ThemeColor } from '../../types';
+import { computed, useId } from 'vue'
+import type { RadiusSize, ThemeColor } from '../../types'
 
 interface AccordionItem {
-    value: string | number;
-    title: string;
-    disabled?: boolean;
+    value: string | number
+    title: string
+    disabled?: boolean
 }
 
 // OriAccordion — a disclosure list built on the native <details>/<summary> elements: zero-JS, keyboard
@@ -21,22 +21,22 @@ const {
     multiple = false,
     radius = 'md'
 } = defineProps<{
-    color?: ThemeColor;
-    items: AccordionItem[];
-    multiple?: boolean;
-    radius?: RadiusSize;
-}>();
+    color?: ThemeColor
+    items: AccordionItem[]
+    multiple?: boolean
+    radius?: RadiusSize
+}>()
 
 // SSR-safe shared name for the native exclusive accordion; only applied when not `multiple`, so the
 // browser enforces single-open. `undefined` in multiple mode means each <details> toggles on its own.
-const uid = useId();
-const groupName = computed(() => (multiple ? undefined : uid));
+const uid = useId()
+const groupName = computed(() => (multiple ? undefined : uid))
 
 // A native <summary> has no real `disabled` state — aria-disabled + tabindex=-1 are advisory and don't
 // stop Enter/Space/click from toggling its <details>. Block the toggle ourselves so a disabled item is
 // genuinely inert for keyboard + AT, not just dimmed (the a11y-correct source of truth).
 function blockDisabled(event: Event, disabled?: boolean): void {
-    if (disabled) event.preventDefault();
+    if (disabled) event.preventDefault()
 }
 </script>
 

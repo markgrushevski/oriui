@@ -1,1 +1,1 @@
-export { default as OriProgress } from './ori-progress.vue';
+export { default as OriProgress } from './ori-progress.vue'

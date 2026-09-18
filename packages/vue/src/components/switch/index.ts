@@ -1,1 +1,1 @@
-export { default as OriSwitch } from './ori-switch.vue';
+export { default as OriSwitch } from './ori-switch.vue'

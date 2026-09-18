@@ -1,39 +1,39 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import type { ActionSize, RadiusSize, ThemeColor } from '../../types';
+import { computed, ref } from 'vue'
+import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 
-defineOptions({ inheritAttrs: false });
+defineOptions({ inheritAttrs: false })
 
 const {
     radius = 'rounded',
     size = 'lg',
     text
 } = defineProps<{
-    color?: ThemeColor;
-    inline?: boolean;
-    radius?: RadiusSize;
-    size?: ActionSize;
-    spaced?: boolean;
-    subtitle?: string;
-    text?: string;
-    title?: string;
-    reverse?: boolean;
-}>();
+    color?: ThemeColor
+    inline?: boolean
+    radius?: RadiusSize
+    size?: ActionSize
+    spaced?: boolean
+    subtitle?: string
+    text?: string
+    title?: string
+    reverse?: boolean
+}>()
 
-const loaded = ref(false);
+const loaded = ref(false)
 
 const name = computed(() => {
-    const words = text?.trim()?.split(' ') ?? [];
+    const words = text?.trim()?.split(' ') ?? []
 
     if (words.length > 0) {
-        const [word1, word2] = words;
-        const letter1 = word1?.[0] ?? '';
-        const letter2 = word2?.[0] ?? '';
-        return letter1.toUpperCase() + letter2.toUpperCase();
+        const [word1, word2] = words
+        const letter1 = word1?.[0] ?? ''
+        const letter2 = word2?.[0] ?? ''
+        return letter1.toUpperCase() + letter2.toUpperCase()
     }
 
-    return '';
-});
+    return ''
+})
 </script>
 
 <template>

@@ -1,6 +1,6 @@
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath, URL } from 'node:url'
 
-const resolve = (path) => fileURLToPath(new URL(path, import.meta.url));
+const resolve = (path) => fileURLToPath(new URL(path, import.meta.url))
 
 // oriUI is consumed as `from '@oriui/vue'` (components) and `@oriui/headless/vue` (composables),
 // aliased to the workspace source for live HMR. The whole docs shell uses
@@ -144,4 +144,4 @@ export default defineNuxtConfig({
             ]
         }
     }
-});
+})

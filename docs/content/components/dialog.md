@@ -178,14 +178,14 @@ the user closes via `Esc`, the backdrop, or the × button) and `close` for one-s
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue';
-import { OriButton, OriDialog } from '@oriui/vue';
+import { ref } from 'vue'
+import { OriButton, OriDialog } from '@oriui/vue'
 
-const open = ref(false);
+const open = ref(false)
 
 function onConfirm() {
     // …run the destructive action…
-    open.value = false;
+    open.value = false
 }
 </script>
 
@@ -360,13 +360,13 @@ adapter for a genuinely hard widget) only if a project needs one — the markup 
 
 ```ts
 // main.ts — optional; the native engine is used when nothing is registered.
-import { createApp } from 'vue';
-import { OriHeadless } from '@oriui/headless/vue';
-import { myDialog } from './headless/my-dialog'; // optional custom adapter
+import { createApp } from 'vue'
+import { OriHeadless } from '@oriui/headless/vue'
+import { myDialog } from './headless/my-dialog' // optional custom adapter
 
-const app = createApp(App);
-app.use(OriHeadless, { dialog: myDialog });
-app.mount('#app');
+const app = createApp(App)
+app.use(OriHeadless, { dialog: myDialog })
+app.mount('#app')
 ```
 
 See [useDialog](/headless/use-dialog) for the full control contract.

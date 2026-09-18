@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { OriCombobox } from '@oriui/vue';
-import type { ComboboxItem } from '@oriui/headless/vue';
+import { ref } from 'vue'
+import { OriCombobox } from '@oriui/vue'
+import type { ComboboxItem } from '@oriui/headless/vue'
 
 // Five fixed options with one disabled ("Date") so ArrowDown highlight movement, typeahead filtering
 // and disabled-skip are all deterministically assertable.
@@ -11,9 +11,9 @@ const options: ComboboxItem[] = [
     { label: 'Cherry', value: 'cherry' },
     { label: 'Date', value: 'date', disabled: true },
     { label: 'Elderberry', value: 'elderberry' }
-];
+]
 
-const model = ref<string | null>(null);
+const model = ref<string | null>(null)
 </script>
 
 <template>

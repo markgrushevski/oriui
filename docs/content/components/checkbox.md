@@ -195,8 +195,8 @@ handles checked state — no extra logic needed.
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const selected = ref([]);
+import { ref } from 'vue'
+const selected = ref([])
 </script>
 
 <template>
@@ -234,12 +234,12 @@ submit.
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-const agreed = ref(false);
-const submitted = ref(false);
+import { ref } from 'vue'
+const agreed = ref(false)
+const submitted = ref(false)
 
 function submit() {
-    submitted.value = true;
+    submitted.value = true
     if (agreed.value) {
         // proceed
     }

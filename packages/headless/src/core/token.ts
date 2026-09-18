@@ -23,17 +23,17 @@
  * host's text color. The 0.004 alpha makes an accidental collision with a real token practically
  * impossible.
  */
-const UNRESOLVED_SENTINEL = 'rgba(1, 2, 3, 0.004)';
+const UNRESOLVED_SENTINEL = 'rgba(1, 2, 3, 0.004)'
 
 /**
  * The package targets the DOM and deliberately carries no Node types — declare the bundler-injected
  * `process.env.NODE_ENV` shape locally (module-scoped) so the dev-only guard type-checks. The runtime
  * `typeof` check below keeps plain browser ESM (where no `process` global exists) safe.
  */
-declare const process: { env: { NODE_ENV?: string } } | undefined;
+declare const process: { env: { NODE_ENV?: string } } | undefined
 
 /** Tokens already warned about — an unresolvable token warns once, not on every resolve call. */
-const warnedTokens = new Set<string>();
+const warnedTokens = new Set<string>()
 
 /**
  * Dev-only diagnosis for the silent-`''` trap: `''` means SSR, but with a real `document` it means the
@@ -42,14 +42,14 @@ const warnedTokens = new Set<string>();
  * and strip this whole branch from production builds.
  */
 function warnUnresolved(token: string): void {
-    if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return;
-    if (warnedTokens.has(token)) return;
-    warnedTokens.add(token);
+    if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+    if (warnedTokens.has(token)) return
+    warnedTokens.add(token)
     console.warn(
         `[@oriui/headless] resolveToken: '${token}' did not resolve — returning ''. Either the token is not ` +
             'declared in the active skin/scope, or it is not a <color>: the token bridge is a colors-only MVP ' +
             '(the probe reads through the `color` property), so length/shadow/font tokens do not resolve.'
-    );
+    )
 }
 
 export interface ResolveTokenOptions {
@@ -57,7 +57,7 @@ export interface ResolveTokenOptions {
      * Resolve within this element's cascade context, so subtree token overrides (a scoped skin, a
      * repointed alias on a wrapper) apply. Defaults to `document.documentElement` (the `:root` skin).
      */
-    element?: HTMLElement;
+    element?: HTMLElement
 }
 
 /**
@@ -72,30 +72,30 @@ export interface ResolveTokenOptions {
  * tokens in a render loop, and re-resolve on theme changes via {@link observeTheme}.
  */
 export function resolveToken(token: string, options: ResolveTokenOptions = {}): string {
-    if (typeof document === 'undefined') return '';
-    const host = options.element ?? document.documentElement;
+    if (typeof document === 'undefined') return ''
+    const host = options.element ?? document.documentElement
 
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    wrapper.style.visibility = 'hidden';
-    wrapper.style.pointerEvents = 'none';
-    wrapper.style.color = UNRESOLVED_SENTINEL;
+    const wrapper = document.createElement('div')
+    wrapper.style.position = 'absolute'
+    wrapper.style.visibility = 'hidden'
+    wrapper.style.pointerEvents = 'none'
+    wrapper.style.color = UNRESOLVED_SENTINEL
 
-    const probe = document.createElement('div');
-    probe.style.color = `var(${token})`;
-    wrapper.appendChild(probe);
-    host.appendChild(wrapper);
+    const probe = document.createElement('div')
+    probe.style.color = `var(${token})`
+    wrapper.appendChild(probe)
+    host.appendChild(wrapper)
 
     try {
-        const resolved = getComputedStyle(probe).color;
+        const resolved = getComputedStyle(probe).color
         // Compare against the wrapper's COMPUTED color so both sides carry the engine's normalization.
         if (resolved === '' || resolved === getComputedStyle(wrapper).color) {
-            warnUnresolved(token);
-            return '';
+            warnUnresolved(token)
+            return ''
         }
-        return resolved;
+        return resolved
     } finally {
-        wrapper.remove();
+        wrapper.remove()
     }
 }
 
@@ -104,7 +104,7 @@ export interface ObserveThemeOptions {
      * The element whose `class` / `style` mutations signal a theme change. Defaults to
      * `document.documentElement`, where oriUI skins toggle (`.dark`, inline token overrides).
      */
-    element?: HTMLElement;
+    element?: HTMLElement
 }
 
 /**
@@ -115,18 +115,18 @@ export interface ObserveThemeOptions {
  * (but still safely callable) when `document` is undefined (SSR).
  */
 export function observeTheme(callback: () => void, options: ObserveThemeOptions = {}): () => void {
-    if (typeof document === 'undefined') return () => {};
-    const target = options.element ?? document.documentElement;
+    if (typeof document === 'undefined') return () => {}
+    const target = options.element ?? document.documentElement
 
-    const observer = new MutationObserver(() => callback());
-    observer.observe(target, { attributes: true, attributeFilter: ['class', 'style'] });
+    const observer = new MutationObserver(() => callback())
+    observer.observe(target, { attributes: true, attributeFilter: ['class', 'style'] })
 
-    const media = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : undefined;
-    const onSchemeChange = (): void => callback();
-    media?.addEventListener('change', onSchemeChange);
+    const media = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : undefined
+    const onSchemeChange = (): void => callback()
+    media?.addEventListener('change', onSchemeChange)
 
     return () => {
-        observer.disconnect();
-        media?.removeEventListener('change', onSchemeChange);
-    };
+        observer.disconnect()
+        media?.removeEventListener('change', onSchemeChange)
+    }
 }

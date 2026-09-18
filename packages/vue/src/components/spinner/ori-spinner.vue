@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ActionSize, ThemeColor } from '../../types';
+import type { ActionSize, ThemeColor } from '../../types'
 
 const { label = 'Loading', size = 'text' } = defineProps<{
-    color?: ThemeColor;
-    inline?: boolean;
-    label?: string;
-    size?: ActionSize;
-}>();
+    color?: ThemeColor
+    inline?: boolean
+    label?: string
+    size?: ActionSize
+}>()
 </script>
 
 <template>

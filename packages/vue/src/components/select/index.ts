@@ -1,1 +1,1 @@
-export { default as OriSelect } from './ori-select.vue';
+export { default as OriSelect } from './ori-select.vue'

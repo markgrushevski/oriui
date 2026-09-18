@@ -1,20 +1,20 @@
 /** A single combobox option. `value` is the stable identity; `label` is what the input shows. */
 export interface ComboboxItem {
-    value: string;
-    label: string;
-    disabled?: boolean;
+    value: string
+    label: string
+    disabled?: boolean
 }
 
 export interface ComboboxContext {
     /** Whether the listbox is open. */
-    open: boolean;
+    open: boolean
     /** The selected option value (single-select), or null. */
-    value: string | null;
+    value: string | null
     /** The current text in the input. */
-    inputValue: string;
+    inputValue: string
     /** The highlighted (active) option value for keyboard navigation, or null. */
-    highlightedValue: string | null;
-    disabled: boolean;
+    highlightedValue: string | null
+    disabled: boolean
 }
 
 export type ComboboxEvent =
@@ -24,14 +24,14 @@ export type ComboboxEvent =
     | { type: 'HIGHLIGHT'; value: string | null }
     | { type: 'SELECT'; value: string; label: string }
     | { type: 'CLEAR' }
-    | { type: 'SET_DISABLED'; disabled: boolean };
+    | { type: 'SET_DISABLED'; disabled: boolean }
 
 export interface ComboboxProps {
     /** Stable, SSR-safe base id (from the adapter: Vue `useId()`, Svelte `$props.id()`). */
-    id: string;
+    id: string
     /** Uncontrolled initial selected value. */
-    defaultValue?: string | null;
+    defaultValue?: string | null
     /** Uncontrolled initial input text. */
-    defaultInputValue?: string;
-    disabled?: boolean;
+    defaultInputValue?: string
+    disabled?: boolean
 }
