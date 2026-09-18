@@ -1,6 +1,16 @@
 import { getContext, setContext } from 'svelte'
 import { derived, get, readable, writable, type Readable } from 'svelte/store'
-import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, type RovingOrientation } from '../core'
+import {
+    isToolbarTogglePressed,
+    ownsArrowKeys,
+    resolveRovingIndex,
+    resolveToolbarToggle,
+    rovingIntent,
+    type RovingDirection,
+    type RovingOrientation,
+    type ToolbarToggleType,
+    type ToolbarToggleValue
+} from '../core'
 import { uid } from './id'
 import { safeOnDestroy, toReadable, type MaybeReactive } from './use-store'
 
@@ -170,41 +180,49 @@ interface ToolbarToggleContext {
 
 const TOOLBAR_TOGGLE_KEY = Symbol.for('ori-toolbar-toggle@1')
 
+/**
+ * Options for the toggle group. Every member is LIVE — re-read on each press, not captured once — and in
+ * this adapter live options are re-read from the OPTIONS STORE: pass the whole object as a `Readable` to
+ * react (`derived(tool, (t) => ({ type: 'single', value: t, onChange }))`), a plain object for a fixed
+ * group. That is the rule the whole Svelte adapter follows — `useToolbar`, `useCombobox`, `useMenu`,
+ * `useTabs`, `useColorPicker` and `useDismissable` all take `MaybeReactive<UseXOptions>` with plain
+ * members. This one used to take a plain object of per-member stores instead, the only composable that
+ * did (ISSUES-INNER ORI-I-04); per-member stores no longer type-check here.
+ */
 export interface UseToolbarToggleGroupOptions {
-    /** 'single' keeps one value (deselectable, like Radix); 'multiple' keeps a set. */
-    type: MaybeReactive<'single' | 'multiple'>
-    /** Current value: a string (or undefined) for 'single', a string[] for 'multiple'. A store to react. */
-    value: MaybeReactive<string | string[] | undefined>
-    /** Commit the next value (wire to your bound value). */
-    onChange: (value: string | string[] | undefined) => void
+    /** 'single' keeps at most one value; 'multiple' keeps a set. */
+    type: ToolbarToggleType
+    /** Current value: a string (or undefined) for 'single', a string[] for 'multiple'. */
+    value: ToolbarToggleValue
+    /**
+     * Whether pressing the already-selected item clears it (default `true`, Radix's `type="single"`
+     * behaviour). `false` guarantees a non-empty selection — the tool-picker case: a paint app's
+     * brush/eraser bar must always have exactly one tool. Under 'multiple' it pins the last value.
+     */
+    deselectable?: boolean
+    /** Commit the next value (wire to your bound value). Not fired when a press changes nothing. */
+    onChange: (value: ToolbarToggleValue) => void
 }
 
 /**
  * Provide a toggle-selection context to nested `useToolbarToggleItem`s. Roving is unaffected — a toggle
  * group is a `role="group"` layered over the flat toolbar roving order; its items are still toolbar items
- * and reachable by the same arrow navigation.
+ * and reachable by the same arrow navigation. Options may be a plain object or a `Readable` store of one,
+ * exactly like `useToolbar` — the selection is re-read from that store on every press.
  */
-export function useToolbarToggleGroup(options: UseToolbarToggleGroupOptions) {
-    const type$ = toReadable(options.type)
-    const value$ = toReadable(options.value)
+export function useToolbarToggleGroup(options: MaybeReactive<UseToolbarToggleGroupOptions>) {
+    const opts$ = toReadable(options)
 
-    const isPressed = derived(
-        [type$, value$],
-        ([type, current]) =>
-            (value: string) =>
-                type === 'multiple' ? Array.isArray(current) && current.includes(value) : current === value
-    )
+    // The selection rules themselves live in `../core/toolbar`, shared verbatim with the Vue and React
+    // twins; only the store plumbing below is Svelte's.
+    const isPressed = derived(opts$, (o) => (value: string) => isToolbarTogglePressed(o.type, o.value, value))
 
     function toggle(value: string): void {
-        const current = get(value$)
-        if (get(type$) === 'multiple') {
-            const set = new Set(Array.isArray(current) ? current : [])
-            if (set.has(value)) set.delete(value)
-            else set.add(value)
-            options.onChange([...set])
-        } else {
-            options.onChange(current === value ? undefined : value)
-        }
+        const o = get(opts$)
+        const next = resolveToolbarToggle(o.type, o.value, value, o.deselectable ?? true)
+        // The resolver hands back the current value itself when the press changes nothing (a pinned last
+        // selection), so a non-deselectable group never re-commits the value it already holds.
+        if (next !== o.value) o.onChange(next)
     }
 
     safeSetContext<ToolbarToggleContext>(TOOLBAR_TOGGLE_KEY, { isPressed, toggle })

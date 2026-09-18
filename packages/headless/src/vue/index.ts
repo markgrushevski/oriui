@@ -1,4 +1,8 @@
 // Engine-agnostic resolvers components consume
+// The toggle group's own vocabulary, declared once in core — re-exported here so a consumer can name
+// the type they are already passing without reaching into the framework-agnostic entry.
+export type { ToolbarToggleType, ToolbarToggleValue } from '../core'
+
 export { useDisclosure } from './use-disclosure'
 export { useDialog } from './use-dialog'
 

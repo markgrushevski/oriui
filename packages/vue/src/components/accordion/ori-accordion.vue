@@ -1,11 +1,18 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue'
+import { computed, useId, watchEffect } from 'vue'
 import type { RadiusSize, ThemeColor } from '../../types'
 
-/** One disclosure in `<OriAccordion>`'s `items` prop. `title` is the `<summary>` text. */
+/**
+ * One disclosure in `<OriAccordion>`'s `items` prop. `label` is the `<summary>` text.
+ *
+ * The display key is `label`, matching `TabItem` / `SelectOption` / `RadioOption` / `ComboboxItem` /
+ * `MenuItem` — one collection-item shape across the catalog, so an item array can be mapped from the
+ * same source data whichever component renders it. It was `title` until the pre-1.0 convergence; see
+ * the DEV warning below, which names the rename when a stale `title` arrives.
+ */
 export interface AccordionItem {
     value: string | number
-    title: string
+    label: string
     disabled?: boolean
 }
 
@@ -39,6 +46,28 @@ const groupName = computed(() => (multiple ? undefined : uid))
 function blockDisabled(event: Event, disabled?: boolean): void {
     if (disabled) event.preventDefault()
 }
+
+// `AccordionItem.title` was renamed to `label` before 1.0 to converge with every other collection
+// item in the catalog. TypeScript already rejects the old key, but a plainly-typed array (JS, JSON
+// from an API, an `as any` demo) would silently render empty summaries — so name the rename here
+// rather than leaving the caller to diff the markup. Ships only in DEV; `import.meta.env.DEV` is a
+// compile-time constant, so the whole block is dropped from the production bundle.
+if (import.meta.env.DEV) {
+    watchEffect(() => {
+        // Typed as the caller may actually have built it, not as the prop promises: `label` optional
+        // (that is the whole failure mode) and the retired `title` visible to the check.
+        const loose = items as ReadonlyArray<Partial<AccordionItem> & { title?: unknown }>
+        const stale = loose
+            .filter((item) => item.label === undefined && typeof item.title === 'string')
+            .map((item) => String(item.value))
+        if (stale.length)
+            console.warn(
+                `[OriAccordion] item(s) ${stale.join(', ')} pass \`title\`, which was renamed to \`label\` ` +
+                    'before 1.0 (matching TabItem / SelectOption / RadioOption / ComboboxItem / MenuItem). ' +
+                    'Rename the key — the summary renders empty otherwise.'
+            )
+    })
+}
 </script>
 
 <template>
@@ -61,7 +90,7 @@ function blockDisabled(event: Event, disabled?: boolean): void {
                 @keydown.space="blockDisabled($event, item.disabled)"
             >
                 <span class="ori-accordion__title"
-                    ><slot name="title" :item="item">{{ item.title }}</slot></span
+                    ><slot name="title" :item="item">{{ item.label }}</slot></span
                 >
                 <svg
                     class="ori-accordion__icon"

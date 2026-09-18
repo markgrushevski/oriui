@@ -40,10 +40,10 @@ describe('OriColorPicker — structure & model', () => {
         expect(swatch(wrapper).attributes('aria-label')).toBe('#3366ff')
     })
 
-    it('sets --ori-hue on the area from the current hue', () => {
+    it('sets --ori-color-picker-hue on the area from the current hue', () => {
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#ff0000' } })
-        // pure red → hue 0 → --ori-hue is the fully-saturated hue color (#ff0000)
-        expect(area(wrapper).attributes('style')).toContain('--ori-hue: #ff0000')
+        // pure red → hue 0 → --ori-color-picker-hue is the fully-saturated hue color (#ff0000)
+        expect(area(wrapper).attributes('style')).toContain('--ori-color-picker-hue: #ff0000')
     })
 })
 

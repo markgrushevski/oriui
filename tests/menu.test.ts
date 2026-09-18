@@ -45,6 +45,41 @@ describe('OriMenu', () => {
         wrapper.unmount()
     })
 
+    // -------------------------------------------------------------------------
+    // #trigger slot scope — parity with OriDialog
+    // -------------------------------------------------------------------------
+    //
+    // Both overlays expose `{ props, open }` on #trigger, so the two read alike at the call site. The
+    // bag's `aria-expanded` already carries the state to assistive tech; `open` exists so the caller
+    // can render with it (rotate a caret, swap a label). Without it the only way to style a trigger by
+    // open state was to reach into the bag and read the ARIA string — a11y plumbing used as app state.
+
+    it('exposes the current open state on the #trigger slot scope, alongside the props bag', async () => {
+        const seen: unknown[] = []
+        const wrapper = mount(OriMenu, {
+            props: { items: ITEMS },
+            slots: {
+                trigger: (scope: { props: Record<string, unknown>; open: boolean }) => {
+                    seen.push(scope.open)
+                    return h('button', { ...scope.props, 'data-open': String(scope.open) }, 'Actions')
+                }
+            }
+            // Deliberately NOT attached to document.body: this test only reads rendered attributes, and
+            // an attached wrapper that fails before its unmount() leaks a live menu into the shared
+            // document — which the focus-return tests below then pick up instead of their own trigger.
+        })
+
+        expect(seen[0]).toBe(false)
+        expect(wrapper.find('button').attributes('data-open')).toBe('false')
+
+        await wrapper.find('button').trigger('click')
+        await nextTick()
+
+        expect(seen.at(-1)).toBe(true)
+        expect(wrapper.find('button').attributes('data-open')).toBe('true')
+        wrapper.unmount()
+    })
+
     it('wires aria-haspopup=menu and aria-controls === panel id on the trigger', () => {
         const wrapper = mountMenu()
         const trigger = wrapper.find('button')

@@ -9,9 +9,12 @@ import type { AnchoredPlacement } from '../../types'
 // item (roving needs it), returns focus to the trigger on close, and wires click-outside. The panel is
 // placed with the shared .ori-anchored primitive (CSS Anchor Positioning, zero positioning JS).
 //
-// The #trigger scoped slot exposes a `props` bag to spread onto YOUR <button>; items come from `items`
-// and render through the #item slot (override for icons / shortcuts). Activating an item emits `select`
-// with its value, then closes.
+// The #trigger scoped slot exposes a `props` bag to spread onto YOUR <button>, plus the current `open`
+// state — the same pair OriDialog's #trigger slot exposes, so the two overlays read alike at the call
+// site (`#trigger="{ props, open }"` swaps a caret, swaps a label, styles the trigger while the panel
+// is up). The bag already carries `aria-expanded`, so `open` exists for the caller's own rendering, not
+// for ARIA. Items come from `items` and render through the #item slot (override for icons / shortcuts).
+// Activating an item emits `select` with its value, then closes.
 defineOptions({ inheritAttrs: false })
 
 const {
@@ -72,7 +75,7 @@ watch(
 </script>
 
 <template>
-    <slot name="trigger" :props="triggerProps" />
+    <slot name="trigger" :props="triggerProps" :open="m.open.value" />
 
     <div
         v-bind="mergeProps($attrs, m.contentProps.value)"

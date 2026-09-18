@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { OriTabs } from '../packages/vue/src'
@@ -331,14 +331,97 @@ describe('OriTabs', () => {
         const wrapper = mount(OriTabs, {
             props: { tabs: TABS, modelValue: 'account' },
             slots: {
-                account: '<p class="panel-account">Account panel</p>',
-                billing: '<p class="panel-billing">Billing panel</p>'
+                'panel-account': '<p class="account-panel">Account panel</p>',
+                'panel-billing': '<p class="billing-panel">Billing panel</p>'
             }
         })
         await wrapper.vm.$nextTick()
 
-        expect(wrapper.find('.panel-account').exists()).toBe(true)
-        expect(wrapper.find('.panel-account').text()).toBe('Account panel')
+        expect(wrapper.find('.account-panel').exists()).toBe(true)
+        expect(wrapper.find('.account-panel').text()).toBe('Account panel')
+    })
+
+    // ----- the reserved-slot collision (per-value panel slots are namespaced) -----
+    //
+    // Panel slot names come from caller DATA (a tab's `value`), and Vue's named slots are ONE flat
+    // namespace. Unprefixed, a tab valued "tab" resolved its panel to this component's own reserved
+    // `#tab` slot — the label renderer — so that template rendered twice (once per trigger, once in the
+    // panel) and the panel's real content became unreachable. The `panel-` prefix gives data-derived
+    // names their own namespace. These tests fail against the unprefixed version.
+
+    it('a tab valued "tab" does not resolve its panel to the reserved #tab label slot', async () => {
+        const tabs = [
+            { value: 'tab', label: 'Tab' },
+            { value: 'other', label: 'Other' }
+        ]
+        const wrapper = mount(OriTabs, {
+            props: { tabs, modelValue: 'tab' },
+            slots: {
+                tab: ({ tab }) => h('span', { class: 'label-slot' }, `★ ${tab.label}`),
+                'panel-tab': '<p class="tab-panel">Real panel content</p>'
+            }
+        })
+        await wrapper.vm.$nextTick()
+
+        // The label slot renders exactly once per TRIGGER and nowhere else.
+        expect(wrapper.findAll('.ori-tabs__tab .label-slot')).toHaveLength(2)
+        expect(wrapper.findAll('.ori-tabs__panel .label-slot')).toHaveLength(0)
+
+        // …and the panel renders its own content, which the collision used to make unreachable.
+        const panel = wrapper.findAll('.ori-tabs__panel')[0]!
+        expect(panel.find('.tab-panel').exists()).toBe(true)
+        expect(panel.text()).toBe('Real panel content')
+    })
+
+    it('a tab valued "default" does not swallow the fallback #default slot into its own panel', async () => {
+        const tabs = [
+            { value: 'default', label: 'Default' },
+            { value: 'other', label: 'Other' }
+        ]
+        const wrapper = mount(OriTabs, {
+            props: { tabs, modelValue: 'default' },
+            slots: {
+                default: '<span class="fallback">shared fallback</span>',
+                'panel-default': '<span class="own-panel">its own panel</span>'
+            }
+        })
+        await wrapper.vm.$nextTick()
+
+        // The "default"-valued tab gets its named panel; the OTHER tab still falls back to #default.
+        const panels = wrapper.findAll('.ori-tabs__panel')
+        expect(panels[0]!.find('.own-panel').exists()).toBe(true)
+        expect(panels[0]!.find('.fallback').exists()).toBe(false)
+        expect(panels[1]!.find('.fallback').exists()).toBe(true)
+    })
+
+    it('warns in DEV when a caller passes the old un-prefixed #<value> panel slot', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'account' },
+            slots: { account: '<p>Account panel</p>' }
+        })
+
+        expect(warn).toHaveBeenCalledTimes(1)
+        const message = warn.mock.calls[0]![0] as string
+        expect(message).toContain('[OriTabs]')
+        expect(message).toContain('#account')
+        expect(message).toContain('#panel-account')
+
+        warn.mockRestore()
+    })
+
+    it('does not mistake the reserved #tab slot for a stale panel slot on a tab valued "tab"', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        mount(OriTabs, {
+            props: { tabs: [{ value: 'tab', label: 'Tab' }], modelValue: 'tab' },
+            slots: { tab: ({ tab }) => h('span', {}, tab.label) }
+        })
+
+        expect(warn).not.toHaveBeenCalled()
+
+        warn.mockRestore()
     })
 
     it('renders default scoped slot as fallback when no named slot matches', async () => {

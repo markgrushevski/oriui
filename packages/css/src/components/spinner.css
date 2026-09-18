@@ -8,13 +8,20 @@
         box-sizing: border-box;
     }
 
-    .ori-spinner {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-spinner_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-spinner.ori-spinner_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-spinner) {
         --ori-color: currentcolor;
         /* Baked default for the action-size axis (spinner diameter): the bare `.ori-spinner` is
            already a valid `text`-sized spinner. A size modifier (`.ori-spinner_lg`) repoints the
            alias. */
         --ori-size-action: var(--ori-size-action_text);
+    }
 
+    .ori-spinner {
         display: block;
 
         width: var(--ori-size-action);
@@ -27,38 +34,39 @@
         border-bottom-color: transparent;
     }
 
-    .ori-spinner.ori-spinner_inline {
+    .ori-spinner_inline {
         display: inline-block;
         margin: 0.25em;
     }
 
-    /* Size sugar (action-size axis / spinner diameter) — compound with the block so it beats the
-       baked `text` default by specificity. Mirrors the low-level `.ori-size-action_*` utility. */
-    .ori-spinner.ori-spinner_text {
+    /* Size sugar (action-size axis / spinner diameter) — one class, like the low-level
+       `.ori-size-action_*` utility it mirrors: it beats the baked `text` default because that default
+       sits in the `:where(.ori-spinner)` rule above at (0,0,0). */
+    .ori-spinner_text {
         --ori-size-action: var(--ori-size-action_text);
     }
 
-    .ori-spinner.ori-spinner_xs {
+    .ori-spinner_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-spinner.ori-spinner_sm {
+    .ori-spinner_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-spinner.ori-spinner_md {
+    .ori-spinner_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-spinner.ori-spinner_lg {
+    .ori-spinner_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-spinner.ori-spinner_xl {
+    .ori-spinner_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-spinner.ori-spinner_xxl {
+    .ori-spinner_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 

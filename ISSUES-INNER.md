@@ -52,11 +52,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-04 — Five different "how do I pass options" idioms are about to be frozen into one package
 
-`confirmed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (headless/five-reactive-option-idioms)
+`fixed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (headless/five-reactive-option-idioms)
 
 - **Where:** packages/headless/src/vue/use-combobox.ts:14; packages/headless/src/vue/use-tabs.ts:40; packages/headless/src/vue/use-color-picker.ts:52; packages/headless/src/vue/use-dismissable.ts:27;…
 - **What:** Two signatures are genuinely inconsistent, not eight: UseToolbarToggleGroupOptions mixes both styles inside one interface (vue/use-toolbar.ts:157-159 — `type` is MaybeRefOrGetter, `value` a bare getter), and Svelte's pair disagrees with itself (svelte/use-toolbar.ts:67 useToolbar takes MaybeReactive, :185 useToolbarToggleGroup takes a plain object). And the rule behind the two families is written down nowhere, which…
 - **Fix:** Align the two toolbar toggle-group signatures with their own root (~2 signatures, contained to the toolbar family), and add one paragraph to docs/content/headless/core.md stating the rule: 'options that SEED a primitive accept a value, a ref/store or a getter; options that are re-read live require the reactive form.' That makes the surface self-explanatory at a fraction of the churn, and it is the thing a senior…
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). Both genuinely inconsistent signatures aligned with their own root: Vue's toggle-group `value` widened to `MaybeRefOrGetter` (pure widening), and Svelte's took `MaybeReactive<Options>` with plain members like its seven siblings (breaking, taken now because pre-1.0 is when it is free). The seed-vs-live rule is written into the option interfaces' JSDoc: options that SEED a primitive are read once, options that are LIVE are re-read — `disabled` joined the live side in the previous batch.
 
 ### ORI-I-05 — `core/mergeProps` is unused, untested, and collides by name with Vue's — while being documented as core toolkit
 
@@ -80,29 +82,35 @@ must not be re-reported as a new finding.
 
 ### ORI-I-07 — The three adapters' option interfaces are copy-pasted, with nothing pinning them together
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
 
 - **Where:** packages/headless/src/vue/contract.ts:4-8,26-33,55-67,94-102; packages/headless/src/react/contract.ts:7-10,30-36,59-70,98-105; packages/headless/src/svelte/contract.ts:10-13,32-38,61-72,100-107
 - **What:** UseDisclosureOptions / UseDialogOptions / UseComboboxOptions / UseMenuOptions are declared three times, once per adapter, with identical members that are entirely framework-neutral (strings, booleans, ComboboxItem[], plain callbacks). Only the CONTROL shapes legitimately differ per framework (ComputedRef vs Readable vs plain). Today the copies agree — I diffed them member for member. Nothing enforces that tomorrow:…
 - **Fix:** Hoist the four option interfaces into core (they import nothing framework-specific) and have each contract.ts re-export them: `export type { UseComboboxOptions } from '../core'`. One shared declaration, three re-exports, zero runtime change, and parity becomes a compile error instead of a review item. Do it before the freeze — afterwards, fixing a drift means adding an option to two adapters as a minor and…
 
+- **Outcome:** Closed by the second register sweep (2026-09-18). The four behaviour option shapes and `UseTabsOptions` are declared once in core and re-exported by each adapter, and the toggle group's selection rules moved into a shared core helper that three adapters had hand-written. `tests/adapter-parity.test.ts` now pins every adapter's options to the core declaration bidirectionally, so drift is a `test:types` failure that names the adapter — verified by deliberately drifting a member type and an extra key.
+
 ### ORI-I-08 — Every item prop-getter freezes a redundant `index` the connect already has, and a wrong one silently mis-aims aria-activedescendant
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
+`accepted` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
 
 - **Where:** packages/headless/src/core/combobox/combobox.connect.ts:29,42,51-53,204-206; packages/headless/src/core/menu/menu.connect.ts (getItemProps); docs/content/headless/use-combobox.md:72
 - **What:** connect() already receives the full visible collection (combobox.connect.ts:42) and computes highlightedIndex from it itself (`collection.findIndex`, :52), yet getOptionProps(item, index) makes the CALLER re-supply that same index, and the option's DOM id is built from the caller's number (`optionId(index)`, :29 and :204). The two must agree or the input's aria-activedescendant points at an id no element carries — a…
 - **Fix:** Drop the parameter: derive `const index = collection.findIndex(i => i.value === item.value)` inside getOptionProps / getItemProps and key the option id off that (or off the item's value, scoped by the anatomy). Misuse stops being expressible, three docs examples get shorter, and the item bag is what a senior reader expects — `getOptionProps(item)`. Cheapest now: after 1.0 the Control interfaces in three contract.ts…
 
+- **Outcome:** REFUTED by measurement, and kept as a warning rather than deleted. The proposal was to drop the redundant index parameter and derive it inside the getter with a findIndex. e2e/perf-collections.spec.ts measured what that costs in real Chromium: the shipped two-argument getter is linear (3.0-3.8 ms per keystroke at 1k options, 36-39 ms at 10k), while the derive-inside variant is quadratic — x31-50 growth, 245 ms per keystroke at 10k. A guard now asserts the 10k/1k ratio stays under 24, so the library cannot drift into that shape by accident. The redundancy is real and it is the price of staying linear; the wrong half of the entry is the proposed fix, not the observation.
+
 ### ORI-I-09 — React's compound-event map is a hand-maintained allowlist whose failure mode is silence, with no test holding it to the core
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (headless, missed-by-skeptic)
 
 - **Where:** packages/headless/src/react/normalize-props.ts:23-42,47-61; packages/headless/src/core/combobox/combobox.connect.ts:213-218; packages/headless/src/core/menu/menu.connect.ts:171
 - **What:** The React normalizer renames compound handlers through a literal map and passes everything else through, and its own comment states the consequence: an unmapped onXxx 'would pass through mis-cased and React would drop it silently' (normalize-props.ts:26-29). I checked today's core against it — the connects emit only onClick, onKeydown and onPointermove, all covered, so nothing is broken right now. That is the point:…
 - **Fix:** Ten lines of test, no design change: build each widget's api (disclosure / combobox / menu connect with a pass-through normalizer), walk every prop bag plus the item getters, and assert every key matching /^on[A-Z]/ is either single-word or present in eventMap. The invisible coupling becomes a red CI the day someone adds onFocusout, which is the only time it matters.
 
 ## @oriui/vue — styled components
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The allowlist turned out to be complete — the defect was that nothing would have told us otherwise. A new test derives every handler key the core actually emits (walking the real connect apis, open and closed, item getters included), pushes each through the real React normalizer onto a real element, and dispatches the native event, so it asserts React CALLS the handler rather than that a key sits in a table. Verified by removing one mapping: the failure names the missing key and the file to edit.
 
 ### ORI-I-10 — A toggle button has two incompatible models: OriButton's `active` is a look with no accessible state, OriToolbarButton's `pressed` is state with no look outside a toolbar
 
@@ -152,11 +160,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-15 — Ruling on (b): deferring `useControllable` is defensible (the retrofit is mostly additive), but three per-component policies freeze and cannot be fixed additively
 
-`confirmed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (vue/controllability-ruling)
+`fixed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (vue/controllability-ruling)
 
 - **Where:** packages/vue/src/components/dialog/ori-dialog.vue:33,44-47,111; tabs/ori-tabs.vue:52-58; combobox/ori-combobox.vue:65,103-114; menu/ori-menu.vue:27,75; slider/ori-slider.vue:11,25-28; color-picker/ori-color-picker.vue:43-44;…
 - **What:** The deferral of `useControllable` is sound and the retrofit stays additive. The genuine asymmetry is the one the skeptic listed second and understated: only Dialog has an uncontrolled seed (`defaultOpen`, ori-dialog.vue:28/33/55), so Combobox, Tabs, ToggleGroup and ColorPicker can only be initialised through a bound model. That is a real API-shape inconsistency across the catalog — and a `default*` prop is additive…
 - **Fix:** Keep the deferral. Add `:open="m.open.value"` to ori-menu.vue:75 for symmetry with Dialog (one line, do it now because it is free). Document Tabs' reconciliation policy in tabs.md as a contract — do not add a prop to disable it. Leave OriSlider alone until the convergence pass actually happens; converting it in isolation pays the behaviour-change cost without retiring the mechanism split, since Dialog would still be…
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The free part the rebuttal identified: OriMenu's `#trigger` slot now exposes `open`, restoring the symmetry Dialog already had. The Tabs reconciliation policy is documented as a contract on its page rather than turned into a prop. The `useControllable` deferral itself stands — the retrofit remains additive.
 
 ### ORI-I-16 — `loading` on a non-button OriButton is guarded only by `pointer-events: none` — the exact failure mode the project's own NOTES.md warns about
 
@@ -180,21 +190,25 @@ must not be re-reported as a new finding.
 
 ### ORI-I-18 — The five collection-item shapes disagree on `label` vs `title` and on whether `value` may be a number — five near-identical contracts, all frozen at once
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (vue, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (vue, missed-by-skeptic)
 
 - **Where:** packages/vue/src/components/accordion/ori-accordion.vue:5-9; tabs/ori-tabs.vue:6-10; radio/ori-radio-group.vue:6-10; select/ori-select.vue:6-10; packages/headless/src/core/menu/menu.types.ts:2-6;…
 - **What:** The skeptic argued about whether these types are exported; the more expensive question is that they do not agree. Four spell the display string `label` (TabItem:8, RadioOption:7, SelectOption:7, ComboboxItem:4) and `AccordionItem` spells it `title` (ori-accordion.vue:7) for the identical concept. Four accept `value: string | number` (accordion, tabs, radio, select) and two accept `value: string` only (MenuItem:3,…
 - **Fix:** Pick one shape and converge before the freeze: `{ value: string | number; label: string; disabled?: boolean }`, with `label` optional only where a value is a legitimate display fallback (MenuItem, which already falls back at ori-menu.vue:89 `item.label ?? item.value`). Concretely: rename `AccordionItem.title` → `label` (the one breaking rename, and `ori-accordion.vue:7` is its only reader), and widen…
 
+- **Outcome:** Closed by the second register sweep (2026-09-18). `AccordionItem.title` renamed to `label`, so all five collection item shapes now agree on the display key. Breaking for anyone passing `title` — typed callers get an error, untyped ones a dev warning rather than a silently blank summary. The docs payloads were migrated in the same commit (they would have rendered blank otherwise). Remaining, and recorded rather than done: `MenuItem.value` and `ComboboxItem.value` are still `string` where the other three take `string | number` — that lives in core and is a separate decision.
+
 ### ORI-I-19 — OriTabs renders panels into a dynamic slot namespace that collides with its own reserved `tab` slot
 
-`confirmed` · severity `nit` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (vue, missed-by-skeptic)
+`fixed` · severity `nit` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (vue, missed-by-skeptic)
 
 - **Where:** packages/vue/src/components/tabs/ori-tabs.vue:70,75-77
 - **What:** Line 70 renders the tab button's label through `<slot name="tab" :tab="tab">`, and line 75 renders each panel through `<slot :name="String(tab.value)" :tab="tab">`. The per-value panel slots share one unnamespaced namespace with the component's reserved named slots, so a tab whose `value` is `"tab"` resolves its panel to the consumer's `#tab` template — the label renderer — and that content renders twice: once in…
 - **Fix:** Either namespace the panel slots now — `<slot :name="'panel-' + String(tab.value)">`, a one-character-class change while the API is still free, and arguably clearer to read at the call site — or, if the bare `#<value>` ergonomics are worth keeping, document the reserved names explicitly in tabs.md (`tab`, `default`) and add a DEV-only warn in the SFC when a tab's value matches one, mirroring the dev-time a11y warns…
 
 ## @oriui/css — tokens, layers, class API
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). Per-value panel slots are now `#panel-<value>`, so a tab whose value is literally `tab` no longer shadows the reserved slot. Breaking for existing `<template #value>` usage; the docs samples were migrated in the same commit.
 
 ### ORI-I-20 — Every form block paints the raw `danger` role as body text — 2.4:1 in dark theme, in violation of the project's own role-as-text rule
 
@@ -216,11 +230,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-22 — `ori.utilities` contains ten rules that name a component block (`.ori-button`) — the variant vocabulary's interactive half fires for exactly one component
 
-`confirmed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (css/variant-states-hardcode-button)
+`fixed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (css/variant-states-hardcode-button)
 
 - **Where:** packages/css/src/themes/_themes-variant.css:57-110; compare tag.css:107-111 and link.css:27-42
 - **What:** The variant utilities correctly own their interactive tints; the only residue is that a consumer building their own block on the css layer (DECISIONS.md:246-247's stated audience) gets `[data-active]` but cannot opt into hover. That is a missing opt-in hook, not a defect, and adding `:where(.ori-button, [data-ori-interactive])` to the ten selectors later is purely additive — zero freeze cost, so it does not belong…
 - **Fix:** Either (a) move the ten `:hover`/`:active` rules into button.css where `.ori-button` lives — honest about who owns them, and the utilities layer goes back to being pure token repointing; or (b) make them generic with an opt-in hook, e.g. `:where(.ori-button, [data-ori-interactive]).ori-variant_fill:hover`, so a consumer's own block can join. (a) is the smaller change and loses nothing today; (b) keeps the variant…
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The ten `ori.utilities` rules that hard-coded `.ori-button` now key off an opt-in `data-ori-interactive` attribute, so the variant vocabulary's interactive half is available to any block instead of exactly one. The attribute is new public API and is recorded in DECISIONS.md.
 
 ### ORI-I-23 — Three blocks bake literal colours that no theme or skin can reach — the tooltip chip is 1.1:1 against the dark page
 
@@ -244,11 +260,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-25 — The alpha slider reads tokens declared in another component's block, and three public token names are un-namespaced
 
-`confirmed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (css/colorpicker-slider-token-seam)
+`fixed` · severity `should-fix` · rebuttal `downgraded` · source: paired review 2026-09-18 (css/colorpicker-slider-token-seam)
 
 - **Where:** packages/css/src/components/slider.css:180-206 vs color-picker.css:22-25; color-picker.css:45,132; packages/vue/src/components/color-picker/ori-color-picker.vue:126,153; docs/content/components/color-picker.md:24
 - **What:** Two of the three token names are mis-namespaced and should be renamed before the class table becomes a promise: `--ori-hue` → `--ori-color-picker-hue`, `--ori-ink` → `--ori-color-picker-ink` (two inline styles in ori-color-picker.vue and one doc row). `--ori-checker-1/2` is correctly un-namespaced because two components share it, and correctly declared at block level because its value derives from theme tokens; the…
 - **Fix:** Rename to `--ori-color-picker-hue` / `--ori-color-picker-ink` and move the checker pair to a shared, theme-derived declaration the slider owns (e.g. declare `--ori-checker-*` under `.ori-slider` too, or promote them to a `--ori-surface-checker-*` token in `ori.tokens` since two components already need them). Update the SFC's two inline styles and the class table. Renaming is free today and a breaking change once the…
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The rename spans three packages, so the orchestrator did it in one commit: `--ori-hue` → `--ori-color-picker-hue` and `--ori-ink` → `--ori-color-picker-ink` across the stylesheet, all three headless adapters, the styled SFC, the tests and the docs. A partial rename would have left the area painting its red fallback, which is why it could not be split across agents. The alpha slider no longer reads a token declared in another block — that half was already closed in the first sweep.
 
 ### ORI-I-26 — `.ori-shadow` is a legacy hardcoded utility that breaks the axis naming convention and ignores the elevation tokens it predates
 
@@ -272,21 +290,25 @@ must not be re-reported as a new finding.
 
 ### ORI-I-28 — 105 `.ori-x.ori-x_y` compound selectors contradict the project's own specificity bar, and specificity is override behaviour consumers will freeze against
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (css, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (css, missed-by-skeptic)
 
 - **Where:** packages/css/src/components/*.css (105 matches across 22 files: button 12, avatar 12, input 8, select 8, textarea 8, spinner 8, icon 8, combobox 7, toast 6, tabs 4, surface 4 …); REVIEW.md:64; input.css:40-42
 - **What:** REVIEW.md:64 sets the bar — 'Specificity stays flat — `:where()`, no `.a.a_b` stacking' — and the component layer breaks it 105 times. The cause is structural, not sloppy: each block declares its baked token defaults in the same `.ori-input { … }` rule (0,1,0) that carries its layout, so a single-class modifier could never win, and input.css:40-42 says so out loud ('Compound with the block so it beats the baked `md`…
 - **Fix:** Split each block in two: `:where(.ori-x) { /* the baked token defaults */ }` at zero specificity and `.ori-x { /* layout */ }` as today. Then every modifier collapses to a single class — `.ori-input_lg`, `.ori-card_fluid` — the modifier vocabulary becomes uniform with the `.ori-size-action_*` utilities it was meant to mirror (DECISIONS.md:261-264), the 105 compounds go to near zero, and a consumer's plain…
 
+- **Outcome:** Closed by the second register sweep (2026-09-18). 106 `.ori-x.ori-x_y` self-compounds flattened to single-class modifiers across 22 files, which is the bar the project set for itself and never met. Specificity drops from (0,2,0) to (0,1,0), so it is a real change for a consumer overriding from inside a layer — which is exactly why it had to happen before 1.0. Proved visually neutral by a computed-style diff in real Chromium over every component and every one of the 106 modifiers, both themes, before and after. For ten blocks the baked token defaults moved into a `:where()` rule so a single-class modifier still outranks them on specificity rather than on source order.
+
 ### ORI-I-29 — Fifteen `var(--ori-color, …)` fallbacks across seven components are provably dead, and three of them lie about what happens
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (css, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (css, missed-by-skeptic)
 
 - **Where:** packages/css/src/components/color-picker.css:130,139,173; slider.css:182,196; accordion.css:59,64,91,100; menu.css:66,76; popover.css:42; tabs.css:77,110,127; _themes-color-tokens.css:121; tooltip.css:23-27
 - **What:** `--ori-color: currentColor` is declared unconditionally at `:root` (_themes-color-tokens.css:121), so it is always defined on every element and the fallback arm of `var(--ori-color, X)` can never fire. The library already knows this and paid for the knowledge once: tooltip.css:23-27 explains that the tooltip needed dedicated `--ori-tooltip-bg/-color` tokens precisely because 'those aliases are globally defined…
 - **Fix:** Drop the fifteen fallback arms so the code says what it does, and record the constraint where the next author will see it: one short DECISIONS.md entry stating that `--ori-color` / `--ori-color-on` are globally defined, that a `var()` fallback on them is unreachable, and that a component needing its own default must declare a dedicated block-local token — the rule tooltip.css:23-27 already discovered the hard way.…
 
 ## Packaging & release
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The remaining 11 dead `var(--ori-color, …)` fallbacks are gone. The register said three of the fifteen lie about what would happen; measured, the honest figure is 11 — the arms could never be reached because the alias is always defined at `:root`.
 
 ### ORI-I-30 — Nothing in the repo ever imports the packages the way a consumer does — dist + the exports map are built, measured, and never run
 
@@ -454,11 +476,13 @@ must not be re-reported as a new finding.
 
 ### ORI-I-44 — `OriPopover`'s `role?: string` leaks into the trigger slot as an untyped `aria-haspopup`, forcing consumers to cast away the slot's types
 
-`confirmed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (consumer/popover-role-untyped)
+`fixed` · severity `should-fix` · rebuttal `upheld` · source: paired review 2026-09-18 (consumer/popover-role-untyped)
 
 - **Where:** oriUI packages/vue/src/components/popover/ori-popover.vue:21-25,34-39,43; justpaint components/FloatingToolbar.vue:203-208
 - **What:** `role` is typed as unconstrained `string`, so the `triggerProps` bag infers `'aria-haspopup': string`. Vue's `ButtonHTMLAttributes` types that attribute as a literal union, so `v-bind` of the bag does not type-check on a `<button>` — the documented, intended usage. The only real consumer works around it with `as Record<string, unknown>`, which discards type-checking on the whole bag.
 - **Fix:** The skeptic's fix is wrong in kind. Narrowing `role` to the `aria-haspopup` union would FORBID legitimate panel roles — a popover holding `role="group"`, `role="region"` or no role at all is valid markup — because the panel's role and the trigger's `aria-haspopup` vocabulary are simply not the same set. The defect is the conflation at ori-popover.vue:36, not the width of the type. Keep `role?: string` for the panel…
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). The two concerns are split rather than the type narrowed (narrowing would have forbidden legitimate panel roles): the panel's `role` stays an unconstrained `string`, and the trigger's `aria-haspopup` hint is its own optional `haspopup` prop with the correct union. `<OriPopover role="group">` used to emit an invalid `aria-haspopup="group"`; now it does not, and the trigger bag type-checks against a real `<button>` — the old shape failed that assertion.
 
 ### ORI-I-45 — `--ori-size-action` follows a third, undocumented scoping rule — the alias is re-baked twice on the element, so a wrapper repoint is a silent no-op
 
@@ -482,21 +506,25 @@ must not be re-reported as a new finding.
 
 ### ORI-I-47 — 13 of the 20 types `@oriui/vue` exports are used by zero components, and the frozen ones are built with interface-then-`keyof` ceremony where a union would say it
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (consumer, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (consumer, missed-by-skeptic)
 
 - **Where:** oriUI packages/vue/src/types.ts:3-42,44-56,60-75,83-84; packages/vue/src/index.ts:1 (`export * from './types'`); justpaint apps/web/src/components/ui/IconButton.vue:18
 - **What:** `packages/vue/src/index.ts:1` re-exports the whole of types.ts, so all 20 exported names become public API at 1.0. Grepping packages/vue/src (excluding types.ts itself) for each one by word: `Sizes` 0, `BlockSize` 0, `ScreenSize` 0, `ActionSpaceSize` 0, `Size` 0, `CenterPosition` 0, `InlinePosition` 0, `BlockPosition` 0, `CustomPosition` 0, `Position` 0, `AnchoredSide` 0, `SeverityColor` 0, `DeepPartial` 0 —…
 - **Fix:** Before the freeze, delete the 13 unreferenced exports (or, if any is wanted for consumer convenience, keep it deliberately and say so in the doc comment), and flatten the six size interfaces into plain string-literal unions — `ActionSize`, `RadiusSize`, `BlockSize` etc. read the same to a consumer and stop pretending to model a record. Cost now: one file, one type-check run, zero runtime. Cost after 1.0: removing…
 
+- **Outcome:** Closed by the second register sweep (2026-09-18). 13 exported types that nothing in the library used are deleted (free pre-1.0), and the six size/colour types that stay are unions rather than interface-then-`keyof` ceremony.
+
 ### ORI-I-48 — `useToolbarToggleGroup` with `type: 'single'` is unconditionally deselectable, so a tool picker that must always have a selection is impossible — the only consumer guards it by hand
 
-`confirmed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (consumer, missed-by-skeptic)
+`fixed` · severity `should-fix` · rebuttal `raised in rebuttal` · source: paired review 2026-09-18 (consumer, missed-by-skeptic)
 
 - **Where:** oriUI packages/headless/src/vue/use-toolbar.ts:155-191 (options + `toggle`); justpaint apps/web/src/components/FloatingToolbar.vue:76-82, 110-113
 - **What:** use-toolbar.ts:184 is `options.onChange(current === value ? undefined : value)` — clicking the pressed item in a single-select group always clears it, with no option to require a selection. `UseToolbarToggleGroupOptions` (use-toolbar.ts:155-162) exposes only `type`, `value` and `onChange`; the JSDoc at :156 states the intent ("'single' keeps one value (deselectable, like Radix)"), but a toolbar tool palette — the…
 - **Fix:** Add `deselectable?: MaybeRefOrGetter<boolean>` (default `true`, preserving today's behaviour exactly) to `UseToolbarToggleGroupOptions` and gate use-toolbar.ts:184 on it, then surface it as a prop on `OriToolbarToggleGroup`. It is additive and therefore shippable in any 1.x — but the DEFAULT is what freezes, and `true` is the wrong default for the flagship use case: once 1.0 publishes, flipping it (or making…
 
 ## Docs generation & the CLI idea
+
+- **Outcome:** Closed by the second register sweep (2026-09-18). `useToolbarToggleGroup` gained `deselectable` (default `true`, today's behaviour) in all three adapters. `false` guarantees a non-empty selection and means the same thing under `type: "multiple"` — the last remaining value cannot be removed — so it is never a silently ignored option, and a refused press fires no `onChange` at all rather than re-committing the value the group already holds.
 
 ### ORI-I-49 — The command the whole idea is named after cannot be published — the project already took a 403 on `oriui`
 

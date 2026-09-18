@@ -3,6 +3,13 @@ import { defineComponent, h, isRef } from 'vue'
 import { mount } from '@vue/test-utils'
 import { get, type Readable } from 'svelte/store'
 import { act, cleanup, renderHook } from '@testing-library/react'
+import type {
+    UseComboboxOptions as CoreComboboxOptions,
+    UseDialogOptions as CoreDialogOptions,
+    UseDisclosureOptions as CoreDisclosureOptions,
+    UseMenuOptions as CoreMenuOptions,
+    UseTabsOptions as CoreTabsOptions
+} from '@oriui/headless'
 import {
     useCombobox as useComboboxVue,
     useDialog as useDialogVue,
@@ -514,28 +521,49 @@ describe.each(WIDGETS)('$name — one surface across Vue, Svelte and React', (wi
 })
 
 // ── the option surface, pinned at compile time ─────────────────────────────────────────────────
-// The table above proves the OUTPUT matches. This proves the INPUT does: each adapter hand-writes its own
-// option interfaces (ISSUES-INNER ORI-I-07), so an option added to one and forgotten in the others is
-// exactly the drift 1.0 would freeze. `npm run test:types` fails on the offending line — naming the two
-// interfaces — if either side has a key the other lacks.
+// The table above proves the OUTPUT matches. This proves the INPUT does. Each adapter used to hand-write
+// its own option interfaces with nothing holding the copies together (ISSUES-INNER ORI-I-07), so an
+// option added to one, or re-typed on one, was exactly the drift 1.0 would freeze. The shapes are now
+// declared ONCE in core — `core/options.ts` for the four swappable behaviours, `core/tabs.ts` for tabs —
+// and every adapter is pinned to that declaration here, in BOTH directions:
+//
+//   - key parity catches a member present on one side only (mutual assignability does NOT: an extra
+//     OPTIONAL member is assignable both ways),
+//   - mutual assignability catches a member whose TYPE differs, which key parity does not see.
+//
+// `npm run test:types` fails on the offending line, naming the adapter and the core shape. The `useTabs`
+// rows are the finished state — those three adapters re-export the core declaration, so the row is a
+// tautology today and goes red the moment someone re-declares the interface locally. The four behaviour
+// rows still compare three separate declarations in `{vue,svelte,react}/contract.ts` against core; once
+// those re-export from core too, they become tautologies in the same way.
 type KeyGap<A, B> = Exclude<keyof A, keyof B> | Exclude<keyof B, keyof A>
-type SameKeys<A, B> = [KeyGap<A, B>] extends [never] ? true : KeyGap<A, B>
+type Mutual<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false
+type SameShape<Core, Adapter> = [KeyGap<Core, Adapter>] extends [never]
+    ? Mutual<Core, Adapter> extends true
+        ? true
+        : { 'a member type differs from core': { core: Core; adapter: Adapter } }
+    : { 'these keys exist on one side only': KeyGap<Core, Adapter> }
 
-const OPTION_KEY_PARITY = {
-    'useDisclosure — Vue/Svelte': true satisfies SameKeys<VueDisclosureOptions, SvelteDisclosureOptions>,
-    'useDisclosure — Vue/React': true satisfies SameKeys<VueDisclosureOptions, ReactDisclosureOptions>,
-    'useDialog — Vue/Svelte': true satisfies SameKeys<VueDialogOptions, SvelteDialogOptions>,
-    'useDialog — Vue/React': true satisfies SameKeys<VueDialogOptions, ReactDialogOptions>,
-    'useCombobox — Vue/Svelte': true satisfies SameKeys<VueComboboxOptions, SvelteComboboxOptions>,
-    'useCombobox — Vue/React': true satisfies SameKeys<VueComboboxOptions, ReactComboboxOptions>,
-    'useMenu — Vue/Svelte': true satisfies SameKeys<VueMenuOptions, SvelteMenuOptions>,
-    'useMenu — Vue/React': true satisfies SameKeys<VueMenuOptions, ReactMenuOptions>,
-    'useTabs — Vue/Svelte': true satisfies SameKeys<VueTabsOptions, SvelteTabsOptions>,
-    'useTabs — Vue/React': true satisfies SameKeys<VueTabsOptions, ReactTabsOptions>
+const OPTION_SHAPE_PARITY = {
+    'useDisclosure — Vue': true satisfies SameShape<CoreDisclosureOptions, VueDisclosureOptions>,
+    'useDisclosure — Svelte': true satisfies SameShape<CoreDisclosureOptions, SvelteDisclosureOptions>,
+    'useDisclosure — React': true satisfies SameShape<CoreDisclosureOptions, ReactDisclosureOptions>,
+    'useDialog — Vue': true satisfies SameShape<CoreDialogOptions, VueDialogOptions>,
+    'useDialog — Svelte': true satisfies SameShape<CoreDialogOptions, SvelteDialogOptions>,
+    'useDialog — React': true satisfies SameShape<CoreDialogOptions, ReactDialogOptions>,
+    'useCombobox — Vue': true satisfies SameShape<CoreComboboxOptions, VueComboboxOptions>,
+    'useCombobox — Svelte': true satisfies SameShape<CoreComboboxOptions, SvelteComboboxOptions>,
+    'useCombobox — React': true satisfies SameShape<CoreComboboxOptions, ReactComboboxOptions>,
+    'useMenu — Vue': true satisfies SameShape<CoreMenuOptions, VueMenuOptions>,
+    'useMenu — Svelte': true satisfies SameShape<CoreMenuOptions, SvelteMenuOptions>,
+    'useMenu — React': true satisfies SameShape<CoreMenuOptions, ReactMenuOptions>,
+    'useTabs — Vue': true satisfies SameShape<CoreTabsOptions, VueTabsOptions>,
+    'useTabs — Svelte': true satisfies SameShape<CoreTabsOptions, SvelteTabsOptions>,
+    'useTabs — React': true satisfies SameShape<CoreTabsOptions, ReactTabsOptions>
 }
 
 describe('option surface', () => {
-    it('declares the same option keys in all three adapters (enforced by test:types)', () => {
-        expect(Object.values(OPTION_KEY_PARITY).every(Boolean)).toBe(true)
+    it('declares every option key, with the same type, against one core shape (enforced by test:types)', () => {
+        expect(Object.values(OPTION_SHAPE_PARITY).every(Boolean)).toBe(true)
     })
 })

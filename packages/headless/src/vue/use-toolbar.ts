@@ -9,7 +9,17 @@ import {
     type InjectionKey,
     type MaybeRefOrGetter
 } from 'vue'
-import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, type RovingOrientation } from '../core'
+import {
+    isToolbarTogglePressed,
+    ownsArrowKeys,
+    resolveRovingIndex,
+    resolveToolbarToggle,
+    rovingIntent,
+    type RovingDirection,
+    type RovingOrientation,
+    type ToolbarToggleType,
+    type ToolbarToggleValue
+} from '../core'
 
 // Fallback id source when `useId()` is unavailable (called outside an app context); the composables are
 // intended for component setup, where useId() always resolves.
@@ -154,13 +164,27 @@ interface ToolbarToggleContext {
 
 const TOOLBAR_TOGGLE_KEY: InjectionKey<ToolbarToggleContext> = Symbol.for('ori-toolbar-toggle@1')
 
+/**
+ * Every member here is LIVE — re-read on each press, not captured once — so each takes the reactive form
+ * (`MaybeRefOrGetter`: a value, a ref or a getter). That is the rule across the Vue adapter: an option
+ * that SEEDS a primitive (`defaultOpen`, an initial `value`) accepts a value, a ref or a getter and is
+ * read once; an option that is LIVE is re-read, so passing a bare value freezes it. `value` used to be a
+ * bare getter here while `type` beside it was a `MaybeRefOrGetter` — one interface, two idioms
+ * (ISSUES-INNER ORI-I-04) — so it is widened; a getter still satisfies it.
+ */
 export interface UseToolbarToggleGroupOptions {
-    /** 'single' keeps one value (deselectable, like Radix); 'multiple' keeps a set. */
-    type: MaybeRefOrGetter<'single' | 'multiple'>
+    /** 'single' keeps at most one value; 'multiple' keeps a set. */
+    type: MaybeRefOrGetter<ToolbarToggleType>
     /** Current value: a string (or undefined) for 'single', a string[] for 'multiple'. */
-    value: () => string | string[] | undefined
-    /** Commit the next value (wire to your `v-model`). */
-    onChange: (value: string | string[] | undefined) => void
+    value: MaybeRefOrGetter<ToolbarToggleValue>
+    /**
+     * Whether pressing the already-selected item clears it (default `true`, Radix's `type="single"`
+     * behaviour). `false` guarantees a non-empty selection — the tool-picker case: a paint app's
+     * brush/eraser bar must always have exactly one tool. Under 'multiple' it pins the last value.
+     */
+    deselectable?: MaybeRefOrGetter<boolean | undefined>
+    /** Commit the next value (wire to your `v-model`). Not fired when a press changes nothing. */
+    onChange: (value: ToolbarToggleValue) => void
 }
 
 /**
@@ -169,23 +193,23 @@ export interface UseToolbarToggleGroupOptions {
  * items and reachable by the same arrow navigation.
  */
 export function useToolbarToggleGroup(options: UseToolbarToggleGroupOptions) {
+    // The selection rules themselves live in `../core/toolbar`, shared verbatim with the Svelte and React
+    // twins; only the `toValue` unwrapping below is Vue's.
     provide(TOOLBAR_TOGGLE_KEY, {
         isPressed(value) {
-            const current = options.value()
-            return toValue(options.type) === 'multiple'
-                ? Array.isArray(current) && current.includes(value)
-                : current === value
+            return isToolbarTogglePressed(toValue(options.type), toValue(options.value), value)
         },
         toggle(value) {
-            const current = options.value()
-            if (toValue(options.type) === 'multiple') {
-                const set = new Set(Array.isArray(current) ? current : [])
-                if (set.has(value)) set.delete(value)
-                else set.add(value)
-                options.onChange([...set])
-            } else {
-                options.onChange(current === value ? undefined : value)
-            }
+            const current = toValue(options.value)
+            const next = resolveToolbarToggle(
+                toValue(options.type),
+                current,
+                value,
+                toValue(options.deselectable) ?? true
+            )
+            // The resolver hands back `current` itself when the press changes nothing (a pinned last
+            // selection), so a non-deselectable group never re-commits the value it already holds.
+            if (next !== current) options.onChange(next)
         }
     })
 

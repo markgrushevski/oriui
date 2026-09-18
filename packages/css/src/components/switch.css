@@ -30,7 +30,7 @@
     /* Disabled reads from the REAL control state, not only from the prop-driven modifier class —
        `<fieldset disabled>` (or a hand-written `disabled` attribute in the CSS layer) left the
        switch inert but rendered fully enabled. See checkbox.css for the full rationale. */
-    .ori-switch.ori-switch_disabled,
+    .ori-switch_disabled,
     .ori-switch:has(.ori-switch__input:disabled) {
         opacity: 0.55;
 

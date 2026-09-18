@@ -32,7 +32,7 @@
        and in both cases the control was inert but rendered fully enabled. `:has()` is what lets the
        label dim from its own input's state (the modifier class stays for compatibility and for
        anyone overriding it). */
-    .ori-checkbox.ori-checkbox_disabled,
+    .ori-checkbox_disabled,
     .ori-checkbox:has(.ori-checkbox__input:disabled) {
         opacity: 0.55;
 

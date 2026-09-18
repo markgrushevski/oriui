@@ -45,7 +45,7 @@
 
         /* value (black, bottom) over saturation (white, left) over the pure hue base — the hue is a solid
            background-COLOR (a bare color is not a valid background-image layer), the SV grid on top. */
-        background-color: var(--ori-hue, #ff0000);
+        background-color: var(--ori-color-picker-hue, #ff0000);
         background-image:
             linear-gradient(to top, #000000, transparent), linear-gradient(to right, #ffffff, transparent);
 
@@ -134,11 +134,11 @@
            (themes/_themes-color-tokens.css), so the fallback arm could never fire — and it lied about
            what it would do. A swatch with no inline colour paints `currentcolor`, which here is the
            `color` two lines down: measured white, not the black the old `var(--ori-color, #000000)`
-           advertised. --ori-ink is genuinely optional (nothing declares it globally), so ITS fallback is
+           advertised. --ori-color-picker-ink is genuinely optional (nothing declares it globally), so ITS fallback is
            live and stays. */
         background: var(--ori-color);
 
-        color: var(--ori-ink, #ffffff);
+        color: var(--ori-color-picker-ink, #ffffff);
     }
 
     /* When alpha is on, the current color (which carries its alpha) sits over a checkerboard so
