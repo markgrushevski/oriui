@@ -303,4 +303,46 @@ test.describe('role-as-text contrast — WCAG AA (4.5:1) across every skin, them
             `the danger TEXT tone fell below AA on ${regressed.length} dark skins:\n${regressed.join('\n')}`
         ).toEqual([])
     })
+
+    /**
+     * The axis the two tests above cannot reach: an ANCESTOR that fades a whole subtree. Every probe
+     * elsewhere in this file carries its own opacity at most, and the comment above readState admits it —
+     * "the probes never put an opacity group around a painted background". A container fade is a different
+     * defect from a badly-toned token: the token pair stays honestly AA, and the contrast is lost on the
+     * way to the screen, so neither the Node token guard (it reads pairs, never a render) nor an axe pass
+     * (it reads declared colours) can see it. Only a composited reading can.
+     *
+     * The case that made this necessary: `.ori-dialog__body` carried `opacity: 0.85`, which applied to the
+     * caller's whole slot — controls included — and multiplied with a field hint's own 0.7 into 0.595.
+     * Reported from the justpaint session (JP-O-09 → ORI-I-85).
+     */
+    test('a dialog body does not fade the content it wraps below AA', async ({ page }) => {
+        await prepare(
+            page,
+            `<div class="ori-dialog"><div class="ori-dialog__content">
+                <h2 class="ori-dialog__title">Title</h2>
+                <div class="ori-dialog__body">
+                    <p data-role="dialog" data-kind="dialog-body-text">Body copy inside the dialog.</p>
+                    <a class="ori-link" href="#" data-role="dialog" data-kind="dialog-link">Link</a>
+                    <button class="ori-button ori-variant_fill" data-role="dialog" data-kind="dialog-button-fill">Confirm</button>
+                    <button class="ori-button ori-color_danger ori-variant_fill" data-role="dialog" data-kind="dialog-button-danger">Delete</button>
+                    <button class="ori-button ori-variant_outline" data-role="dialog" data-kind="dialog-button-outline">Cancel</button>
+                    <div class="ori-field">
+                        <label class="ori-field__label" data-role="dialog" data-kind="dialog-field-label">Label</label>
+                        <div class="ori-input"><input class="ori-input__field" value="Typed value" data-role="dialog" data-kind="dialog-input-value"></div>
+                        <p class="ori-field__hint" data-role="dialog" data-kind="dialog-field-hint">Hint text</p>
+                    </div>
+                </div>
+            </div></div>`
+        )
+        const rows = await sweep(page)
+
+        console.log(`— inside a dialog body (${rows.length} readings) —\n${worstPerKind(rows)}`)
+
+        const failures = rows.filter((r) => r.ratio < AA).map(line)
+        expect(
+            failures,
+            `${failures.length} readings inside a dialog body fall below AA — an ancestor fade is eating the contrast:\n${failures.join('\n')}`
+        ).toEqual([])
+    })
 })
