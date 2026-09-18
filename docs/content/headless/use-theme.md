@@ -84,6 +84,13 @@ setters:
 <button on:click={theme.cycleTheme}> Theme: {$theme.theme} ({$theme.resolvedTheme}) </button>
 ```
 
+The Svelte controller lives as long as the **component**, not as long as the subscription — an `{#if}`
+that unmounts the markup reading `$theme` no longer tears the controller down (it used to, which
+silently killed `auto` mode for the rest of the session). Teardown rides on `onDestroy`, which only
+exists during component init, so a `useTheme()` called at **module scope** has no component to hang on:
+there the store exposes `theme.destroy()` and you are responsible for calling it, or the OS-scheme
+listener outlives the page's need for it.
+
 The **React** binding is the same controller as a hook — the return is plain values (`theme` /
 `resolvedTheme`, no `$` / `.value`) plus the same setters, re-rendering on change (`onClick` in React
 casing). It is **client-only**: the controller is created in a mount effect, so the server and the first

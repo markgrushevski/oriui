@@ -624,3 +624,31 @@ self-check on synthetic input so the matcher itself is proved rather than assume
 declared in `defineProps` but never read is INVISIBLE at runtime (Vue consumes declared props, so passing it
 emits nothing) — which makes "does the rendered DOM change when I pass it?" the right contract test for a
 prop, not "is it mentioned in the template?".
+
+## happy-dom focuses a `<div>` that has no `tabindex` — real browsers do not
+
+A negative test of the shape "omit the roving `tabindex` and assert focus does NOT move" passes in a real
+browser and FAILS here: happy-dom will happily focus a non-focusable element, so the assertion cannot be
+falsified. Pin such a requirement by ATTRIBUTE in the unit suite (exactly one item carries `tabindex="0"`,
+the rest `-1`) and put the actual focus behaviour in the Playwright e2e, which runs real Chromium. The same
+caveat applies to anything else that depends on the focusability rules rather than on the DOM shape.
+
+## The Svelte `onDestroy` leg of any composable is DEAD in the vitest suite
+
+`vitest.config.js` declares no `browser` condition, so Vitest resolves `svelte` to its **server** build,
+where `onDestroy` is a no-op and component lifecycle never runs. Every Svelte composable that tears down on
+`onDestroy` (`safeOnDestroy` in `./use-store`, used by native.ts, use-dismissable, use-toolbar,
+use-color-picker and now use-theme) therefore has an untestable leg here: the unit suite proves the
+subscribe/unsubscribe path and the explicit `destroy()` path, never the component-unmount path. Do not read
+a green suite as proof that teardown happens in a real Svelte app — and do not "simplify" a composable by
+deleting the explicit escape hatch just because no test covers it.
+
+## Windows CRLF makes `\n`-anchored string surgery silently no-op
+
+The working tree is CRLF (git converts on checkout). A throwaway script that does
+`src.replace('foo\nbar', …)` matches nothing, writes the file back unchanged, and the "negative control"
+that was supposed to go red passes instead — a FALSE PASS that looks like the code was already correct.
+Normalise first (`raw.includes('\r\n') ? raw.replace(/\r\n/g, '\n') : raw`), edit, then write back in the
+original ending. Better: use the Write/Edit tools rather than heredoc-driven scripts — a quoted bash
+heredoc also collapses one level of backslashes, which silently breaks regexes and string literals written
+that way.
