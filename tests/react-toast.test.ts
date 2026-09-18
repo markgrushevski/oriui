@@ -103,6 +103,31 @@ describe('React useToast', () => {
         expect(result.current.toasts).toBe(after) // stable again once the change has settled
     })
 
+    it('returns STABLE action identities — same functions every render, and across every caller', () => {
+        // The actions close over nothing but the module-level queue, so they are built ONCE at module scope.
+        // Rebuilding them per render would hand consumers a new `toast`/`dismiss`/... on every render and
+        // re-fire every effect that lists one in its dependency array — the standard React footgun, and part
+        // of the public hook surface 1.0 freezes. `renderHook` + `rerender` is exactly that consumer.
+        const keys = ['toast', 'success', 'error', 'warn', 'info', 'dismiss', 'clear'] as const
+
+        const { result, rerender } = renderHook(() => useToast())
+        const first = result.current
+
+        rerender()
+        for (const key of keys) expect(Object.is(result.current[key], first[key])).toBe(true)
+
+        // A real queue change re-projects `toasts` (a fresh array) but must leave the actions alone.
+        act(() => {
+            result.current.toast({ text: 'x', duration: 0 })
+        })
+        expect(result.current.toasts).toHaveLength(1)
+        for (const key of keys) expect(Object.is(result.current[key], first[key])).toBe(true)
+
+        // Module scope, not per-component memoisation: a second caller gets the very same functions.
+        const other = renderHook(() => useToast())
+        for (const key of keys) expect(Object.is(other.result.current[key], first[key])).toBe(true)
+    })
+
     it('auto-dismisses after its duration (fake timers)', () => {
         vi.useFakeTimers()
         try {
