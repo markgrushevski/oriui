@@ -23,6 +23,13 @@ export function machine(props: DisclosureProps): DisclosureService {
                         return !context.open ? context : { ...context, open: false }
                     case 'SET':
                         return context.open === event.open ? context : { ...context, open: event.open }
+                    // Unlike menu / combobox, disabling does NOT close an open disclosure: an expanded
+                    // panel whose trigger is disabled is the WAI-ARIA Accordion idiom for "this section
+                    // must stay open" (APG's accordion allows disabling the expanded header), and
+                    // collapsing content out from under the reader would be the surprising move. The
+                    // trigger stops responding (TOGGLE is refused) but the content stays put.
+                    case 'SET_DISABLED':
+                        return context.disabled === event.disabled ? context : { ...context, disabled: event.disabled }
                     default:
                         return context
                 }

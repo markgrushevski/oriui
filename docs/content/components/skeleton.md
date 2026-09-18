@@ -24,6 +24,11 @@ tinted base and the shimmer highlight.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-skeleton","type":"Block","description":"Required base class. Renders a tinted, animated shimmer block."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · <b>sm</b> · md · lg · xl · rounded — <b>sm</b> is the default; repoints --ori-size-radius on the element."},{"class":"aria-hidden=true","type":"State","description":"Always present. The skeleton is decorative; the loading region that owns the announcement should carry aria-busy on the consumer side."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/skeleton.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Text line
 
 A single line — size it to match the text it is standing in for.

@@ -8,6 +8,14 @@ import type { Dict } from './types'
  *   - `style` objects are shallow-merged;
  *   - everything else: a later defined value wins.
  *
+ * **Vue users: use Vue's own `mergeProps` instead** (`import { mergeProps } from 'vue'`). The names
+ * collide and Vue's understands the framework's own prop forms — array / object `class`, `style`
+ * strings, `onClick` arrays — which this one does not. This export exists for the framework-free and
+ * Svelte / React paths, where there is no such helper.
+ *
+ * **`class` / `className` values must be STRINGS.** The concat branch joins the sides with a space, so
+ * an array or object-syntax class stringifies to garbage (`[object Object]`); normalize before merging.
+ *
  * Design follows Zag.js's `mergeProps` (MIT); implementation is our own.
  */
 
@@ -32,8 +40,12 @@ export function mergeProps(...sources: Dict[]): Dict {
 
             if (isHandler(key) && isFn(prev) && isFn(next)) {
                 result[key] = chain(prev, next)
-            } else if ((key === 'class' || key === 'className') && prev && next) {
-                result[key] = `${prev} ${next}`
+            } else if (key === 'class' || key === 'className') {
+                // Concatenate — but a blank / absent side contributes nothing, so a consumer layering
+                // `class: props.class ?? ''` cannot WIPE the bag's own classes (the falsy-side rule clsx
+                // and Zag's mergeProps use). Both sides blank keeps the later value, so the key survives.
+                const parts = [prev, next].filter(Boolean)
+                result[key] = parts.length > 0 ? parts.join(' ') : (next ?? prev)
             } else if (key === 'style' && isObject(prev) && isObject(next)) {
                 result[key] = { ...prev, ...next }
             } else {

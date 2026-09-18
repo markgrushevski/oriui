@@ -23,6 +23,11 @@ map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the label wrapper."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · md · lg · xl · xxl · text (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes"}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/checkbox.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Colors
 
 Every semantic color role. The accent fill and focus ring track `ori-color`.

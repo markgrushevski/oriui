@@ -340,6 +340,53 @@ test.describe('toast viewport stays in its named screen corner', () => {
     }
 })
 
+test.describe('toast enters off the edge its toaster is pinned to', () => {
+    // The enter/leave transform is deliberately suppressed under prefers-reduced-motion, and the project
+    // config forces `reduce` globally to keep popover geometry deterministic — this block is about the
+    // motion path itself, so it opts back out.
+    test.use({ reducedMotion: 'no-preference' })
+
+    // `transform` computes to a matrix; its 5th component is the x translation in px.
+    const translateX = (transform: string) => (transform === 'none' ? 0 : Number(transform.match(/[-\d.]+/g)![4]))
+
+    const toast = (corner: string) =>
+        `<div class="ori-toaster${corner ? ` ori-toaster_${corner}` : ''}">
+            <div class="ori-toast ori-toast-enter-from" id="toast"><div class="ori-toast__body">Saved</div></div>
+        </div>`
+
+    // The corner names a SCREEN corner (pinned above), so the entry side is physical in BOTH directions:
+    // a left-pinned toast slides in from the left even in an ltr page, which is what ori-I-76 was.
+    const CORNERS = [
+        { corner: 'top-left', sign: -1 },
+        { corner: 'bottom-left', sign: -1 },
+        { corner: 'top-right', sign: 1 },
+        { corner: 'bottom-right', sign: 1 },
+        { corner: 'top-center', sign: 0 },
+        { corner: 'bottom-center', sign: 0 }
+    ] as const
+
+    for (const dir of DIRS) {
+        for (const { corner, sign } of CORNERS) {
+            const from = sign === 0 ? 'does not slide sideways' : `slides in from the ${sign < 0 ? 'left' : 'right'}`
+            test(`${dir}: ${corner} ${from}`, async ({ page }) => {
+                await render(page, dir, toast(corner))
+                const offset = translateX((await styles(page, '#toast', ['transform']))['transform'])
+
+                if (sign === 0) expect(offset).toBe(0)
+                else expect(Math.sign(offset), `expected a ${sign < 0 ? 'negative' : 'positive'} offset`).toBe(sign)
+            })
+        }
+
+        // Only the corner-less toaster has no physical edge to follow, so it is the one case that reads
+        // the writing direction.
+        test(`${dir}: a toaster with no corner enters from the inline-end side`, async ({ page }) => {
+            await render(page, dir, toast(''))
+            const offset = translateX((await styles(page, '#toast', ['transform']))['transform'])
+            expect(Math.sign(offset)).toBe(dir === 'ltr' ? 1 : -1)
+        })
+    }
+})
+
 test.describe('color-picker value plane stays physical', () => {
     // The SV area is a value plane, not text: its saturation gradient runs `to right` and the thumb is
     // placed with a physical `left` percentage by useColorPicker, while the pointer handler measures
@@ -364,7 +411,7 @@ test.describe('color-picker value plane stays physical', () => {
 // AGREES WITH THE ENGINE — the native range reverses itself in RTL; the drawn fill must follow.
 // ---------------------------------------------------------------------------------------------
 
-test.describe('slider fill agrees with the native range direction', () => {
+test.describe('slider paint agrees with the native range direction', () => {
     // `--ori-slider-pct` is inline (the component sets it from the value), so the painted fill does not
     // move when a click changes the value — the paint is sampled before clicking all the same, to keep
     // the 16px thumb away from the sample columns.
@@ -373,67 +420,96 @@ test.describe('slider fill agrees with the native range direction', () => {
         <span id="accent" style="display:block;width:4px;height:4px;background-color:var(--ori-color-primary)"></span>
     </div>`
 
+    // A channel track (hue / alpha) repaints the FULL width, so its thumb parks at the centre, clear of
+    // every sample column.
+    const CHANNEL = (modifier: 'hue' | 'alpha', style = '') =>
+        `<div class="ori-slider" style="width:300px${style}">
+            <input class="ori-slider__input ori-slider_${modifier}" id="input" type="range" min="0" max="100" value="50" />
+        </div>`
+
     // Which physical end does the ENGINE treat as the minimum? Click a quarter in from the physical
-    // left and read back the value the native control resolved.
+    // left and read back the value the native control resolved. This MOVES the thumb, so every paint
+    // sample below is taken first.
     async function engineMinimumSide(page: Page): Promise<'left' | 'right'> {
         const input = await box(page, '#input')
         await page.mouse.click(input.x + input.width * 0.25, cy(input))
         return Number(await page.locator('#input').inputValue()) < 50 ? 'left' : 'right'
     }
 
-    // Which physical end is PAINTED as filled? A computed-style read of `::-webkit-slider-runnable-track`
-    // returns `none` (Chrome does not expose author styles for that shadow pseudo), so this measures the
-    // real pixels: screenshot the control, decode it back into a canvas inside the page, and compare how
-    // close each end gets to the accent colour. A whole column is scanned at each end so the read does
-    // not depend on where the UA lays the 6px track out inside the 20px control.
-    async function paintedFillSide(page: Page): Promise<'left' | 'right'> {
-        const accent = await page.evaluate(() => getComputedStyle(document.getElementById('accent')!).backgroundColor)
+    // Which physical end is PAINTED closest to `color`? A computed-style read of
+    // `::-webkit-slider-runnable-track` returns `none` (Chrome does not expose author styles for that
+    // shadow pseudo), so this measures the real pixels: screenshot the control, decode it back into a
+    // canvas inside the page, and compare how close each sample column gets to the target colour. A
+    // whole column is scanned so the read does not depend on where the UA lays the 6px track out
+    // inside the 20px control.
+    async function nearerEnd(
+        page: Page,
+        color: string,
+        ends: [number, number] = [0.12, 0.88]
+    ): Promise<'left' | 'right'> {
         const shot = await page.locator('#input').screenshot()
         const distance = await page.evaluate(
-            async ({ data, accent }) => {
+            async ({ data, color, ends }) => {
                 const img = await createImageBitmap(await (await fetch(`data:image/png;base64,${data}`)).blob())
                 const canvas = new OffscreenCanvas(img.width, img.height)
                 const ctx = canvas.getContext('2d')!
                 ctx.drawImage(img, 0, 0)
-                const [ar, ag, ab] = accent.match(/\d+/g)!.map(Number)
-                const nearestToAccent = (fraction: number) => {
+                const [tr, tg, tb] = color.match(/\d+/g)!.map(Number)
+                const nearest = (fraction: number) => {
                     const column = ctx.getImageData(Math.round((img.width - 1) * fraction), 0, 1, img.height).data
                     let best = Infinity
                     for (let y = 0; y < img.height; y++) {
-                        const d = Math.hypot(column[y * 4] - ar, column[y * 4 + 1] - ag, column[y * 4 + 2] - ab)
+                        const d = Math.hypot(column[y * 4] - tr, column[y * 4 + 1] - tg, column[y * 4 + 2] - tb)
                         if (d < best) best = d
                     }
                     return best
                 }
-                return { left: nearestToAccent(0.12), right: nearestToAccent(0.88) }
+                return { low: nearest(ends[0]), high: nearest(ends[1]) }
             },
-            { data: shot.toString('base64'), accent }
+            { data: shot.toString('base64'), color, ends }
         )
-        return distance.left < distance.right ? 'left' : 'right'
+        return distance.low < distance.high ? 'left' : 'right'
     }
+
+    const accentColor = (page: Page) =>
+        page.evaluate(() => getComputedStyle(document.getElementById('accent')!).backgroundColor)
 
     for (const dir of DIRS) {
         test(`${dir}: the engine puts the range minimum on the ${dir === 'ltr' ? 'left' : 'right'}`, async ({
             page
         }) => {
             await render(page, dir, MARKUP)
-            // Chromium reverses a native range under dir=rtl — the premise the fill has to live with.
+            // Chromium reverses a native range under dir=rtl — the premise the paint has to live with.
             expect(await engineMinimumSide(page)).toBe(dir === 'ltr' ? 'left' : 'right')
         })
 
         test(`${dir}: the painted fill starts at the end the engine treats as the minimum`, async ({ page }) => {
-            // KNOWN GAP in rtl: the native range reverses itself but the author-drawn fill (and the
-            // color-picker hue / alpha tracks it shares a block with) still paints `to right`, so the
-            // fill ends up opposite the thumb. Recorded rather than asserted away because the fix is a
-            // decision about the whole slider family: mirror the gradients, or pin the color-picker's
-            // controls to ltr alongside its deliberately-physical value plane. EITHER makes this pass.
-            test.fail(dir === 'rtl', 'the slider fill does not follow the engine’s RTL reversal')
-
             await render(page, dir, MARKUP)
-            const painted = await paintedFillSide(page)
+            const painted = await nearerEnd(page, await accentColor(page))
             const minimum = await engineMinimumSide(page)
             expect(painted, `the fill paints from the ${painted}, the engine's minimum end is the ${minimum}`).toBe(
                 minimum
+            )
+        })
+
+        test(`${dir}: the hue spectrum runs along the engine's own axis`, async ({ page }) => {
+            await render(page, dir, CHANNEL('hue'))
+            // The spectrum is anchored red→…→red, so the only unambiguous landmark is the pure-green
+            // stop a third of the way ALONG the gradient: physically a third in from the left in ltr,
+            // a third in from the right once the axis mirrors.
+            const green = await nearerEnd(page, 'rgb(0, 255, 0)', [0.33, 0.67])
+            const minimum = await engineMinimumSide(page)
+            expect(green, `hue 120° is nearer the ${green} end, the engine's minimum end is the ${minimum}`).toBe(
+                minimum
+            )
+        })
+
+        test(`${dir}: the alpha ramp is opaque at the end the engine treats as the maximum`, async ({ page }) => {
+            await render(page, dir, CHANNEL('alpha', ';--ori-color:rgb(0, 128, 255)'))
+            const opaque = await nearerEnd(page, 'rgb(0, 128, 255)')
+            const minimum = await engineMinimumSide(page)
+            expect(opaque, `alpha 1 paints at the ${opaque} end, the engine's minimum end is the ${minimum}`).toBe(
+                minimum === 'left' ? 'right' : 'left'
             )
         })
     }

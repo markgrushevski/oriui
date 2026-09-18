@@ -18,6 +18,11 @@ plain-HTML usage), **Vue**; HTML is the default.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-join","type":"Block","description":"Required base class. inline-flex container; collapses shared radii and borders between adjacent children."},{"class":"ori-join_vertical","type":"Modifier","description":"Stack children vertically instead of horizontally. Collapses block edges instead of inline edges."},{"class":"role=group","type":"Semantics","description":"Always present on the root element. Wrap logically related controls; supply aria-label or aria-labelledby so screen readers announce the group purpose."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/join.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Horizontal button group
 
 Three outline buttons joined into one segmented control. The shared interior borders collapse to a

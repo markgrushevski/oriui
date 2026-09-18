@@ -23,6 +23,11 @@ class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-link","type":"Block","description":"Required base class. Underlined, inherits currentcolor, cursor pointer."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — omit to inherit currentcolor from the parent"},{"class":"ori-link_hover","type":"Modifier","description":"Removes the underline at rest; adds it on hover (pointer device only)."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/link.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 ## Default
 
 An unstyled link in running text — inherits `currentcolor` from the parent, always underlined.

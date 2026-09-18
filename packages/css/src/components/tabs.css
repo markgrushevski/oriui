@@ -10,7 +10,12 @@
 
     .ori-tabs {
         /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger` (utilities
-           layer) overrides by layer order. Drives the active indicator / focus ring. */
+           layer) overrides by layer order. Drives the active indicator / focus ring.
+           The reads below are plain `var(--ori-color)` / `var(--ori-color-text)` with NO fallback arm:
+           both are declared unconditionally at :root (themes/_themes-color-tokens.css), so the arm
+           could never fire — and the `currentcolor` it named was not even what would happen, since
+           this block bakes the primary accent right here. A component that needs its own default
+           declares a block-local token instead (see --ori-tooltip-bg / --ori-checker-*). */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
         /* AA-safe on-surface tone for the SELECTED tab label (bare block: no color utility to set it). */
@@ -21,7 +26,7 @@
         gap: 1em;
     }
 
-    .ori-tabs.ori-tabs_vertical {
+    .ori-tabs_vertical {
         flex-direction: row;
     }
 
@@ -33,7 +38,7 @@
         border-bottom: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
     }
 
-    .ori-tabs.ori-tabs_vertical .ori-tabs__list {
+    .ori-tabs_vertical .ori-tabs__list {
         flex-direction: column;
         flex-shrink: 0;
 
@@ -78,10 +83,10 @@
         transform: scaleX(0);
         transition: transform 0.15s ease-out;
 
-        background-color: var(--ori-color, currentcolor);
+        background-color: var(--ori-color);
     }
 
-    .ori-tabs.ori-tabs_vertical .ori-tabs__tab::after {
+    .ori-tabs_vertical .ori-tabs__tab::after {
         inset-block: 0;
         inset-inline: auto;
         inset-inline-end: -1px;
@@ -93,14 +98,14 @@
     }
 
     .ori-tabs__tab[aria-selected='true'] {
-        color: var(--ori-color-text, currentcolor);
+        color: var(--ori-color-text);
     }
 
     .ori-tabs__tab[aria-selected='true']::after {
         transform: scaleX(1);
     }
 
-    .ori-tabs.ori-tabs_vertical .ori-tabs__tab[aria-selected='true']::after {
+    .ori-tabs_vertical .ori-tabs__tab[aria-selected='true']::after {
         transform: scaleY(1);
     }
 
@@ -111,7 +116,7 @@
     }
 
     .ori-tabs__tab:focus-visible {
-        outline: 2px solid var(--ori-color, currentcolor);
+        outline: 2px solid var(--ori-color);
         outline-offset: -2px;
     }
 
@@ -128,7 +133,7 @@
     }
 
     .ori-tabs__panel:focus-visible {
-        outline: 2px solid var(--ori-color, currentcolor);
+        outline: 2px solid var(--ori-color);
         outline-offset: 2px;
     }
 }

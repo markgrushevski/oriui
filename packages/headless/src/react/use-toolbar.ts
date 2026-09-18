@@ -12,7 +12,17 @@ import {
     type ReactElement,
     type ReactNode
 } from 'react'
-import { ownsArrowKeys, resolveRovingIndex, rovingIntent, type RovingDirection, type RovingOrientation } from '../core'
+import {
+    isToolbarTogglePressed,
+    ownsArrowKeys,
+    resolveRovingIndex,
+    resolveToolbarToggle,
+    rovingIntent,
+    type RovingDirection,
+    type RovingOrientation,
+    type ToolbarToggleType,
+    type ToolbarToggleValue
+} from '../core'
 
 /**
  * Headless WAI-ARIA Toolbar (https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) — the React twin of the
@@ -187,13 +197,25 @@ interface ToolbarToggleContextValue {
 
 const ToolbarToggleContext = createContext<ToolbarToggleContextValue | null>(null)
 
+/**
+ * Options for the toggle group. Every member is LIVE — re-read on each press — which in React needs no
+ * wrapper: the hook re-runs on every render, so a plain value IS the live value. (The Vue twin spells the
+ * same members `MaybeRefOrGetter`, the Svelte twin takes a `Readable` of the whole object; the members
+ * themselves are identical, which is what parity means here.)
+ */
 export interface UseToolbarToggleGroupOptions {
-    /** 'single' keeps one value (deselectable, like Radix); 'multiple' keeps a set. */
-    type: 'single' | 'multiple'
+    /** 'single' keeps at most one value; 'multiple' keeps a set. */
+    type: ToolbarToggleType
     /** Current value: a string (or undefined) for 'single', a string[] for 'multiple'. Controlled. */
-    value: string | string[] | undefined
-    /** Commit the next value (wire to your controlled state). */
-    onChange: (value: string | string[] | undefined) => void
+    value: ToolbarToggleValue
+    /**
+     * Whether pressing the already-selected item clears it (default `true`, Radix's `type="single"`
+     * behaviour). `false` guarantees a non-empty selection — the tool-picker case: a paint app's
+     * brush/eraser bar must always have exactly one tool. Under 'multiple' it pins the last value.
+     */
+    deselectable?: boolean
+    /** Commit the next value (wire to your controlled state). Not fired when a press changes nothing. */
+    onChange: (value: ToolbarToggleValue) => void
 }
 
 /**
@@ -203,27 +225,24 @@ export interface UseToolbarToggleGroupOptions {
  * still toolbar items and reachable by the same arrow navigation. Controlled — pass `value` / `onChange`.
  */
 export function useToolbarToggleGroup(options: UseToolbarToggleGroupOptions) {
-    const { type, value, onChange } = options
+    const { type, value, deselectable = true, onChange } = options
 
     // `isPressed` / `toggle` close over the current `type` / `value` (and the latest `onChange`), so the
-    // context re-derives when the selection changes → toggle items re-project `aria-pressed`.
+    // context re-derives when the selection changes → toggle items re-project `aria-pressed`. The selection
+    // rules themselves live in `../core/toolbar`, shared verbatim with the Vue and Svelte twins.
     const context = useMemo<ToolbarToggleContextValue>(
         () => ({
             isPressed(v) {
-                return type === 'multiple' ? Array.isArray(value) && value.includes(v) : value === v
+                return isToolbarTogglePressed(type, value, v)
             },
             toggle(v) {
-                if (type === 'multiple') {
-                    const set = new Set(Array.isArray(value) ? value : [])
-                    if (set.has(v)) set.delete(v)
-                    else set.add(v)
-                    onChange([...set])
-                } else {
-                    onChange(value === v ? undefined : v)
-                }
+                const next = resolveToolbarToggle(type, value, v, deselectable)
+                // The resolver hands back `value` itself when the press changes nothing (a pinned last
+                // selection), so a non-deselectable group never re-commits the value it already holds.
+                if (next !== value) onChange(next)
             }
         }),
-        [type, value, onChange]
+        [type, value, deselectable, onChange]
     )
 
     const contextRef = useRef(context)

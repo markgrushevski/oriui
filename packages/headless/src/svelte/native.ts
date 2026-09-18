@@ -19,14 +19,30 @@ import type {
  * adapter uses; only the reactive wrapper (a Svelte store vs. a Vue `computed`) differs. Default behind
  * `useDisclosure`; the contract still lets an app swap in a custom (e.g. Zag-backed) adapter.
  */
-export const nativeDisclosure = (options: UseDisclosureOptions = {}): DisclosureControl => {
+export const nativeDisclosure = (options: MaybeReactive<UseDisclosureOptions> = {}): DisclosureControl => {
+    const opts$ = toReadable(options)
+    const initial = get(opts$)
     const props: disclosure.DisclosureProps = {
-        id: options.id ?? uid('disclosure'),
-        defaultOpen: options.defaultOpen,
-        disabled: options.disabled
+        id: initial.id ?? uid('disclosure'),
+        defaultOpen: initial.defaultOpen,
+        disabled: initial.disabled
     }
 
     const service = disclosure.machine(props)
+
+    // Keep `disabled` in sync past creation, like the combobox / menu adapters: `id` / `defaultOpen` seed
+    // the machine, but `disabled` is live state a consumer binds to. A store input drives it; a plain
+    // object emits once → no-op.
+    let lastDisabled = initial.disabled ?? false
+    safeOnDestroy(
+        opts$.subscribe((o) => {
+            const next = o.disabled ?? false
+            if (next === lastDisabled) return
+            lastDisabled = next
+            service.send({ type: 'SET_DISABLED', disabled: next })
+        })
+    )
+
     const api = connectStore(service, () => disclosure.connect(service, normalizeProps))
 
     return {
@@ -70,7 +86,13 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
             'aria-expanded': o,
             onclick: () => setOpen(true)
         })),
-        dialogProps: readable({
+        // Derived from `open` — the same store `triggerProps` derives from — rather than a
+        // `readable({…})` frozen at creation: the bag is RE-PROJECTED, so an option that changes after
+        // the adapter was built still reaches it, matching the Vue `computed` and React's per-render
+        // re-projection. The Svelte contract takes a plain options object (no store), so the reactive
+        // call style here is a getter property — `useDialog({ get modal() { return modal } })` — which a
+        // frozen bag would read exactly once.
+        dialogProps: derived(open, () => ({
             role: 'dialog',
             'aria-modal': options.modal === false ? undefined : 'true',
             'aria-labelledby': titleId,
@@ -87,7 +109,7 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
                     : (event: MouseEvent) => {
                           if (event.currentTarget === event.target) setOpen(false)
                       }
-        }),
+        })),
         titleProps: readable({ id: titleId }),
         descriptionProps: readable({ id: descriptionId }),
         closeTriggerProps: readable({ onclick: () => setOpen(false) })

@@ -73,6 +73,10 @@ The composable projects state to prop bags; the **host** moves real DOM focus to
 (roving requires it), returns focus to the trigger on close, and wires the outside-click dismissal —
 things a framework-agnostic projection can't do itself:
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, useTemplateRef, watch } from 'vue'
@@ -144,6 +148,8 @@ The styled [`OriMenu`](/components/menu) wraps exactly this pattern — the rovi
 open / close focus-return, and the outside-click listener — behind a `#trigger` slot and CSS Anchor
 Positioning.
 
+#svelte
+
 The **Svelte** binding is the same — auto-subscribe the stores with `$`, and move DOM focus in an
 `$effect` (`getItemProps` is a store of a function, so call `$getItemProps(item, i)`):
 
@@ -176,6 +182,8 @@ The **Svelte** binding is the same — auto-subscribe the stores with `$`, and m
     {/each}
 </div>
 ```
+
+#react
 
 The **React** binding is the same — the control is plain values (no `$` / `.value`); move real focus to the
 highlighted item in an effect (`getItemProps(item, i)` is a plain function):
@@ -216,6 +224,8 @@ function Actions() {
     )
 }
 ```
+
+::
 
 ## Accessibility
 

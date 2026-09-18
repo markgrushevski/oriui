@@ -140,7 +140,7 @@ export function useColorPicker(options: MaybeReactive<UseColorPickerOptions>) {
         role: 'group' as const,
         'aria-label': 'Saturation and brightness',
         'aria-disabled': (o.disabled ?? false) || undefined,
-        style: { '--ori-hue': hc },
+        style: { '--ori-color-picker-hue': hc },
         onpointerdown
     }))
 

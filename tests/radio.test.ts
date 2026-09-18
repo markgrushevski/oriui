@@ -1,7 +1,22 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OriRadioGroup } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
+
+/** The selector list of radio.css's "disabled look" rule — the one that sets `cursor: not-allowed`. */
+function disabledSelectors(): string[] {
+    const css = readFileSync(resolve(process.cwd(), 'packages/css/src/components/radio.css'), 'utf8')
+    const rule = [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) =>
+        /cursor:\s*not-allowed/.test(m[2])
+    )
+
+    return (rule?.[1] ?? '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+}
 
 const OPTIONS = [
     { label: 'Free', value: 'free' },
@@ -53,6 +68,24 @@ describe('OriRadioGroup', () => {
         const partial = mount(OriRadioGroup, { props: { options: OPTIONS } })
         expect((partial.findAll('input')[2].element as HTMLInputElement).disabled).toBe(true)
         expect((partial.findAll('input')[0].element as HTMLInputElement).disabled).toBe(false)
+    })
+
+    // The modifier class is prop-driven, so it is absent exactly when the radio is disabled by
+    // something the props know nothing about — a surrounding `<fieldset disabled>`, or a hand-written
+    // `disabled` attribute in the CSS layer. Drop the class from a really-disabled radio: the
+    // stylesheet must still dim it.
+    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+        const wrapper = mount(OriRadioGroup, { props: { options: OPTIONS, disabled: true } })
+        const el = wrapper.findAll('.ori-radio')[0].element as HTMLElement
+
+        el.classList.remove('ori-radio_disabled')
+
+        const selectors = disabledSelectors()
+        expect(selectors.length).toBeGreaterThan(0)
+        expect(
+            selectors.some((selector) => el.matches(selector)),
+            `no disabled-look selector matches a class-less disabled radio: ${selectors.join(', ')}`
+        ).toBe(true)
     })
 
     it('required sets aria-required + the native required attribute', () => {

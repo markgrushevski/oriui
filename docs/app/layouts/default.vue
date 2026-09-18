@@ -37,7 +37,8 @@ const sections = [
             { label: 'Theming', to: '/guides/theming' },
             { label: 'Skin gallery', to: '/guides/skins' },
             { label: 'Customization', to: '/guides/customization' },
-            { label: 'Using the CSS layer', to: '/guides/css' }
+            { label: 'Using the CSS layer', to: '/guides/css' },
+            { label: 'Writing direction (RTL)', to: '/guides/rtl' }
         ]
     },
     {

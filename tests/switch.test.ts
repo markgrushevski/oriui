@@ -1,7 +1,22 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { OriSwitch } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
+
+/** The selector list of switch.css's "disabled look" rule — the one that sets `cursor: not-allowed`. */
+function disabledSelectors(): string[] {
+    const css = readFileSync(resolve(process.cwd(), 'packages/css/src/components/switch.css'), 'utf8')
+    const rule = [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((m) =>
+        /cursor:\s*not-allowed/.test(m[2])
+    )
+
+    return (rule?.[1] ?? '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+}
 
 describe('OriSwitch', () => {
     it('renders a checkbox with role="switch" and the default classes', () => {
@@ -38,6 +53,23 @@ describe('OriSwitch', () => {
 
         expect((wrapper.find('input').element as HTMLInputElement).disabled).toBe(true)
         expect(wrapper.classes()).toContain('ori-switch_disabled')
+    })
+
+    // The modifier class is prop-driven, so it is absent exactly when the control is disabled by
+    // something the prop knows nothing about — a surrounding `<fieldset disabled>`, or a hand-written
+    // `disabled` attribute in the CSS layer. Drop the class from a really-disabled switch: the
+    // stylesheet must still dim it.
+    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+        const el = mount(OriSwitch, { props: { disabled: true, label: 'x' } }).element as HTMLElement
+
+        el.classList.remove('ori-switch_disabled')
+
+        const selectors = disabledSelectors()
+        expect(selectors.length).toBeGreaterThan(0)
+        expect(
+            selectors.some((selector) => el.matches(selector)),
+            `no disabled-look selector matches a class-less disabled switch: ${selectors.join(', ')}`
+        ).toBe(true)
     })
 
     it('invalid flips aria-invalid', () => {

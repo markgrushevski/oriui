@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch } from 'vue'
+import { useSlots, watch, watchEffect } from 'vue'
 import { useTabs, type TabItem as HeadlessTabItem } from '@oriui/headless/vue'
 import type { ThemeColor } from '../../types'
 
@@ -18,9 +18,14 @@ export interface TabItem extends HeadlessTabItem {
 // skip); this SFC renders the styled shell and spreads the bags. The active indicator (underline / pill)
 // is driven by the `aria-selected` attribute selector, not a class, matching the rest of oriUI.
 //
-// Panel content: a per-value named slot (`#<value>`) is the primary mechanism — distinct markup per tab;
-// a scoped `#default="{ tab }"` slot is the fallback (shared template that reads the active tab). `tabs`
-// is the one required prop — the component is meaningless without its set of tabs.
+// Panel content: a per-value named slot (`#panel-<value>`) is the primary mechanism — distinct markup
+// per tab; a scoped `#default="{ tab }"` slot is the fallback (shared template that reads the active
+// tab). The `panel-` prefix is load-bearing, not decoration: panel slot names are caller DATA (a tab's
+// `value`), and named slots are one flat namespace, so an unprefixed `#<value>` let a tab valued "tab"
+// resolve its panel to this component's own reserved `#tab` (the label renderer) — rendering that
+// template into the panel AND leaving the panel's real content unreachable. Prefixing moves the
+// data-derived names into their own namespace, where no caller value can ever collide with a reserved
+// one. `tabs` is the one required prop — the component is meaningless without its set of tabs.
 const {
     color = 'primary',
     label,
@@ -59,6 +64,28 @@ watch(
     },
     { immediate: true }
 )
+
+// Panel slots gained their `panel-` prefix before 1.0 (see the note above). A caller still passing the
+// old bare `#<value>` gets a SILENT miss — Vue never warns about an unconsumed slot — so the panel
+// would fall back to `#default`, or render empty. Name the rename instead. `tab` and `default` are
+// this component's own reserved slots, so a tab valued "tab" must not be reported: that template is
+// legitimately the label renderer, which is the very collision the prefix removed. DEV-only; the
+// `import.meta.env.DEV` constant drops the block from the production bundle.
+if (import.meta.env.DEV) {
+    const slots = useSlots()
+    const reserved = ['tab', 'default']
+    watchEffect(() => {
+        const stale = tabs
+            .map((tab) => String(tab.value))
+            .filter((value) => !reserved.includes(value) && slots[value] && !slots[`panel-${value}`])
+        if (stale.length)
+            console.warn(
+                `[OriTabs] panel slot(s) #${stale.join(', #')} are unused — per-value panel slots are now ` +
+                    `named \`#panel-<value>\` (e.g. #panel-${stale[0]}), so a tab's value can never collide ` +
+                    'with the reserved #tab / #default slots.'
+            )
+    })
+}
 </script>
 
 <template>
@@ -75,7 +102,7 @@ watch(
         </div>
 
         <div v-for="(tab, index) in tabs" :key="tab.value" v-bind="getPanelProps(tab, index)" class="ori-tabs__panel">
-            <slot :name="String(tab.value)" :tab="tab">
+            <slot :name="`panel-${tab.value}`" :tab="tab">
                 <slot :tab="tab" />
             </slot>
         </div>

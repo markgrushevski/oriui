@@ -27,7 +27,11 @@
         cursor: pointer;
     }
 
-    .ori-switch.ori-switch_disabled {
+    /* Disabled reads from the REAL control state, not only from the prop-driven modifier class —
+       `<fieldset disabled>` (or a hand-written `disabled` attribute in the CSS layer) left the
+       switch inert but rendered fully enabled. See checkbox.css for the full rationale. */
+    .ori-switch_disabled,
+    .ori-switch:has(.ori-switch__input:disabled) {
         opacity: 0.55;
 
         cursor: not-allowed;
@@ -60,18 +64,32 @@
         background-color: color-mix(in srgb, currentcolor 30%, transparent);
     }
 
+    /* The thumb is the STATE indicator, so WCAG 1.4.11 wants it >= 3:1 against the track it sits in —
+       and the track changes colour between states, so no single thumb colour can clear both. (Measured:
+       a fixed white thumb is 1.85-2.15:1 on the off track in light, and 1.13-2.98:1 on the on track in
+       dark, across the eight skins.) Each state therefore pairs the thumb with its own track:
+
+         off — the track is `currentcolor 30%`, so the ink at full strength is a structural 70%
+               separation from it, in any theme, skin or ambient colour. 6.3:1 or better everywhere.
+         on  — the track is `var(--ori-color)`, whose contrast-checked partner is `var(--ori-color-on)`.
+               That pairing is >= 4.5:1 by construction and is what tests/tokens.contrast.test.ts
+               already measures for every role x skin x theme.
+
+       A state-dependent handle is also what Material 3 does, and for this reason. */
     .ori-switch__thumb {
         width: calc(1.2em - 4px);
         height: calc(1.2em - 4px);
 
         transform: translateX(0);
-        transition: transform 0.15s ease-out;
+        transition:
+            transform 0.15s ease-out,
+            background-color 0.15s ease-out;
 
         border-radius: 50%;
 
-        background-color: #ffffff;
+        background-color: currentcolor;
 
-        box-shadow: 0 1px 2px color-mix(in srgb, #000000 35%, transparent);
+        box-shadow: var(--ori-shadow-sm);
     }
 
     .ori-switch__input:checked ~ .ori-switch__track {
@@ -80,6 +98,8 @@
 
     .ori-switch__input:checked ~ .ori-switch__track .ori-switch__thumb {
         transform: translateX(1em);
+
+        background-color: var(--ori-color-on);
     }
 
     /* The thumb travels along the INLINE axis, and `transform` has no logical form — under dir=rtl the

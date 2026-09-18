@@ -66,14 +66,14 @@ Reactive state, prop-getters (spread with `v-bind`), and imperative setters. `HS
 | `swatchColor`         | `ComputedRef<string>`                 | The preview color — carries alpha, so a checkerboard shows through.                                                                                                                 |
 | `opaqueColor`         | `ComputedRef<string>`                 | The opaque current color, for the alpha slider's transparent → color track.                                                                                                         |
 | `ink`                 | `ComputedRef<'#000000' \| '#ffffff'>` | Readable ink over the current color, per WCAG luminance (`readableInk`).                                                                                                            |
-| `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-hue` gradient anchor.                                                                                                             |
+| `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-color-picker-hue` gradient anchor.                                                                                                |
 | `eyedropperSupported` | `boolean`                             | Whether the `EyeDropper` API exists (a plain, non-reactive boolean — gate the eyedropper trigger on it).                                                                            |
 
 ### Prop-getters
 
 | Property                        | Type                                           | Description                                                                                                                                                                                      |
 | ------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `areaProps`                     | `ComputedRef<object>`                          | The 2D area's bag: `role="group"`, `aria-label="Saturation and brightness"`, `aria-disabled`, the inline `--ori-hue` style, and the drag `onPointerdown` + 2D `onKeydown`.                       |
+| `areaProps`                     | `ComputedRef<object>`                          | The 2D area's bag: `role="group"`, `aria-label="Saturation and brightness"`, `aria-disabled`, the inline `--ori-color-picker-hue` style, and the drag `onPointerdown` + 2D `onKeydown`.          |
 | `areaThumbStyle`                | `ComputedRef<{ left: string; top: string }>`   | Inline position for the area thumb: `left` = saturation, `top` = inverted value (1 = top).                                                                                                       |
 | `getChannelInputProps(channel)` | `(channel: 'saturation' \| 'value') => object` | Props for one of the two visually-hidden `<input type="range">` (the a11y surface): `type="range"`, `min`/`max`/`step`, `value` (0–100), `aria-label`, `aria-valuetext`, `onInput`.              |
 | `presetGroupProps`              | `ComputedRef<object>`                          | The preset listbox bag: `role="listbox"`, `aria-label="Preset colors"`, `aria-orientation="horizontal"`.                                                                                         |
@@ -98,6 +98,10 @@ The picker is assembled from the parts you spread its getters onto — exactly w
 [`OriColorPicker`](/components/color-picker) wraps. Bind `areaProps` on the 2D surface with its two
 visually-hidden range inputs, drive a slider off `hue` / `setHue`, feed the hex field through `setHex`,
 and render `presets` as the roving listbox.
+
+::example
+
+#vue
 
 ```vue
 <script setup lang="ts">
@@ -183,6 +187,8 @@ Passing `alpha: true` adds the alpha channel (bind a second slider to `alpha` / 
 `opaqueColor` for its track), and `eyedropper: true` enables `openEyeDropper` (gate its trigger on
 `cp.eyedropperSupported`) — see how the styled [`OriColorPicker`](/components/color-picker) wires both.
 
+#svelte
+
 The **Svelte** binding is the store twin (`@oriui/headless/svelte`) over the same core engine — the prop
 bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are **stores of functions**
 (`$getChannelInputProps('saturation')`, `$getPresetProps(color, i)`), and event handlers are lowercased
@@ -212,6 +218,8 @@ bags are `Readable` stores you auto-subscribe with `$`, the per-part getters are
 <input type="range" min="0" max="359" value={$hue} on:input={(e) => cp.setHue(+e.currentTarget.value)} on:change={cp.commit} />
 <input value={$hex} aria-label="Hex color" on:blur={(e) => cp.setHex(e.currentTarget.value)} />
 ```
+
+#react
 
 The **React** binding (`@oriui/headless/react`) is the hooks twin over the same core engine — the control
 is **plain values** (no `$` / `.value`), the per-part getters are plain functions
@@ -279,6 +287,8 @@ function MyColorPicker({ presets }: { presets?: string[] }) {
     )
 }
 ```
+
+::
 
 Passing `alpha: true` / `eyedropper: true` behaves the same as in Vue (bind a second slider to
 `cp.alpha` / `cp.setAlpha`; gate the eyedropper trigger on `cp.eyedropperSupported`, which is `false` on

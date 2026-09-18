@@ -2,22 +2,31 @@
 import { computed, useSlots } from 'vue'
 import { useOriFramework, NO_FRAMEWORK, type Framework } from '../composables/useOriFramework'
 
-// A documentation example: a live (Vue) preview + the source code, switchable across the layers it
-// provides. Default slot = the live preview; #html / #js / #ts (framework-free) and #vue / #svelte
-// (framework) slots = the code blocks. An example that ships any framework-free code defaults to the
-// framework-free preference (HTML); a pure-framework example defaults to the framework one (Vue). Only
-// slots that ship code become tabs — Svelte appears just on the behaviour-driven components that ship a
-// #svelte block (@oriui/headless/svelte), not on the styled-only pages (HTML covers Svelte usage there).
+// A documentation example: an optional live (Vue) preview + the source code, switchable across the
+// layers it provides. Default slot = the live preview; #html / #js / #ts (framework-free) and #vue /
+// #svelte / #react (framework) slots = the code blocks. An example that ships any framework-free code
+// defaults to the framework-free preference (HTML); a pure-framework example defaults to the framework
+// one (Vue). Only slots that ship code become tabs — Svelte and React appear just where that binding's
+// block ships (@oriui/headless/svelte, @oriui/headless/react), not on the styled-only pages (HTML covers
+// their usage there). The preview is dropped when there is no default slot, so a headless page can use
+// the same tab strip for code alone.
 const { noFramework, framework, setCode } = useOriFramework()
 const slots = useSlots()
 
-const LABELS: Record<Framework, string> = { html: 'HTML', js: 'JS', ts: 'TS', vue: 'Vue', svelte: 'Svelte' }
-const ORDER: Framework[] = ['html', 'js', 'ts', 'vue', 'svelte']
+const LABELS: Record<Framework, string> = {
+    html: 'HTML',
+    js: 'JS',
+    ts: 'TS',
+    vue: 'Vue',
+    svelte: 'Svelte',
+    react: 'React'
+}
+const ORDER: Framework[] = ['html', 'js', 'ts', 'vue', 'svelte', 'react']
 
 const isFree = computed(() => NO_FRAMEWORK.some((f) => slots[f]))
 const enabled = (key: Framework): boolean => Boolean(slots[key])
 
-// Show every provided slot in canonical order — Svelte appears only where a #svelte block ships.
+// Show every provided slot in canonical order — a binding tab appears only where its block ships.
 const tabs = computed(() => ORDER.filter((f) => slots[f]).map((key) => ({ key, label: LABELS[key] })))
 // Default to the relevant group's preference; fall back to the first available tab.
 const pref = computed<Framework>(() => (isFree.value ? noFramework.value : framework.value))
@@ -32,7 +41,7 @@ function pick(key: Framework): void {
 
 <template>
     <div class="example">
-        <div class="example__preview">
+        <div v-if="$slots.default" class="example__preview">
             <slot />
         </div>
 
@@ -123,5 +132,18 @@ function pick(key: Framework): void {
 .example__code pre {
     margin: 0;
     border-radius: 0;
+}
+
+/* A tab may carry a note of its own next to the snippet — the headless pages keep each binding's
+   caveat inside that binding's tab. Prose needs the padding the full-bleed <pre> deliberately lacks. */
+.example__code > div > :where(p, ul, ol) {
+    margin: 0;
+
+    padding: 12px 16px;
+
+    color: color-mix(in srgb, var(--ori-color-on-surface) 80%, transparent);
+
+    font-size: 14px;
+    line-height: 1.6;
 }
 </style>

@@ -34,8 +34,8 @@ import type {
  */
 
 const ACCORDION_ITEMS: AccordionItem[] = [
-    { value: 'shipping', title: 'Shipping' },
-    { value: 'returns', title: 'Returns', disabled: true }
+    { value: 'shipping', label: 'Shipping' },
+    { value: 'returns', label: 'Returns', disabled: true }
 ]
 
 const COMBOBOX_OPTIONS: ComboboxItem[] = [
@@ -95,6 +95,47 @@ describe('collection item types', () => {
         const wrapper = mount(OriTabs, { props: { tabs: TABS } })
 
         expect(wrapper.findAll('[role="tab"]')).toHaveLength(2)
+    })
+
+    /**
+     * The shapes also have to AGREE, not merely exist. Five near-identical contracts that spell the
+     * same concept differently is five things to remember, and it makes the obvious refactor — map one
+     * source array into whichever component renders it — a rename each time. Converged before 1.0 on
+     * `{ value; label; disabled? }`:
+     *
+     *   - `label` is the display key everywhere. `AccordionItem` spelled it `title` until this pass.
+     *   - `label` is required except on `MenuItem`, where the value is a legitimate display fallback
+     *     (`ori-menu.vue` renders `item.label ?? item.value`) — an intentional relaxation, not drift.
+     *   - `value` is `string | number` on the four shapes the styled package owns. `MenuItem` and
+     *     `ComboboxItem` are still `string`-only: they are @oriui/headless types whose machines key on
+     *     string identity, so widening them is that package's change, not this one's.
+     */
+    it('spells the display key `label` on every collection item', () => {
+        expectTypeOf<AccordionItem>().toHaveProperty('label').toEqualTypeOf<string>()
+        expectTypeOf<TabItem>().toHaveProperty('label').toEqualTypeOf<string>()
+        expectTypeOf<SelectOption>().toHaveProperty('label').toEqualTypeOf<string>()
+        expectTypeOf<RadioOption>().toHaveProperty('label').toEqualTypeOf<string>()
+        expectTypeOf<ComboboxItem>().toHaveProperty('label').toEqualTypeOf<string>()
+        // The one deliberate relaxation: a menu item may omit the label and display its value.
+        expectTypeOf<MenuItem>().toHaveProperty('label').toEqualTypeOf<string | undefined>()
+    })
+
+    it('rejects the pre-1.0 `title` key on an AccordionItem', () => {
+        // @ts-expect-error — `title` was renamed to `label`; the compiler is the migration's first
+        // error path (the component adds a DEV runtime warning for callers TypeScript cannot reach).
+        const stale: AccordionItem = { value: 'shipping', title: 'Shipping' }
+
+        expect(stale.value).toBe('shipping')
+    })
+
+    it('accepts a numeric `value` on every item shape the styled package owns', () => {
+        expectTypeOf<AccordionItem['value']>().toEqualTypeOf<string | number>()
+        expectTypeOf<TabItem['value']>().toEqualTypeOf<string | number>()
+        expectTypeOf<SelectOption['value']>().toEqualTypeOf<string | number>()
+        expectTypeOf<RadioOption['value']>().toEqualTypeOf<string | number>()
+
+        const wrapper = mount(OriAccordion, { props: { items: [{ value: 7, label: 'Seven' }] } })
+        expect(wrapper.find('.ori-accordion__title').text()).toBe('Seven')
     })
 
     it('forwards the headless item types unchanged rather than redeclaring them', () => {

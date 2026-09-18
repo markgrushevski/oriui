@@ -56,9 +56,13 @@ jobs:
               if: matrix.node == '22'
               run: npm run size
 
+            # publint + attw are root devDependencies pinned by package-lock.json and installed by the
+            # `npm ci` above, NOT `npx -y`: a release-time tool tree that resolves itself at run time is
+            # a supply-chain hole in a job that holds publish rights (ORI-I-31). Same local binaries,
+            # same commands, in both workflows.
             - name: Publish-correctness (publint — package.json exports / files / types map)
               if: matrix.node == '22'
-              run: npx -y publint@0.3.21 ./packages/css && npx -y publint@0.3.21 ./packages/headless && npx -y publint@0.3.21 ./packages/vue
+              run: npm run check:publint
 
             # Type-portability: the emitted .d.ts must resolve under node16/nodenext + bundler (the profiles
             # the packages actually target — they are ESM-only, "type":"module", Node >=22). node10 (classic
@@ -68,9 +72,17 @@ jobs:
             # @oriui/css ships no types, so attw doesn't apply (publint covers its exports above).
             - name: Type-portability (arethetypeswrong — node16 .d.ts interop)
               if: matrix.node == '22'
-              run: |
-                  npx -y @arethetypeswrong/cli@0.18.5 --pack ./packages/headless --profile node16 --ignore-rules cjs-resolves-to-esm
-                  npx -y @arethetypeswrong/cli@0.18.5 --pack ./packages/vue --profile node16 --ignore-rules cjs-resolves-to-esm
+              run: npm run check:attw
+
+            # The only step that resolves the packages the way a consumer does: pack, install the
+            # tarballs into a scratch dir, import every entry through its `exports` map (ORI-I-30).
+            # ORI_SMOKE_IGNORE_SCRIPTS skips the per-package `prepack` rebuild — the build step above
+            # already produced the dist this packs, and it is the dist size-limit just weighed.
+            - name: Consumer smoke test (pack → install → import every published entry)
+              if: matrix.node == '22'
+              run: npm run smoke
+              env:
+                  ORI_SMOKE_IGNORE_SCRIPTS: '1'
 
             - name: Docs build (gate the Nuxt docs site — catch broken content / component usage)
               if: matrix.node == '22'

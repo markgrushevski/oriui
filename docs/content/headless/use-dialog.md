@@ -56,6 +56,10 @@ A `DialogControl` — the open state plus the prop bags you bind to each part. E
 
 Render a real `<dialog>`, bind `dialogProps`, and drive `showModal()` / `close()` from `open`:
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { useTemplateRef, watchPostEffect } from 'vue'
@@ -87,6 +91,8 @@ No `<Teleport>` and no mounted-ref gating are needed: a modal `<dialog>` renders
 layer regardless of where it sits in the DOM, and a closed `<dialog>` is hidden, so the SSR markup stays
 stable. The styled [`OriDialog`](/components/dialog) wraps exactly this pattern.
 
+#svelte
+
 The **Svelte** binding is the same — drive `showModal()` / `close()` from `$open` in an `$effect`:
 
 ```svelte
@@ -113,6 +119,8 @@ The **Svelte** binding is the same — drive `showModal()` / `close()` from `$op
     <button {...$closeTriggerProps}>Close</button>
 </dialog>
 ```
+
+#react
 
 The **React** binding is the same — the control is plain values (no `$` / `.value`); drive `showModal()` /
 `close()` from `open` in an effect:
@@ -146,6 +154,8 @@ function Confirm() {
     )
 }
 ```
+
+::
 
 ## Adapter
 

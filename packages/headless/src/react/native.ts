@@ -32,8 +32,8 @@ export const nativeDisclosure = (options: UseDisclosureOptions = {}): Disclosure
     const id = useBaseId(options.id)
 
     // The machine must survive re-renders (its state is the source of truth), so create it once, lazily.
-    // Options are read at creation and are init-only thereafter — parity with the Vue/Svelte native adapters
-    // (disclosure has no SET_DISABLED event; only combobox/menu re-sync `disabled`).
+    // `id` / `defaultOpen` are read at creation and are init-only thereafter — parity with the Vue/Svelte
+    // native adapters.
     const serviceRef = useRef<ReturnType<typeof disclosure.machine> | null>(null)
     const service = (serviceRef.current ??= disclosure.machine({
         id,
@@ -42,6 +42,13 @@ export const nativeDisclosure = (options: UseDisclosureOptions = {}): Disclosure
     }))
 
     useService(service) // re-render on every machine change; the prop bags below re-project from fresh state
+
+    // Keep `disabled` reactive past creation, like the combobox / menu adapters (sending the same value is
+    // a no-op — the reducer returns the same state, so no extra render).
+    useEffect(() => {
+        service.send({ type: 'SET_DISABLED', disabled: options.disabled ?? false })
+    }, [service, options.disabled])
+
     const api = disclosure.connect(service, normalizeProps)
 
     return {

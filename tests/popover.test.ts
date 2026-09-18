@@ -186,6 +186,51 @@ describe('OriPopover', () => {
     })
 
     // -------------------------------------------------------------------------
+    // role (panel) vs haspopup (trigger) — two vocabularies, not one value
+    // -------------------------------------------------------------------------
+    //
+    // `aria-haspopup` accepts exactly five tokens; a popover PANEL is legitimately a `group`, a
+    // `region` or a `tooltip`. The trigger used to mirror `role` unconditionally, which both emitted an
+    // invalid `aria-haspopup` for those panels and typed the trigger bag as `string` — so the bag would
+    // not `v-bind` onto a real <button> and the one real consumer cast it away wholesale.
+
+    it('a panel role outside the aria-haspopup vocabulary does not leak into the trigger', () => {
+        const wrapper = mountPopover({ role: 'group' })
+
+        expect(wrapper.find('.ori-popover').attributes('role')).toBe('group')
+        // `aria-haspopup="group"` is not a legal token — fall back to the generic popup instead.
+        expect(wrapper.find('[data-testid="trigger"]').attributes('aria-haspopup')).toBe('dialog')
+    })
+
+    it('every aria-haspopup token mirrors from role; anything else falls back to dialog', () => {
+        const mirrored = ['dialog', 'menu', 'listbox', 'tree', 'grid']
+        mirrored.forEach((role) => {
+            const wrapper = mountPopover({ role })
+            expect(wrapper.find('[data-testid="trigger"]').attributes('aria-haspopup')).toBe(role)
+        })
+
+        const notPopupTypes = ['group', 'region', 'tooltip', 'note', 'presentation']
+        notPopupTypes.forEach((role) => {
+            const wrapper = mountPopover({ role })
+            expect(wrapper.find('.ori-popover').attributes('role')).toBe(role)
+            expect(wrapper.find('[data-testid="trigger"]').attributes('aria-haspopup')).toBe('dialog')
+        })
+    })
+
+    it('an explicit haspopup wins over the role mirror, without touching the panel role', () => {
+        const wrapper = mountPopover({ role: 'region', haspopup: 'listbox' })
+
+        expect(wrapper.find('.ori-popover').attributes('role')).toBe('region')
+        expect(wrapper.find('[data-testid="trigger"]').attributes('aria-haspopup')).toBe('listbox')
+    })
+
+    it('has no axe violations with a non-popup panel role (role=group + haspopup fallback)', async () => {
+        const wrapper = mountPopover({ role: 'group', 'aria-label': 'Formatting' })
+        await expectNoA11yViolations(wrapper.element as HTMLElement)
+        wrapper.unmount()
+    })
+
+    // -------------------------------------------------------------------------
     // Attribute passthrough
     // -------------------------------------------------------------------------
 

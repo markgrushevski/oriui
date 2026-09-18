@@ -61,9 +61,12 @@
         cursor: not-allowed;
     }
 
-    /* Highlight follows the roving focus (keyboard) and pointer hover. */
+    /* Highlight follows the roving focus (keyboard) and pointer hover. Plain `var(--ori-color)` with
+       no fallback arm: --ori-color is declared unconditionally at :root, so the arm was unreachable —
+       here it was merely redundant (the menu bakes no accent, so the :root `currentColor` IS what
+       resolves), but dead code that looks live is how the misleading ones got written. */
     .ori-menu__item[data-highlighted] {
-        background: color-mix(in srgb, var(--ori-color, currentcolor) 12%, transparent);
+        background: color-mix(in srgb, var(--ori-color) 12%, transparent);
     }
 
     @media (hover: hover) {
@@ -73,7 +76,7 @@
     }
 
     .ori-menu__item:focus-visible {
-        outline: 2px solid var(--ori-color, currentcolor);
+        outline: 2px solid var(--ori-color);
         outline-offset: -2px;
     }
 }

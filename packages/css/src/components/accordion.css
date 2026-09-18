@@ -10,7 +10,12 @@
 
     .ori-accordion {
         /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
-           (utilities layer) overrides by layer order. Drives the open marker + chevron. */
+           (utilities layer) overrides by layer order. Drives the open marker + chevron.
+           The reads below are plain `var(--ori-color)` with NO fallback arm: --ori-color is declared
+           unconditionally at :root (themes/_themes-color-tokens.css), so the arm could never fire —
+           and the `currentcolor` it named was not even what would happen, since this block bakes the
+           primary accent right here. A component that needs its own default declares a block-local
+           token instead (see --ori-tooltip-bg / --ori-checker-*). */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
         /* Baked default for the radius axis: bare block uses `md`; `.ori-size-radius_lg` overrides.
@@ -56,12 +61,12 @@
 
     @media (hover: hover) {
         .ori-accordion__trigger:hover {
-            background-color: color-mix(in srgb, var(--ori-color, currentcolor) 8%, transparent);
+            background-color: color-mix(in srgb, var(--ori-color) 8%, transparent);
         }
     }
 
     .ori-accordion__trigger:focus-visible {
-        outline: 2px solid var(--ori-color, currentcolor);
+        outline: 2px solid var(--ori-color);
         outline-offset: -2px;
     }
 
@@ -88,7 +93,7 @@
 
         fill: none;
 
-        color: var(--ori-color, currentcolor);
+        color: var(--ori-color);
         stroke-linejoin: round;
     }
 
@@ -97,7 +102,7 @@
     }
 
     .ori-accordion__item[open] .ori-accordion__title {
-        color: var(--ori-color, currentcolor);
+        color: var(--ori-color);
     }
 
     .ori-accordion__panel {

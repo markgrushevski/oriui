@@ -22,6 +22,11 @@ base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to t
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Baked default accent is primary; override with ori-color_* to change the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label colour shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
 
+**À la carte:** the classes above ship in `@oriui/css/components/tabs.css`. Import a foundation
+(`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
+`ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
+already carries both; see [à-la-carte imports](/guides/css).
+
 The selected tab's label reads the AA-safe `--ori-color-text` tone (not the raw role) — see
 [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
 
@@ -50,9 +55,9 @@ div.ori-tabs  [ori-color_primary]
         { value: 'reviews', label: 'Reviews' }
     ]"
 >
-    <template #overview>Overview content goes here.</template>
-    <template #specs>Technical specifications.</template>
-    <template #reviews>Customer reviews.</template>
+    <template #panel-overview>Overview content goes here.</template>
+    <template #panel-specs>Technical specifications.</template>
+    <template #panel-reviews>Customer reviews.</template>
 </OriTabs>
 ```
 
@@ -155,9 +160,9 @@ Arrow axis switches to Up / Down.
         { value: 'notifications', label: 'Notifications' }
     ]"
 >
-    <template #general>General settings.</template>
-    <template #security>Security settings.</template>
-    <template #notifications>Notification preferences.</template>
+    <template #panel-general>General settings.</template>
+    <template #panel-security>Security settings.</template>
+    <template #panel-notifications>Notification preferences.</template>
 </OriTabs>
 ```
 
@@ -218,13 +223,13 @@ Use a named slot matching the tab's `value` to give each panel its own markup. A
 ```vue
 <!-- Primary: a named slot per value — distinct markup per panel -->
 <OriTabs v-model="tab" :tabs="tabs">
-    <template #preview>
+    <template #panel-preview>
         <p>Rendered preview of the component.</p>
     </template>
-    <template #code>
+    <template #panel-code>
         <pre>const x = 1;</pre>
     </template>
-    <template #docs>
+    <template #panel-docs>
         <p>Documentation and API reference.</p>
     </template>
 </OriTabs>
@@ -297,15 +302,15 @@ Vertical orientation, a non-default color, and named panel slots — a common se
         { value: 'privacy', label: 'Privacy' }
     ]"
 >
-    <template #profile>
+    <template #panel-profile>
         <h2>Profile settings</h2>
         <p>Update your name, avatar, and bio.</p>
     </template>
-    <template #account>
+    <template #panel-account>
         <h2>Account settings</h2>
         <p>Manage your email address and password.</p>
     </template>
-    <template #privacy>
+    <template #panel-privacy>
         <h2>Privacy settings</h2>
         <p>Control who can see your activity.</p>
     </template>
@@ -368,13 +373,26 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop          | Type                                                                    | Default                      | Description                                                                                                                |
-| ------------- | ----------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                                                            | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.           |
-| `label`       | `string`                                                                | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
-| `modelValue`  | `string \| number`                                                      | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
-| `orientation` | `'horizontal' \| 'vertical'`                                            | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
-| `tabs`        | `Array<{ value: string \| number; label: string; disabled?: boolean }>` | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
+| Prop          | Type                         | Default                      | Description                                                                                                                |
+| ------------- | ---------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`                 | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.           |
+| `label`       | `string`                     | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
+| `modelValue`  | `string \| number`           | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
+| `tabs`        | `TabItem[]`                  | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
+
+`TabItem` is exported — `import type { TabItem } from '@oriui/vue'`. It is the headless `TabItem`
+(`value`, optional `disabled`) plus the `label` this styled shell renders, so a `TabItem[]` can be
+handed straight to [`useTabs`](/headless/use-tabs):
+
+```ts
+import type { TabItem } from '@oriui/vue'
+
+const tabs: TabItem[] = [
+    { value: 'overview', label: 'Overview' },
+    { value: 'specs', label: 'Specs', disabled: true }
+]
+```
 
 ### Events & attributes
 

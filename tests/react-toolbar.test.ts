@@ -222,9 +222,24 @@ describe('React useToolbarOrientation', () => {
 
 // --- toggle group (controlled selection over a component tree) ------------------------------------
 
-function ToggleGroup({ type, children }: { type: 'single' | 'multiple'; children?: ReactNode }) {
-    const [value, setValue] = useState<string | string[] | undefined>(type === 'multiple' ? [] : undefined)
-    const { groupProps, ToggleGroupProvider } = useToolbarToggleGroup({ type, value, onChange: setValue })
+function ToggleGroup({
+    type,
+    deselectable,
+    initial,
+    children
+}: {
+    type: 'single' | 'multiple'
+    deselectable?: boolean
+    initial?: string | string[]
+    children?: ReactNode
+}) {
+    const [value, setValue] = useState<string | string[] | undefined>(initial ?? (type === 'multiple' ? [] : undefined))
+    const { groupProps, ToggleGroupProvider } = useToolbarToggleGroup({
+        type,
+        value,
+        deselectable,
+        onChange: setValue
+    })
     return createElement(
         ToggleGroupProvider,
         null,
@@ -284,6 +299,47 @@ describe('React useToolbarToggleGroup / useToolbarToggleItem', () => {
         expect(screen.getByTestId('italic').getAttribute('aria-pressed')).toBe('true')
 
         fireEvent.click(screen.getByTestId('bold')) // removes just bold from the set
+        expect(screen.getByTestId('bold').getAttribute('aria-pressed')).toBe('false')
+        expect(screen.getByTestId('italic').getAttribute('aria-pressed')).toBe('true')
+    })
+
+    // ISSUES-INNER ORI-I-48: single-select was unconditionally deselectable, so a tool picker that must
+    // always have a selection was impossible. `deselectable` defaults to true (the Radix behaviour the
+    // test above asserts); false pins the selection without pinning the ability to SWITCH.
+    it("deselectable:false pins type='single' — re-press keeps it, switching still works", () => {
+        render(
+            createElement(
+                ToggleGroup,
+                { type: 'single', deselectable: false, initial: 'pen' },
+                createElement(ToggleItem, { value: 'pen' }),
+                createElement(ToggleItem, { value: 'eraser' })
+            )
+        )
+        expect(screen.getByTestId('pen').getAttribute('aria-pressed')).toBe('true')
+
+        fireEvent.click(screen.getByTestId('pen')) // re-press: refused, the tool stays picked
+        expect(screen.getByTestId('pen').getAttribute('aria-pressed')).toBe('true')
+
+        fireEvent.click(screen.getByTestId('eraser'))
+        expect(screen.getByTestId('eraser').getAttribute('aria-pressed')).toBe('true')
+        expect(screen.getByTestId('pen').getAttribute('aria-pressed')).toBe('false')
+    })
+
+    it("deselectable:false under type='multiple' refuses to empty the set", () => {
+        render(
+            createElement(
+                ToggleGroup,
+                { type: 'multiple', deselectable: false, initial: ['bold'] },
+                createElement(ToggleItem, { value: 'bold' }),
+                createElement(ToggleItem, { value: 'italic' })
+            )
+        )
+
+        fireEvent.click(screen.getByTestId('bold')) // the last one standing: refused
+        expect(screen.getByTestId('bold').getAttribute('aria-pressed')).toBe('true')
+
+        fireEvent.click(screen.getByTestId('italic'))
+        fireEvent.click(screen.getByTestId('bold')) // now there are two, so bold may go
         expect(screen.getByTestId('bold').getAttribute('aria-pressed')).toBe('false')
         expect(screen.getByTestId('italic').getAttribute('aria-pressed')).toBe('true')
     })

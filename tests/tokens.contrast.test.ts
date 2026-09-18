@@ -142,8 +142,8 @@ const ROLE_TOKEN = String.raw`--ori-color-(?:primary|secondary|success|warn|dang
 
 // `(?<![-\w])` keeps the non-text axes out: `border-color` / `background-color` / `caret-color` /
 // `outline-color`, and the `--ori-color*` custom-property declarations, all carry a `-` or word character
-// straight before `color`. Those axes (focus ring, invalid border) deliberately still ride the raw role —
-// a separate WCAG 1.4.11 question, recorded in NOTES.md, not this rule's business.
+// straight before `color`. The boundary half of those axes has its own rule further down — this one is
+// about foreground text only.
 const AS_TEXT = String.raw`(?<![-\w])color\s*:\s*var\(\s*(${ROLE_TOKEN})\s*[,)]`
 // The two custom properties that hand a foreground tone to a block downstream; a raw role in either is
 // the same defect one hop away.
@@ -201,6 +201,176 @@ describe('Role tokens are never painted as foreground text', () => {
             expect(
                 hits,
                 `raw role token used as foreground — use var(--ori-color-<role>-text):\n${hits.join('\n')}`
+            ).toEqual([])
+        })
+    }
+})
+
+/**
+ * Theme-shared STATUS roles are never painted as a BOUNDARY — the WCAG 1.4.11 sibling of the rule above.
+ *
+ * `success` / `warn` / `danger` / `info` are declared once and shared by both themes (they own their hue;
+ * see the "Status — shared across both themes" block in _themes-color-tokens.css). They therefore have no
+ * `-dark` source to switch to, and their single value is tuned as a FILL background on the light surface.
+ * Used as a border, an outline or a focus ring on a dark surface the raw role has nothing to adapt with:
+ * `--ori-color-danger` (#b91c1c) measured 2.08-2.85:1 against the eight dark skin surfaces, under the 3:1
+ * minimum for a UI-component boundary. The `-text` tone is the same hue with its lightness clamped per
+ * theme, which is what the outline variant already reads for its border.
+ *
+ * The four ROLE colours (primary / secondary / surface / background) are deliberately NOT in this rule:
+ * each has a per-theme source pair, so a raw role on a boundary can be theme-correct — the colour picker's
+ * `outline: 2px solid var(--ori-color-primary)` is legitimate and must stay passing.
+ */
+const STATUS_TOKEN = String.raw`--ori-color-(?:success|warn|danger|info)`
+// Longhand or shorthand, plus the box-shadow focus ring (a boundary drawn with a shadow is still a
+// boundary). `[^;{}]*` keeps the match inside one declaration so it cannot run past a `;` into the next.
+const AS_BOUNDARY = String.raw`(?<![-\w])(border|outline|box-shadow)(-[\w-]+)?\s*:[^;{}]*var\(\s*(${STATUS_TOKEN})\s*[,)]`
+
+function findStatusAsBoundary(file: string, css: string): string[] {
+    const src = blankComments(css)
+    const hits: string[] = []
+    for (const m of src.matchAll(new RegExp(AS_BOUNDARY, 'g'))) {
+        const line = src.slice(0, m.index).split('\n').length
+        hits.push(`${file}:${line} -> ${m[0].trim()}`)
+    }
+    return hits
+}
+
+describe('Theme-shared status roles are never painted as a boundary', () => {
+    it('flags the boundary axes and leaves the per-theme roles alone (self-check)', () => {
+        expect(findStatusAsBoundary('x.css', '.a { border-color: var(--ori-color-danger); }')).toHaveLength(1)
+        expect(findStatusAsBoundary('x.css', '.a { border: 1px solid var(--ori-color-warn); }')).toHaveLength(1)
+        expect(findStatusAsBoundary('x.css', '.a { outline: 2px solid var(--ori-color-info); }')).toHaveLength(1)
+        expect(
+            findStatusAsBoundary(
+                'x.css',
+                '.a { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color-danger) 25%, transparent); }'
+            )
+        ).toHaveLength(1)
+        // The clamped tone, the per-theme roles and the resolved alias are all correct on a boundary.
+        expect(findStatusAsBoundary('x.css', '.a { border-color: var(--ori-color-danger-text); }')).toEqual([])
+        expect(findStatusAsBoundary('x.css', '.a { outline: 2px solid var(--ori-color-primary); }')).toEqual([])
+        expect(findStatusAsBoundary('x.css', '.a { border-color: var(--ori-color, currentcolor); }')).toEqual([])
+        // A status role as a FILL is exactly what it is for.
+        expect(findStatusAsBoundary('x.css', '.a { background: var(--ori-color-danger); }')).toEqual([])
+        // One declaration's match must not leak into the next.
+        expect(findStatusAsBoundary('x.css', '.a { border-color: red; background: var(--ori-color-danger); }')).toEqual(
+            []
+        )
+    })
+
+    for (const { file, css } of sources) {
+        it(`${file} paints no shared status role as a boundary`, () => {
+            const hits = findStatusAsBoundary(file, css)
+            expect(
+                hits,
+                `theme-shared status role on a boundary — use var(--ori-color-<role>-text):\n${hits.join('\n')}`
+            ).toEqual([])
+        })
+    }
+})
+
+/**
+ * Derived tokens are THEME-SCOPED, so a theme class works on a non-root element.
+ *
+ * Custom-property substitution resolves where a property is DECLARED, not where it is used. A token
+ * written once in the bare `:root` rule as `var(--ori-color-on-surface)` therefore freezes to the root
+ * theme's value and merely INHERITS into a `.ori-theme_dark` subtree — the region's own theme class
+ * repoints the surface but not the ink, so the text was measured at 1.03:1 inside a dark region on a
+ * light page, and a light region on a dark page read 1.13:1 with the dark theme's shadows.
+ *
+ * Two clauses, because the defect had two shapes:
+ *   parity — whatever the dark rule declares, the light rule declares too (the six `-text` clamps were
+ *            dark-only; the elevation shadows had no light rule at all);
+ *   derivation — a token whose value reads a theme-varying token must itself be theme-scoped (the
+ *            neutral `--ori-color-text` default was in neither rule).
+ * "Theme-varying" is DISCOVERED (tokens present in both theme rules), never hand-listed, so the guard
+ * cannot rot into agreeing with whatever the file happens to say.
+ */
+const elevationCss = readFileSync(resolve(themesDir, '_themes-elevation.css'), 'utf8')
+
+function declBlocks(css: string): Array<{ selector: string; decls: Record<string, string> }> {
+    const noComments = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    const open = noComments.indexOf('{', noComments.indexOf('@layer'))
+    const flat = noComments.slice(open + 1, noComments.lastIndexOf('}'))
+
+    const blocks: Array<{ selector: string; decls: Record<string, string> }> = []
+    for (const m of flat.matchAll(/([^{}]+)\{([^{}]+)\}/g)) {
+        const decls: Record<string, string> = {}
+        for (const [, name, val] of m[2].matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) decls[name] = val.trim()
+        blocks.push({ selector: m[1].trim().replace(/\s+/g, ' '), decls })
+    }
+    return blocks
+}
+
+function themeScopeReport(file: string, css: string): { missingLight: string[]; unscoped: string[] } {
+    const blocks = declBlocks(css)
+    const declaredUnder = (cls: string): Set<string> => {
+        const set = new Set<string>()
+        for (const b of blocks) {
+            if (!b.selector.split(',').some((s) => s.trim().includes(cls))) continue
+            for (const name of Object.keys(b.decls)) set.add(name)
+        }
+        return set
+    }
+    const light = declaredUnder('.ori-theme_light')
+    const dark = declaredUnder('.ori-theme_dark')
+    const varying = new Set([...dark].filter((t) => light.has(t)))
+
+    const unscoped: string[] = []
+    for (const b of blocks) {
+        for (const [name, value] of Object.entries(b.decls)) {
+            const refs = [...value.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1])
+            if (!refs.some((r) => varying.has(r))) continue
+            if (light.has(name) && dark.has(name)) continue
+            unscoped.push(`${file} \`${b.selector}\` { ${name}: ${value} }`)
+        }
+    }
+    return { missingLight: [...dark].filter((t) => !light.has(t)).map((t) => `${file} ${t}`), unscoped }
+}
+
+describe('Derived theme tokens are re-declared per theme, not inherited', () => {
+    it('catches both shapes of the defect (self-check)', () => {
+        const broken = `@layer ori.tokens {
+            :root { --ori-color-on-surface: #fff; --ori-color-text: var(--ori-color-on-surface); }
+            :root.light, .ori-theme_light { --ori-color-on-surface: #000; }
+            :root.dark, .ori-theme_dark { --ori-color-on-surface: #fff; --ori-color-primary-text: var(--ori-color-on-surface); }
+        }`
+        const brokenReport = themeScopeReport('x.css', broken)
+        // The dark-only clamp trips parity; it is also unscoped, so both clauses name it. The root-only
+        // derive trips derivation alone — which is the half parity structurally cannot see.
+        expect(brokenReport.missingLight).toEqual(['x.css --ori-color-primary-text'])
+        expect(brokenReport.unscoped.map((h) => h.split('{ ')[1])).toEqual([
+            '--ori-color-text: var(--ori-color-on-surface) }',
+            '--ori-color-primary-text: var(--ori-color-on-surface) }'
+        ])
+
+        const fixed = `@layer ori.tokens {
+            :root { --ori-color-on-surface: #fff; }
+            :root, :root.light, .ori-theme_light { --ori-color-text: var(--ori-color-on-surface); --ori-color-primary-text: var(--ori-color-on-surface); }
+            :root.light, .ori-theme_light { --ori-color-on-surface: #000; }
+            :root.dark, .ori-theme_dark { --ori-color-on-surface: #fff; --ori-color-text: var(--ori-color-on-surface); --ori-color-primary-text: var(--ori-color-on-surface); }
+        }`
+        expect(themeScopeReport('x.css', fixed)).toEqual({ missingLight: [], unscoped: [] })
+    })
+
+    for (const [file, css] of [
+        ['themes/_themes-color-tokens.css', baseCss],
+        ['themes/_themes-elevation.css', elevationCss]
+    ] as const) {
+        it(`${file} re-declares every theme-varying token in both themes`, () => {
+            const { missingLight } = themeScopeReport(file, css)
+            expect(
+                missingLight,
+                `declared for .ori-theme_dark but not for .ori-theme_light — a light subtree inside a dark page keeps the dark value:\n${missingLight.join('\n')}`
+            ).toEqual([])
+        })
+
+        it(`${file} theme-scopes every token derived from a theme-varying one`, () => {
+            const { unscoped } = themeScopeReport(file, css)
+            expect(
+                unscoped,
+                `derived in a rule that carries no theme — it will substitute once at the root and inherit:\n${unscoped.join('\n')}`
             ).toEqual([])
         })
     }

@@ -20,7 +20,9 @@ import { useDisclosure } from '@oriui/headless/vue'
 
 ## Options
 
-Pass an options object — or a getter returning one, to keep it reactive:
+Pass an options object — or a ref / getter returning one. `disabled` is **live**: it is re-read whenever
+the option changes, so you can bind it to state. `id` and `defaultOpen` are **seeds** — they are read once,
+when the primitive is created, and later changes to them are ignored:
 
 | Option        | Type      | Default | Description                                    |
 | ------------- | --------- | ------- | ---------------------------------------------- |
@@ -47,6 +49,10 @@ your markup, and imperative handlers.
 Spread the prop bags onto your own elements — the primitive supplies the behaviour, you supply the
 look:
 
+::example
+
+#vue
+
 ```vue
 <script setup lang="ts">
 import { useDisclosure } from '@oriui/headless/vue'
@@ -60,6 +66,8 @@ const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen:
 </template>
 ```
 
+#svelte
+
 The **Svelte** binding is the same primitive as stores — auto-subscribe with `$` and spread the bags:
 
 ```svelte
@@ -72,6 +80,8 @@ The **Svelte** binding is the same primitive as stores — auto-subscribe with `
 <button {...$triggerProps}>Details {$open ? '▲' : '▼'}</button>
 <div {...$contentProps}>…content…</div>
 ```
+
+#react
 
 The **React** binding is the same primitive as a hook — the control is plain values (no `.value` / `$`,
 re-rendering on state changes via `useSyncExternalStore`); spread the bags onto your JSX:
@@ -90,6 +100,8 @@ function Details() {
     )
 }
 ```
+
+::
 
 > `@oriui/css` is framework-free — the same `.ori-*` classes and tokens style this markup in React / Next
 > today, no adapter needed. The React adapter here adds the _behaviour_ — every composable on this site

@@ -8,6 +8,16 @@
    cluster STRIPPED whatever fill a block bakes in — `.ori-button.ori-variant` painted transparent
    with a `currentColor` label, bypassing the AA-checked `--ori-color-on` pairing. Left unmatched,
    legacy `ori-variant ori-variant_*` markup keeps rendering and the bare class is a true no-op.
+
+   The `[data-active]` / `:active` / `:hover` tints below are part of the same vocabulary, so they are
+   NOT gated on a block: `[data-active]` was always generic, and the pointer half now reads
+   `:where(.ori-button, [data-ori-interactive])` instead of the bare `.ori-button` it used to name — so
+   a consumer building their own block on this layer (the audience DECISIONS.md names) opts its element
+   in with `data-ori-interactive` and gets the whole variant, not two thirds of it. `:where()` keeps the
+   hook free, which leaves the pointer rules at (0,2,0): still above the plain `.ori-variant_*` cluster
+   they tint, and tied with the `[data-active]` rule they are written to agree with. The tints stay in
+   THIS layer on purpose — they move `--ori-variant-bg-color`, and `ori.utilities` outranks
+   `ori.components`, so the same rules relocated into a block file could never win.
    ============================================================ */
 @layer ori.utilities {
     .ori-variant_fill {
@@ -51,56 +61,56 @@
     }
 
     .ori-variant_fill[data-active],
-    .ori-button.ori-variant_fill:active {
+    :where(.ori-button, [data-ori-interactive]).ori-variant_fill:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant_fill:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_fill:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
         }
     }
 
     .ori-variant_tonal[data-active],
-    .ori-button.ori-variant_tonal:active {
+    :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant_tonal:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
         }
     }
 
     .ori-variant_outline[data-active],
-    .ori-button.ori-variant_outline:active {
+    :where(.ori-button, [data-ori-interactive]).ori-variant_outline:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant_outline:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_outline:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
         }
     }
 
     .ori-variant_text[data-active],
-    .ori-button.ori-variant_text:active {
+    :where(.ori-button, [data-ori-interactive]).ori-variant_text:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant_text:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_text:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 90%);
         }
     }
 
     .ori-variant_plain[data-active],
-    .ori-button.ori-variant_plain:active {
+    :where(.ori-button, [data-ori-interactive]).ori-variant_plain:active {
         --ori-variant-opacity: 1;
     }
 
     @media (hover: hover) {
-        .ori-button.ori-variant_plain:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_plain:hover {
             --ori-variant-opacity: 1;
         }
     }
