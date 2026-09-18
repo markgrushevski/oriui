@@ -847,3 +847,19 @@ queue rather than from its own review, which is the path working as designed.
 - **Where:** packages/css/src/components/toast.css, packages/vue/src/components/toast/{ori-toast,ori-toaster}.vue
 - **What:** `.ori-toast__text` was `text-align: start` with no prop or token to change it. In a `top-center` stack carrying one-line status messages the text hugs the start edge of a fixed-width card and reads as misaligned. The naive fix is worse than none: `text-align: center` on a flex child centres the text on the space the dismiss button leaves behind, so it lands visibly off-centre — which is exactly what the owner saw.
 - **Outcome:** `align` (`start` | `center`) on both `OriToast` and `OriToaster`, the latter forwarding to the whole stack because alignment is a stack-level look like `position`. Centred alignment takes the dismiss button out of the flex flow and reserves equal inline room on both sides, so the body centres on the CARD. `e2e/toast-align.spec.ts` measures the rendered centres in real Chromium in both writing directions, and carries a counter-example test that fails if the compensation is ever removed. A leading icon deliberately stays in flow — that is a different composition, and it is documented. Residual offset is 1.5px, which is the card's own 4px accent stripe, not the button.
+
+### ORI-I-81 — Structural neutrals had no public handle
+
+`fixed` · severity `should-fix` · source: justpaint JP-O-06 (the half the mechanism fix left open), 2026-09-18
+
+- **Where:** packages/css/src/themes/_themes-color-tokens.css, and the twelve component stylesheets that hand-rolled a border mix
+- **What:** the earlier sweep normalised the MECHANISM (everything derives from currentcolor) but left the numbers scattered — forty-odd ad-hoc percentages — so a consumer still had nothing to repoint and had to guess.
+- **Outcome:** two tokens, `--ori-color-outline` (12%, the resting hairline) and `--ori-color-outline-strong` (28%, the interactive control edge), chosen from the measured distribution rather than invented: 12/14% and 28% were the two real clusters, and the 4-10% uses turned out to be background tinting, a different axis that would have made a single token lie. Documented on the design-tokens page with the repointing recipe, and guarded at source so a component cannot hand-roll one again. Writing the guard found four files the percentage sweep had missed.
+
+### ORI-I-82 — The checkbox and radio box edge may not clear the 3:1 non-text bar
+
+`unconfirmed` · severity `should-fix` · source: surfaced while introducing the outline tokens, 2026-09-18
+
+- **Where:** packages/css/src/components/checkbox.css:66, radio.css:84 — `color-mix(in srgb, currentcolor 40%, transparent)`
+- **What:** the unchecked box edge is the heaviest structural weight in the library and is deliberately excluded from the outline tokens, because dropping it to 28% would visibly weaken the affordance. But 40% of the ink on a white surface is roughly #999, which back-of-envelope lands near 2.8:1 — under the WCAG 1.4.11 3:1 minimum for a UI-component boundary. That is reasoning, not a measurement, which is exactly why it is filed as unconfirmed.
+- **How to check:** add the unchecked checkbox and radio boundary to the e2e non-text contrast probe (the same harness that now measures the invalid-field border), across all eight skins and both themes. If it fails, the fix is a heavier edge or a dedicated token — not folding it into the existing two.
