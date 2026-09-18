@@ -11,36 +11,39 @@ without changing your design tokens. This page maps each layer to where it runs.
 
 ## Layer × environment
 
-| Layer                            | Vue 3 | Svelte 5 | Astro | htmx / plain HTML |
-| -------------------------------- | :---: | :------: | :---: | :---------------: |
-| `@oriui/css` (classes + tokens)  |  ✅   |    ✅    |  ✅   |        ✅         |
-| `@oriui/headless` (core engine)  |  ✅¹  |   ✅¹    |  ⚠️²  |        ⚠️²        |
-| `@oriui/headless/vue`            |  ✅   |    —     |  ⚠️³  |         —         |
-| `@oriui/headless/svelte`         |   —   |    ✅    |  ⚠️³  |         —         |
-| `@oriui/vue` (styled components) |  ✅   |    —     |  ⚠️³  |         —         |
+| Layer                            | Vue 3 | Svelte 5 | React 18/19 | Astro | htmx / plain HTML |
+| -------------------------------- | :---: | :------: | :---------: | :---: | :---------------: |
+| `@oriui/css` (classes + tokens)  |  ✅   |    ✅    |     ✅      |  ✅   |        ✅         |
+| `@oriui/headless` (core engine)  |  ✅¹  |   ✅¹    |     ✅¹     |  ⚠️²  |        ⚠️²        |
+| `@oriui/headless/vue`            |  ✅   |    —     |      —      |  ⚠️³  |         —         |
+| `@oriui/headless/svelte`         |   —   |    ✅    |      —      |  ⚠️³  |         —         |
+| `@oriui/headless/react`          |   —   |    —     |     ✅      |  ⚠️³  |         —         |
+| `@oriui/vue` (styled components) |  ✅   |    —     |      —      |  ⚠️³  |         —         |
 
 ✅ first-class · ⚠️ works with a caveat · — use a different layer instead.
 
-1. Through the matching adapter — `@oriui/headless/vue` (Vue `ComputedRef`s) or `@oriui/headless/svelte`
-   (Svelte stores). The core itself imports no framework.
+1. Through the matching adapter — `@oriui/headless/vue` (Vue `ComputedRef`s), `@oriui/headless/svelte`
+   (Svelte stores) or `@oriui/headless/react` (plain values via `useSyncExternalStore`). All three are at
+   parity; the core itself imports no framework, and each framework is an **optional** peer dependency.
 2. The core is framework-agnostic building blocks (state machine + prop-getters), so it runs anywhere
    JavaScript does — but you wire the DOM binding yourself. A no-framework / htmx adapter is deferred
    (see [ROADMAP](https://github.com/markgrushevski/oriui/blob/main/ROADMAP.md)); until then, use the
    `.ori-*` classes for the look and hand-roll the small amount of behaviour.
 3. Inside an [Astro island](https://docs.astro.build/en/guides/framework-components/) for that framework
-   (`client:load` / `client:visible`); Astro renders the Vue or Svelte component as usual.
+   (`client:load` / `client:visible`); Astro renders the Vue, Svelte or React component as usual.
 
 ## Runtimes follow their framework
 
 The columns above are the **rendering environments**. The **runtime shells** below just host one of
 them, so they inherit that column's support:
 
-| Runtime                | Inherits         | Notes                                                                                                         |
-| ---------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------- |
-| **Nuxt** / Vite SSR    | Vue 3            | `@oriui/vue` is SSR-safe: SSR-stable ids (`useId`), native `<dialog>` (no `<Teleport>` gymnastics).           |
-| **SvelteKit**          | Svelte 5         | `@oriui/headless/svelte` seeds stores from the machine's initial state; pass an explicit `id` for stable SSR. |
-| **Capacitor** (hybrid) | Vue 3 / Svelte 5 | A web app in a native shell — whatever your web framework supports.                                           |
-| **Electron**           | Vue 3 / Svelte 5 | Same: a web renderer, so the framework column applies unchanged.                                              |
+| Runtime                | Inherits         | Notes                                                                                                                                                     |
+| ---------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nuxt** / Vite SSR    | Vue 3            | `@oriui/vue` is SSR-safe: SSR-stable ids (`useId`), native `<dialog>` (no `<Teleport>` gymnastics).                                                       |
+| **SvelteKit**          | Svelte 5         | `@oriui/headless/svelte` seeds stores from the machine's initial state; pass an explicit `id` for stable SSR.                                             |
+| **Next.js**            | React 18/19      | Hooks are client state — mark the component `'use client'`. `@oriui/css` is a plain stylesheet: import it in the root layout, server components included. |
+| **Capacitor** (hybrid) | Vue 3 / Svelte 5 | A web app in a native shell — whatever your web framework supports.                                                                                       |
+| **Electron**           | Vue 3 / Svelte 5 | Same: a web renderer, so the framework column applies unchanged.                                                                                          |
 
 ## Zero-runtime everywhere
 

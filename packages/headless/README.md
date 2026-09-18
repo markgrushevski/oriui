@@ -10,8 +10,9 @@ and ARIA wiring with no styles and no framework lock-in.
 - **`@oriui/headless`** — the framework-agnostic engine: state machines, prop-getters, anatomy, and the
   `OriHeadless` contract. Components are exposed namespaced, mirroring Zag (`disclosure`, `combobox`).
 - **`@oriui/headless/vue`** — the Vue 3 composables (return Vue `ComputedRef`s).
-- **`@oriui/headless/svelte`** — the Svelte 5 composables (return Svelte stores). Same engine, same
-  behavior; only the reactive wrapper differs per framework.
+- **`@oriui/headless/svelte`** — the Svelte 5 composables (return Svelte stores).
+- **`@oriui/headless/react`** — the React 18/19 hooks (return plain values, re-rendered through
+  `useSyncExternalStore`). Same engine, same behavior; only the reactive wrapper differs per framework.
 
 ## Install
 
@@ -19,8 +20,8 @@ and ARIA wiring with no styles and no framework lock-in.
 npm install @oriui/headless
 ```
 
-`vue ^3.5` and `svelte ^5` are **optional** peers — each needed only for its own adapter (`./vue` /
-`./svelte`). A Vue app carries no Svelte, and vice-versa.
+`vue ^3.5`, `svelte ^5` and `react ^18 || ^19` are **optional** peers — each needed only for its own
+adapter (`./vue` / `./svelte` / `./react`). A Vue app carries no Svelte or React, and vice-versa.
 
 ## Use — Vue
 
@@ -60,6 +61,94 @@ store of a function — `$getOptionProps(item, i)`. `useCombobox` / `useMenu` ta
 **SSR note:** the Vue adapter's ids come from `useId()` (SSR-stable); Svelte has no framework `useId()`
 callable outside component init, so it falls back to a module counter. Under SSR, pass an explicit `id`
 to the composable so the server and client markup match.
+
+## Use — React
+
+```tsx
+import { useDisclosure } from '@oriui/headless/react'
+
+function Details() {
+    const { open, triggerProps, contentProps } = useDisclosure()
+
+    return (
+        <>
+            <button {...triggerProps}>Details {open ? '▲' : '▼'}</button>
+            <div {...contentProps}>…content…</div>
+        </>
+    )
+}
+```
+
+Same surface as Vue and Svelte, returning plain values — no `.value`, no `# @oriui/headless
+
+[![npm](https://img.shields.io/npm/v/@oriui/headless?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/headless)
+[![license](https://img.shields.io/npm/l/@oriui/headless?color=blue)](https://github.com/markgrushevski/oriui/blob/main/LICENSE)
+
+Framework-agnostic **headless behavior** for [oriUI](https://oriui.vercel.app) (織り) — tiny state
+machines + prop-getters behind a swappable contract. This is the **behavior** layer: focus, keyboard,
+and ARIA wiring with no styles and no framework lock-in.
+
+- **`@oriui/headless`** — the framework-agnostic engine: state machines, prop-getters, anatomy, and the
+  `OriHeadless` contract. Components are exposed namespaced, mirroring Zag (`disclosure`, `combobox`).
+- **`@oriui/headless/vue`** — the Vue 3 composables (return Vue `ComputedRef`s).
+- **`@oriui/headless/svelte`** — the Svelte 5 composables (return Svelte stores).
+- **`@oriui/headless/react`** — the React 18/19 hooks (return plain values, re-rendered through
+  `useSyncExternalStore`). Same engine, same behavior; only the reactive wrapper differs per framework.
+
+## Install
+
+```bash
+npm install @oriui/headless
+```
+
+`vue ^3.5`, `svelte ^5` and `react ^18 || ^19` are **optional** peers — each needed only for its own
+adapter (`./vue` / `./svelte` / `./react`). A Vue app carries no Svelte or React, and vice-versa.
+
+## Use — Vue
+
+```ts
+import { useDisclosure } from '@oriui/headless/vue'
+
+const d = useDisclosure()
+// d.open  → ComputedRef<boolean>
+// d.setOpen(bool) · d.toggle()
+// spread the prop bags onto your own elements:
+// d.rootProps · d.triggerProps · d.contentProps
+```
+
+Also ships `useDialog` (native `<dialog>`: focus-trap, `Esc`, `::backdrop`, top-layer), `useCombobox`,
+`useMenu`, `useToolbar`, and `useColorPicker`, plus the `useToken` / `useTheme` bridges. The
+machine-based behaviours (Disclosure / Dialog / Combobox / Menu) each take a swappable engine
+(Zag / custom) through `provideHeadless()` / the `OriHeadless` plugin — the component markup never
+changes. (`useToolbar` / `useColorPicker` are compositional helpers, not adapter-backed.)
+
+## Use — Svelte
+
+```ts
+import { useDisclosure } from '@oriui/headless/svelte'
+
+const d = useDisclosure()
+// d.open  → Readable<boolean>  (auto-subscribe with $open)
+// d.setOpen(bool) · d.toggle()
+// spread the prop bags onto your own elements:  <button {...$triggerProps}>
+// d.rootProps · d.triggerProps · d.contentProps  → Readable<Record<string, unknown>>
+```
+
+Same surface as Vue (`useDialog` / `useCombobox` / `useMenu`, `provideHeadless()`), returning Svelte
+stores instead of `ComputedRef`s and lowercased event handlers (`onclick`). Item prop-getters are a
+store of a function — `$getOptionProps(item, i)`. `useCombobox` / `useMenu` take a plain options object
+**or a store** (`MaybeReactive`) — pass a store to react to a changing option list / `disabled`.
+
+**SSR note:** the Vue adapter's ids come from `useId()` (SSR-stable); Svelte has no framework `useId()`
+callable outside component init, so it falls back to a module counter. Under SSR, pass an explicit `id`
+to the composable so the server and client markup match.
+
+; the hook subscribes to the
+machine through `useSyncExternalStore`, so a state change re-renders the component. Event handlers use
+React casing (`onClick`, `onKeyDown`). In the Next.js app router these are client hooks — mark the
+component `'use client'`. `useToolbar` / `useToolbarToggleGroup` additionally return a `Provider`
+component to render, because React context needs a rendered provider (Vue `provide` / Svelte
+`setContext` do not).
 
 ## Use — the engine directly
 
