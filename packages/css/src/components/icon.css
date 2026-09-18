@@ -8,14 +8,21 @@
         box-sizing: border-box;
     }
 
-    .ori-icon {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-icon_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-icon.ori-icon_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-icon) {
         --ori-color: currentcolor;
         /* Baked per-axis defaults so a bare `.ori-icon` is a valid `text`-size, unspaced icon.
            `.ori-color_*` (utilities layer) overrides the color by layer order; the action-size /
            space axes are repointed by the component size sugar (`.ori-icon_lg`) below. */
         --ori-size-action: var(--ori-size-action_text);
         --ori-size-action-space: var(--ori-size-action-space_text);
+    }
 
+    .ori-icon {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -30,38 +37,39 @@
         color: var(--ori-color);
     }
 
-    .ori-icon.ori-icon_inline {
+    .ori-icon_inline {
         display: inline-flex;
         margin: 0.25em;
     }
 
     /* Size sugar (action-size axis) — mirrors the low-level `.ori-size-action_*` utility, scoped to
-       the component. Compound with the block so it beats the baked `text` default by specificity. */
-    .ori-icon.ori-icon_text {
+       the component. One class, like the utility it mirrors: it beats the baked `text` default because
+       that default sits in the `:where(.ori-icon)` rule above at (0,0,0). */
+    .ori-icon_text {
         --ori-size-action: var(--ori-size-action_text);
     }
 
-    .ori-icon.ori-icon_xs {
+    .ori-icon_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-icon.ori-icon_sm {
+    .ori-icon_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-icon.ori-icon_md {
+    .ori-icon_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-icon.ori-icon_lg {
+    .ori-icon_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-icon.ori-icon_xl {
+    .ori-icon_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-icon.ori-icon_xxl {
+    .ori-icon_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 

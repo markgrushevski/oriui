@@ -51,7 +51,7 @@
     }
 
     /* Vertical: a column rule that stretches to the parent's cross axis. */
-    .ori-divider.ori-divider_vertical {
+    .ori-divider_vertical {
         flex-direction: column;
         align-self: stretch;
 
@@ -60,8 +60,8 @@
         margin-inline: var(--ori-size-gap);
     }
 
-    .ori-divider.ori-divider_vertical::before,
-    .ori-divider.ori-divider_vertical::after {
+    .ori-divider_vertical::before,
+    .ori-divider_vertical::after {
         width: 0;
         height: auto;
 

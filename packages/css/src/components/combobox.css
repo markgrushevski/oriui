@@ -13,7 +13,12 @@
         box-sizing: border-box;
     }
 
-    .ori-combobox {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-combobox_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-combobox.ori-combobox_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-combobox) {
         /* Same baked field tokens as `.ori-input` — the inner control reuses `.ori-input__field`,
            which reads these from this ancestor. A `.ori-color_*` / `.ori-font-size_*` utility or a
            size modifier repoints them; the field inherits. */
@@ -25,39 +30,41 @@
         /* AA-safe on-surface tone for the selected option's label (bare block: no color utility sets it). */
         --ori-color-text: var(--ori-color-primary-text);
         --ori-font-size: var(--ori-font-size_md);
+    }
 
+    .ori-combobox {
         display: inline-flex;
         flex-direction: column;
         gap: 0.375em;
     }
 
-    .ori-combobox.ori-combobox_fluid {
+    .ori-combobox_fluid {
         display: flex;
         width: 100%;
     }
 
     /* Action-size sugar (field height) — mirrors `.ori-input_*`. */
-    .ori-combobox.ori-combobox_xs {
+    .ori-combobox_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-combobox.ori-combobox_sm {
+    .ori-combobox_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-combobox.ori-combobox_md {
+    .ori-combobox_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-combobox.ori-combobox_lg {
+    .ori-combobox_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-combobox.ori-combobox_xl {
+    .ori-combobox_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-combobox.ori-combobox_xxl {
+    .ori-combobox_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 

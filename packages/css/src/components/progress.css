@@ -8,7 +8,12 @@
         box-sizing: border-box;
     }
 
-    .ori-progress {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-progress_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-progress.ori-progress_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-progress) {
         /* Baked default accent (color axis): bare block uses `primary`; `.ori-color_danger`
            (utilities layer) overrides by layer order. Drives the indicator fill. */
         --ori-color: var(--ori-color-primary);
@@ -17,16 +22,18 @@
            overrides by layer order. */
         --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-progress-height: 8px;
+    }
 
+    .ori-progress {
         display: block;
         width: 100%;
     }
 
-    .ori-progress.ori-progress_sm {
+    .ori-progress_sm {
         --ori-progress-height: 4px;
     }
 
-    .ori-progress.ori-progress_lg {
+    .ori-progress_lg {
         --ori-progress-height: 12px;
     }
 

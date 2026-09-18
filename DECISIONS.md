@@ -1080,3 +1080,41 @@ so a future "consistency" pass should not flatten it.
 so a module-scope caller leaked its `MutationObserver` and `matchMedia` listener with no way to dispose. Vue
 now registers `onScopeDispose(destroy, true)` — the `failSilently` flag, so a genuinely scope-less call does
 not warn — and returns `destroy()` for that caller. Same shape, same reason, both adapters.
+
+## Modifier classes are flat: `.ori-x_y`, not `.ori-x.ori-x_y`
+
+The project's own bar said flat specificity — `:where()`, no `.a.a_b` stacking — and 106 selectors across 22
+files said otherwise. They are now single-class modifiers, which drops each from (0,2,0) to (0,1,0).
+
+That is a real change for one audience: a consumer overriding from **inside** a cascade layer, whose rule was
+sized against the old weight. It is invisible to `@oriui/vue` consumers (no class name moved) and invisible
+to anyone overriding from an unlayered stylesheet, since layer order already beat the library there. Pre-1.0
+is the only moment this is free, so it happened now, proved visually neutral by a computed-style diff in real
+Chromium over every component and all 106 modifiers in both themes.
+
+One consequence worth knowing: for the ten blocks whose modifiers repoint a baked token, the block's own
+defaults moved into a `:where(.ori-x)` rule. A single-class modifier then outranks the default on
+**specificity** rather than on source order — which is what makes the flat vocabulary work at all, and why
+those defaults must not be moved back into the block rule.
+
+## `data-ori-interactive` is an opt-in attribute, and now public API
+
+Ten rules in `ori.utilities` hard-coded `.ori-button`, so the variant vocabulary's hover/active half fired
+for exactly one component — a block built on the css layer (the audience that layer exists for) got the
+static tints and could not opt into the interactive ones.
+
+They now key off `data-ori-interactive`. The rules cannot simply move into `button.css` instead: `ori.utilities`
+outranks `ori.components`, so a component-file copy would lose to the very utilities it is meant to extend.
+An attribute is the smallest opt-in that keeps the layer order intact — and it is a name the library is now
+on the hook for.
+
+## Options SEED or are LIVE, and the JSDoc says which
+
+Three composables re-read an option after creation (`disabled` on disclosure, combobox and menu); everything
+else — `id`, `defaultOpen`, `defaultValue` — is read once at creation and ignored afterwards. The distinction
+was previously implied by whether a signature accepted `MaybeRefOrGetter`, which promised reactivity the
+machine could not deliver.
+
+Each option's JSDoc now states which it is, the docs repeat it, and the signatures are consistent across the
+three adapters: a seed still accepts a value / ref / store for call-site uniformity, it just does not pretend
+that changing it later does anything.

@@ -436,12 +436,18 @@ describe('Svelte useToolbarItem / orientation (inert outside a toolbar)', () => 
 })
 
 describe('Svelte useToolbarToggleGroup', () => {
-    it('exposes a role=group prop bag', () => {
-        const { groupProps } = useToolbarToggleGroup({
-            type: 'single',
-            value: writable<string | undefined>(undefined),
-            onChange: () => {}
-        })
+    // Options are `MaybeReactive<UseToolbarToggleGroupOptions>` — the whole object plain or as a store,
+    // like every other Svelte composable (ISSUES-INNER ORI-I-04); per-member stores are gone. The
+    // selection behaviour itself needs the context pair, so it lives in tests/toolbar-toggle.test.ts.
+    it('exposes a role=group prop bag from a plain options object', () => {
+        const { groupProps } = useToolbarToggleGroup({ type: 'single', value: undefined, onChange: () => {} })
+        expect(get(groupProps).role).toBe('group')
+    })
+
+    it('exposes a role=group prop bag from a store of options', () => {
+        const { groupProps } = useToolbarToggleGroup(
+            writable({ type: 'single' as const, value: undefined, onChange: () => {} })
+        )
         expect(get(groupProps).role).toBe('group')
     })
 })

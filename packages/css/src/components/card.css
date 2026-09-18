@@ -63,11 +63,11 @@
         pointer-events: none;
     }
 
-    .ori-card.ori-card_fluid {
+    .ori-card_fluid {
         width: 100%;
     }
 
-    .ori-card.ori-card_row {
+    .ori-card_row {
         display: flex;
         gap: calc(var(--ori-size-gap) * 2);
     }

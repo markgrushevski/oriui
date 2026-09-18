@@ -1,5 +1,5 @@
 import { useCallback, useId, type KeyboardEvent } from 'react'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
+import { resolveRovingIndex, rovingIntent, type TabItem, type UseTabsOptions } from '../core'
 
 /**
  * Headless WAI-ARIA Tabs (https://www.w3.org/WAI/ARIA/apg/patterns/tabs/, **automatic activation**) — the
@@ -15,25 +15,8 @@ import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem 
  * onto a runtime export is ~0.3 kB of budget for bytes every consumer's minifier then throws away.)
  */
 
-/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
-export type { TabItem }
-
-export interface UseTabsOptions {
-    /** The set of tabs, in order. */
-    tabs: TabItem[]
-    /** The controlled selection (bind to your value); resolves to the first enabled tab when unset. */
-    value: string | number | undefined
-    /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
-    orientation?: RovingOrientation
-    /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
-    label?: string
-    /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
-    labelledby?: string
-    /** SSR-stable id base for the derived tab/panel ids; defaults to `useId()`. */
-    idBase?: string
-    /** Commit the next selected value (wire to your controlled value). */
-    onChange?: (value: string | number) => void
-}
+/** The shared core declarations, re-exported so both stay importable from this adapter. */
+export type { TabItem, UseTabsOptions }
 
 export function useTabs(options: UseTabsOptions) {
     const { tabs, value, orientation = 'horizontal', label, labelledby, idBase, onChange } = options

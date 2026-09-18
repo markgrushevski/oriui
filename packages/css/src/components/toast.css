@@ -11,16 +11,27 @@
         box-sizing: border-box;
     }
 
+    /* Horizontal offset the toast enters from / leaves toward, read by the transition classes at the
+       bottom of this file. A toast should come in off the screen edge its toaster is pinned to, so each
+       corner modifier below sets the sign PHYSICALLY — the corner names a screen corner and deliberately
+       does not mirror with the writing direction (pinned by e2e/rtl.spec.ts). This bare default is the
+       one case with no corner to follow, so it follows the text direction instead.
+
+       Both arms sit at ZERO specificity (`:where`) so the single-class corner modifiers below, at
+       (0,1,0), outrank the direction default on SPECIFICITY. Before the modifiers were flattened this
+       worked by source order alone — `.ori-toaster:dir(rtl)` and `.ori-toaster.ori-toaster_top-left`
+       were both (0,2,0) — which is exactly the fragility the flat-specificity rule exists to remove. */
+    :where(.ori-toaster) {
+        --ori-toast-enter-x: 20px;
+    }
+
+    :where(.ori-toaster:dir(rtl)) {
+        --ori-toast-enter-x: -20px;
+    }
+
     /* Portal container: fixed to a screen corner, ignores pointer events so it never blocks the
        page; the toasts themselves re-enable pointer events. */
     .ori-toaster {
-        /* Horizontal offset the toast enters from / leaves toward, read by the transition classes at the
-           bottom of this file. A toast should come in off the screen edge its toaster is pinned to, so
-           each corner modifier below sets the sign PHYSICALLY — the corner names a screen corner and
-           deliberately does not mirror with the writing direction (pinned by e2e/rtl.spec.ts). This bare
-           default is the one case with no corner to follow, so it follows the text direction instead. */
-        --ori-toast-enter-x: 20px;
-
         display: flex;
         position: fixed;
         z-index: 1000;
@@ -33,17 +44,11 @@
         gap: var(--ori-size-gap);
     }
 
-    /* Direction-relative default only. Equal specificity to the corner rules below (0,2,0), which come
-       later and therefore win — a corner-pinned toaster keeps its physical offset in both directions. */
-    .ori-toaster:dir(rtl) {
-        --ori-toast-enter-x: -20px;
-    }
-
     .ori-toaster > * {
         pointer-events: auto;
     }
 
-    .ori-toaster.ori-toaster_top-right {
+    .ori-toaster_top-right {
         top: 0;
         right: 0;
         align-items: flex-end;
@@ -51,7 +56,7 @@
         --ori-toast-enter-x: 20px;
     }
 
-    .ori-toaster.ori-toaster_top-left {
+    .ori-toaster_top-left {
         top: 0;
         left: 0;
         align-items: flex-start;
@@ -60,7 +65,7 @@
     }
 
     /* A centred toaster has no side to come from — it fades and settles vertically instead. */
-    .ori-toaster.ori-toaster_top-center {
+    .ori-toaster_top-center {
         top: 0;
         left: 50%;
         align-items: center;
@@ -69,7 +74,7 @@
         --ori-toast-enter-x: 0px;
     }
 
-    .ori-toaster.ori-toaster_bottom-right {
+    .ori-toaster_bottom-right {
         right: 0;
         bottom: 0;
         flex-direction: column-reverse;
@@ -78,7 +83,7 @@
         --ori-toast-enter-x: 20px;
     }
 
-    .ori-toaster.ori-toaster_bottom-left {
+    .ori-toaster_bottom-left {
         bottom: 0;
         left: 0;
         flex-direction: column-reverse;
@@ -87,7 +92,7 @@
         --ori-toast-enter-x: -20px;
     }
 
-    .ori-toaster.ori-toaster_bottom-center {
+    .ori-toaster_bottom-center {
         bottom: 0;
         left: 50%;
         flex-direction: column-reverse;

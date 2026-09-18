@@ -46,7 +46,7 @@ A single-open accordion (default). Opening one item closes the previous one — 
 the shared `name` attribute, no JavaScript required.
 
 ::example
-:ori-accordion{:items='[{"value":"one","title":"What is oriUI?"},{"value":"two","title":"How do I install it?"},{"value":"three","title":"Does it work without Vue?"}]'}
+:ori-accordion{:items='[{"value":"one","label":"What is oriUI?"},{"value":"two","label":"How do I install it?"},{"value":"three","label":"Does it work without Vue?"}]'}
 
 #vue
 
@@ -94,7 +94,7 @@ the shared `name` attribute, no JavaScript required.
 independently.
 
 ::example
-:ori-accordion{:multiple="true" :items='[{"value":"step1","title":"Step 1 — Install"},{"value":"step2","title":"Step 2 — Configure"},{"value":"step3","title":"Step 3 — Deploy"}]'}
+:ori-accordion{:multiple="true" :items='[{"value":"step1","label":"Step 1 — Install"},{"value":"step2","label":"Step 2 — Configure"},{"value":"step3","label":"Step 3 — Deploy"}]'}
 
 #vue
 
@@ -138,11 +138,11 @@ independently.
 Every semantic role. The accent color is applied to the open item's title and the rotating chevron.
 
 ::example
-:ori-accordion{color="primary" :items='[{"value":"a","title":"Primary accent"}]'}
-:ori-accordion{color="secondary" :items='[{"value":"a","title":"Secondary accent"}]'}
-:ori-accordion{color="success" :items='[{"value":"a","title":"Success accent"}]'}
-:ori-accordion{color="danger" :items='[{"value":"a","title":"Danger accent"}]'}
-:ori-accordion{color="info" :items='[{"value":"a","title":"Info accent"}]'}
+:ori-accordion{color="primary" :items='[{"value":"a","label":"Primary accent"}]'}
+:ori-accordion{color="secondary" :items='[{"value":"a","label":"Secondary accent"}]'}
+:ori-accordion{color="success" :items='[{"value":"a","label":"Success accent"}]'}
+:ori-accordion{color="danger" :items='[{"value":"a","label":"Danger accent"}]'}
+:ori-accordion{color="info" :items='[{"value":"a","label":"Info accent"}]'}
 
 #vue
 
@@ -169,11 +169,11 @@ Corner rounding via the `radius` prop. When omitted, the container uses the bake
 `.ori-accordion` block bakes `--ori-size-radius: md`, so a bare block is never square).
 
 ::example
-:ori-accordion{radius="zero" :items='[{"value":"a","title":"zero — no rounding"}]'}
-:ori-accordion{radius="sm" :items='[{"value":"a","title":"sm — subtle rounding"}]'}
-:ori-accordion{radius="md" :items='[{"value":"a","title":"md — medium rounding"}]'}
-:ori-accordion{radius="lg" :items='[{"value":"a","title":"lg — large rounding"}]'}
-:ori-accordion{radius="xl" :items='[{"value":"a","title":"xl — extra-large rounding"}]'}
+:ori-accordion{radius="zero" :items='[{"value":"a","label":"zero — no rounding"}]'}
+:ori-accordion{radius="sm" :items='[{"value":"a","label":"sm — subtle rounding"}]'}
+:ori-accordion{radius="md" :items='[{"value":"a","label":"md — medium rounding"}]'}
+:ori-accordion{radius="lg" :items='[{"value":"a","label":"lg — large rounding"}]'}
+:ori-accordion{radius="xl" :items='[{"value":"a","label":"xl — extra-large rounding"}]'}
 
 #vue
 
@@ -198,7 +198,7 @@ Set `disabled: true` on individual items in the `items` array to block interacti
 triggers. Disabled items render `aria-disabled="true"` and `tabindex="-1"` on their `<summary>`.
 
 ::example
-:ori-accordion{:items='[{"value":"billing","title":"Billing"},{"value":"security","title":"Security (restricted)","disabled":true},{"value":"notifications","title":"Notifications"}]'}
+:ori-accordion{:items='[{"value":"billing","label":"Billing"},{"value":"security","label":"Security (restricted)","disabled":true},{"value":"notifications","label":"Notifications"}]'}
 
 #vue
 
@@ -234,7 +234,7 @@ triggers. Disabled items render `aria-disabled="true"` and `tabindex="-1"` on th
 Colors, radius, and rich slot content together — a common FAQ or settings pattern.
 
 ::example
-:ori-accordion{color="secondary" radius="md" :items='[{"value":"cost","title":"Is oriUI free to use?"},{"value":"framework","title":"Which frameworks are supported?"},{"value":"theming","title":"How does theming work?"}]'}
+:ori-accordion{color="secondary" radius="md" :items='[{"value":"cost","label":"Is oriUI free to use?"},{"value":"framework","label":"Which frameworks are supported?"},{"value":"theming","label":"How does theming work?"}]'}
 
 #vue
 
@@ -317,7 +317,7 @@ planned.)
 | Prop       | Type              | Default     | Description                                                                                                                                                                                         |
 | ---------- | ----------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `color`    | `ThemeColor`      | `'primary'` | Accent color for the open item's title and the rotating chevron. Repoints `--ori-color` via the `ori-color_<color>` utility class on the wrapper.                                                   |
-| `items`    | `AccordionItem[]` | —           | **Required.** The disclosure items. `value` is used as the `:key`; `title` is the summary text; `disabled` sets `aria-disabled="true"` + `tabindex="-1"` and blocks pointer events on that trigger. |
+| `items`    | `AccordionItem[]` | —           | **Required.** The disclosure items. `value` is used as the `:key`; `label` is the summary text; `disabled` sets `aria-disabled="true"` + `tabindex="-1"` and blocks pointer events on that trigger. |
 | `multiple` | `boolean`         | `false`     | `false` = exclusive single-open (shared `name`, browser closes siblings). `true` = each item opens/closes independently (no shared `name`).                                                         |
 | `radius`   | `RadiusSize`      | `'md'`      | Optional corner radius for the accordion container. Attaches `ori-size-radius_<radius>` when set; the bare block bakes in `md` as its default.                                                      |
 
@@ -343,5 +343,5 @@ const items: AccordionItem[] = [
 
 | Slot      | Scope                                                                      | Description                                                                                                                                             |
 | --------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`   | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.title` string. |
+| `label`   | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.title` string. |
 | `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused.     |

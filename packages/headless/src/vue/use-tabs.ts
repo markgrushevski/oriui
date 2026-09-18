@@ -1,5 +1,5 @@
 import { computed, toValue, useId, type MaybeRefOrGetter } from 'vue'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
+import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem, type UseTabsOptions } from '../core'
 
 // Fallback id source when `useId()` is unavailable (called outside an app context); the composable is
 // intended for component setup, where useId() always resolves.
@@ -22,25 +22,8 @@ let fallbackId = 0
  * onto a runtime export is ~0.5 kB of budget for bytes every consumer's minifier then throws away.)
  */
 
-/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
-export type { TabItem }
-
-export interface UseTabsOptions {
-    /** The set of tabs, in order. */
-    tabs: TabItem[]
-    /** The controlled selection (bind to `v-model`); resolves to the first enabled tab when unset. */
-    value: string | number | undefined
-    /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
-    orientation?: RovingOrientation
-    /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
-    label?: string
-    /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
-    labelledby?: string
-    /** SSR-stable id base for the derived tab/panel ids; defaults to `useId()`. */
-    idBase?: string
-    /** Commit the next selected value (wire to your `v-model`). */
-    onChange?: (value: string | number) => void
-}
+/** The shared core declarations, re-exported so both stay importable from this adapter. */
+export type { TabItem, UseTabsOptions }
 
 export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
     const opts = () => toValue(options)

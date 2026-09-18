@@ -1,5 +1,5 @@
 import { derived, get, type Readable } from 'svelte/store'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem } from '../core'
+import { resolveRovingIndex, rovingIntent, type TabItem, type UseTabsOptions } from '../core'
 import { uid } from './id'
 import { toReadable, type MaybeReactive } from './use-store'
 
@@ -17,25 +17,8 @@ import { toReadable, type MaybeReactive } from './use-store'
  * onto a runtime export is ~0.3 kB of budget for bytes every consumer's minifier then throws away.)
  */
 
-/** The shared core declaration, re-exported so `TabItem` stays importable from this adapter. */
-export type { TabItem }
-
-export interface UseTabsOptions {
-    /** The set of tabs, in order. */
-    tabs: TabItem[]
-    /** The controlled selection (bind to your value); resolves to the first enabled tab when unset. */
-    value: string | number | undefined
-    /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
-    orientation?: RovingOrientation
-    /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
-    label?: string
-    /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
-    labelledby?: string
-    /** SSR-stable id base for the derived tab/panel ids; defaults to a module-unique id. */
-    idBase?: string
-    /** Commit the next selected value (wire to your bound value). */
-    onChange?: (value: string | number) => void
-}
+/** The shared core declarations, re-exported so both stay importable from this adapter. */
+export type { TabItem, UseTabsOptions }
 
 export function useTabs(options: MaybeReactive<UseTabsOptions>) {
     const opts$ = toReadable(options)

@@ -55,9 +55,9 @@ div.ori-tabs  [ori-color_primary]
         { value: 'reviews', label: 'Reviews' }
     ]"
 >
-    <template #overview>Overview content goes here.</template>
-    <template #specs>Technical specifications.</template>
-    <template #reviews>Customer reviews.</template>
+    <template #panel-overview>Overview content goes here.</template>
+    <template #panel-specs>Technical specifications.</template>
+    <template #panel-reviews>Customer reviews.</template>
 </OriTabs>
 ```
 
@@ -160,9 +160,9 @@ Arrow axis switches to Up / Down.
         { value: 'notifications', label: 'Notifications' }
     ]"
 >
-    <template #general>General settings.</template>
-    <template #security>Security settings.</template>
-    <template #notifications>Notification preferences.</template>
+    <template #panel-general>General settings.</template>
+    <template #panel-security>Security settings.</template>
+    <template #panel-notifications>Notification preferences.</template>
 </OriTabs>
 ```
 
@@ -223,13 +223,13 @@ Use a named slot matching the tab's `value` to give each panel its own markup. A
 ```vue
 <!-- Primary: a named slot per value — distinct markup per panel -->
 <OriTabs v-model="tab" :tabs="tabs">
-    <template #preview>
+    <template #panel-preview>
         <p>Rendered preview of the component.</p>
     </template>
-    <template #code>
+    <template #panel-code>
         <pre>const x = 1;</pre>
     </template>
-    <template #docs>
+    <template #panel-docs>
         <p>Documentation and API reference.</p>
     </template>
 </OriTabs>
@@ -302,15 +302,15 @@ Vertical orientation, a non-default color, and named panel slots — a common se
         { value: 'privacy', label: 'Privacy' }
     ]"
 >
-    <template #profile>
+    <template #panel-profile>
         <h2>Profile settings</h2>
         <p>Update your name, avatar, and bio.</p>
     </template>
-    <template #account>
+    <template #panel-account>
         <h2>Account settings</h2>
         <p>Manage your email address and password.</p>
     </template>
-    <template #privacy>
+    <template #panel-privacy>
         <h2>Privacy settings</h2>
         <p>Control who can see your activity.</p>
     </template>

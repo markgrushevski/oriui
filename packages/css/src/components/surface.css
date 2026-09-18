@@ -29,19 +29,19 @@
        consumer sets, so the same hairline resolved two different ways in two files. There is no
        neutral/structural TOKEN on purpose: naming one is a public-API decision, and `currentcolor`
        already adapts to theme, skin and ambient colour without one. */
-    .ori-surface.ori-surface_bordered {
+    .ori-surface_bordered {
         border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
     }
 
-    .ori-surface.ori-surface_elevation-sm {
+    .ori-surface_elevation-sm {
         box-shadow: var(--ori-shadow-sm);
     }
 
-    .ori-surface.ori-surface_elevation-md {
+    .ori-surface_elevation-md {
         box-shadow: var(--ori-shadow-md);
     }
 
-    .ori-surface.ori-surface_elevation-lg {
+    .ori-surface_elevation-lg {
         box-shadow: var(--ori-shadow-lg);
     }
 }

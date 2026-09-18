@@ -13,10 +13,16 @@
         box-sizing: border-box;
     }
 
-    .ori-button {
+    /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
+       the layout rule below: every single-class modifier (`.ori-button_lg`) is (0,1,0) and therefore
+       outranks this on SPECIFICITY, not on source order — which is what lets the modifier vocabulary
+       stay flat instead of compounding `.ori-button.ori-button_lg`. Declaring a custom property on the
+       element beats inheritance at any specificity, so a nested block still reads its own value. */
+    :where(.ori-button) {
         /* Baked per-axis defaults so a bare `.ori-button` is a valid filled-primary, rounded, md
-           button. Single-class utilities (.ori-button_lg, .ori-size-radius_zero, .ori-color_danger,
-           .ori-variant_*) override by layer order; the cluster below is the `fill` default. */
+           button. The global utilities (.ori-size-radius_zero, .ori-color_danger, .ori-variant_*)
+           override by layer order, the component's own size sugar (.ori-button_lg) by specificity
+           against this (0,0,0) rule; the cluster below is the `fill` default. */
         --ori-size-action: var(--ori-size-action_md);
         --ori-size-radius: var(--ori-size-radius_rounded);
         --ori-font-size: var(--ori-font-size_md);
@@ -29,7 +35,9 @@
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
         --ori-variant-text-color: var(--ori-color-on);
+    }
 
+    .ori-button {
         display: inline-flex;
         flex-direction: row;
         flex-shrink: 0;
@@ -137,12 +145,12 @@
         }
     }
 
-    .ori-button.ori-button_fluid {
+    .ori-button_fluid {
         display: flex;
         width: 100%;
     }
 
-    .ori-button.ori-button_icon {
+    .ori-button_icon {
         width: var(--ori-size-action);
         height: var(--ori-size-action);
 
@@ -151,49 +159,49 @@
         font-size: calc(var(--ori-size-action) / 2);
     }
 
-    .ori-button.ori-button_icon-position_top {
+    .ori-button_icon-position_top {
         flex-direction: column;
 
         /* font-size: calc(var(--ori-font-size) - var(--ori-font-size-step_dec) * 1); */
     }
 
-    .ori-button.ori-button_icon-position_right {
+    .ori-button_icon-position_right {
         flex-direction: row-reverse;
     }
 
-    .ori-button.ori-button_icon-position_bottom {
+    .ori-button_icon-position_bottom {
         flex-direction: column-reverse;
 
         /* font-size: calc(var(--ori-font-size) - var(--ori-font-size-step_dec) * 1); */
     }
 
-    .ori-button.ori-button_icon-position_left {
+    .ori-button_icon-position_left {
         flex-direction: row;
     }
 
     /* Size sugar (action-size axis) — the daisyUI-familiar `.ori-button_lg` shape; mirrors the
        low-level `.ori-size-action_*` utility. Drives both the height and the icon-button square. */
-    .ori-button.ori-button_xs {
+    .ori-button_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
 
-    .ori-button.ori-button_sm {
+    .ori-button_sm {
         --ori-size-action: var(--ori-size-action_sm);
     }
 
-    .ori-button.ori-button_md {
+    .ori-button_md {
         --ori-size-action: var(--ori-size-action_md);
     }
 
-    .ori-button.ori-button_lg {
+    .ori-button_lg {
         --ori-size-action: var(--ori-size-action_lg);
     }
 
-    .ori-button.ori-button_xl {
+    .ori-button_xl {
         --ori-size-action: var(--ori-size-action_xl);
     }
 
-    .ori-button.ori-button_xxl {
+    .ori-button_xxl {
         --ori-size-action: var(--ori-size-action_xxl);
     }
 
