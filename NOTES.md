@@ -559,3 +559,68 @@ survives (this repo runs 4.12.1). So `expectNoA11yViolations` will **not** flag 
 field-aware control nested in `OriField`, or any composite that re-uses an id — assert uniqueness
 explicitly (`new Set([...root.querySelectorAll('[id]')].map((e) => e.id)).size === count`) instead of
 trusting the axe pass. This exact gap let a 3-way `id` collision in ColorPicker-in-Field slip through green.
+
+## Attribute fall-through: a later explicit binding DELETES the caller's value
+
+`v-bind="$attrs"` followed by `:aria-describedby="x"` compiles to Vue's `mergeProps`, which **assigns
+unconditionally** — when `x` is `undefined` it does not fall back to the `$attrs` value, it removes it. So
+any component with `inheritAttrs: false` that both promises attribute fall-through AND binds an `aria-*`
+attribute itself must **fold** the inherited value into its own computation. Reordering the bindings is not
+a fix; it only flips which side gets clobbered. The two modes produce opposite bugs for the same attribute,
+so an audit has to check `inheritAttrs` per component: with `inheritAttrs: false` + `$attrs` bound before an
+explicit binding, the COMPONENT wins and the caller's id is deleted (input / select / textarea / combobox /
+slider — fixed 2026-09-18); with default fall-through onto a root element that also binds the attribute,
+fall-through merges last, so the CALLER wins and the component's own hint/error id is deleted (radio-group,
+color-picker — still open, see ISSUES-INNER.md). `useAttrs()` reads ARE reactive inside a `computed` (the
+proxy tracks every property get), so `attrs['aria-describedby']` in a computed is the correct idiom and needs
+no getter dance — unlike props (`vue/no-setup-props-reactivity-loss`).
+
+## A live region has to exist BEFORE its content
+
+The a11y question is never "is there an element with `aria-live` in the DOM" but "did that element exist,
+empty, before the content was inserted". A `role="status"` node that appears already populated is not
+announced. `role="alert"` is the exception assistive tech special-cases, which is exactly what masked the
+toaster bug: only danger toasts announced, so manual testing with an error toast showed everything working.
+Two consequences: (1) axe and role-string assertions structurally cannot catch this class of defect — both
+inspect an already-populated DOM — so a live-region regression test MUST mount with an EMPTY queue and assert
+the semantics before any content exists; (2) do NOT put `role="status"` on a toast CONTAINER: it implies
+`aria-atomic="true"`, which re-announces the whole queued stack on every push. A roleless container with
+`aria-live="polite"` + explicit `aria-atomic="false"` is the correct shape (`aria-relevant` defaults to
+`additions text`, so dismissals stay silent — setting it is noise). `<transition-group tag="div">` renders
+its container even with zero children and fall-through attributes land on it, so it can BE the persistent
+region with no extra wrapper.
+
+## A bare axis base class in `ori.utilities` is never a harmless no-op
+
+The declared layer order (`layers.css`) puts `ori.components` BEFORE `ori.utilities`, so a base class that
+zeroes an axis cluster — the old `.ori-variant` — does not "opt a block into the system", it **overrides the
+defaults the block bakes in**: `.ori-button.ori-variant` painted transparent with a `currentColor` label,
+bypassing the AA-checked `--ori-color-on` pairing. The single-class model needs no base at all, and deleting
+one keeps legacy paired markup (`ori-variant ori-variant_fill`) rendering, because at equal specificity the
+value class wins on source order. Related cascade trap: `--ori-color-<role>-text` only tracks a skin because
+skins are declared as `:root[data-ori-skin='…']`, i.e. on the SAME element as the `oklch(from …)` derive — a
+custom property's `var()` substitutes where it is DECLARED, not where it is used, so a skin applied to a
+subtree would inherit the frozen `:root` tone.
+
+## changesets pre mode does NOT imply the pre dist-tag
+
+`getReleaseTag` returns `preState.tag` only when the package already has a published **non**-prerelease
+version. While every published version is a prerelease (`publishedState === 'only-pre'`) it falls back to
+`latest`. That is why `alpha` sat frozen at `1.0.0-alpha.3` while `latest` served alpha.17, and why
+`npm i @oriui/vue@alpha` handed out a fourteen-release-old build. It self-corrects once `1.0.0` ships. While
+you are in the tarball: npm's always-included set is `package.json`, `README*`, `LICENSE`/`LICENCE` and the
+`main` entry — a package-root LICENSE therefore needs no `files` entry, but **CHANGELOG.md must be listed
+explicitly** or the changelog never leaves the repo. And a `files` array only affects `npm pack`/publish,
+never local resolution: the docs app and the tests reach `packages/css/src` through filesystem paths, not the
+`@oriui/css` specifier, so narrowing what ships cannot break them. Check the specifier form, not the path
+form, before deciding a `src` tree is load-bearing.
+
+## A guard test that scans sources can pass by scanning nothing
+
+Two rules for any "no file in this package may do X" test: strip `/* … */` comments before matching (the
+stylesheet headers legitimately discuss the anti-pattern they forbid, so a naive scan self-triggers), and
+assert the scan actually saw files — a lower bound on the count plus a couple of known filenames. Add a
+self-check on synthetic input so the matcher itself is proved rather than assumed. Same idea in Vue: a prop
+declared in `defineProps` but never read is INVISIBLE at runtime (Vue consumes declared props, so passing it
+emits nothing) — which makes "does the rendered DOM change when I pass it?" the right contract test for a
+prop, not "is it mentioned in the template?".
