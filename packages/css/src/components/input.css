@@ -14,7 +14,7 @@
        vocabulary stay flat instead of compounding `.ori-input.ori-input_lg`. Declaring a custom property
        on the element beats inheritance at any specificity, so a nested block still reads its own value. */
     :where(.ori-input) {
-        --ori-input-border: color-mix(in srgb, currentcolor 28%, transparent);
+        --ori-input-border: var(--ori-color-outline-strong);
         --ori-input-bg: transparent;
         /* Baked default for the action-size axis: the bare `.ori-input` is already a valid `md` field.
            A size modifier (`.ori-input_lg`) or the low-level `.ori-size-action_lg` utility repoints it;

@@ -28,7 +28,7 @@
         padding: 0.35rem;
         overflow: auto;
 
-        border: 1px solid color-mix(in srgb, currentcolor 12%, transparent);
+        border: 1px solid var(--ori-color-outline);
         border-radius: var(--ori-size-radius);
 
         background: var(--ori-color-surface);

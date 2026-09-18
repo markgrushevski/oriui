@@ -29,9 +29,10 @@ Every token and utility lives inside a layer, declared once in source order:
 Later layers win. `ori.tokens` holds the raw scales and role tokens at `:root`; `ori.utilities`
 holds the `.ori-*_<step>` classes that repoint aliases. Because the order is fixed and explicit,
 the cascade is predictable and **any unlayered consumer style wins over all of it** — overriding is
-trivial, never a `!important` fight. The utility modifiers use a flat compound selector
-(`.ori-color.ori-color_primary`), so their specificity stays low and consistent — layer order, not a
-specificity contest, is what decides the cascade.
+trivial, never a `!important` fight. The utility modifiers are **single-class** (`.ori-color_primary`,
+`.ori-button_lg`), so every one of them weighs the same (0,1,0) and a block's own baked defaults sit at
+zero specificity in a `:where()` rule beneath them — layer order and one flat class, not a specificity
+contest, is what decides the cascade.
 
 The contract for components is one line: **read the resolved alias, never a raw scale token, never a
 hardcoded hex.**
@@ -339,6 +340,37 @@ defaults to `var(--ori-font-size_text)` (`1em`, i.e. inherit).
 
 Nothing pins the root: the size/font scales are `rem`, so they resolve against the user's browser
 font-size setting (16px by default — at which the scales compute to their historical px values).
+
+## Structure — outline tokens
+
+Borders, dividers and control edges are not a colour ROLE — they are structure, and they used to be
+invented per component: forty-odd ad-hoc `color-mix` percentages, so a consumer who wanted one consistent
+hairline had nothing to read and had to guess our numbers.
+
+There are exactly two weights, because the library has exactly two structural jobs:
+
+| Token                        | Value                                               | Used for                                                                |
+| ---------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| `--ori-color-outline`        | `color-mix(in srgb, currentcolor 12%, transparent)` | The resting hairline: panel and menu borders, dividers, list separators |
+| `--ori-color-outline-strong` | `color-mix(in srgb, currentcolor 28%, transparent)` | The control edge that says "this is interactive": text fields, key caps |
+
+Both derive from **`currentcolor`**, and that is the whole trick: a custom property substitutes where the
+`var()` is **used**, not where it is declared, so a hairline takes the colour of the text it accompanies and
+a themed subtree gets the right value with no per-theme re-declaration.
+
+Repoint them like any other token — one line, no override fight:
+
+```css
+:root {
+    /* a warmer, slightly heavier hairline everywhere */
+    --ori-color-outline: color-mix(in srgb, #7a5c3e 18%, transparent);
+}
+```
+
+What these tokens deliberately do **not** cover: the low-percentage background tints behind a hover row,
+a zebra stripe or a progress track. Those are state tinting, a different axis, and folding them in would
+make the name lie. The one other exception is the checkbox and radio box edge, which is a third, heavier
+weight on purpose — an unfilled interactive target has to read as an affordance.
 
 ## Elevation — shadow tokens
 

@@ -27,12 +27,12 @@
 
         overflow: hidden;
 
-        border: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        border: 1px solid var(--ori-color-outline);
         border-radius: var(--ori-size-radius);
     }
 
     .ori-accordion__item + .ori-accordion__item {
-        border-block-start: 1px solid color-mix(in srgb, currentcolor 14%, transparent);
+        border-block-start: 1px solid var(--ori-color-outline);
     }
 
     .ori-accordion__trigger {

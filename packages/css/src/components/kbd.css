@@ -19,7 +19,7 @@
         min-width: 1.6em;
         padding: 0.15em 0.4em;
 
-        border: 1px solid color-mix(in srgb, currentcolor 25%, transparent);
+        border: 1px solid var(--ori-color-outline-strong);
         border-bottom-width: 2px;
         border-radius: var(--ori-size-radius);
 

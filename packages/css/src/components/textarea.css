@@ -14,7 +14,7 @@
        stay flat instead of compounding `.ori-textarea.ori-textarea_lg`. Declaring a custom property on the
        element beats inheritance at any specificity, so a nested block still reads its own value. */
     :where(.ori-textarea) {
-        --ori-textarea-border: color-mix(in srgb, currentcolor 28%, transparent);
+        --ori-textarea-border: var(--ori-color-outline-strong);
         --ori-textarea-bg: transparent;
         /* Baked default for the action-size axis: the bare `.ori-textarea` already sizes its field's
            min-height at `md`. A size modifier (`.ori-textarea_lg`) or the low-level
