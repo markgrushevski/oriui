@@ -207,4 +207,47 @@ describe('OriSlider', () => {
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
     })
+
+    /**
+     * The thumb belongs to the browser and moves whether or not the parent sends a value back. The fill
+     * (a CSS custom property) and the readout are ours, and they used to read `modelValue` — so with no
+     * binding, or a one-way `:model-value` with no handler (every docs example), the three disagreed:
+     * measured thumb 5 / fill 75% / readout 75. These pin the mirror that fixed it, in all three modes.
+     */
+    describe('the fill and the readout follow the thumb, not a prop that never comes back', () => {
+        const drag = async (wrapper: ReturnType<typeof mount>, to: string) => {
+            const input = wrapper.find('input')
+            ;(input.element as HTMLInputElement).value = to
+            await input.trigger('input')
+            return {
+                thumb: (input.element as HTMLInputElement).value,
+                fill: input.attributes('style'),
+                readout: wrapper.find('.ori-slider__value').text()
+            }
+        }
+
+        it('unbound: a bare slider behaves like a bare <input type=range>', async () => {
+            const wrapper = mount(OriSlider, { props: { min: 0, max: 100, showValue: true } })
+            expect(await drag(wrapper, '75')).toEqual({
+                thumb: '75',
+                fill: '--ori-slider-pct: 75%;',
+                readout: '75'
+            })
+        })
+
+        it('one-way bound: the prop seeds it, then the element leads', async () => {
+            const wrapper = mount(OriSlider, { props: { min: 0, max: 100, modelValue: 75, showValue: true } })
+            expect(wrapper.find('.ori-slider__value').text(), 'the prop must still seed the initial paint').toBe('75')
+            expect(await drag(wrapper, '5')).toEqual({ thumb: '5', fill: '--ori-slider-pct: 5%;', readout: '5' })
+        })
+
+        it('two-way: a parent update still wins over the mirror', async () => {
+            const wrapper = mount(OriSlider, { props: { min: 0, max: 100, modelValue: 75, showValue: true } })
+            await drag(wrapper, '5')
+
+            await wrapper.setProps({ modelValue: 42 })
+            expect(wrapper.find('input').attributes('style')).toBe('--ori-slider-pct: 42%;')
+            expect(wrapper.find('.ori-slider__value').text()).toBe('42')
+        })
+    })
 })
