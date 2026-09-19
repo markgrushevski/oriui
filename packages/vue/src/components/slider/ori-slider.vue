@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useAttrs, useId } from 'vue'
+import { computed, ref, useAttrs, useId, watch } from 'vue'
 import type { ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
@@ -49,14 +49,35 @@ const describedBy = computed(() => {
 })
 const isInvalid = computed(() => field?.invalid.value ?? false)
 
-const current = computed(() => modelValue ?? min)
+// The thumb is the browser's and moves on its own; the fill and the readout are ours. Reading them
+// from `modelValue` made the three disagree whenever the prop did not come back — an unbound
+// `<OriSlider />`, or a one-way `:model-value` with no handler, which is what every docs example is.
+// Measured before this: drag to 5 and the DOM value is 5 while `--ori-slider-pct` and `showValue`
+// both sat at the prop. So mirror the element instead: `internal` tracks what the input actually
+// holds, `modelValue` writes INTO it when the parent sends one, and everything on screen reads the
+// mirror. A parent that updates late (debounced) no longer fights the drag, and a bare slider works
+// the way a bare `<input type="range">` does — the native-first promise the rest of this file keeps.
+// Seeded through the watcher rather than `ref(modelValue ?? min)`: reading a destructured prop in root
+// scope loses reactivity (vue/no-setup-props-reactivity-loss), so the getter form does both jobs.
+const internal = ref<number>()
+watch(
+    () => modelValue,
+    (value) => {
+        if (value !== undefined) internal.value = value
+    },
+    { immediate: true }
+)
+
+const current = computed(() => internal.value ?? min)
 const percent = computed(() => {
     const span = max - min
     return span > 0 ? ((current.value - min) / span) * 100 : 0
 })
 
 function onInput(event: Event) {
-    emit('update:modelValue', Number((event.target as HTMLInputElement).value))
+    const value = Number((event.target as HTMLInputElement).value)
+    internal.value = value
+    emit('update:modelValue', value)
 }
 
 // Commit-on-release. The native `change` fires ONCE when the value settles — pointer release after a
