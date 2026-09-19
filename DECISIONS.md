@@ -1118,3 +1118,53 @@ machine could not deliver.
 Each option's JSDoc now states which it is, the docs repeat it, and the signatures are consistent across the
 three adapters: a seed still accepts a value / ref / store for call-site uniformity, it just does not pretend
 that changing it later does anything.
+
+## Where each layer's API actually comes from (recorded 2026-09-19, after the fact)
+
+A reference audit asked a question this file could not answer: for each component, which library was the
+model, and which names did we invent? The behaviour layer's lineage was recorded all along — Zag's
+part-based anatomy, the Radix/Ark thin-adapter model, APG for every keyboard contract. The presentational
+layer's was not, and the answer turns out to be a second library that appears nowhere above.
+
+**The split: behaviour is Radix-shaped, presentation is Vuetify-shaped.** Evidence from our own side, no
+external reading required:
+
+- `OriCard` declares `prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` / `title` / `subtitle`
+  / `text`. That exact set of four prepend/append props is VCard's.
+- `Variant = 'fill' | 'tonal' | 'outline' | 'text' | 'plain'`. Three of the five — `tonal`, `text`, `plain`
+  — are VBtn's variant names; `tonal` is a Material-3 term that only Vuetify exposes as a variant.
+
+What we renamed, and why it matters: `fill` where Vuetify has `elevated`/`flat` (ours describes the paint,
+not the elevation, because elevation is `OriSurface`'s axis); `outline` where Vuetify and MUI say
+`outlined`; `fluid` where MUI and Mantine say `fullWidth` and Vuetify and Element say `block`.
+
+**Two names collide with other ecosystems and are worth knowing before someone reports them as bugs:**
+
+- `variant="plain"` is a half-faded control here and in Vuetify. In Chakra v3 `plain` means _no styling at
+  all_, so a Chakra arrival asking for an unstyled button gets a 50%-opacity one. (Its contrast is
+  separately recorded as ORI-I-91.)
+- `OriLink`'s `external` sets `target="_blank"` + `rel="noopener noreferrer"`. `NuxtLink`'s `external`
+  means "bypass the router" — the same word for a different job, in the framework our own docs are built
+  with.
+
+**What is NOT changing, and why.** `color` carries the semantic role on all 34 components, where MUI and
+PrimeVue say `severity` and Chakra says `status` on their alert. That divergence is deliberate and follows
+from the entry above — color is a ROLE, variant is the MAPPING — and renaming the prop on one component
+would split a uniform axis across the catalog to match one library's spelling. `OriAlert` already has the
+better handle for what `severity` is really for: `live` derives the live-region politeness from urgency and
+lets the caller override it, which none of the references do.
+
+**Still unrecorded, and a real gap: compound versus monolithic.** All four headless references (Radix, Ark,
+Reka, Headless UI) expose collections as compound children. Our styled layer is monolithic with array
+props — `items` / `options` / `tabs` — and the only multi-component exports are Toolbar and Toast. Array
+props ARE the styled-tier norm (PrimeVue, Element Plus), but those arrays carry affordances ours do not:
+`separator: true`, nested `items` for submenus, `optionLabel` / `optionValue` field mapping. We took the
+shape without the affordances, and no entry in this file explains the choice. The per-component
+consequences are in ISSUES-INNER (ORI-I-84 and ORI-I-87 are both this shape meeting slots). Writing the
+rule down is a prerequisite for 1.0, because after it the shape is frozen either way.
+
+**Also unwritten: which components are polymorphic.** `as` exists on button, join, kbd, link, skeleton,
+stack and surface — 7 of 34 — and nothing says why those seven. Every reference is universally
+polymorphic (`component` in MUI and Mantine, `asChild` across Radix / Ark / Reka). The components that
+render a `<div>` and lack `as` (Card, Alert, Surface's siblings) are the ones where it bites, because a
+`<div>` has a far wider set of invalid parents than the `<span>` a Tag renders.

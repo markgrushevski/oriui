@@ -892,3 +892,93 @@ queue rather than from its own review, which is the path working as designed.
 - **What:** the fade was meant for explanatory body text but sits on the element that wraps the caller's ENTIRE slot, so it applied to buttons, inputs and links too — and multiplied with any fade a child carried of its own (`.ori-field__hint`'s 0.7 → 0.595). Reproduced independently in real Chromium across all eight skins and both themes: worst readings **3.35:1** (primary fill button label, luxury light), **3.95:1** (field hint, neutral light — the consumer's own number to two decimals), **4.14:1** (danger fill button). Dark themes passed, which is how it reached rc.
 - **Why both guards missed it:** `tests/tokens.contrast.test.ts` walks token PAIRS and never renders, so a pair that is honestly AA (5.43:1 for that button) reads as fine; axe reads declared colours, not composited pixels; and every probe in `e2e/text-contrast.spec.ts` carried at most its own opacity — the comment above `readState` said as much ("the probes never put an opacity group around a painted background"). A container fade is a third kind of defect: the colours are right and the contrast is lost on the way to the screen.
 - **Outcome:** the fade is gone. Hierarchy inside a dialog now comes from the title's size and weight, matching how the rest of the library expresses secondary text — a leaf class with its own tone (`__subtitle`, `__hint`), never a group fade over content someone else wrote. Worst reading inside a dialog is now 4.87:1 (sumi light, field hint). `e2e/text-contrast.spec.ts` gained a third test that measures a composited dialog body — 128 readings across skin × theme — so an ancestor fade cannot come back unseen. Audited the siblings while there: every other `opacity` in the component styles sits on a leaf (`__subtitle`, `__hint`, `__close`) or a disabled state, so this was the only ambient fade over a caller's slot.
+
+## Opened by the reference audit (2026-09-19)
+
+Three agents compared the catalog against WAI-ARIA APG and the API shapes of Radix, Ark, Reka, Headless UI, Mantine, PrimeVue, Vuetify, Quasar, Element Plus, Naive UI, Ant Design and Nuxt UI; a fourth attacked their findings, and a fifth pulled the W3C text verbatim. The difference from the 2026-09-18 paired review is the axis: that one checked us against OURSELVES, this one against the world. Every claim below was re-verified in this repo before being recorded, and several from the reports are deliberately absent because they did not survive.
+
+### ORI-I-86 — `OriTooltip` fails WCAG 1.4.13 on two of its three bullets
+
+`confirmed` · severity `blocker-for-1.0` · source: reference audit 2026-09-19 (overlays), W3C text verbatim
+
+- **Where:** packages/css/src/components/tooltip.css:102 (`pointer-events: none`), :35 (`--ori-tooltip-gap: 0.5em`); packages/vue/src/components/tooltip/ori-tooltip.vue (contains zero JavaScript)
+- **What:** SC 1.4.13 Content on Hover or Focus is **Level AA and normative**, and its Hoverable bullet reads "If pointer hover can trigger the additional content, then the pointer can be moved over the additional content without the additional content disappearing." The bubble is `pointer-events: none` with a gap between it and the trigger, so the pointer cannot reach it — failure technique F95 exactly. The Dismissible bullet ("A mechanism is available to dismiss the additional content without moving pointer hover or keyboard focus") fails too: the component has no JavaScript at all, so there is no Escape. Consequences: a wrapped tooltip cannot be read by someone panning with screen magnification, and its text can never be selected or copied. This is the only AA-normative failure the audit produced — everything else cites APG, which is informative.
+- **Scope note:** Hoverable applies because the tooltip opens on hover; a focus-only tooltip would be exempt from that bullet but not from Dismissible.
+- **Fix:** `pointer-events: auto` plus bridging the gap closes Hoverable and breaks no existing assertion — every geometry expectation in e2e/tooltip.spec.ts is an inequality with 1-2px slack, and the 0.5em value is tooltip-local (it repoints the shared `--ori-anchored-gap`), so Popover / Menu / Combobox are untouched. Dismissible cannot be closed in CSS: it needs a key listener. So this is a decision about whether the zero-JS tooltip survives, which is free now and breaking after 1.0.
+
+### ORI-I-87 — `OriAccordion`'s default slot fans out, and unlike Tabs the duplicates are VISIBLE
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19, measured here and by the skeptic
+
+- **Where:** packages/vue/src/components/accordion/ori-accordion.vue:106 — `<slot :item="item" />` inside `v-for`
+- **What:** the same shape as ORI-I-84, worse in three ways. Measured here: three items with a form in `#default` renders ids `email,email,email`. There is **no per-value escape hatch** — the component has only `#title` and `#default`, so distinct content per section means branching on `item.value` inside the shared template. Native `<details>` keeps every copy in the DOM whatever the open state. And in `multiple` mode two panels are open **simultaneously**: the skeptic measured that clicking the second open panel's `<label for>` focuses the FIRST panel's input, which Tabs' `hidden` at least keeps invisible.
+- **Bearing on ORI-I-84:** an "only the active one" remedy has no analogue here — `multiple` has no single active item — so a decision on Tabs must say what happens to Accordion, or the library ends up with two incompatible models for one shape.
+
+### ORI-I-88 — `OriCombobox` submits the form when Enter is pressed under an open listbox
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (overlays)
+
+- **Where:** packages/headless/src/core/combobox/combobox.connect.ts:136-142; combobox.machine.ts:33-35
+- **What:** `case 'Enter': if (open && highlightedValue !== null) { preventDefault(); … }` with no `else`. The machine clears `highlightedValue` on every keystroke, so after typing, Enter is un-prevented on a real `<input>` and performs implicit form submission with the listbox visibly open. `ori-combobox.vue:200` puts `:form` on the visible input, so it reaches an out-of-tree form too. Partial accidental mitigation: `setCustomValidity` blocks it when `required` and nothing is selected.
+- **Reachability today: nil** — there is no `<form>` in the combobox docs, tests or e2e, and justpaint does not use the component. Recorded rather than branched.
+- **Fix:** prevent Enter while the list is open; do NOT close the list, which would break the documented "ArrowDown then Enter commits" flow and silently change e2e/combobox-keyboard.spec.ts.
+- **Not a defect (checked verbatim):** the same report called the Home/End capture an APG violation. It is not. APG's "do not capture text-editing keys" note sits in the Combobox section, not the Listbox Popup section, and the Popup section explicitly offers Home/End as Optional with "moves focus to and selects the first option" as its first permitted reading. Our behaviour is allowed; only the absence of any test for it is worth noting.
+
+### ORI-I-89 — A mixed checkbox renders as an unchecked one
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
+
+- **Where:** packages/vue/src/components/checkbox/ori-checkbox.vue (no `indeterminate` anywhere); packages/css/src/components/checkbox.css (no `:indeterminate` selector)
+- **What:** `indeterminate` is a DOM property and `$attrs` is spread onto the input first, so `:indeterminate="true"` does reach it and assistive tech reports mixed. The stylesheet draws the box from `:checked` alone, so the control paints as empty. A checkbox that announces "mixed" and looks unchecked is worse than one that does not support the state: sighted and non-sighted users are told different things. APG lists tri-state as REQUIRED for the pattern; Ark, Radix and Reka all model `boolean | 'indeterminate'`.
+
+### ORI-I-90 — The dialog drops an `aria-describedby` its own headless layer already provides
+
+`confirmed` · severity `nit` · source: reference audit 2026-09-19 (overlays)
+
+- **Where:** packages/headless/src/{vue,react,svelte}/native.ts (all three publish `descriptionProps`, covered by adapter-parity tests and six documented examples); packages/vue/src/components/dialog/ori-dialog.vue (never binds it)
+- **What:** the styled component emits no `aria-describedby`, so a dialog's body text is not announced as its description. APG marks it optional, which is why this is a nit rather than a should-fix. One bind closes it. Note the framing correction: this is not a dead API — the headless layer's `descriptionProps` is alive, tested and documented; it is the styled layer that ignores it.
+
+### ORI-I-91 — The `plain` variant measures 2.33:1 on an enabled control
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19, measured via e2e/text-contrast.spec.ts
+
+- **Where:** packages/css/src/themes/_themes-variant.css:56-58 (`--ori-variant-opacity: 0.5`)
+- **What:** worst reading is **2.33, button-plain, neutral light, secondary**. The probe marks it `data-muted` — measured but not asserted — and NOTES.md:216 records the exemption. What does not hold is the exemption's reasoning: WCAG exempts INACTIVE controls, and a `plain` button is active and clickable. Opacity returns to 1 on hover / `[data-active]` / `:active`, so the resting state is the only one affected.
+- **Not the same as ORI-I-85**, which was a container fading a caller's whole slot and multiplying with child fades. The honest analogue is ORI-I-78, whose fix was 0.6 → 0.7 rather than removal.
+
+### ORI-I-92 — `field.md` promises an integration that Checkbox and Switch do not have
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
+
+- **Where:** docs/content/components/field.md:16-18 — "Any control works: an Ori control nested inside wires up automatically"; DECISIONS.md:892-900 excludes Checkbox and Switch deliberately
+- **What:** the exclusion is a recorded decision; the docs state its opposite, and the page never names the two exceptions. Following it yields two labels, a `<label for>` pointing at an id nothing owns, and `disabled` / `required` / `invalid` / `describedby` / `size` silently dropped — with no DEV warning, unlike the composite shield `ori-color-picker.vue:62` uses. No test covers it.
+
+### ORI-I-93 — A fabricated standards citation, duplicated across two adapters
+
+`confirmed` · severity `nit` · source: reference audit 2026-09-19 (form controls)
+
+- **Where:** packages/headless/src/vue/use-color-picker.ts:159 and packages/headless/src/react/use-color-picker.ts:209 — "an APG ColorArea requirement"
+- **What:** APG has 30 patterns and ColorArea is not among them; there is no ColorPicker pattern at all. The behaviour the comment defends is right, and the neighbouring claim about a tab stop on the selected swatch IS supported, by the Listbox pattern. A false citation is worse than none: it invites a future reader to "restore compliance" with a rule that does not exist.
+
+### ORI-I-94 — RTL arrow semantics are opt-in on Toolbar, unavailable on Tabs, and read from nothing
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19, corrected by measurement here
+
+- **Where:** packages/headless/src/core/roving.ts:23-36 (takes `dir`, swaps ArrowLeft/ArrowRight); packages/vue/src/components/toolbar/ori-toolbar.vue (has a `dir` prop); OriTabs and `UseTabsOptions` (have none)
+- **What:** the audit reported "Tabs arrows the wrong way while Toolbar does it right". That is **false as stated**, and was corrected here by measurement: under `dir=rtl` in Chromium BOTH move forward-in-array (tabs Overview→Specs, toolbar Bold→Italic), because Toolbar's `dir` is an explicit prop nothing sets and neither component reads the computed direction. e2e/rtl.spec.ts covers geometry only, never the keyboard axis. The real gap is narrower: an RTL app can fix the toolbar and cannot fix the tabs.
+- **Fix options:** expose `dir` on Tabs for parity, or read the computed `direction` once and let a prop override it — the second removes the whole class and matches what an RTL consumer expects, at the cost of one layout read.
+
+### ORI-I-95 — Toasts set a 4-second limit with no way to turn it off, adjust it or extend it
+
+`confirmed` · severity `should-fix` · source: reference audit 2026-09-19, criterion corrected verbatim
+
+- **Where:** packages/headless/src/core/toast/queue.ts:88 (4000ms default, no pause/resume); packages/vue/src/components/toast/ori-toaster.vue:27-33 (no labelled `role="region"`, no hotkey)
+- **What:** APG's Alert page cites SC 2.2.3 and 2.2.4, and the verbatim check established that **both are Level AAA**, so they do not bind an AA target. The criterion that does is **SC 2.2.1 Timing Adjustable, Level A**, and a 4s auto-dismiss meets none of its six exceptions. The saving clause is in 2.2.1's own Understanding text: content on a timer is exempt when the same information is available by a non-timer route. So today's toasts are probably compliant _because_ they carry no action — the moment one carries an Undo button, or is the only place an error is reported, they are not.
+- **Bearing:** this makes "add an action affordance" (Radix, Reka and Ark all ship one) a change that REQUIRES pause-on-hover rather than an independent feature. Decide them together.
+
+### ORI-I-96 — `OriMenu` skips disabled items, and the reason is nowhere
+
+`confirmed` · severity `nit` · source: reference audit 2026-09-19, APG text pulled verbatim
+
+- **Where:** packages/headless/src/core/menu/menu.connect.ts:49-57 (navigates an `enabled` array); packages/headless/src/vue/use-toolbar.ts:100-109 (deliberately omits the same predicate)
+- **What:** APG's **Menubar** pattern states "Disabled menu items are focusable but cannot be activated" as a fact of the pattern, while the **Toolbar** pattern says "Typically, disabled elements are not focusable" and permits focusability only as an exception for discoverability. So the stricter text is the menu's, and our two components resolve it in opposite directions: OriToolbar carries an APG citation in code and an e2e assertion for keeping disabled items focusable; OriMenu carries neither for skipping them. Not calling the behaviour a defect — our menu items are `<div role="menuitem">` with `aria-disabled`, and the trade is defensible — but the asymmetry is undocumented, which is a comment, not a code change.
