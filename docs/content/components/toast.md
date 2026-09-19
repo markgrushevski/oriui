@@ -338,14 +338,14 @@ Passing a plain `string` is shorthand for `{ text: string }`.
 
 ### `ToastOptions`
 
-| Option     | Type         | Default | Description                                                    |
-| ---------- | ------------ | ------- | -------------------------------------------------------------- |
-| `closable` | `boolean`    | `true`  | Renders a dismiss button on the toast.                         |
-| `color`    | `ThemeColor` | —       | Semantic color role; preset by severity shortcuts.             |
-| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms. `0` keeps the toast until dismissed. |
-| `icon`     | `string`     | —       | SVG path for a leading icon.                                   |
-| `text`     | `string`     | —       | Body message.                                                  |
-| `title`    | `string`     | —       | Bold heading above the body text.                              |
+| Option     | Type         | Default | Description                                                                                                     |
+| ---------- | ------------ | ------- | --------------------------------------------------------------------------------------------------------------- |
+| `closable` | `boolean`    | `false` | Renders a dismiss button. A sticky toast (`duration: 0`) opts itself in, because nothing else could dismiss it. |
+| `color`    | `ThemeColor` | —       | Semantic color role; preset by severity shortcuts.                                                              |
+| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms. `0` keeps the toast until dismissed.                                                  |
+| `icon`     | `string`     | —       | SVG path for a leading icon.                                                                                    |
+| `text`     | `string`     | —       | Body message.                                                                                                   |
+| `title`    | `string`     | —       | Bold heading above the body text.                                                                               |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
 
@@ -354,9 +354,10 @@ Passing a plain `string` is shorthand for `{ text: string }`.
 Place this component **once** near the app root (e.g. in the main layout). It Teleports to `<body>`
 and is gated behind an `onMounted` check so SSR markup stays stable.
 
-| Prop       | Type                                                                                              | Default       | Description                  |
-| ---------- | ------------------------------------------------------------------------------------------------- | ------------- | ---------------------------- |
-| `position` | `'top-left' \| 'top-right' \| 'top-center' \| 'bottom-left' \| 'bottom-right' \| 'bottom-center'` | `'top-right'` | Screen corner for the stack. |
+| Prop       | Type                                                                                              | Default       | Description                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `align`    | `'start' \| 'center'`                                                                             | `'start'`     | Alignment of every toast in the stack — forwarded to each `OriToast`. Pairs with a `top-center` / `bottom-center` position. |
+| `position` | `'top-left' \| 'top-right' \| 'top-center' \| 'bottom-left' \| 'bottom-right' \| 'bottom-center'` | `'top-right'` | Screen corner for the stack.                                                                                                |
 
 `OriToaster` declares no custom events. It drives itself from the shared queue returned by
 `useToast()` and calls `dismiss(id)` internally when a toast emits `close`.
@@ -366,13 +367,14 @@ and is gated behind an `onMounted` check so SSR markup stays stable.
 The single-toast card component. Used internally by `<OriToaster>` but also usable standalone
 to display a static notification embedded in a page.
 
-| Prop       | Type         | Default     | Description                                                      |
-| ---------- | ------------ | ----------- | ---------------------------------------------------------------- |
-| `closable` | `boolean`    | `false`     | Renders a dismiss button (`aria-label="Dismiss notification"`).  |
-| `color`    | `ThemeColor` | `'surface'` | Semantic color role — drives the accent border and icon color.   |
-| `icon`     | `string`     | —           | SVG path for a leading icon; rendered with `aria-hidden="true"`. |
-| `text`     | `string`     | —           | Body message. Use the `default` slot for richer markup.          |
-| `title`    | `string`     | —           | Bold heading above the body text.                                |
+| Prop       | Type                  | Default     | Description                                                                                                                     |
+| ---------- | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `align`    | `'start' \| 'center'` | `'start'`   | `center` centres the body on the CARD: the dismiss button leaves the flex flow and equal inline room is reserved on both sides. |
+| `closable` | `boolean`             | `false`     | Renders a dismiss button (`aria-label="Dismiss notification"`).                                                                 |
+| `color`    | `ThemeColor`          | `'surface'` | Semantic color role — drives the accent border and icon color.                                                                  |
+| `icon`     | `string`              | —           | SVG path for a leading icon; rendered with `aria-hidden="true"`.                                                                |
+| `text`     | `string`              | —           | Body message. Use the `default` slot for richer markup.                                                                         |
+| `title`    | `string`              | —           | Bold heading above the body text.                                                                                               |
 
 ### Events
 
