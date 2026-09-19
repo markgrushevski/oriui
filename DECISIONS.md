@@ -1168,3 +1168,50 @@ stack and surface — 7 of 34 — and nothing says why those seven. Every refere
 polymorphic (`component` in MUI and Mantine, `asChild` across Radix / Ark / Reka). The components that
 render a `<div>` and lack `as` (Card, Alert, Surface's siblings) are the ones where it bites, because a
 `<div>` has a far wider set of invalid parents than the `<span>` a Tag renders.
+
+### Correction to the entry above (2026-09-19, same day)
+
+The paragraph beginning "Still unrecorded, and a real gap: compound versus monolithic" contains two errors and
+one framing mistake. An adversarial pass caught them; they are corrected here rather than edited away,
+because the shape of the mistake is the useful part.
+
+**Error 1 — Element Plus was cited as an array precedent. Its Tabs are compound** (`el-tabs` / `el-tab-pane`),
+as are Vuetify's, Naive UI's and PrimeVue v4's. Of the two precedents that paragraph named, one was misread.
+
+**Error 2 — "every headless reference is compound" is not true either.** Downshift's `useSelect` is
+`items`-driven, and React Aria Components accepts `items` plus a render function.
+
+**Framing mistake — "compound VERSUS monolithic" is the wrong axis, and the references settle it.**
+`mui/base-ui`'s `SelectRoot` ships an `items` prop (`Record | ReadonlyArray<{label, value}> | ReadonlyArray<Group>`)
+**alongside** its compound parts, and Ark requires `createListCollection` in addition to compound children.
+Both needed the data array because value→label resolution, typeahead and `aria-activedescendant` cannot be
+derived from slotted children alone. Neither library treats the two as alternatives; both ship both.
+
+**What the evidence actually shows is a per-WIDGET split, not a per-layer one:**
+
+- **Data-shaped collections** (Select, Combobox) take an array in BOTH tiers. An array-driven `OriSelect`
+  needs no defence.
+- **Content-shaped collections** (Tabs, Accordion) are compound in both tiers: counted across the styled
+  libraries, Tabs is **12 compound to 1 array** and Accordion **11 to 1**, and the single array outlier is
+  Ant Design. Here oriUI stands with Ant Design against roughly a dozen peers, including every other Vue
+  library.
+
+**One more correction, to a claim made in the review that produced this entry:** "the short compound form is
+impossible in Vue" is false. Vuetify ships `<v-tabs><v-tab value="one">`, and so do Element Plus and Naive UI.
+The defensible narrow statement is that **slot-vnode introspection is fragile in Vue — coordinate through
+provide/inject instead**, which is an implementation note, not an API verdict. It was reached by quoting
+PrimeVue backwards: their "each component must render itself" is the argument FOR the compound Tabs they
+shipped in v4, not against compound.
+
+**The rule this leaves, and the one to write down:** the array prop owns the MODEL; the slot owns the
+RENDERING; and the array has to carry the affordances a model needs. What it does NOT license is building
+those affordances speculatively — measured against the only real consumer, four of the six gaps that entry
+listed (menu separators, submenus, option grouping, field mapping) have zero demand, and grouping is already
+reachable through a slot nobody uses. The one real gap is narrower than it was written: consumers need
+`T extends string` NARROWING on the item value, not generic object values. justpaint carries the complaint in
+its own source — `AuthForm.vue:37` bridges `string | number | undefined` by hand.
+
+**The internal inconsistency that IS worth fixing on its own merits**, because it is our own layer disagreeing
+with itself rather than with a reference: the menu core declares `separator` in its anatomy and exports
+`getSeparatorProps()` with `role="separator"`, the headless docs describe it, and the styled `OriMenu` renders
+it zero times with zero classes in `menu.css`. The styled tier is poorer than the headless tier it sits on.
