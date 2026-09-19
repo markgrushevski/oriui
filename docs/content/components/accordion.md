@@ -53,9 +53,9 @@ the shared `name` attribute, no JavaScript required.
 ```vue
 <OriAccordion
     :items="[
-        { value: 'one', title: 'What is oriUI?' },
-        { value: 'two', title: 'How do I install it?' },
-        { value: 'three', title: 'Does it work without Vue?' }
+        { value: 'one', label: 'What is oriUI?' },
+        { value: 'two', label: 'How do I install it?' },
+        { value: 'three', label: 'Does it work without Vue?' }
     ]"
 >
     <template #default="{ item }">
@@ -102,13 +102,13 @@ independently.
 <OriAccordion
     multiple
     :items="[
-        { value: 'step1', title: 'Step 1 — Install' },
-        { value: 'step2', title: 'Step 2 — Configure' },
-        { value: 'step3', title: 'Step 3 — Deploy' }
+        { value: 'step1', label: 'Step 1 — Install' },
+        { value: 'step2', label: 'Step 2 — Configure' },
+        { value: 'step3', label: 'Step 3 — Deploy' }
     ]"
 >
     <template #default="{ item }">
-        <p>Details for {{ item.title }}.</p>
+        <p>Details for {{ item.label }}.</p>
     </template>
 </OriAccordion>
 ```
@@ -205,9 +205,9 @@ triggers. Disabled items render `aria-disabled="true"` and `tabindex="-1"` on th
 ```vue
 <OriAccordion
     :items="[
-        { value: 'billing', title: 'Billing' },
-        { value: 'security', title: 'Security (restricted)', disabled: true },
-        { value: 'notifications', title: 'Notifications' }
+        { value: 'billing', label: 'Billing' },
+        { value: 'security', label: 'Security (restricted)', disabled: true },
+        { value: 'notifications', label: 'Notifications' }
     ]"
 />
 ```
@@ -243,9 +243,9 @@ Colors, radius, and rich slot content together — a common FAQ or settings patt
     color="secondary"
     radius="md"
     :items="[
-        { value: 'cost', title: 'Is oriUI free to use?' },
-        { value: 'framework', title: 'Which frameworks are supported?' },
-        { value: 'theming', title: 'How does theming work?' }
+        { value: 'cost', label: 'Is oriUI free to use?' },
+        { value: 'framework', label: 'Which frameworks are supported?' },
+        { value: 'theming', label: 'How does theming work?' }
     ]"
 >
     <template #default="{ item }">
@@ -327,8 +327,8 @@ planned.)
 import type { AccordionItem } from '@oriui/vue'
 
 const items: AccordionItem[] = [
-    { value: 'shipping', title: 'Shipping' },
-    { value: 'returns', title: 'Returns', disabled: true }
+    { value: 'shipping', label: 'Shipping' },
+    { value: 'returns', label: 'Returns', disabled: true }
 ]
 ```
 
@@ -341,7 +341,7 @@ const items: AccordionItem[] = [
 
 ### Slots
 
-| Slot      | Scope                                                                      | Description                                                                                                                                             |
-| --------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `label`   | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.title` string. |
-| `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused.     |
+| Slot      | Scope                                                                      | Description                                                                                                                                                                                                                                                                         |
+| --------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`   | `{ item: { value: string \| number; label: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.label` string. The slot is named for the REGION it fills, the item field for the value it carries — they are deliberately different words. |
+| `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused.                                                                                                                                 |
