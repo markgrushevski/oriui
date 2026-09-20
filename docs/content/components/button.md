@@ -19,14 +19,14 @@ A button is a block class plus single-class token utilities — one class repoin
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/button.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
 `ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
 already carries both; see [à-la-carte imports](/guides/css).
 
-The non-fill variants (`soft` / `outline` / `text` / `plain`) paint the label with the AA-safe
+The non-fill variants (`soft` / `outline` / `text` / `quiet`) paint the label with the AA-safe
 `--ori-color-text` tone rather than the raw role; `solid` keeps `--ori-color-on` for its solid
 background — see [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
 
@@ -39,7 +39,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 :ori-button{label="Tonal" variant="soft"}
 :ori-button{label="Outline" variant="outline"}
 :ori-button{label="Text" variant="text"}
-:ori-button{label="Plain" variant="plain"}
+:ori-button{label="Quiet" variant="quiet"}
 
 #vue
 
@@ -48,7 +48,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 <OriButton label="Tonal" variant="soft" />
 <OriButton label="Outline" variant="outline" />
 <OriButton label="Text" variant="text" />
-<OriButton label="Plain" variant="plain" />
+<OriButton label="Quiet" variant="quiet" />
 ```
 
 #html
@@ -330,7 +330,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | Prop           | Type                                                  | Default     | Description                                                                                                     |
 | -------------- | ----------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
 | `label`        | `string`                                              | —           | Visible button text. A labelled (or slotted) button is a normal button, never an icon square.                   |
-| `variant`      | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'plain'` | `'solid'`   | Visual style.                                                                                                   |
+| `variant`      | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'quiet'` | `'solid'`   | Visual style.                                                                                                   |
 | `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warning · danger · info · surface.                               |
 | `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                                                              |
 | `radius`       | `RadiusSize`                                          | `'full'`    | Corner radius (`none`–`full`).                                                                                  |

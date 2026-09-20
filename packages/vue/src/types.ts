@@ -38,4 +38,4 @@ export type ThemeColor = 'primary' | 'secondary' | 'surface' | 'background' | 's
 /* ==================== Variants ==================== */
 
 /** The emphasis ladder a component's `variant` prop accepts, loudest to quietest. */
-export type Variant = 'solid' | 'soft' | 'outline' | 'text' | 'plain'
+export type Variant = 'solid' | 'soft' | 'outline' | 'text' | 'quiet'

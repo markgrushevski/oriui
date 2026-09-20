@@ -213,8 +213,9 @@ practical gotchas go here.
   darker `--ori-color-text`, so it clears 3:1 for pale roles too. Guard: **e2e/text-contrast.spec.ts** (real
   Chromium — Node can't evaluate `oklch(from …)`, happy-dom axe has no layout): resolves computed `oklch()` /
   `color(srgb …)` via a 1×1 canvas, composites the tonal tint over surface, asserts >= 4.5:1 for every role × skin
-  × theme × text kind + the tonal hover/active tint + the bare-block baked path (`plain`, 0.5 opacity, intentionally
-  muted, is exempt). Min observed ~4.55:1.
+  × theme × text kind + the tonal hover/active tint + the bare-block baked path. The quietest variant used to be
+  exempt here (`plain`, 0.5 opacity, "intentionally muted") — it is now `quiet` at 0.85, the alpha that MEASURES
+  AA, and asserted like the rest (ORI-I-91). Min observed ~4.55:1.
 - **Runtime theme toggle leaves BAKED component colours stale — a Chromium bug, fixed in JS, not CSS.**
   Flipping the `ori-theme_dark` class at runtime changes the inherited role tokens, but Chromium MISSES the
   style invalidation for elements that BAKE a resolved alias into an element-scoped custom property consumed

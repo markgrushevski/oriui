@@ -20,7 +20,7 @@ An alert is a block class plus single-class token utilities — one class repoin
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warning) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant_*","type":"Style","description":"solid · <b>soft</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
+:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warning) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant_*","type":"Style","description":"solid · <b>soft</b> · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/alert.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -40,7 +40,7 @@ Five visual styles, all driven by the `ori-variant_*` utility. `soft` is the def
 :ori-alert{text="Soft alert" variant="soft" color="info"}
 :ori-alert{text="Outline alert" variant="outline" color="info"}
 :ori-alert{text="Text alert" variant="text" color="info"}
-:ori-alert{text="Plain alert" variant="plain" color="info"}
+:ori-alert{text="Quiet alert" variant="quiet" color="info"}
 
 #vue
 
@@ -49,7 +49,7 @@ Five visual styles, all driven by the `ori-variant_*` utility. `soft` is the def
 <OriAlert text="Soft alert" variant="soft" color="info" />
 <OriAlert text="Outline alert" variant="outline" color="info" />
 <OriAlert text="Text alert" variant="text" color="info" />
-<OriAlert text="Plain alert" variant="plain" color="info" />
+<OriAlert text="Quiet alert" variant="quiet" color="info" />
 ```
 
 #html
@@ -60,7 +60,7 @@ Five visual styles, all driven by the `ori-variant_*` utility. `soft` is the def
         <div class="ori-alert__body">Tonal alert</div>
     </div>
 </div>
-<!-- swap the variant: ori-variant_soft → ori-variant_solid / ori-variant_outline / ori-variant_text / ori-variant_plain -->
+<!-- swap the variant: ori-variant_soft → ori-variant_solid / ori-variant_outline / ori-variant_text / ori-variant_quiet -->
 ```
 
 ::
@@ -421,7 +421,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | `size`       | `ActionSize`                                          | `'md'`      | Body font scale (`xs`–`xxl`).                                                                                                                                      |
 | `text`       | `string`                                              | —           | Body text. Use the `default` slot for richer markup.                                                                                                               |
 | `title`      | `string`                                              | —           | Bold heading above the body. Use the `title` slot for richer markup.                                                                                               |
-| `variant`    | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'plain'` | `'soft'`    | Visual style.                                                                                                                                                      |
+| `variant`    | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'quiet'` | `'soft'`    | Visual style.                                                                                                                                                      |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 

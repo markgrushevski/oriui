@@ -38,9 +38,8 @@ const WATCH = 6
 // BAKED `--ori-color-text` (the :root default can't derive a block-baked role) — baked defaults are
 // button/tag/tabs/combobox → primary, alert → info.
 //
-// `data-muted` marks the deliberately-muted probes (a `--ori-variant-opacity` / `opacity` / 50%-currentcolor
-// tone: the `plain` variant, placeholders, disabled controls, the combobox empty message). They are measured
-// and REPORTED but never asserted — sub-AA is the point of them. Keeping them in the probe rather than out of
+// `data-muted` marks the deliberately-muted probes (an `opacity` / 50%-currentcolor tone: placeholders,
+// disabled controls, the combobox empty message). They are measured and REPORTED but never asserted — sub-AA is the point of them. Keeping them in the probe rather than out of
 // it means the excluded set is visible with live numbers instead of being a closed list in a comment, which is
 // how the form text went unmeasured in the first place.
 function markup(): string {
@@ -50,7 +49,7 @@ function markup(): string {
         <button class="ori-button ori-color_${role} ori-variant_outline" data-role="${role}" data-kind="button-outline">Outline</button>
         <button class="ori-button ori-color_${role} ori-variant_soft" data-role="${role}" data-kind="button-tonal">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_soft" data-active data-role="${role}" data-kind="button-soft-active">Soft</button>
-        <button class="ori-button ori-color_${role} ori-variant_plain" data-muted data-role="${role}" data-kind="button-plain">Plain</button>
+        <button class="ori-button ori-color_${role} ori-variant_quiet" data-role="${role}" data-kind="button-quiet">Quiet</button>
         <a class="ori-link ori-color_${role}" href="#" data-role="${role}" data-kind="link">Link</a>
         <span class="ori-tag ori-color_${role}" data-role="${role}" data-kind="tag"><span class="ori-tag__text">Tag</span></span>
         <div class="ori-alert ori-color_${role}" data-role="${role}" data-kind="alert"><div class="ori-alert__content"><div class="ori-alert__title">Alert</div></div></div>
@@ -144,7 +143,7 @@ type Row = Reading & { ratio: number; label: string }
 // getComputedStyle returns color-mix results in their mix space (oklch(…) / color(srgb … / .25)), which
 // colord can't parse. Resolve authoritatively in the engine: stack the colours on a 1×1 canvas (the opaque
 // backdrop first, then the element's own possibly-translucent bg, then its text) and read back the
-// composited sRGB pixel. `opacity` (the `plain` variant, the hint, a disabled control) is a group fade, so
+// composited sRGB pixel. `opacity` (the `quiet` variant, the hint, a disabled control) is a group fade, so
 // it is applied to the element's own bg and text alike — the probes never put an opacity group around a
 // painted background, which would need the fade carried through the whole stack.
 async function readState(page: Page, skin: string, theme: string): Promise<Reading[]> {

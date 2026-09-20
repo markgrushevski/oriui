@@ -19,7 +19,7 @@ A card is a block class plus single-class token utilities — one class repoints
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class. Defaults bake in solid variant, surface color, and lg radius — a bare ori-card is valid."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · <b>lg</b> · xl · full"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
+:class-table{:rows='[{"class":"ori-card","type":"Block","description":"Required base class. Defaults bake in solid variant, surface color, and lg radius — a bare ori-card is valid."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · <b>surface</b> · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · <b>lg</b> · xl · full"},{"class":"ori-card_fluid","type":"Layout","description":"full-width card"},{"class":"ori-card_row","type":"Layout","description":"horizontal layout — header and body side by side"},{"class":"ori-card__header · ori-card__header-prepend · ori-card__headline · ori-card__title · ori-card__subtitle · ori-card__header-append · ori-card__body · ori-card__actions","type":"Part","description":"structural BEM elements — header row · leading area · headline wrapper · title · subtitle · trailing area · body · action row"},{"class":"ori-card__actions_reverse","type":"Layout","description":"reverses the flex direction of an action row"},{"class":"aria-disabled · aria-busy","type":"State","description":"real attributes, not classes (disabled / loading props)"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/card.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -53,7 +53,7 @@ Five visual styles, all driven by the `ori-variant_*` utilities. The default is 
 :ori-card{variant="soft" color="surface" title="Soft" text="Soft tinted wash."}
 :ori-card{variant="outline" color="surface" title="Outline" text="Bordered, transparent."}
 :ori-card{variant="text" color="surface" title="Text" text="No border, no background."}
-:ori-card{variant="plain" color="surface" title="Plain" text="Fully unstyled variant."}
+:ori-card{variant="quiet" color="surface" title="Plain" text="Fully unstyled variant."}
 
 #vue
 
@@ -62,7 +62,7 @@ Five visual styles, all driven by the `ori-variant_*` utilities. The default is 
 <OriCard variant="soft" title="Soft" text="Soft tinted wash." />
 <OriCard variant="outline" title="Outline" text="Bordered, transparent." />
 <OriCard variant="text" title="Text" text="No border, no background." />
-<OriCard variant="plain" title="Plain" text="Fully unstyled variant." />
+<OriCard variant="quiet" title="Plain" text="Fully unstyled variant." />
 ```
 
 #html
@@ -74,7 +74,7 @@ Five visual styles, all driven by the `ori-variant_*` utilities. The default is 
     </div>
     <div class="ori-card__body">Default fill on surface.</div>
 </div>
-<!-- swap the variant: ori-variant_solid → ori-variant_soft / ori-variant_outline / ori-variant_text / ori-variant_plain -->
+<!-- swap the variant: ori-variant_solid → ori-variant_soft / ori-variant_outline / ori-variant_text / ori-variant_quiet -->
 ```
 
 ::
@@ -467,7 +467,7 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `subtitle`                | `string`     | —           | Subtitle below the title; falls back to the `subtitle` slot.                                   |
 | `text`                    | `string`     | —           | Body text; falls back to the `body` slot.                                                      |
 | `title`                   | `string`     | —           | Primary heading; falls back to the `title` slot.                                               |
-| `variant`                 | `Variant`    | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `plain`.                                 |
+| `variant`                 | `Variant`    | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `quiet`.                                 |
 
 ### Events & attributes
 

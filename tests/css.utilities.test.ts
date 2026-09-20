@@ -52,7 +52,7 @@ describe('@oriui/css utility class model', () => {
 
     it('still ships every single-class variant utility the component blocks read', () => {
         const css = stripComments(readFileSync(resolve(srcDir, 'themes/_themes-variant.css'), 'utf8'))
-        for (const variant of ['solid', 'soft', 'outline', 'text', 'plain']) {
+        for (const variant of ['solid', 'soft', 'outline', 'text', 'quiet']) {
             expect(css, `.ori-variant_${variant} is missing`).toContain(`.ori-variant_${variant} {`)
         }
     })

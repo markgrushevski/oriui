@@ -226,7 +226,7 @@ describe('the pressed look in @oriui/css', () => {
             declarations: m[2]
         }))
 
-    const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_plain', '.ori-variant_outline']
+    const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_quiet', '.ori-variant_outline']
 
     it('button.css styles the pressed state on the button itself — no ancestor gate', () => {
         const rules = pressedRules(strip('button.css'))
