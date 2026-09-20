@@ -27,17 +27,17 @@ function activate(id: string): void {
         <button type="button" data-testid="before">Before</button>
 
         <OriToolbar label="Formatting">
-            <OriToolbarButton label="Bold" icon="x" @click="activate('bold')" />
-            <OriToolbarButton label="Italic" icon="x" @click="activate('italic')" />
-            <OriToolbarButton label="Underline" icon="x" :disabled="true" @click="activate('underline')" />
-            <OriToolbarButton label="Strikethrough" icon="x" @click="activate('strikethrough')" />
+            <OriToolbarButton aria-label="Bold" icon="x" @click="activate('bold')" />
+            <OriToolbarButton aria-label="Italic" icon="x" @click="activate('italic')" />
+            <OriToolbarButton aria-label="Underline" icon="x" :disabled="true" @click="activate('underline')" />
+            <OriToolbarButton aria-label="Strikethrough" icon="x" @click="activate('strikethrough')" />
 
             <OriToolbarSeparator />
 
             <OriToolbarToggleGroup v-model="align" type="single" label="Alignment">
-                <OriToolbarToggleItem value="left" label="Align left" icon="x" />
-                <OriToolbarToggleItem value="center" label="Align center" icon="x" />
-                <OriToolbarToggleItem value="right" label="Align right" icon="x" />
+                <OriToolbarToggleItem value="left" aria-label="Align left" icon="x" />
+                <OriToolbarToggleItem value="center" aria-label="Align center" icon="x" />
+                <OriToolbarToggleItem value="right" aria-label="Align right" icon="x" />
             </OriToolbarToggleGroup>
         </OriToolbar>
 

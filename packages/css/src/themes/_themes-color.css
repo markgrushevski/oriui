@@ -38,10 +38,10 @@
         --ori-color-text: var(--ori-color-success-text);
     }
 
-    .ori-color_warn {
-        --ori-color: var(--ori-color-warn);
-        --ori-color-on: var(--ori-color-on-warn);
-        --ori-color-text: var(--ori-color-warn-text);
+    .ori-color_warning {
+        --ori-color: var(--ori-color-warning);
+        --ori-color-on: var(--ori-color-on-warning);
+        --ori-color-text: var(--ori-color-warning-text);
     }
 
     .ori-color_danger {

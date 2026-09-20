@@ -55,11 +55,11 @@ const INTENT: Record<SkinId, string> = {
         <div class="skin-gallery__preview">
             <span class="skin-gallery__preview-label">Live preview — {{ theme }}</span>
             <div class="skin-gallery__preview-row">
-                <OriButton text="Fill" variant="fill" />
-                <OriButton text="Tonal" variant="tonal" />
-                <OriButton text="Outline" variant="outline" />
+                <OriButton label="Solid" variant="solid" />
+                <OriButton label="Tonal" variant="soft" />
+                <OriButton label="Outline" variant="outline" />
                 <OriBadge :content="5" color="primary">
-                    <OriButton text="Inbox" variant="tonal" />
+                    <OriButton label="Inbox" variant="soft" />
                 </OriBadge>
             </div>
         </div>

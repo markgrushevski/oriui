@@ -22,7 +22,7 @@ separate base class is needed. The `ori-color_*` accent drives the focus ring; t
 neutral, theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-input_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height (size sugar on the wrapper)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-input","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-input_*","type":"Style","description":"<b>outline</b> · solid"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background (focus ring accent)"},{"class":"ori-input_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height (size sugar on the wrapper)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-input__label · ori-input__required · ori-input__field · ori-input__hint · ori-input__error","type":"Part","description":"label / required-asterisk / input / helper / error elements"},{"class":"ori-input_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/input.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -31,18 +31,18 @@ already carries both; see [à-la-carte imports](/guides/css).
 
 ## Variants
 
-Two visual styles — `outline` (default, border visible at rest) and `fill` (tinted background, no
+Two visual styles — `outline` (default, border visible at rest) and `solid` (tinted background, no
 border).
 
 ::example
 :ori-input{label="Outline" placeholder="Type here" variant="outline"}
-:ori-input{label="Fill" placeholder="Type here" variant="fill"}
+:ori-input{label="Solid" placeholder="Type here" variant="solid"}
 
 #vue
 
 ```vue
 <OriInput v-model="value" label="Outline" placeholder="Type here" variant="outline" />
-<OriInput v-model="value" label="Fill" placeholder="Type here" variant="fill" />
+<OriInput v-model="value" label="Solid" placeholder="Type here" variant="solid" />
 ```
 
 #html
@@ -53,7 +53,7 @@ border).
     <input id="f1" placeholder="Type here" class="ori-input__field ori-size-radius_md" />
 </div>
 
-<!-- swap the variant: ori-input_outline → ori-input_fill -->
+<!-- swap the variant: ori-input_outline → ori-input_solid -->
 ```
 
 ::
@@ -121,26 +121,26 @@ the text scale (`ori-font-size_*`).
 
 ## Radius
 
-From `zero` (square) through the default `md` to `rounded` (pill-shaped field).
+From `none` (square) through the default `md` to `full` (pill-shaped field).
 
 ::example
-:ori-input{label="zero" radius="zero" placeholder="Square"}
+:ori-input{label="none" radius="none" placeholder="Square"}
 :ori-input{label="sm" radius="sm" placeholder="Small"}
 :ori-input{label="md" radius="md" placeholder="Medium"}
 :ori-input{label="lg" radius="lg" placeholder="Large"}
-:ori-input{label="rounded" radius="rounded" placeholder="Pill"}
+:ori-input{label="full" radius="full" placeholder="Pill"}
 
 #vue
 
 ```vue
-<OriInput v-model="value" label="zero" radius="zero" />
-<OriInput v-model="value" label="rounded" radius="rounded" />
+<OriInput v-model="value" label="none" radius="none" />
+<OriInput v-model="value" label="full" radius="full" />
 ```
 
 #html
 
 ```html
-<input class="ori-input__field ori-size-radius_zero" />
+<input class="ori-input__field ori-size-radius_none" />
 ```
 
 ::
@@ -347,23 +347,23 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop          | Type                  | Default     | Description                                                                                               |
-| ------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`          | `'primary'` | Accent color for focus ring: primary · secondary · success · warn · danger · info · surface · background. |
-| `describedby` | `string`              | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                             |
-| `disabled`    | `boolean`             | `false`     | Real `disabled` attribute; blocks interaction and dims the field.                                         |
-| `error`       | `string`              | —           | Error message rendered below the field (`role="alert"`); also sets `aria-invalid="true"`.                 |
-| `fluid`       | `boolean`             | `false`     | Full-width — stretches wrapper to 100 % of its container.                                                 |
-| `hint`        | `string`              | —           | Helper text below the field; hidden while `error` is shown.                                               |
-| `id`          | `string`              | —           | Explicit id for the `<input>`; auto-generated via `useId` when omitted.                                   |
-| `invalid`     | `boolean`             | `false`     | Sets `aria-invalid="true"` without rendering an error message (for external validation).                  |
-| `label`       | `string`              | —           | Visible `<label>` text, wired to the field via `for`/`id`.                                                |
-| `placeholder` | `string`              | —           | Native placeholder text.                                                                                  |
-| `radius`      | `RadiusSize`          | `'md'`      | Corner radius of the field (`zero` · xs · sm · md · lg · xl · rounded).                                   |
-| `required`    | `boolean`             | `false`     | Native `required` attribute; also renders a visual asterisk (`aria-hidden`).                              |
-| `size`        | `ActionSize`          | `'md'`      | Field height + text scale (`xs` · sm · md · lg · xl · `xxl`).                                             |
-| `type`        | `string`              | `'text'`    | Native input type (`text`, `email`, `password`, `search`, `tel`, `url`, `number`, …).                     |
-| `variant`     | `'fill' \| 'outline'` | `'outline'` | Visual style: `outline` (border) or `fill` (tinted background).                                           |
+| Prop          | Type                   | Default     | Description                                                                                                  |
+| ------------- | ---------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| `color`       | `ThemeColor`           | `'primary'` | Accent color for focus ring: primary · secondary · success · warning · danger · info · surface · background. |
+| `describedby` | `string`               | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                                |
+| `disabled`    | `boolean`              | `false`     | Real `disabled` attribute; blocks interaction and dims the field.                                            |
+| `error`       | `string`               | —           | Error message rendered below the field (`role="alert"`); also sets `aria-invalid="true"`.                    |
+| `fluid`       | `boolean`              | `false`     | Full-width — stretches wrapper to 100 % of its container.                                                    |
+| `hint`        | `string`               | —           | Helper text below the field; hidden while `error` is shown.                                                  |
+| `id`          | `string`               | —           | Explicit id for the `<input>`; auto-generated via `useId` when omitted.                                      |
+| `invalid`     | `boolean`              | `false`     | Sets `aria-invalid="true"` without rendering an error message (for external validation).                     |
+| `label`       | `string`               | —           | Visible `<label>` text, wired to the field via `for`/`id`.                                                   |
+| `placeholder` | `string`               | —           | Native placeholder text.                                                                                     |
+| `radius`      | `RadiusSize`           | `'md'`      | Corner radius of the field (`none` · xs · sm · md · lg · xl · full).                                         |
+| `required`    | `boolean`              | `false`     | Native `required` attribute; also renders a visual asterisk (`aria-hidden`).                                 |
+| `size`        | `ActionSize`           | `'md'`      | Field height + text scale (`xs` · sm · md · lg · xl · `xxl`).                                                |
+| `type`        | `string`               | `'text'`    | Native input type (`text`, `email`, `password`, `search`, `tel`, `url`, `number`, …).                        |
+| `variant`     | `'solid' \| 'outline'` | `'outline'` | Visual style: `outline` (border) or `solid` (tinted background).                                             |
 
 ### Events & attributes
 

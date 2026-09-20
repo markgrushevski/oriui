@@ -7,7 +7,7 @@ const {
     indeterminate = false,
     label = 'Loading',
     max = 100,
-    radius = 'rounded',
+    radius = 'full',
     size = 'md',
     value = 0
 } = defineProps<{

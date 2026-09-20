@@ -53,7 +53,7 @@ describe('OriLink', () => {
     })
 
     it('maps every supported ThemeColor to its class', () => {
-        const colors = ['primary', 'secondary', 'success', 'warn', 'danger', 'info'] as const
+        const colors = ['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const
 
         for (const color of colors) {
             const wrapper = mount(OriLink, { props: { color }, slots: { default: 'x' } })

@@ -2,7 +2,7 @@
     :root {
         --ori-size-gap-step: calc(var(--ori-size-gap_md) / 4);
 
-        --ori-size-gap_zero: 0;
+        --ori-size-gap_none: 0;
         --ori-size-gap_xs: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 3);
         --ori-size-gap_sm: calc(var(--ori-size-gap_md) - var(--ori-size-gap-step) * 2);
         /* rem (16px baseline: 0.5rem = 8px) so spacing follows the user's browser font-size setting;
@@ -20,8 +20,8 @@
     /* Single-class: `.ori-size-gap_lg` repoints the alias on its own — the scale lives in :root
        (ori.tokens), so no `.ori-size-gap` base is needed. They sit in ori.utilities (declared
        last), so they beat a block's baked-in gap by layer order. Mirrors `.ori-size-radius_*`. */
-    .ori-size-gap_zero {
-        --ori-size-gap: var(--ori-size-gap_zero);
+    .ori-size-gap_none {
+        --ori-size-gap: var(--ori-size-gap_none);
     }
 
     .ori-size-gap_xs {

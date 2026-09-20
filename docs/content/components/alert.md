@@ -5,7 +5,7 @@ title: Alert
 # Alert
 
 A styled, accessible notification banner. Its live-region politeness is derived from the color —
-urgent `danger` / `warn` render `role="alert"` (assertive), everything else `role="status"` (polite) —
+urgent `danger` / `warning` render `role="alert"` (assertive), everything else `role="status"` (polite) —
 so a non-urgent banner isn't announced assertively (override with the `live` prop). It supports an
 optional icon, a title, body text, an actions row, and a dismiss button.
 
@@ -20,60 +20,60 @@ An alert is a block class plus single-class token utilities — one class repoin
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warn) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant_*","type":"Style","description":"fill · <b>tonal</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
+:class-table{:rows='[{"class":"ori-alert","type":"Block","description":"Required base class. The Vue component sets role=alert (danger/warning) or role=status (otherwise); standalone markup picks the role itself."},{"class":"ori-variant_*","type":"Style","description":"solid · <b>soft</b> · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · <b>info</b> · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the body text"},{"class":"ori-alert__icon · ori-alert__content · ori-alert__title · ori-alert__body · ori-alert__actions · ori-alert__close","type":"Part","description":"internal layout elements"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/alert.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
 `ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
 already carries both; see [à-la-carte imports](/guides/css).
 
-Like Button, the non-fill variants (the default `tonal` included) paint the body text with the
+Like Button, the non-fill variants (the default `soft` included) paint the body text with the
 AA-safe `--ori-color-text` tone rather than the raw role — see
 [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
 
 ## Variants
 
-Five visual styles, all driven by the `ori-variant_*` utility. `tonal` is the default.
+Five visual styles, all driven by the `ori-variant_*` utility. `soft` is the default.
 
 ::example
-:ori-alert{text="Fill alert" variant="fill" color="info"}
-:ori-alert{text="Tonal alert" variant="tonal" color="info"}
+:ori-alert{text="Solid alert" variant="solid" color="info"}
+:ori-alert{text="Soft alert" variant="soft" color="info"}
 :ori-alert{text="Outline alert" variant="outline" color="info"}
 :ori-alert{text="Text alert" variant="text" color="info"}
-:ori-alert{text="Plain alert" variant="plain" color="info"}
+:ori-alert{text="Quiet alert" variant="quiet" color="info"}
 
 #vue
 
 ```vue
-<OriAlert text="Fill alert" variant="fill" color="info" />
-<OriAlert text="Tonal alert" variant="tonal" color="info" />
+<OriAlert text="Solid alert" variant="solid" color="info" />
+<OriAlert text="Soft alert" variant="soft" color="info" />
 <OriAlert text="Outline alert" variant="outline" color="info" />
 <OriAlert text="Text alert" variant="text" color="info" />
-<OriAlert text="Plain alert" variant="plain" color="info" />
+<OriAlert text="Quiet alert" variant="quiet" color="info" />
 ```
 
 #html
 
 ```html
-<div class="ori-alert ori-variant_tonal ori-color_info" role="status">
+<div class="ori-alert ori-variant_soft ori-color_info" role="status">
     <div class="ori-alert__content">
         <div class="ori-alert__body">Tonal alert</div>
     </div>
 </div>
-<!-- swap the variant: ori-variant_tonal → ori-variant_fill / ori-variant_outline / ori-variant_text / ori-variant_plain -->
+<!-- swap the variant: ori-variant_soft → ori-variant_solid / ori-variant_outline / ori-variant_text / ori-variant_quiet -->
 ```
 
 ::
 
 ## Colors
 
-Every semantic role. Use `success`, `warn`, `danger`, and `info` for status messages.
+Every semantic role. Use `success`, `warning`, `danger`, and `info` for status messages.
 
 ::example
 :ori-alert{text="Primary" color="primary"}
 :ori-alert{text="Secondary" color="secondary"}
 :ori-alert{text="Success" color="success"}
-:ori-alert{text="Warning" color="warn"}
+:ori-alert{text="Warning" color="warning"}
 :ori-alert{text="Danger" color="danger"}
 :ori-alert{text="Info" color="info"}
 
@@ -82,7 +82,7 @@ Every semantic role. Use `success`, `warn`, `danger`, and `info` for status mess
 ```vue
 <OriAlert text="Primary" color="primary" />
 <OriAlert text="Success" color="success" />
-<OriAlert text="Warning" color="warn" />
+<OriAlert text="Warning" color="warning" />
 <OriAlert text="Danger" color="danger" />
 <OriAlert text="Info" color="info" />
 ```
@@ -90,8 +90,8 @@ Every semantic role. Use `success`, `warn`, `danger`, and `info` for status mess
 #html
 
 ```html
-<!-- swap the color: ori-color_info → ori-color_success / ori-color_warn / ori-color_danger / ori-color_primary -->
-<div class="ori-alert ori-variant_tonal ori-color_danger" role="alert">
+<!-- swap the color: ori-color_info → ori-color_success / ori-color_warning / ori-color_danger / ori-color_primary -->
+<div class="ori-alert ori-variant_soft ori-color_danger" role="alert">
     <div class="ori-alert__content">
         <div class="ori-alert__body">Danger</div>
     </div>
@@ -104,13 +104,13 @@ Variant and color compose freely — e.g. an outline danger alert:
 
 ::example
 :ori-alert{text="Something went wrong. Please try again." variant="outline" color="danger"}
-:ori-alert{text="Your changes have been saved." variant="fill" color="success"}
+:ori-alert{text="Your changes have been saved." variant="solid" color="success"}
 
 #vue
 
 ```vue
 <OriAlert text="Something went wrong. Please try again." variant="outline" color="danger" />
-<OriAlert text="Your changes have been saved." variant="fill" color="success" />
+<OriAlert text="Your changes have been saved." variant="solid" color="success" />
 ```
 
 #html
@@ -130,18 +130,18 @@ Variant and color compose freely — e.g. an outline danger alert:
 Pass `title` to add a bold heading above the body text.
 
 ::example
-:ori-alert{title="Session expired" text="Please sign in again to continue." color="warn"}
+:ori-alert{title="Session expired" text="Please sign in again to continue." color="warning"}
 
 #vue
 
 ```vue
-<OriAlert title="Session expired" text="Please sign in again to continue." color="warn" />
+<OriAlert title="Session expired" text="Please sign in again to continue." color="warning" />
 ```
 
 #html
 
 ```html
-<div class="ori-alert ori-variant_tonal ori-color_warn" role="alert">
+<div class="ori-alert ori-variant_soft ori-color_warning" role="alert">
     <div class="ori-alert__content">
         <div class="ori-alert__title">Session expired</div>
         <div class="ori-alert__body">Please sign in again to continue.</div>
@@ -157,7 +157,7 @@ Pass an SVG path to `icon` to prepend a visual cue.
 
 ::example
 :ori-alert{title="Success" text="Your profile has been updated." color="success" icon="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"}
-:ori-alert{title="Warning" text="Disk space is running low." color="warn" icon="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"}
+:ori-alert{title="Warning" text="Disk space is running low." color="warning" icon="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"}
 :ori-alert{title="Error" text="Failed to load data." color="danger" icon="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"}
 
 #vue
@@ -174,7 +174,7 @@ Pass an SVG path to `icon` to prepend a visual cue.
 <OriAlert
     title="Warning"
     text="Disk space is running low."
-    color="warn"
+    color="warning"
     icon="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
 />
 ```
@@ -182,7 +182,7 @@ Pass an SVG path to `icon` to prepend a visual cue.
 #html
 
 ```html
-<div class="ori-alert ori-variant_tonal ori-color_success" role="status">
+<div class="ori-alert ori-variant_soft ori-color_success" role="status">
     <div class="ori-alert__icon">
         <i class="ori-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
@@ -228,7 +228,7 @@ const visible = ref(true)
 #html
 
 ```html
-<div class="ori-alert ori-variant_tonal ori-color_info" role="status">
+<div class="ori-alert ori-variant_soft ori-color_info" role="status">
     <div class="ori-alert__content">
         <div class="ori-alert__title">Update available</div>
         <div class="ori-alert__body">A new version is ready to install.</div>
@@ -264,7 +264,7 @@ const visible = ref(true)
 
 ```html
 <!-- swap the font-size: ori-font-size_md → ori-font-size_xs / ori-font-size_sm / ori-font-size_lg / ori-font-size_xl / ori-font-size_xxl -->
-<div class="ori-alert ori-font-size_lg ori-variant_tonal ori-color_info" role="status">
+<div class="ori-alert ori-font-size_lg ori-variant_soft ori-color_info" role="status">
     <div class="ori-alert__content">
         <div class="ori-alert__body">Large alert</div>
     </div>
@@ -275,28 +275,28 @@ const visible = ref(true)
 
 ## Radius
 
-From `zero` (sharp corners) to `rounded` (pill). Default is `md`.
+From `none` (sharp corners) to `full` (pill). Default is `md`.
 
 ::example
-:ori-alert{text="No radius" radius="zero" color="info"}
+:ori-alert{text="No radius" radius="none" color="info"}
 :ori-alert{text="Small radius" radius="sm" color="info"}
 :ori-alert{text="Medium radius (default)" radius="md" color="info"}
 :ori-alert{text="Large radius" radius="lg" color="info"}
-:ori-alert{text="Rounded" radius="rounded" color="info"}
+:ori-alert{text="Full" radius="full" color="info"}
 
 #vue
 
 ```vue
-<OriAlert text="No radius" radius="zero" color="info" />
+<OriAlert text="No radius" radius="none" color="info" />
 <OriAlert text="Medium radius (default)" radius="md" color="info" />
-<OriAlert text="Rounded" radius="rounded" color="info" />
+<OriAlert text="Full" radius="full" color="info" />
 ```
 
 #html
 
 ```html
-<!-- swap the radius: ori-size-radius_md → ori-size-radius_zero / ori-size-radius_sm / ori-size-radius_lg / ori-size-radius_xl / ori-size-radius_rounded -->
-<div class="ori-alert ori-size-radius_rounded ori-variant_tonal ori-color_info" role="status">
+<!-- swap the radius: ori-size-radius_md → ori-size-radius_none / ori-size-radius_sm / ori-size-radius_lg / ori-size-radius_xl / ori-size-radius_full -->
+<div class="ori-alert ori-size-radius_full ori-variant_soft ori-color_info" role="status">
     <div class="ori-alert__content">
         <div class="ori-alert__body">Rounded</div>
     </div>
@@ -330,12 +330,12 @@ A form submission result and a persistent banner with actions — the everyday c
 <OriAlert
     title="New terms of service"
     text="We have updated our terms. Please review before continuing."
-    color="warn"
-    variant="tonal"
+    color="warning"
+    variant="soft"
 >
     <template #actions>
-        <OriButton text="Review" size="sm" variant="tonal" color="warn" />
-        <OriButton text="Dismiss" size="sm" variant="text" color="warn" />
+        <OriButton label="Review" size="sm" variant="soft" color="warning" />
+        <OriButton label="Dismiss" size="sm" variant="text" color="warning" />
     </template>
 </OriAlert>
 ```
@@ -362,13 +362,13 @@ A form submission result and a persistent banner with actions — the everyday c
 </div>
 
 <!-- alert with actions row -->
-<div class="ori-alert ori-variant_tonal ori-color_warn" role="alert">
+<div class="ori-alert ori-variant_soft ori-color_warning" role="alert">
     <div class="ori-alert__content">
         <div class="ori-alert__title">New terms of service</div>
         <div class="ori-alert__body">We have updated our terms. Please review before continuing.</div>
         <div class="ori-alert__actions">
-            <button class="ori-button ori-variant_tonal ori-color_warn …">Review</button>
-            <button class="ori-button ori-variant_text ori-color_warn …">Dismiss</button>
+            <button class="ori-button ori-variant_soft ori-color_warning …">Review</button>
+            <button class="ori-button ori-variant_text ori-color_warning …">Dismiss</button>
         </div>
     </div>
 </div>
@@ -382,7 +382,7 @@ The accessibility contract holds across every layer — the standalone classes a
 render the same attributes.
 
 - The **live-region politeness is derived from the color** so non-urgent content isn't announced
-  assertively: urgent colors (`danger` / `warn`) render `role="alert"` (`aria-live="assertive"` —
+  assertively: urgent colors (`danger` / `warning`) render `role="alert"` (`aria-live="assertive"` —
   interrupts the screen reader), and everything else (the `info` default, `success`, …) renders
   `role="status"` (`aria-live="polite"` — announced at the next pause). Override with the `live` prop
   (`assertive` / `polite` / `off`); `off` removes the live region entirely (for content that is part of
@@ -410,24 +410,24 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 
 ### Props
 
-| Prop         | Type                                                  | Default     | Description                                                                                                                                                     |
-| ------------ | ----------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `closable`   | `boolean`                                             | `false`     | Renders a dismiss button; emit `close` to remove the alert.                                                                                                     |
-| `closeLabel` | `string`                                              | `'Dismiss'` | `aria-label` on the dismiss button.                                                                                                                             |
-| `color`      | `ThemeColor`                                          | `'info'`    | Semantic role: primary · secondary · success · warn · danger · info · surface · background.                                                                     |
-| `icon`       | `string`                                              | —           | SVG path for the leading icon. Use the `icon` slot for custom markup.                                                                                           |
-| `live`       | `'assertive' \| 'polite' \| 'off'`                    | _derived_   | Live-region politeness. Defaults to `assertive` (`role="alert"`) for `danger` / `warn` and `polite` (`role="status"`) otherwise; `off` removes the live region. |
-| `radius`     | `RadiusSize`                                          | `'md'`      | Corner radius (`zero` · xs · sm · md · lg · xl · `rounded`).                                                                                                    |
-| `size`       | `ActionSize`                                          | `'md'`      | Body font scale (`xs`–`xxl`).                                                                                                                                   |
-| `text`       | `string`                                              | —           | Body text. Use the `default` slot for richer markup.                                                                                                            |
-| `title`      | `string`                                              | —           | Bold heading above the body. Use the `title` slot for richer markup.                                                                                            |
-| `variant`    | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'tonal'`   | Visual style.                                                                                                                                                   |
+| Prop         | Type                                                  | Default     | Description                                                                                                                                                        |
+| ------------ | ----------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `closable`   | `boolean`                                             | `false`     | Renders a dismiss button; emit `close` to remove the alert.                                                                                                        |
+| `closeLabel` | `string`                                              | `'Dismiss'` | `aria-label` on the dismiss button.                                                                                                                                |
+| `color`      | `ThemeColor`                                          | `'info'`    | Semantic role: primary · secondary · success · warning · danger · info · surface · background.                                                                     |
+| `icon`       | `string`                                              | —           | SVG path for the leading icon. Use the `icon` slot for custom markup.                                                                                              |
+| `live`       | `'assertive' \| 'polite' \| 'off'`                    | _derived_   | Live-region politeness. Defaults to `assertive` (`role="alert"`) for `danger` / `warning` and `polite` (`role="status"`) otherwise; `off` removes the live region. |
+| `radius`     | `RadiusSize`                                          | `'md'`      | Corner radius (`none` · xs · sm · md · lg · xl · `full`).                                                                                                          |
+| `size`       | `ActionSize`                                          | `'md'`      | Body font scale (`xs`–`xxl`).                                                                                                                                      |
+| `text`       | `string`                                              | —           | Body text. Use the `default` slot for richer markup.                                                                                                               |
+| `title`      | `string`                                              | —           | Bold heading above the body. Use the `title` slot for richer markup.                                                                                               |
+| `variant`    | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'quiet'` | `'soft'`    | Visual style.                                                                                                                                                      |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
-`ActionSize`: `'text' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'`
+`ActionSize`: `'inherit' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'`
 
-`RadiusSize`: `'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'rounded'`
+`RadiusSize`: `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'`
 
 ### Events & attributes
 

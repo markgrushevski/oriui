@@ -22,31 +22,31 @@ a subtree**, a **5-minute brand walkthrough**, and how customized color reaches 
 ## 1 · Start with the props — the semantic roles
 
 Before overriding anything, say what you mean. The styled components take a `color` **role** —
-`primary` · `secondary` · `surface` · `background` · `success` · `warn` · `danger` · `info` — and,
+`primary` · `secondary` · `surface` · `background` · `success` · `warning` · `danger` · `info` — and,
 where a surface can be painted more than one way, a `variant` **mapping** that decides _how_ the role
-is painted: `fill` (role as background, its `on-` color as text), `tonal` / `outline` / `text` /
-`plain` (role as tint / border / text). Color is the _role_, variant is the _mapping_ — the
+is painted: `solid` (role as background, its `on-` color as text), `soft` / `outline` / `text` /
+`quiet` (role as tint / border / text). Color is the _role_, variant is the _mapping_ — the
 background-and-text pairing is never yours to hand-assemble.
 
 ::example
-:ori-button{text="Save" color="primary" variant="fill"}
-:ori-button{text="Delete" color="danger" variant="outline"}
-:ori-button{text="Done" color="success" variant="tonal"}
+:ori-button{label="Save" color="primary" variant="solid"}
+:ori-button{label="Delete" color="danger" variant="outline"}
+:ori-button{label="Done" color="success" variant="soft"}
 
 #vue
 
 ```vue
-<OriButton text="Save" color="primary" variant="fill" />
-<OriButton text="Delete" color="danger" variant="outline" />
-<OriButton text="Done" color="success" variant="tonal" />
+<OriButton label="Save" color="primary" variant="solid" />
+<OriButton label="Delete" color="danger" variant="outline" />
+<OriButton label="Done" color="success" variant="soft" />
 ```
 
 #html
 
 ```html
-<button class="ori-button ori-variant_fill ori-color_primary">Save</button>
+<button class="ori-button ori-variant_solid ori-color_primary">Save</button>
 <button class="ori-button ori-variant_outline ori-color_danger">Delete</button>
-<button class="ori-button ori-variant_tonal ori-color_success">Done</button>
+<button class="ori-button ori-variant_soft ori-color_success">Done</button>
 ```
 
 ::
@@ -147,7 +147,7 @@ the tone tracks the **active theme** automatically. And because both formulas re
 non-fill text tone is AA-safe **for free**. Override the derived value only to fine-tune the exact
 hue:
 
-- **Global**, every mode and skin: `:root { --ori-color-warn-text: #b45309 }`. A flat override value
+- **Global**, every mode and skin: `:root { --ori-color-warning-text: #b45309 }`. A flat override value
   is theme-agnostic — unlike oriUI's own formula above, it needs no light/dark split — so your
   unlayered `:root` rule beats both oriUI's light default and its dark re-declaration, and one
   declaration covers both modes. Nest it inside `.ori-theme_dark` / `:root.dark` too if you want a
@@ -158,7 +158,7 @@ hue:
   escape hatch as `--ori-color` / `--ori-color-on` (section 4 below).
 
 This replaces the old workaround of targeting a component's fill token directly (e.g.
-`.ori-button { --ori-color: … }`) to patch up text contrast — that also repaints the `fill` variant's
+`.ori-button { --ori-color: … }`) to patch up text contrast — that also repaints the `solid` variant's
 background, since `--ori-color` feeds both. `--ori-color-text` is the sanctioned point: it only ever
 feeds the non-fill / selected-text axis — and now the `outline` variant's border too, so the ring and
 the label match. _(Full per-role token reference:
@@ -168,8 +168,8 @@ the label match. _(Full per-role token reference:
 
 The size scales live at `:root` too (`--ori-size-radius_*`, `--ori-font-size_*`), so the same
 unlayered block rebrands them. `--ori-size-radius_md` anchors the whole scale — `xs` / `sm` / `lg` /
-`xl` are `calc()`-derived from it, so one override moves every derived step proportionally (`zero`
-and the `9999px` `rounded` pill stay fixed). The font ladder pivots on `--ori-font-size_md` the same
+`xl` are `calc()`-derived from it, so one override moves every derived step proportionally (`none`
+and the `9999px` `full` pill stay fixed). The font ladder pivots on `--ori-font-size_md` the same
 way, in fixed ±`0.125rem` (2px at the browser default) steps:
 
 ```css
@@ -180,7 +180,7 @@ way, in fixed ±`0.125rem` (2px at the browser default) steps:
 ```
 
 > A repoint only moves components that resolve a **derived** step. Several controls pin a fixed step
-> on purpose — buttons, badges, tags, and avatars default to `rounded` (the `9999px` pill) — so an
+> on purpose — buttons, badges, tags, and avatars default to `full` (the `9999px` pill) — so an
 > `_md` repoint doesn't square a default button. Bring such a control onto your house radius per
 > instance: the `radius="md"` prop / `ori-size-radius_md` class.
 
@@ -207,27 +207,27 @@ This table is a quick orientation map; the full per-component class reference li
 page — see [Button](/components/button) for the canonical list.
 
 ::example
-:ori-button{text="Brand" color="primary" variant="fill"}
-:ori-button{text="Danger" color="danger" variant="tonal"}
-:ori-button{text="Squared" radius="sm" variant="outline"}
-:ori-button{text="Large" size="lg" variant="fill"}
+:ori-button{label="Brand" color="primary" variant="solid"}
+:ori-button{label="Danger" color="danger" variant="soft"}
+:ori-button{label="Squared" radius="sm" variant="outline"}
+:ori-button{label="Large" size="lg" variant="solid"}
 
 #vue
 
 ```vue
-<OriButton text="Brand" color="primary" variant="fill" />
-<OriButton text="Danger" color="danger" variant="tonal" />
-<OriButton text="Squared" radius="sm" variant="outline" />
-<OriButton text="Large" size="lg" variant="fill" />
+<OriButton label="Brand" color="primary" variant="solid" />
+<OriButton label="Danger" color="danger" variant="soft" />
+<OriButton label="Squared" radius="sm" variant="outline" />
+<OriButton label="Large" size="lg" variant="solid" />
 ```
 
 #html
 
 ```html
-<button class="ori-button ori-variant_fill ori-color_primary">Brand</button>
-<button class="ori-button ori-variant_tonal ori-color_danger">Danger</button>
+<button class="ori-button ori-variant_solid ori-color_primary">Brand</button>
+<button class="ori-button ori-variant_soft ori-color_danger">Danger</button>
 <button class="ori-button ori-size-radius_sm ori-variant_outline">Squared</button>
-<button class="ori-button ori-button_lg ori-variant_fill">Large</button>
+<button class="ori-button ori-button_lg ori-variant_solid">Large</button>
 ```
 
 ::
@@ -239,17 +239,17 @@ marketing CTA — repoint the **resolved alias pair** on the element itself. `--
 and `--ori-color-on` (its legible partner) are what every variant actually reads:
 
 ```vue
-<OriButton text="One teal button" style="--ori-color: teal; --ori-color-on: white" />
+<OriButton label="One teal button" style="--ori-color: teal; --ori-color-on: white" />
 ```
 
 ```html
-<button class="ori-button ori-variant_fill" style="--ori-color: teal; --ori-color-on: white">One teal button</button>
+<button class="ori-button ori-variant_solid" style="--ori-color: teal; --ori-color-on: white">One teal button</button>
 ```
 
 Because you repoint the alias the variants are built on, **all the machinery keeps working**:
 
-- every variant maps your accent correctly — `fill` paints it as the background with `--ori-color-on`
-  text; `tonal`'s tint derives from `--ori-color`; `outline`'s border reads `--ori-color-text`, the
+- every variant maps your accent correctly — `solid` paints it as the background with `--ori-color-on`
+  text; `soft`'s tint derives from `--ori-color`; `outline`'s border reads `--ori-color-text`, the
   same tone as its label;
 - hover and active states stay right, because they are `color-mix()` **derivations of the alias**
   (a filled button hovers to `color-mix(in srgb, var(--ori-color), white 15%)`) — there is no second
@@ -258,7 +258,7 @@ Because you repoint the alias the variants are built on, **all the machinery kee
 - state styling is untouched — it keys off real attributes (`disabled`, `aria-busy`, `data-active`),
   never off the palette.
 
-**On a non-fill variant** (`tonal` / `outline` / `text` / `plain`), the label reads a _third_ alias,
+**On a non-fill variant** (`soft` / `outline` / `text` / `quiet`), the label reads a _third_ alias,
 `--ori-color-text` — not `--ori-color` directly (see
 [Text — the on-surface foreground](/guides/design-tokens#text-the-on-surface-foreground)). CSS custom
 properties don't re-substitute on inheritance: setting only `--ori-color` here does **not** also
@@ -269,8 +269,8 @@ dark-safe one-off too):
 
 ```vue
 <OriButton
-    text="One teal button"
-    variant="tonal"
+    label="One teal button"
+    variant="soft"
     style="--ori-color: teal; --ori-color-on: white; --ori-color-text: oklch(from teal min(l, 0.42) c h)"
 />
 ```
@@ -329,7 +329,7 @@ component** from the raw step (a card reads `var(--ori-size-radius_lg)` on itsel
 
 ```html
 <div style="--ori-size-action_md: 2rem; --ori-size-radius_md: 4px; --ori-font-size_md: 15px">
-    <!-- panels, menus, inputs in here tighten; buttons keep their pinned `rounded` step -->
+    <!-- panels, menus, inputs in here tighten; buttons keep their pinned `full` step -->
 </div>
 ```
 
@@ -385,7 +385,7 @@ Then add one `:root` block to your stylesheet:
 That's it. Every primary button, focus ring, switch, and accent across the library is now your violet, in
 light **and** dark — and it stays accessible, because state is real attributes and the `on-` pairing
 carries the contrast. The radius change reaches every control on a **derived** step (cards, panels,
-inputs); controls pinned to another step (buttons default to `rounded`) keep theirs until you set their
+inputs); controls pinned to another step (buttons default to `full`) keep theirs until you set their
 `radius` prop / `ori-size-radius_md` class to `md`. No component was edited, no class was added, nothing
 was forked. Start with the defaults to prototype; drop in this block when you're ready to ship — that's
 _scale without rewriting_.

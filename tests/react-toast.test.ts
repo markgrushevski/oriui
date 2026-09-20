@@ -31,17 +31,17 @@ describe('React useToast', () => {
         expect(result.current.toasts[0]?.closable).toBe(true) // queue default
     })
 
-    it('severity shortcuts set the fallback color (success/danger/warn/info); an explicit color still wins', () => {
+    it('severity shortcuts set the fallback color (success/danger/warning/info); an explicit color still wins', () => {
         const { result } = renderHook(() => useToast())
 
         act(() => {
             result.current.success({ text: 's', duration: 0 })
             result.current.error({ text: 'e', duration: 0 })
-            result.current.warn({ text: 'w', duration: 0 })
+            result.current.warning({ text: 'w', duration: 0 })
             result.current.info({ text: 'i', duration: 0 })
         })
 
-        expect(result.current.toasts.map((t) => t.color)).toEqual(['success', 'danger', 'warn', 'info'])
+        expect(result.current.toasts.map((t) => t.color)).toEqual(['success', 'danger', 'warning', 'info'])
 
         act(() => {
             result.current.success({ text: 'x', color: 'primary', duration: 0 }) // explicit color overrides the shortcut
@@ -108,7 +108,7 @@ describe('React useToast', () => {
         // Rebuilding them per render would hand consumers a new `toast`/`dismiss`/... on every render and
         // re-fire every effect that lists one in its dependency array — the standard React footgun, and part
         // of the public hook surface 1.0 freezes. `renderHook` + `rerender` is exactly that consumer.
-        const keys = ['toast', 'success', 'error', 'warn', 'info', 'dismiss', 'clear'] as const
+        const keys = ['toast', 'success', 'error', 'warning', 'info', 'dismiss', 'clear'] as const
 
         const { result, rerender } = renderHook(() => useToast())
         const first = result.current

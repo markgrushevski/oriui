@@ -5,28 +5,28 @@ import { expectNoA11yViolations } from './helpers/axe'
 
 describe('OriKbd', () => {
     it('renders a <kbd> element with the ori-kbd block class by default', () => {
-        const wrapper = mount(OriKbd, { props: { text: 'Enter' } })
+        const wrapper = mount(OriKbd, { props: { label: 'Enter' } })
 
         expect(wrapper.element.tagName.toLowerCase()).toBe('kbd')
         expect(wrapper.classes()).toContain('ori-kbd')
     })
 
     it('has no extra variant / color / size classes', () => {
-        const classes = mount(OriKbd, { props: { text: 'Ctrl' } }).classes()
+        const classes = mount(OriKbd, { props: { label: 'Ctrl' } }).classes()
 
         // Only the single block class — no color, variant, or size modifiers
         expect(classes).toEqual(['ori-kbd'])
     })
 
     it('renders the text prop as fallback slot content', () => {
-        const wrapper = mount(OriKbd, { props: { text: 'Shift' } })
+        const wrapper = mount(OriKbd, { props: { label: 'Shift' } })
 
         expect(wrapper.text()).toBe('Shift')
     })
 
     it('renders default slot content and ignores the text prop when slot is provided', () => {
         const wrapper = mount(OriKbd, {
-            props: { text: 'ignored' },
+            props: { label: 'ignored' },
             slots: { default: 'Ctrl' }
         })
 
@@ -42,7 +42,7 @@ describe('OriKbd', () => {
     })
 
     it('renders a custom element tag via the `as` prop', () => {
-        const wrapper = mount(OriKbd, { props: { as: 'span', text: 'Esc' } })
+        const wrapper = mount(OriKbd, { props: { as: 'span', label: 'Esc' } })
 
         expect(wrapper.element.tagName.toLowerCase()).toBe('span')
         expect(wrapper.classes()).toContain('ori-kbd')
@@ -50,7 +50,7 @@ describe('OriKbd', () => {
     })
 
     it('renders a <code> element when as="code"', () => {
-        const wrapper = mount(OriKbd, { props: { as: 'code', text: 'Tab' } })
+        const wrapper = mount(OriKbd, { props: { as: 'code', label: 'Tab' } })
 
         expect(wrapper.element.tagName.toLowerCase()).toBe('code')
         expect(wrapper.classes()).toContain('ori-kbd')
@@ -58,7 +58,7 @@ describe('OriKbd', () => {
 
     it('has no axe violations', async () => {
         const wrapper = mount(OriKbd, {
-            props: { text: 'Enter' },
+            props: { label: 'Enter' },
             attachTo: document.body
         })
         await expectNoA11yViolations(wrapper.element)

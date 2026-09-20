@@ -20,7 +20,7 @@
            order, the component's own size sugar (.ori-avatar_xl) by specificity against this (0,0,0)
            rule. The default tint stays the neutral backdrop fill below. */
         --ori-size-action: var(--ori-size-action_lg);
-        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-size-radius: var(--ori-size-radius_full);
         --ori-font-size: var(--ori-font-size_lg);
         /* Neutral backdrop tint, derived from the ambient ink like every other structural neutral in
            the library (see menu / popover / surface). The literal #00000018 it replaced was a black
@@ -28,7 +28,7 @@
         --ori-color: color-mix(in srgb, currentcolor 10%, transparent);
         /* `spaced` opt-in margin — the `.ori-size-action-space_<size>` utility repoints this; 0 by
            default so an unspaced avatar has no outer margin. */
-        --ori-size-action-space: var(--ori-size-action-space_text);
+        --ori-size-action-space: var(--ori-size-action-space_inherit);
     }
 
     .ori-avatar {

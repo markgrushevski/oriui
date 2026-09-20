@@ -123,10 +123,10 @@ describe('OriInput', () => {
     })
 
     it('maps size / radius / variant / color to classes', () => {
-        const wrapper = mount(OriInput, { props: { size: 'lg', radius: 'sm', variant: 'fill', color: 'danger' } })
+        const wrapper = mount(OriInput, { props: { size: 'lg', radius: 'sm', variant: 'solid', color: 'danger' } })
 
         expect(wrapper.classes()).toContain('ori-font-size_lg')
-        expect(wrapper.classes()).toContain('ori-input_fill')
+        expect(wrapper.classes()).toContain('ori-input_solid')
         expect(wrapper.classes()).toContain('ori-input_lg')
         expect(wrapper.classes()).toContain('ori-color_danger')
         expect(wrapper.find('input').classes()).toContain('ori-size-radius_sm')

@@ -7,7 +7,7 @@
 to controls, not only to explanatory text, and multiplied with any fade a child carried of its own. A field
 hint's `opacity: 0.7` compounded to 0.595.
 
-Measured in real Chromium across all eight skins and both themes, before the fix: a primary `fill` button's
+Measured in real Chromium across all eight skins and both themes, before the fix: a primary `solid` button's
 label at **3.35:1** (luxury, light), a `danger` fill button at **4.14:1**, a field hint at **3.95:1** — all
 against a 4.5:1 bar. Dark themes passed, which is why it survived to rc: the token pairs themselves are
 honestly AA (5.43:1 for the button), and the margin was only lost at paint time.

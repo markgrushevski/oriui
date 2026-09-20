@@ -55,6 +55,18 @@
         user-select: none;
     }
 
+    /* Grouping rule between items (`{ separator: true }` in the items array). The negative inline
+       margin is the panel's own `padding: 0.35rem` cancelled out, so the rule spans the full menu
+       width the way every reference menu draws it — a literal, because that padding is a literal too
+       and a `var(…, 0.35rem)` fallback pointing at a property nothing declares would be dead code
+       that looks live. */
+    .ori-menu__separator {
+        height: 1px;
+        margin: 0.25rem -0.35rem;
+
+        background: color-mix(in srgb, currentcolor 15%, transparent);
+    }
+
     .ori-menu__item[aria-disabled='true'] {
         opacity: 0.4;
 

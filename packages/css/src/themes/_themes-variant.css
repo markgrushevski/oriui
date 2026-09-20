@@ -1,6 +1,6 @@
 /* ============================================================
    Variant utility classes — layer: ori.utilities
-   Single-class: `.ori-variant_fill` sets the full cluster (border / opacity / bg / text) on its own —
+   Single-class: `.ori-variant_solid` sets the full cluster (border / opacity / bg / text) on its own —
    no paired `.ori-variant` base is needed. The cluster reads the color axis (--ori-color /
    --ori-color-on), so color is the ROLE and variant is the MAPPING (which surface the accent paints).
    There is deliberately NO bare `.ori-variant` base rule (the `.ori-color` axis has none either).
@@ -20,7 +20,7 @@
    `ori.components`, so the same rules relocated into a block file could never win.
    ============================================================ */
 @layer ori.utilities {
-    .ori-variant_fill {
+    .ori-variant_solid {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
@@ -29,7 +29,7 @@
         --ori-variant-text-color: var(--ori-color-on);
     }
 
-    .ori-variant_tonal {
+    .ori-variant_soft {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
@@ -53,31 +53,37 @@
         --ori-variant-text-color: var(--ori-color-text);
     }
 
-    .ori-variant_plain {
+    /* The quietest step: no background in ANY state (which is what separates it from `text`,
+       whose hover paints a 10% role tint), plus a resting fade. The fade is 0.85 because that is what
+       MEASURES AA — a `quiet` control is enabled and clickable, so WCAG's inactive-control exemption
+       does not cover it. Solved over every role x skin x theme with the composite the browser actually
+       performs (fg*a + bg*(1-a) in sRGB): 0.5 left 190 of 192 readings below 4.5:1 with a worst of 2.33,
+       0.81 is the exact edge, and 0.85 clears every reading with a worst of 4.95. ORI-I-91. */
+    .ori-variant_quiet {
         --ori-variant-border-color: transparent;
-        --ori-variant-opacity: 0.5;
+        --ori-variant-opacity: 0.85;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color-text);
     }
 
-    .ori-variant_fill[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_fill:active {
+    .ori-variant_solid[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_solid:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_fill:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_solid:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
         }
     }
 
-    .ori-variant_tonal[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:active {
+    .ori-variant_soft[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_soft:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_soft:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
         }
     }
@@ -104,13 +110,13 @@
         }
     }
 
-    .ori-variant_plain[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_plain:active {
+    .ori-variant_quiet[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_quiet:active {
         --ori-variant-opacity: 1;
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_plain:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_quiet:hover {
             --ori-variant-opacity: 1;
         }
     }

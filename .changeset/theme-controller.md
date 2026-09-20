@@ -9,7 +9,7 @@ scheme) and persistence built in.
 They exist because toggling the `ori-theme_dark` class at runtime hits a Chromium style-invalidation bug: every
 styled component bakes a resolved role alias into an element-scoped custom property and reads it through a `var()`
 chain, and Chromium can fail to re-resolve that chain when the inherited token changes via an ancestor class
-toggle — so components keep the PREVIOUS theme's colours (fill/tonal backgrounds and role text) until they
+toggle — so components keep the PREVIOUS theme's colours (solid/soft backgrounds and role text) until they
 re-render. It is not fixable in CSS (`@property`, literal tones, and reflows were all ineffective). `applyTheme`
 flips the `ori-theme_{light,dark}` class and force-restyles the subtree in the same task (a `display:none`
 round-trip on `document.body`, exposed as `flushThemeInvalidation`), which reliably re-resolves the colours.

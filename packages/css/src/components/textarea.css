@@ -39,7 +39,7 @@
         width: 100%;
     }
 
-    .ori-textarea_fill {
+    .ori-textarea_solid {
         --ori-textarea-border: transparent;
         --ori-textarea-bg: color-mix(in srgb, currentcolor 6%, transparent);
     }

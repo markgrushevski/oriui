@@ -5,19 +5,19 @@ import { expectNoA11yViolations } from './helpers/axe'
 
 describe('OriTag', () => {
     it('renders default token classes on the root <span>', () => {
-        const wrapper = mount(OriTag, { props: { text: 'Beta' } })
+        const wrapper = mount(OriTag, { props: { label: 'Beta' } })
         const c = wrapper.classes()
 
         expect(wrapper.element.tagName).toBe('SPAN')
         expect(c).toContain('ori-tag')
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-color_primary')
         expect(c).toContain('ori-font-size_sm')
-        expect(c).toContain('ori-size-radius_rounded')
+        expect(c).toContain('ori-size-radius_full')
     })
 
     it('renders the text prop inside .ori-tag__text', () => {
-        const wrapper = mount(OriTag, { props: { text: 'New' } })
+        const wrapper = mount(OriTag, { props: { label: 'New' } })
 
         expect(wrapper.find('.ori-tag__text').text()).toBe('New')
     })
@@ -30,7 +30,7 @@ describe('OriTag', () => {
 
     it('maps variant / color / size / radius to classes', () => {
         const c = mount(OriTag, {
-            props: { text: 'x', variant: 'outline', color: 'success', size: 'lg', radius: 'xl' }
+            props: { label: 'x', variant: 'outline', color: 'success', size: 'lg', radius: 'xl' }
         }).classes()
 
         expect(c).toContain('ori-variant_outline')
@@ -40,7 +40,7 @@ describe('OriTag', () => {
     })
 
     it('reflects disabled state via aria-disabled attribute, not a class', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', disabled: true } })
+        const wrapper = mount(OriTag, { props: { label: 'x', disabled: true } })
 
         expect(wrapper.attributes('aria-disabled')).toBe('true')
         // no extra disabled class — state is attribute-driven
@@ -48,13 +48,13 @@ describe('OriTag', () => {
     })
 
     it('does not set aria-disabled when not disabled', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x' } })
+        const wrapper = mount(OriTag, { props: { label: 'x' } })
 
         expect(wrapper.attributes('aria-disabled')).toBeUndefined()
     })
 
     it('renders prependIcon when provided', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', prependIcon: 'M0 0h24v24H0z' } })
+        const wrapper = mount(OriTag, { props: { label: 'x', prependIcon: 'M0 0h24v24H0z' } })
         const icons = wrapper.findAll('.ori-tag__icon')
 
         // prepend icon comes before the text
@@ -68,7 +68,7 @@ describe('OriTag', () => {
     })
 
     it('renders appendIcon when provided', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', appendIcon: 'M0 0h24v24H0z' } })
+        const wrapper = mount(OriTag, { props: { label: 'x', appendIcon: 'M0 0h24v24H0z' } })
         const icons = wrapper.findAll('.ori-tag__icon')
 
         expect(icons.length).toBeGreaterThanOrEqual(1)
@@ -80,7 +80,7 @@ describe('OriTag', () => {
 
     it('renders custom #prepend slot content in place of the prepend icon', () => {
         const wrapper = mount(OriTag, {
-            props: { text: 'x' },
+            props: { label: 'x' },
             slots: { prepend: '<span class="custom-prepend">P</span>' }
         })
 
@@ -90,7 +90,7 @@ describe('OriTag', () => {
 
     it('renders custom #append slot content in place of the append icon', () => {
         const wrapper = mount(OriTag, {
-            props: { text: 'x' },
+            props: { label: 'x' },
             slots: { append: '<span class="custom-append">A</span>' }
         })
 
@@ -99,19 +99,19 @@ describe('OriTag', () => {
     })
 
     it('falls back to the prependIcon prop when no #prepend slot is given', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', prependIcon: 'M0 0h24v24H0z' } })
+        const wrapper = mount(OriTag, { props: { label: 'x', prependIcon: 'M0 0h24v24H0z' } })
 
         expect(wrapper.find('.ori-tag__icon').exists()).toBe(true)
     })
 
     it('does not render a close button when closable is not set', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x' } })
+        const wrapper = mount(OriTag, { props: { label: 'x' } })
 
         expect(wrapper.find('.ori-tag__close').exists()).toBe(false)
     })
 
     it('renders a close button when closable=true', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', closable: true } })
+        const wrapper = mount(OriTag, { props: { label: 'x', closable: true } })
         const btn = wrapper.find('.ori-tag__close')
 
         expect(btn.exists()).toBe(true)
@@ -120,19 +120,19 @@ describe('OriTag', () => {
     })
 
     it('close button uses the default aria-label "Remove"', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', closable: true } })
+        const wrapper = mount(OriTag, { props: { label: 'x', closable: true } })
 
         expect(wrapper.find('.ori-tag__close').attributes('aria-label')).toBe('Remove')
     })
 
     it('close button uses a custom closeLabel when provided', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', closable: true, closeLabel: 'Dismiss tag' } })
+        const wrapper = mount(OriTag, { props: { label: 'x', closable: true, closeLabel: 'Dismiss tag' } })
 
         expect(wrapper.find('.ori-tag__close').attributes('aria-label')).toBe('Dismiss tag')
     })
 
     it('clicking the close button emits the close event', async () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', closable: true } })
+        const wrapper = mount(OriTag, { props: { label: 'x', closable: true } })
 
         await wrapper.find('.ori-tag__close').trigger('click')
 
@@ -141,7 +141,7 @@ describe('OriTag', () => {
     })
 
     it('close button is disabled (native) when the tag is disabled', () => {
-        const wrapper = mount(OriTag, { props: { text: 'x', closable: true, disabled: true } })
+        const wrapper = mount(OriTag, { props: { label: 'x', closable: true, disabled: true } })
         const btn = wrapper.find('.ori-tag__close')
 
         expect((btn.element as HTMLButtonElement).disabled).toBe(true)
@@ -149,7 +149,7 @@ describe('OriTag', () => {
 
     it('has no axe violations (basic tag)', async () => {
         const wrapper = mount(OriTag, {
-            props: { text: 'Beta' },
+            props: { label: 'Beta' },
             attachTo: document.body
         })
         await expectNoA11yViolations(wrapper.element)
@@ -158,7 +158,7 @@ describe('OriTag', () => {
 
     it('has no axe violations (closable tag)', async () => {
         const wrapper = mount(OriTag, {
-            props: { text: 'Beta', closable: true, closeLabel: 'Remove Beta tag' },
+            props: { label: 'Beta', closable: true, closeLabel: 'Remove Beta tag' },
             attachTo: document.body
         })
         await expectNoA11yViolations(wrapper.element)

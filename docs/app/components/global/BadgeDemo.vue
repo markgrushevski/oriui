@@ -12,17 +12,17 @@ const BELL =
     <div style="display: inline-flex; flex-wrap: wrap; gap: 1.5rem; align-items: center">
         <!-- count over a button -->
         <OriBadge :content="3" floating color="danger" label="3 unread">
-            <OriButton text="Inbox" variant="tonal" />
+            <OriButton label="Inbox" variant="soft" />
         </OriBadge>
 
         <!-- capped count over an icon button -->
         <OriBadge :content="130" :max="99" floating color="danger" label="99+ notifications">
-            <OriButton :icon="BELL" aria-label="Notifications" variant="tonal" />
+            <OriButton :icon="BELL" aria-label="Notifications" variant="soft" />
         </OriBadge>
 
         <!-- status dot over an avatar -->
         <OriBadge dot floating color="success" label="Online">
-            <OriAvatar text="Ada Lovelace" />
+            <OriAvatar name="Ada Lovelace" />
         </OriBadge>
     </div>
 </template>

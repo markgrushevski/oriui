@@ -20,7 +20,7 @@ A divider is a block class plus an optional modifier and a color utility. The Vu
 inherits thickness and gap from the surrounding context via `--ori-size-gap`.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-divider","type":"Block","description":"Required base class. Renders a subtle horizontal rule using a 25% currentcolor mix."},{"class":"ori-divider_vertical","type":"Modifier","description":"Switches to a vertical rule. Needs a flex/grid parent that provides height; the divider aligns-self: stretch."},{"class":"ori-divider_text","type":"Modifier","description":"Auto-applied when a label is present. Splits the line into two segments around the centered label."},{"class":"ori-divider__label","type":"Part","description":"The centered label span. Rendered inside the block when text or a default slot is supplied."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — repoints --ori-color to a full role color. Omit for the default subtle 25% currentcolor mix."}]'}
+:class-table{:rows='[{"class":"ori-divider","type":"Block","description":"Required base class. Renders a subtle horizontal rule using a 25% currentcolor mix."},{"class":"ori-divider_vertical","type":"Modifier","description":"Switches to a vertical rule. Needs a flex/grid parent that provides height; the divider aligns-self: stretch."},{"class":"ori-divider_text","type":"Modifier","description":"Auto-applied when a label is present. Splits the line into two segments around the centered label."},{"class":"ori-divider__label","type":"Part","description":"The centered label span. Rendered inside the block when text or a default slot is supplied."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background — repoints --ori-color to a full role color. Omit for the default subtle 25% currentcolor mix."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/divider.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -51,16 +51,16 @@ card body.
 
 ## With label
 
-Pass `text` to insert a centered label. The block class gains `ori-divider_text` automatically and
+Pass `label` to insert a centered label. The block class gains `ori-divider_text` automatically and
 the line splits around a `<span class="ori-divider__label">`.
 
 ::example
-:ori-divider{text="OR"}
+:ori-divider{label="OR"}
 
 #vue
 
 ```vue
-<OriDivider text="OR" />
+<OriDivider label="OR" />
 ```
 
 #html
@@ -75,7 +75,7 @@ the line splits around a `<span class="ori-divider__label">`.
 
 ## Slot label
 
-The default slot overrides `text` when you need richer content inside the label — an icon, a badge,
+The default slot overrides `label` when you need richer content inside the label — an icon, a badge,
 or styled text.
 
 ::example
@@ -108,7 +108,7 @@ Omit for the default subtle mix.
 :ori-divider{color="primary"}
 :ori-divider{color="secondary"}
 :ori-divider{color="success"}
-:ori-divider{color="warn"}
+:ori-divider{color="warning"}
 :ori-divider{color="danger"}
 :ori-divider{color="info"}
 
@@ -118,7 +118,7 @@ Omit for the default subtle mix.
 <OriDivider color="primary" />
 <OriDivider color="secondary" />
 <OriDivider color="success" />
-<OriDivider color="warn" />
+<OriDivider color="warning" />
 <OriDivider color="danger" />
 <OriDivider color="info" />
 ```
@@ -135,12 +135,12 @@ Omit for the default subtle mix.
 A colored label divider:
 
 ::example
-:ori-divider{text="Continue with" color="primary"}
+:ori-divider{label="Continue with" color="primary"}
 
 #vue
 
 ```vue
-<OriDivider text="Continue with" color="primary" />
+<OriDivider label="Continue with" color="primary" />
 ```
 
 #html
@@ -161,11 +161,11 @@ it. Spacing around the vertical rule comes from `margin-inline` (driven by `--or
 
 ::example
 ::ori-stack{:cluster="true" gap="sm"}
-:ori-button{variant="text" text="Item one"}
+:ori-button{variant="text" label="Item one"}
 :ori-divider{:vertical="true"}
-:ori-button{variant="text" text="Item two"}
+:ori-button{variant="text" label="Item two"}
 :ori-divider{:vertical="true"}
-:ori-button{variant="text" text="Item three"}
+:ori-button{variant="text" label="Item three"}
 ::
 
 #vue
@@ -199,7 +199,7 @@ it. Spacing around the vertical rule comes from `margin-inline` (driven by `--or
 A sign-in form with an "OR" break and a toolbar that uses vertical rules between action groups.
 
 ::example
-:ori-divider{text="OR"}
+:ori-divider{label="OR"}
 
 #vue
 
@@ -208,9 +208,9 @@ A sign-in form with an "OR" break and a toolbar that uses vertical rules between
 <form style="display: flex; flex-direction: column; gap: 1rem; max-width: 22rem">
     <input type="email" placeholder="Email" />
     <input type="password" placeholder="Password" />
-    <OriButton text="Sign in" variant="fill" fluid />
-    <OriDivider text="OR" />
-    <OriButton text="Continue with Google" variant="outline" fluid />
+    <OriButton label="Sign in" variant="solid" fluid />
+    <OriDivider label="OR" />
+    <OriButton label="Continue with Google" variant="outline" fluid />
 </form>
 ```
 
@@ -220,7 +220,7 @@ A sign-in form with an "OR" break and a toolbar that uses vertical rules between
 <form style="display: flex; flex-direction: column; gap: 1rem; max-width: 22rem">
     <input type="email" placeholder="Email" />
     <input type="password" placeholder="Password" />
-    <button class="ori-button ori-button_fluid ori-variant_fill ori-color_primary">Sign in</button>
+    <button class="ori-button ori-button_fluid ori-variant_solid ori-color_primary">Sign in</button>
 
     <div class="ori-divider ori-divider_text" role="separator">
         <span class="ori-divider__label">OR</span>
@@ -260,10 +260,10 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | Prop       | Type         | Default | Description                                                                                                                                    |
 | ---------- | ------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `color`    | `ThemeColor` | —       | Semantic color role. Omit to use the default subtle 25% `currentcolor` mix.                                                                    |
-| `text`     | `string`     | —       | Centered label. Adds `ori-divider_text` and renders `<span class="ori-divider__label">`. Overridden by the default slot when both are present. |
+| `label`    | `string`     | —       | Centered label. Adds `ori-divider_text` and renders `<span class="ori-divider__label">`. Overridden by the default slot when both are present. |
 | `vertical` | `boolean`    | `false` | Renders a vertical rule. Requires a flex or grid parent with a defined height; the rule stretches to fill it.                                  |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
 ### Events & attributes
 
@@ -272,6 +272,6 @@ attributes you pass (`class`, `style`, `data-*`, …) fall through to the root `
 
 ### Slots
 
-| Slot      | Description                                                                                                                             |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `default` | Centered label content. Overrides `text` when both are supplied. Adds `ori-divider_text` and wraps the content in `ori-divider__label`. |
+| Slot      | Description                                                                                                                              |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | Centered label content. Overrides `label` when both are supplied. Adds `ori-divider_text` and wraps the content in `ori-divider__label`. |

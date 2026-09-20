@@ -20,11 +20,11 @@
        element beats inheritance at any specificity, so a nested block still reads its own value. */
     :where(.ori-button) {
         /* Baked per-axis defaults so a bare `.ori-button` is a valid filled-primary, rounded, md
-           button. The global utilities (.ori-size-radius_zero, .ori-color_danger, .ori-variant_*)
+           button. The global utilities (.ori-size-radius_none, .ori-color_danger, .ori-variant_*)
            override by layer order, the component's own size sugar (.ori-button_lg) by specificity
-           against this (0,0,0) rule; the cluster below is the `fill` default. */
+           against this (0,0,0) rule; the cluster below is the `solid` default. */
         --ori-size-action: var(--ori-size-action_md);
-        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-size-radius: var(--ori-size-radius_full);
         --ori-font-size: var(--ori-font-size_md);
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
@@ -114,7 +114,7 @@
        its background.
 
        Hence the split below. The inset hairline is UNIVERSAL: no variant touches `box-shadow`, so it
-       layers over `fill` / `tonal` without erasing them, and drawing it in `currentcolor` means it is
+       layers over `solid` / `soft` without erasing them, and drawing it in `currentcolor` means it is
        always the button's own label colour — AA-paired with whatever background sits under it by
        construction, in every skin.
 
@@ -123,7 +123,7 @@
        `.ori-variant_*` in the LATER `ori.utilities` layer, which wins over `ori.components`
        regardless of specificity, so a token routed through the variant is unreachable from here. The
        literal beats `.ori-button`'s own `background-color: var(--ori-variant-bg-color)` on
-       specificity inside this layer — which is exactly why it must NOT reach `fill` / `tonal`: it
+       specificity inside this layer — which is exactly why it must NOT reach `solid` / `soft`: it
        would flatten their role colour to a neutral grey and make every pressed button look alike.
        (These rules used to live in toolbar.css, gated behind `.ori-toolbar`, which is why a toggle
        button anywhere else had no pressed look at all.) */
@@ -132,14 +132,14 @@
     }
 
     .ori-button.ori-variant_text[aria-pressed='true'],
-    .ori-button.ori-variant_plain[aria-pressed='true'],
+    .ori-button.ori-variant_quiet[aria-pressed='true'],
     .ori-button.ori-variant_outline[aria-pressed='true'] {
         background-color: color-mix(in srgb, var(--ori-color-on-surface) 18%, transparent);
     }
 
     @media (hover: hover) {
         .ori-button.ori-variant_text[aria-pressed='true']:hover,
-        .ori-button.ori-variant_plain[aria-pressed='true']:hover,
+        .ori-button.ori-variant_quiet[aria-pressed='true']:hover,
         .ori-button.ori-variant_outline[aria-pressed='true']:hover {
             background-color: color-mix(in srgb, var(--ori-color-on-surface) 26%, transparent);
         }

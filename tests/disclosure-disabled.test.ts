@@ -112,7 +112,7 @@ describe('Svelte nativeDisclosure — a store-bound `disabled` stays live', () =
     })
 
     it('still accepts a plain options object (the snapshot call style is unchanged)', () => {
-        const d = nativeDisclosureSvelte({ id: 'plain', disabled: true })
+        const d = nativeDisclosureSvelte({ id: 'quiet', disabled: true })
         expect(get(d.triggerProps).disabled).toBe(true)
         d.toggle()
         expect(get(d.open)).toBe(false)

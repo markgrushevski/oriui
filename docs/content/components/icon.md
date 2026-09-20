@@ -21,7 +21,7 @@ There is no variant or radius — an icon takes a size, an optional color, and o
 modifiers.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (text) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — omit to inherit"},{"class":"ori-size-action-space_*","type":"Layout","description":"adds margin equal to the action-space scale for the active size (the spaced opt-in); pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
+:class-table{:rows='[{"class":"ori-icon","type":"Block","description":"Required base class. Default size (inherit) and spacing are baked in — a bare block is valid."},{"class":"ori-icon_* (size sugar)","type":"Size","description":"inherit · xs · sm · md · lg · xl · xxl — <b>inherit</b> is the default"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background — omit to inherit"},{"class":"ori-size-action-space_*","type":"Layout","description":"adds margin equal to the action-space scale for the active size (the spaced opt-in); pair with a size modifier"},{"class":"ori-icon_inline","type":"Layout","description":"switches to inline-flex with a small em-based margin for flow text"},{"class":"aria-hidden · role=img","type":"State","description":"decorative by default (aria-hidden=true); a label switches to role=img + aria-label"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/icon.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -70,7 +70,7 @@ paragraph's `font-size` with no explicit size prop:
 <OriIcon icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" size="xs" />
 <OriIcon icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" size="md" />
 <OriIcon icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" size="xxl" />
-<!-- default size="text": icon box matches the current font size -->
+<!-- default size="inherit": icon box matches the current font size -->
 <OriIcon icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" inline />
 ```
 
@@ -84,7 +84,7 @@ Every semantic role. `surface` / `background` are also available. Omit `color` t
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="primary" size="lg"}
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="secondary" size="lg"}
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="success" size="lg"}
-:ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="warn" size="lg"}
+:ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="warning" size="lg"}
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="danger" size="lg"}
 :ori-icon{icon="M22,13H13V22H11V13H2V11H11V2H13V11H22V13Z" color="info" size="lg"}
 
@@ -106,7 +106,7 @@ Every semantic role. `surface` / `background` are also available. Omit `color` t
 <OriIcon icon="…" color="primary" size="lg" />
 <OriIcon icon="…" color="success" size="lg" />
 <OriIcon icon="…" color="danger" size="lg" />
-<OriIcon icon="…" color="warn" size="lg" />
+<OriIcon icon="…" color="warning" size="lg" />
 ```
 
 ::
@@ -232,7 +232,7 @@ An icon placed beside a status badge — size matches the action row, color foll
 
 ::example
 :ori-icon{icon="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" color="success" size="md"}
-:ori-icon{icon="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" color="warn" size="md"}
+:ori-icon{icon="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" color="warning" size="md"}
 :ori-icon{icon="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" color="danger" size="md"}
 
 #html
@@ -255,7 +255,7 @@ An icon placed beside a status badge — size matches the action row, color foll
     <span>Deployed</span>
 </div>
 <div style="display: flex; align-items: center; gap: 0.5rem">
-    <OriIcon icon="M13,13H11V7H13…" color="warn" size="md" />
+    <OriIcon icon="M13,13H11V7H13…" color="warning" size="md" />
     <span>Pending review</span>
 </div>
 <div style="display: flex; align-items: center; gap: 0.5rem">

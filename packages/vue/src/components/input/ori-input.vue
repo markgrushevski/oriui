@@ -42,7 +42,7 @@ const {
     size?: ActionSize
     /** Native input type (text, email, password, search, tel, url, number, …). */
     type?: string
-    variant?: 'fill' | 'outline'
+    variant?: 'solid' | 'outline'
 }>()
 
 const model = defineModel<string>()

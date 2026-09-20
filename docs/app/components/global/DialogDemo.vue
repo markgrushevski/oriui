@@ -7,7 +7,7 @@ import { OriButton, OriDialog } from '@oriui/vue'
 <template>
     <OriDialog title="Weave a dialog">
         <template #trigger="{ props }">
-            <OriButton v-bind="props" text="Open dialog" color="primary" />
+            <OriButton v-bind="props" label="Open dialog" color="primary" />
         </template>
         <p>
             This modal runs on the native <code>&lt;dialog&gt;</code> element through oriUI's headless contract — focus

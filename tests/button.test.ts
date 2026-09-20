@@ -7,7 +7,7 @@ import { expectNoA11yViolations } from './helpers/axe'
 
 describe('OriButton', () => {
     it('renders a real <button type="button"> with the default token classes', () => {
-        const wrapper = mount(OriButton, { props: { text: 'Save' } })
+        const wrapper = mount(OriButton, { props: { label: 'Save' } })
         const el = wrapper.element as HTMLButtonElement
 
         expect(el.tagName).toBe('BUTTON')
@@ -15,9 +15,9 @@ describe('OriButton', () => {
         for (const cls of [
             'ori-button',
             'ori-button_md',
-            'ori-size-radius_rounded',
+            'ori-size-radius_full',
             'ori-font-size_md',
-            'ori-variant_fill',
+            'ori-variant_solid',
             'ori-color_primary'
         ]) {
             expect(wrapper.classes()).toContain(cls)
@@ -27,11 +27,11 @@ describe('OriButton', () => {
 
     it('maps variant / size / color / radius props to classes', () => {
         const wrapper = mount(OriButton, {
-            props: { text: 'x', variant: 'tonal', size: 'lg', color: 'danger', radius: 'sm' }
+            props: { label: 'x', variant: 'soft', size: 'lg', color: 'danger', radius: 'sm' }
         })
         const c = wrapper.classes()
 
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-button_lg')
         expect(c).toContain('ori-font-size_lg')
         expect(c).toContain('ori-color_danger')
@@ -41,14 +41,14 @@ describe('OriButton', () => {
     // The headline a11y fix of the rebrand: `disabled` is the real DOM attribute. The old
     // V-button only added a pointer-events:none class, leaving the control focusable.
     it('disabled sets the real disabled attribute + aria-disabled', () => {
-        const el = mount(OriButton, { props: { text: 'x', disabled: true } }).element as HTMLButtonElement
+        const el = mount(OriButton, { props: { label: 'x', disabled: true } }).element as HTMLButtonElement
 
         expect(el.disabled).toBe(true)
         expect(el.getAttribute('aria-disabled')).toBe('true')
     })
 
     it('loading gates the button, sets aria-busy, swaps icon -> spinner', () => {
-        const wrapper = mount(OriButton, { props: { text: 'x', loading: true, icon: 'M0 0' } })
+        const wrapper = mount(OriButton, { props: { label: 'x', loading: true, icon: 'M0 0' } })
         const el = wrapper.element as HTMLButtonElement
 
         expect(el.disabled).toBe(true)
@@ -58,7 +58,7 @@ describe('OriButton', () => {
     })
 
     it('active reflects as the data-active attribute', () => {
-        const el = mount(OriButton, { props: { text: 'x', active: true } }).element
+        const el = mount(OriButton, { props: { label: 'x', active: true } }).element
 
         expect(el.getAttribute('data-active')).toBe('')
     })
@@ -70,18 +70,18 @@ describe('OriButton', () => {
     // ------------------------------------------------------------------
 
     it('pressed renders aria-pressed (true and false are both real toggle states)', () => {
-        expect(mount(OriButton, { props: { text: 'x', pressed: true } }).attributes('aria-pressed')).toBe('true')
-        expect(mount(OriButton, { props: { text: 'x', pressed: false } }).attributes('aria-pressed')).toBe('false')
+        expect(mount(OriButton, { props: { label: 'x', pressed: true } }).attributes('aria-pressed')).toBe('true')
+        expect(mount(OriButton, { props: { label: 'x', pressed: false } }).attributes('aria-pressed')).toBe('false')
     })
 
     // Only holds because the SFC defaults `pressed = undefined`, opting out of Vue's absent-Boolean
     // coercion — without it every plain action button would announce itself as an unpressed toggle.
     it('omitting pressed renders no aria-pressed at all (plain action button)', () => {
-        expect(mount(OriButton, { props: { text: 'x' } }).attributes('aria-pressed')).toBeUndefined()
+        expect(mount(OriButton, { props: { label: 'x' } }).attributes('aria-pressed')).toBeUndefined()
     })
 
     it('active is a look, not a state: it never implies aria-pressed', () => {
-        const el = mount(OriButton, { props: { text: 'x', active: true } }).element
+        const el = mount(OriButton, { props: { label: 'x', active: true } }).element
 
         expect(el.getAttribute('data-active')).toBe('')
         expect(el.hasAttribute('aria-pressed')).toBe(false)
@@ -91,7 +91,7 @@ describe('OriButton', () => {
     // toggle item gets it straight from the headless prop bag). The new `:aria-pressed="pressed"`
     // binding must not overwrite that with `undefined` — the exact failure mode ORI-I-13 recorded.
     it('a caller-supplied aria-pressed attribute survives the pressed binding', () => {
-        const wrapper = mount(OriButton, { props: { text: 'x' }, attrs: { 'aria-pressed': 'true' } })
+        const wrapper = mount(OriButton, { props: { label: 'x' }, attrs: { 'aria-pressed': 'true' } })
 
         expect(wrapper.attributes('aria-pressed')).toBe('true')
     })
@@ -104,7 +104,7 @@ describe('OriButton', () => {
     it('loading on as="a" marks the link aria-disabled and blocks activation', async () => {
         const onClick = vi.fn()
         const wrapper = mount(OriButton, {
-            props: { text: 'x', as: 'a', loading: true },
+            props: { label: 'x', as: 'a', loading: true },
             attrs: { href: '/somewhere', onClick }
         })
         const el = wrapper.element as HTMLAnchorElement
@@ -125,7 +125,7 @@ describe('OriButton', () => {
     it('disabled on as="a" blocks activation too', () => {
         const onClick = vi.fn()
         const el = mount(OriButton, {
-            props: { text: 'x', as: 'a', disabled: true },
+            props: { label: 'x', as: 'a', disabled: true },
             attrs: { href: '/somewhere', onClick }
         }).element
 
@@ -142,7 +142,7 @@ describe('OriButton', () => {
     // `onClick` on a real button, which is exactly what this test caught.
     it('an enabled button still activates normally', async () => {
         const onClick = vi.fn()
-        const el = mount(OriButton, { props: { text: 'x' }, attrs: { onClick } }).find('button').element
+        const el = mount(OriButton, { props: { label: 'x' }, attrs: { onClick } }).find('button').element
 
         el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
@@ -150,14 +150,14 @@ describe('OriButton', () => {
     })
 
     it('loading on a real button keeps the disabled attribute and adds no aria-disabled', () => {
-        const el = mount(OriButton, { props: { text: 'x', loading: true } }).element as HTMLButtonElement
+        const el = mount(OriButton, { props: { label: 'x', loading: true } }).element as HTMLButtonElement
 
         expect(el.disabled).toBe(true)
         expect(el.getAttribute('aria-disabled')).toBeNull()
     })
 
     it('as="a" drops the button-only attrs and guards focus when disabled', () => {
-        const el = mount(OriButton, { props: { text: 'x', as: 'a', disabled: true } }).element
+        const el = mount(OriButton, { props: { label: 'x', as: 'a', disabled: true } }).element
 
         expect(el.tagName).toBe('A')
         expect(el.getAttribute('type')).toBeNull()
@@ -174,7 +174,7 @@ describe('OriButton', () => {
     })
 
     it('a text button (no icon) is NOT icon mode', () => {
-        const wrapper = mount(OriButton, { props: { text: 'Save' } })
+        const wrapper = mount(OriButton, { props: { label: 'Save' } })
 
         expect(wrapper.classes()).not.toContain('ori-button_icon')
     })
@@ -186,13 +186,13 @@ describe('OriButton', () => {
     })
 
     it('an icon + text button is a labelled button, NOT an icon square', () => {
-        const wrapper = mount(OriButton, { props: { icon: 'M0 0', text: 'Save' } })
+        const wrapper = mount(OriButton, { props: { icon: 'M0 0', label: 'Save' } })
 
         expect(wrapper.classes()).not.toContain('ori-button_icon')
     })
 
     it('has no axe violations when labeled', async () => {
-        const wrapper = mount(OriButton, { props: { text: 'Save' }, attachTo: document.body })
+        const wrapper = mount(OriButton, { props: { label: 'Save' }, attachTo: document.body })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
     })
@@ -226,7 +226,7 @@ describe('the pressed look in @oriui/css', () => {
             declarations: m[2]
         }))
 
-    const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_plain', '.ori-variant_outline']
+    const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_quiet', '.ori-variant_outline']
 
     it('button.css styles the pressed state on the button itself — no ancestor gate', () => {
         const rules = pressedRules(strip('button.css'))
@@ -249,7 +249,7 @@ describe('the pressed look in @oriui/css', () => {
         )
 
         expect(ring, 'no unconditional inset box-shadow for [aria-pressed="true"]').toBeDefined()
-        // A ring is the only pressed declaration a fill / tonal button gets, so it must never be a
+        // A ring is the only pressed declaration a solid / soft button gets, so it must never be a
         // background: `background-color` in the unconditional rule IS the ORI-I-61 regression.
         expect(ring?.declarations).not.toMatch(/background-color/)
     })

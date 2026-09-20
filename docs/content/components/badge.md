@@ -20,7 +20,7 @@ modifiers (`ori-badge_dot`, `ori-badge_floating`) and the wrapper class (`ori-ba
 complete the floating pattern.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: fill variant, primary color, rounded radius."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
+:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: solid variant, primary color, full radius."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/badge.css`. `.ori-badge-anchor` lives in
 `badge.css`. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token
@@ -32,28 +32,28 @@ utilities (`ori-color_*`, `ori-size-radius_*`, …) live there, not in the compo
 Five visual styles, driven by the `ori-variant_*` single-class token.
 
 ::example
-:ori-badge{content="Fill" variant="fill"}
-:ori-badge{content="Tonal" variant="tonal"}
+:ori-badge{content="Solid" variant="solid"}
+:ori-badge{content="Soft" variant="soft"}
 :ori-badge{content="Outline" variant="outline"}
 :ori-badge{content="Text" variant="text"}
-:ori-badge{content="Plain" variant="plain"}
+:ori-badge{content="Quiet" variant="quiet"}
 
 #vue
 
 ```vue
-<OriBadge content="Fill" variant="fill" />
-<OriBadge content="Tonal" variant="tonal" />
+<OriBadge content="Solid" variant="solid" />
+<OriBadge content="Soft" variant="soft" />
 <OriBadge content="Outline" variant="outline" />
 <OriBadge content="Text" variant="text" />
-<OriBadge content="Plain" variant="plain" />
+<OriBadge content="Quiet" variant="quiet" />
 ```
 
 #html
 
 ```html
 <span class="ori-badge">Fill</span>
-<!-- swap the variant: ori-variant_tonal / _outline / _text / _plain -->
-<span class="ori-badge ori-variant_tonal">Tonal</span>
+<!-- swap the variant: ori-variant_soft / _outline / _text / _plain -->
+<span class="ori-badge ori-variant_soft">Soft</span>
 ```
 
 ::
@@ -66,7 +66,7 @@ All semantic roles. The badge inherits the shared `ori-color_*` token, so varian
 :ori-badge{content="primary" color="primary"}
 :ori-badge{content="secondary" color="secondary"}
 :ori-badge{content="success" color="success"}
-:ori-badge{content="warn" color="warn"}
+:ori-badge{content="warning" color="warning"}
 :ori-badge{content="danger" color="danger"}
 :ori-badge{content="info" color="info"}
 :ori-badge{content="surface" color="surface"}
@@ -87,25 +87,25 @@ All semantic roles. The badge inherits the shared `ori-color_*` token, so varian
 
 ::
 
-Variant × color compose freely — e.g. a tonal success badge or an outline danger badge:
+Variant × color compose freely — e.g. a soft success badge or an outline danger badge:
 
 ::example
-:ori-badge{content="Approved" variant="tonal" color="success"}
+:ori-badge{content="Approved" variant="soft" color="success"}
 :ori-badge{content="Error" variant="outline" color="danger"}
-:ori-badge{content="Beta" variant="tonal" color="info"}
+:ori-badge{content="Beta" variant="soft" color="info"}
 
 #vue
 
 ```vue
-<OriBadge content="Approved" variant="tonal" color="success" />
+<OriBadge content="Approved" variant="soft" color="success" />
 <OriBadge content="Error" variant="outline" color="danger" />
-<OriBadge content="Beta" variant="tonal" color="info" />
+<OriBadge content="Beta" variant="soft" color="info" />
 ```
 
 #html
 
 ```html
-<span class="ori-badge ori-variant_tonal ori-color_success">Approved</span>
+<span class="ori-badge ori-variant_soft ori-color_success">Approved</span>
 <span class="ori-badge ori-variant_outline ori-color_danger">Error</span>
 ```
 
@@ -113,26 +113,26 @@ Variant × color compose freely — e.g. a tonal success badge or an outline dan
 
 ## Radius
 
-From `zero` (square) to the default `rounded` (pill).
+From `none` (square) to the default `full` (pill).
 
 ::example
-:ori-badge{content="zero" radius="zero"}
+:ori-badge{content="none" radius="none"}
 :ori-badge{content="sm" radius="sm"}
 :ori-badge{content="md" radius="md"}
 :ori-badge{content="lg" radius="lg"}
-:ori-badge{content="rounded" radius="rounded"}
+:ori-badge{content="full" radius="full"}
 
 #vue
 
 ```vue
-<OriBadge content="zero" radius="zero" />
-<OriBadge content="rounded" radius="rounded" />
+<OriBadge content="none" radius="none" />
+<OriBadge content="full" radius="full" />
 ```
 
 #html
 
 ```html
-<span class="ori-badge ori-size-radius_zero">zero</span> <span class="ori-badge">rounded</span>
+<span class="ori-badge ori-size-radius_none">none</span> <span class="ori-badge">full</span>
 ```
 
 ::
@@ -176,7 +176,7 @@ as `{max}+`.
 :ori-badge{:dot="true"}
 :ori-badge{:dot="true" color="danger"}
 :ori-badge{:dot="true" color="success"}
-:ori-badge{:dot="true" color="warn"}
+:ori-badge{:dot="true" color="warning"}
 
 #vue
 
@@ -210,7 +210,7 @@ nothing to position against and is ignored). In HTML, wrap the anchor in `ori-ba
 ```vue
 <!-- floating over a button -->
 <OriBadge :content="3" floating color="danger">
-    <button class="ori-button ori-variant_tonal ori-color_primary ori-size-radius_rounded">
+    <button class="ori-button ori-variant_soft ori-color_primary ori-size-radius_full">
         Inbox
     </button>
 </OriBadge>
@@ -226,7 +226,7 @@ nothing to position against and is ignored). In HTML, wrap the anchor in `ori-ba
 ```html
 <!-- wrap anchor content in ori-badge-anchor, add ori-badge_floating to the badge -->
 <span class="ori-badge-anchor">
-    <button class="ori-button ori-variant_tonal ori-color_primary ori-size-radius_rounded">Inbox</button>
+    <button class="ori-button ori-variant_soft ori-color_primary ori-size-radius_full">Inbox</button>
     <span class="ori-badge ori-badge_floating ori-color_danger" aria-label="3 unread">3</span>
 </span>
 ```
@@ -239,7 +239,7 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
 
 ::example
 :badge-demo
-:ori-badge{content="New" variant="tonal" color="info"}
+:ori-badge{content="New" variant="soft" color="info"}
 
 #vue
 
@@ -257,13 +257,13 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
 
 <!-- status dot on an avatar -->
 <OriBadge dot floating color="success" label="Online">
-    <OriAvatar text="Ada Lovelace" />
+    <OriAvatar name="Ada Lovelace" />
 </OriBadge>
 
 <!-- tab with unread count -->
 <span style="display: inline-flex; align-items: center; gap: 0.5rem">
     Messages
-    <OriBadge :content="5" variant="tonal" color="primary" />
+    <OriBadge :content="5" variant="soft" color="primary" />
 </span>
 ```
 
@@ -285,7 +285,7 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
 <!-- inline tab counter -->
 <span style="display: inline-flex; align-items: center; gap: 0.5rem">
     Messages
-    <span class="ori-badge ori-variant_tonal">5</span>
+    <span class="ori-badge ori-variant_soft">5</span>
 </span>
 ```
 
@@ -320,16 +320,16 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop       | Type               | Default     | Description                                                                                                       |
-| ---------- | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor`       | `'primary'` | Semantic color role: `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background`. |
-| `content`  | `string \| number` | —           | Text or number to display. Numbers are capped to `max+` when `max` is set.                                        |
-| `dot`      | `boolean`          | `false`     | Collapses the badge to a small filled circle; content is hidden.                                                  |
-| `floating` | `boolean`          | `false`     | Positions the badge in the top-end corner of the default-slot anchor (requires a default slot child).             |
-| `label`    | `string`           | —           | Accessible name (`aria-label`). Required for dot badges or empty badges that convey meaning to sighted users.     |
-| `max`      | `number`           | —           | When `content` is a number and exceeds `max`, the display value is capped to `{max}+`.                            |
-| `radius`   | `RadiusSize`       | `'rounded'` | Corner radius: `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`.                                             |
-| `variant`  | `Variant`          | `'fill'`    | Visual style: `fill` · `tonal` · `outline` · `text` · `plain`.                                                    |
+| Prop       | Type               | Default     | Description                                                                                                          |
+| ---------- | ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor`       | `'primary'` | Semantic color role: `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background`. |
+| `content`  | `string \| number` | —           | Text or number to display. Numbers are capped to `max+` when `max` is set.                                           |
+| `dot`      | `boolean`          | `false`     | Collapses the badge to a small filled circle; content is hidden.                                                     |
+| `floating` | `boolean`          | `false`     | Positions the badge in the top-end corner of the default-slot anchor (requires a default slot child).                |
+| `label`    | `string`           | —           | Accessible name (`aria-label`). Required for dot badges or empty badges that convey meaning to sighted users.        |
+| `max`      | `number`           | —           | When `content` is a number and exceeds `max`, the display value is capped to `{max}+`.                               |
+| `radius`   | `RadiusSize`       | `'full'`    | Corner radius: `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`.                                                   |
+| `variant`  | `Variant`          | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `quiet`.                                                       |
 
 ### Events & attributes
 

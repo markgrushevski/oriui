@@ -9,7 +9,7 @@ describe('OriAlert', () => {
         const c = wrapper.classes()
 
         expect(c).toContain('ori-alert')
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-color_info')
         expect(c).toContain('ori-size-radius_md')
         expect(c).toContain('ori-font-size_md')
@@ -17,9 +17,9 @@ describe('OriAlert', () => {
         expect(wrapper.attributes('role')).toBe('status')
     })
 
-    it('derives an assertive role="alert" for urgent colors (danger / warn)', () => {
+    it('derives an assertive role="alert" for urgent colors (danger / warning)', () => {
         expect(mount(OriAlert, { props: { color: 'danger' } }).attributes('role')).toBe('alert')
-        expect(mount(OriAlert, { props: { color: 'warn' } }).attributes('role')).toBe('alert')
+        expect(mount(OriAlert, { props: { color: 'warning' } }).attributes('role')).toBe('alert')
         expect(mount(OriAlert, { props: { color: 'success' } }).attributes('role')).toBe('status')
     })
 

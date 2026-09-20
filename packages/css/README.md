@@ -28,7 +28,7 @@ import '@oriui/css'
 ```
 
 ```html
-<button class="ori-button ori-variant_tonal ori-color_primary ori-button_lg">Save</button>
+<button class="ori-button ori-variant_soft ori-color_primary ori-button_lg">Save</button>
 ```
 
 ## À-la-carte imports
@@ -78,11 +78,11 @@ A **block class** plus **single-class token utilities** — one class repoints o
 class. A bare block is valid; add a class only to override an axis. Dynamic state is real **attributes**
 (`disabled`, `aria-busy`), never classes.
 
-| Axis    | Class               | Values                                                               |
-| ------- | ------------------- | -------------------------------------------------------------------- |
-| Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · … |
-| Variant | `ori-variant_*`     | `fill` · `tonal` · `outline` · `text` · `plain`                      |
-| Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                             |
+| Axis    | Class               | Values                                                                  |
+| ------- | ------------------- | ----------------------------------------------------------------------- |
+| Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · … |
+| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `quiet`                         |
+| Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
 
 Theme + skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="…"`), reskinning everything
 through CSS variables with zero runtime.

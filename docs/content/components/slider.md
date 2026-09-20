@@ -22,7 +22,7 @@ the component reads everywhere (`--ori-color`). The Vue props in [Framework API]
 map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-slider","type":"Block","description":"Required base class (wrapper div). Full-width by default."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-slider__label","type":"Part","description":"Flex row wrapping the visible label text and optional current value."},{"class":"ori-slider__value","type":"Part","description":"Current value badge inside the label row; tabular-nums, slightly dimmed."},{"class":"ori-slider__input","type":"Part","description":"The native <code>&lt;input type=range&gt;</code>; receives the inline <code>--ori-slider-pct</code> custom property."},{"class":"data-disabled","type":"State","description":"Set on the wrapper when <code>disabled</code> is true; dims the control and changes the cursor to not-allowed."}]'}
+:class-table{:rows='[{"class":"ori-slider","type":"Block","description":"Required base class (wrapper div). Full-width by default."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-slider__label","type":"Part","description":"Flex row wrapping the visible label text and optional current value."},{"class":"ori-slider__value","type":"Part","description":"Current value badge inside the label row; tabular-nums, slightly dimmed."},{"class":"ori-slider__input","type":"Part","description":"The native <code>&lt;input type=range&gt;</code>; receives the inline <code>--ori-slider-pct</code> custom property."},{"class":"data-disabled","type":"State","description":"Set on the wrapper when <code>disabled</code> is true; dims the control and changes the cursor to not-allowed."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/slider.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -49,7 +49,7 @@ const brightness = ref(40)
 <template>
     <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 24rem">
         <OriSlider v-model="volume" label="Volume" :show-value="true" />
-        <OriSlider v-model="brightness" label="Brightness" color="warn" :show-value="true" :max="200" />
+        <OriSlider v-model="brightness" label="Brightness" color="warning" :show-value="true" :max="200" />
     </div>
 </template>
 ```
@@ -80,7 +80,7 @@ Every semantic role. The filled track, the thumb, and the focus ring all read `-
 :ori-slider{:model-value="60" color="primary" label="primary"}
 :ori-slider{:model-value="60" color="secondary" label="secondary"}
 :ori-slider{:model-value="60" color="success" label="success"}
-:ori-slider{:model-value="60" color="warn" label="warn"}
+:ori-slider{:model-value="60" color="warning" label="warning"}
 :ori-slider{:model-value="60" color="danger" label="danger"}
 :ori-slider{:model-value="60" color="info" label="info"}
 
@@ -89,7 +89,7 @@ Every semantic role. The filled track, the thumb, and the focus ring all read `-
 ```vue
 <OriSlider :model-value="60" color="primary" label="primary" />
 <OriSlider :model-value="60" color="secondary" label="secondary" />
-<OriSlider :model-value="60" color="warn" label="warn" />
+<OriSlider :model-value="60" color="warning" label="warning" />
 <OriSlider :model-value="60" color="danger" label="danger" />
 ```
 
@@ -112,7 +112,7 @@ Every semantic role. The filled track, the thumb, and the focus ring all read `-
 
 ::example
 :ori-slider{:min="0" :max="10" :step="1" :model-value="4" label="Rating" :show-value="true"}
-:ori-slider{:min="0" :max="200" :step="10" :model-value="80" label="Brightness" color="warn" :show-value="true"}
+:ori-slider{:min="0" :max="200" :step="10" :model-value="80" label="Brightness" color="warning" :show-value="true"}
 :ori-slider{:min="-50" :max="50" :step="5" :model-value="0" label="Balance" color="secondary" :show-value="true"}
 
 #vue
@@ -122,7 +122,7 @@ Every semantic role. The filled track, the thumb, and the focus ring all read `-
 <OriSlider v-model="rating" :min="0" :max="10" :step="1" label="Rating" :show-value="true" />
 
 <!-- 0–200 in steps of 10 -->
-<OriSlider v-model="brightness" :min="0" :max="200" :step="10" label="Brightness" color="warn" :show-value="true" />
+<OriSlider v-model="brightness" :min="0" :max="200" :step="10" label="Brightness" color="warning" :show-value="true" />
 
 <!-- negative range -->
 <OriSlider v-model="balance" :min="-50" :max="50" :step="5" label="Balance" color="secondary" :show-value="true" />
@@ -316,16 +316,16 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop         | Type         | Default     | Description                                                                      |
-| ------------ | ------------ | ----------- | -------------------------------------------------------------------------------- |
-| `color`      | `ThemeColor` | `'primary'` | Semantic accent: primary · secondary · success · warn · danger · info · surface. |
-| `disabled`   | `boolean`    | —           | Sets native `disabled` on the input and `data-disabled` on the wrapper.          |
-| `label`      | `string`     | —           | Visible `<label>` text, linked to the input via `for`/`id`.                      |
-| `max`        | `number`     | `100`       | Maximum value — maps to the native `max` attribute.                              |
-| `min`        | `number`     | `0`         | Minimum value — maps to the native `min` attribute.                              |
-| `modelValue` | `number`     | —           | Controlled value; bind with `v-model`. Defaults to `min` when omitted.           |
-| `showValue`  | `boolean`    | —           | Renders the current value in an `ori-slider__value` span beside the label.       |
-| `step`       | `number`     | `1`         | Increment per arrow-key press — maps to the native `step` attribute.             |
+| Prop         | Type         | Default     | Description                                                                         |
+| ------------ | ------------ | ----------- | ----------------------------------------------------------------------------------- |
+| `color`      | `ThemeColor` | `'primary'` | Semantic accent: primary · secondary · success · warning · danger · info · surface. |
+| `disabled`   | `boolean`    | —           | Sets native `disabled` on the input and `data-disabled` on the wrapper.             |
+| `label`      | `string`     | —           | Visible `<label>` text, linked to the input via `for`/`id`.                         |
+| `max`        | `number`     | `100`       | Maximum value — maps to the native `max` attribute.                                 |
+| `min`        | `number`     | `0`         | Minimum value — maps to the native `min` attribute.                                 |
+| `modelValue` | `number`     | —           | Controlled value; bind with `v-model`. Defaults to `min` when omitted.              |
+| `showValue`  | `boolean`    | —           | Renders the current value in an `ori-slider__value` span beside the label.          |
+| `step`       | `number`     | `1`         | Increment per arrow-key press — maps to the native `step` attribute.                |
 
 ### Events & attributes
 

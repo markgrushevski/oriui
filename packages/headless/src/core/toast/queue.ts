@@ -12,7 +12,7 @@
 
 /** The palette roles a toast can carry. Mirrors `@oriui/vue`'s `ThemeColor`; the core can't import up the
  *  dependency graph (vue → headless), so this small, stable union is duplicated here. */
-export type ToastColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'
+export type ToastColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'
 
 export interface ToastOptions {
     /** Show a dismiss button on the toast. */
@@ -129,7 +129,7 @@ export function createToastActions(queue: ToastQueue) {
         toast: (options: ToastOptions | string) => queue.push(options),
         success: (options: ToastOptions | string) => queue.push(options, 'success'),
         error: (options: ToastOptions | string) => queue.push(options, 'danger'),
-        warn: (options: ToastOptions | string) => queue.push(options, 'warn'),
+        warning: (options: ToastOptions | string) => queue.push(options, 'warning'),
         info: (options: ToastOptions | string) => queue.push(options, 'info'),
         dismiss: (id: number) => queue.dismiss(id),
         clear: () => queue.clear()

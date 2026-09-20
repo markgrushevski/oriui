@@ -114,11 +114,11 @@ describe('OriProgress', () => {
         expect(classes).toContain('ori-size-radius_xl')
     })
 
-    it('default radius=rounded maps to ori-size-radius_rounded class', () => {
+    it('default radius=rounded maps to ori-size-radius_full class', () => {
         const wrapper = mount(OriProgress)
         const classes = wrapper.classes()
 
-        expect(classes).toContain('ori-size-radius_rounded')
+        expect(classes).toContain('ori-size-radius_full')
     })
 
     it('renders the track and indicator child elements', () => {

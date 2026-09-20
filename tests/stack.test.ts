@@ -41,10 +41,10 @@ describe('OriStack', () => {
         expect(wrapper.classes()).toContain('ori-size-gap_lg')
     })
 
-    it('gap="zero" adds ori-size-gap_zero class', () => {
-        const wrapper = mount(OriStack, { props: { gap: 'zero' } })
+    it('gap="none" adds ori-size-gap_none class', () => {
+        const wrapper = mount(OriStack, { props: { gap: 'none' } })
 
-        expect(wrapper.classes()).toContain('ori-size-gap_zero')
+        expect(wrapper.classes()).toContain('ori-size-gap_none')
     })
 
     it('gap="md" adds ori-size-gap_md class', () => {

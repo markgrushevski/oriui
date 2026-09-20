@@ -126,7 +126,7 @@ describe('OriTooltip', () => {
     })
 
     it('different color values produce the correct class', () => {
-        const colors = ['primary', 'danger', 'success', 'warn', 'info'] as const
+        const colors = ['primary', 'danger', 'success', 'warning', 'info'] as const
         colors.forEach((color) => {
             const wrapper = mount(OriTooltip, { props: { content: 'x', color } })
             expect(wrapper.classes()).toContain(`ori-color_${color}`)

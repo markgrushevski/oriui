@@ -9,7 +9,7 @@ import path from 'node:path'
 //   2. SCALING — bump the root to 20px and the same dimensions scale by exactly ×1.25, because the
 //      size/font scales are rem. That is the point of the migration: components now follow the user's
 //      browser font-size preference, not only zoom. What must NOT scale stays put: 1px hairline
-//      borders and the 9999px `rounded` pill cap are px on purpose.
+//      borders and the 9999px `full` pill cap are px on purpose.
 // Reuses the reset-independence fixture (real markup for every component) + the built dist bundle.
 const STYLES = path.resolve('packages/css/dist/styles.css')
 const FIXTURE = readFileSync(path.resolve('e2e/fixtures/reset-independence.html'), 'utf8')
@@ -82,7 +82,7 @@ const PROBES = [
         base: '1px',
         scaled: '1px'
     },
-    // px sentinel: the `rounded` cap is "always a pill", not a length on the scale.
+    // px sentinel: the `full` cap is "always a pill", not a length on the scale.
     {
         name: 'button rounded cap (px)',
         selector: '[data-c="button"] .ori-button',
