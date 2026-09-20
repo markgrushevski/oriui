@@ -20,7 +20,7 @@ A progress bar is a block class plus single-class token utilities. The Vue props
 [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-progress","type":"Block","description":"Required base class. Renders full-width. Defaults baked in: color primary, radius rounded, height 8 px."},{"class":"ori-progress_sm · ori-progress_md · ori-progress_lg","type":"Size","description":"Track height: 4 px (sm) · 8 px (md, default) · 12 px (lg). ori-progress_* (size sugar)."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — one class repoints the color token; no base class needed."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded (default) — one class repoints the radius token; no base class needed."},{"class":"ori-progress__track","type":"Part","description":"Inner track element (tinted background)."},{"class":"ori-progress__indicator","type":"Part","description":"Fill element; width driven by inline style or data-indeterminate animation."},{"class":"data-indeterminate","type":"State","description":"Present on the indicator when no value is known; triggers the sweep animation."}]'}
+:class-table{:rows='[{"class":"ori-progress","type":"Block","description":"Required base class. Renders full-width. Defaults baked in: color primary, radius full, height 8 px."},{"class":"ori-progress_sm · ori-progress_md · ori-progress_lg","type":"Size","description":"Track height: 4 px (sm) · 8 px (md, default) · 12 px (lg). ori-progress_* (size sugar)."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface — one class repoints the color token; no base class needed."},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · full (default) — one class repoints the radius token; no base class needed."},{"class":"ori-progress__track","type":"Part","description":"Inner track element (tinted background)."},{"class":"ori-progress__indicator","type":"Part","description":"Fill element; width driven by inline style or data-indeterminate animation."},{"class":"data-indeterminate","type":"State","description":"Present on the indicator when no value is known; triggers the sweep animation."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/progress.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -106,7 +106,7 @@ Every semantic role. `color` defaults to `primary`; set it to any role to recolo
 :ori-progress{:value="60" color="primary"}
 :ori-progress{:value="60" color="secondary"}
 :ori-progress{:value="60" color="success"}
-:ori-progress{:value="60" color="warn"}
+:ori-progress{:value="60" color="warning"}
 :ori-progress{:value="60" color="danger"}
 :ori-progress{:value="60" color="info"}
 
@@ -116,7 +116,7 @@ Every semantic role. `color` defaults to `primary`; set it to any role to recolo
 <OriProgress :value="60" color="primary" />
 <OriProgress :value="60" color="secondary" />
 <OriProgress :value="60" color="success" />
-<OriProgress :value="60" color="warn" />
+<OriProgress :value="60" color="warning" />
 <OriProgress :value="60" color="danger" />
 <OriProgress :value="60" color="info" />
 ```
@@ -180,28 +180,28 @@ Three track heights — `sm` (4 px), `md` (8 px, default), and `lg` (12 px).
 
 ## Radius
 
-From `zero` (square) to `rounded` (pill, default).
+From `none` (square) to `full` (pill, default).
 
 ::example
-:ori-progress{:value="60" radius="zero" size="lg" color="primary"}
+:ori-progress{:value="60" radius="none" size="lg" color="primary"}
 :ori-progress{:value="60" radius="sm" size="lg" color="primary"}
 :ori-progress{:value="60" radius="md" size="lg" color="primary"}
-:ori-progress{:value="60" radius="rounded" size="lg" color="primary"}
+:ori-progress{:value="60" radius="full" size="lg" color="primary"}
 
 #vue
 
 ```vue
-<OriProgress :value="60" radius="zero" size="lg" color="primary" />
+<OriProgress :value="60" radius="none" size="lg" color="primary" />
 <OriProgress :value="60" radius="sm" size="lg" color="primary" />
-<OriProgress :value="60" radius="rounded" size="lg" color="primary" />
+<OriProgress :value="60" radius="full" size="lg" color="primary" />
 ```
 
 #html
 
 ```html
-<!-- swap the radius class: ori-size-radius_zero → _sm / _md / _rounded -->
+<!-- swap the radius class: ori-size-radius_none → _sm / _md / _rounded -->
 <div
-    class="ori-progress ori-progress_lg ori-size-radius_zero ori-color_primary"
+    class="ori-progress ori-progress_lg ori-size-radius_none ori-color_primary"
     role="progressbar"
     aria-label="Loading"
     aria-valuemin="0"
@@ -337,13 +337,13 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `indeterminate` | `boolean`              | `false`     | Enables the animated sweep; omits `aria-valuenow` from the rendered element.                                                                    |
 | `label`         | `string`               | `'Loading'` | `aria-label` read by assistive technology. Use a descriptive message per-bar.                                                                   |
 | `max`           | `number`               | `100`       | Upper bound. `value` is clamped to this range before the percentage is computed.                                                                |
-| `radius`        | `RadiusSize`           | `'rounded'` | Corner radius of the track and indicator (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                               |
+| `radius`        | `RadiusSize`           | `'full'`    | Corner radius of the track and indicator (`none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`).                                                  |
 | `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`      | Track height: `sm` = 4 px, `md` = 8 px, `lg` = 12 px.                                                                                           |
 | `value`         | `number`               | `0`         | Current progress value, clamped to `[0, max]`. Ignored when `indeterminate` is `true`.                                                          |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
-`RadiusSize`: `'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'rounded'`
+`RadiusSize`: `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'`
 
 ### Events & attributes
 

@@ -16,9 +16,9 @@
     :where(.ori-spinner) {
         --ori-color: currentcolor;
         /* Baked default for the action-size axis (spinner diameter): the bare `.ori-spinner` is
-           already a valid `text`-sized spinner. A size modifier (`.ori-spinner_lg`) repoints the
+           already a valid `inherit`-sized spinner. A size modifier (`.ori-spinner_lg`) repoints the
            alias. */
-        --ori-size-action: var(--ori-size-action_text);
+        --ori-size-action: var(--ori-size-action_inherit);
     }
 
     .ori-spinner {
@@ -40,10 +40,10 @@
     }
 
     /* Size sugar (action-size axis / spinner diameter) — one class, like the low-level
-       `.ori-size-action_*` utility it mirrors: it beats the baked `text` default because that default
+       `.ori-size-action_*` utility it mirrors: it beats the baked `inherit` default because that default
        sits in the `:where(.ori-spinner)` rule above at (0,0,0). */
-    .ori-spinner_text {
-        --ori-size-action: var(--ori-size-action_text);
+    .ori-spinner_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
     }
 
     .ori-spinner_xs {

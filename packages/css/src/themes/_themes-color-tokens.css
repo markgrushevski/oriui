@@ -79,8 +79,8 @@
         /* Status — shared across both themes (own hues) */
         --ori-color-success: #15803d;
         --ori-color-on-success: #ffffff;
-        --ori-color-warn: #f59e0b;
-        --ori-color-on-warn: var(--ori-neutral-950);
+        --ori-color-warning: #f59e0b;
+        --ori-color-on-warning: var(--ori-neutral-950);
         --ori-color-danger: #b91c1c;
         --ori-color-on-danger: #ffffff;
         --ori-color-info: #1d4ed8;
@@ -138,13 +138,13 @@
            so the text and the outline border read as the same colour as the fill — one hue, only lightness
            varying, NOT the muddy desaturation a mix toward the neutral ink gives. Light caps L at 0.42,
            dark floors at 0.86 — the tightest bounds that clear WCAG AA (>= 4.5:1) for every role × skin ×
-           text kind incl. the tonal hover/active tint (min ~4.55:1); verified in real Chromium by
+           text kind incl. the soft hover/active tint (min ~4.55:1); verified in real Chromium by
            e2e/text-contrast.spec.ts. Retune by overriding --ori-color-<role>-text directly (at :root, per
            skin, or per instance). */
         --ori-color-primary-text: oklch(from var(--ori-color-primary) min(l, 0.42) c h);
         --ori-color-secondary-text: oklch(from var(--ori-color-secondary) min(l, 0.42) c h);
         --ori-color-success-text: oklch(from var(--ori-color-success) min(l, 0.42) c h);
-        --ori-color-warn-text: oklch(from var(--ori-color-warn) min(l, 0.42) c h);
+        --ori-color-warning-text: oklch(from var(--ori-color-warning) min(l, 0.42) c h);
         --ori-color-danger-text: oklch(from var(--ori-color-danger) min(l, 0.42) c h);
         --ori-color-info-text: oklch(from var(--ori-color-info) min(l, 0.42) c h);
 
@@ -190,7 +190,7 @@
         --ori-color-primary-text: oklch(from var(--ori-color-primary) max(l, 0.86) c h);
         --ori-color-secondary-text: oklch(from var(--ori-color-secondary) max(l, 0.86) c h);
         --ori-color-success-text: oklch(from var(--ori-color-success) max(l, 0.86) c h);
-        --ori-color-warn-text: oklch(from var(--ori-color-warn) max(l, 0.86) c h);
+        --ori-color-warning-text: oklch(from var(--ori-color-warning) max(l, 0.86) c h);
         --ori-color-danger-text: oklch(from var(--ori-color-danger) max(l, 0.86) c h);
         --ori-color-info-text: oklch(from var(--ori-color-info) max(l, 0.86) c h);
         /* The neutral default has to be re-declared here for the same reason the clamps are: declared

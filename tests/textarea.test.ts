@@ -105,12 +105,12 @@ describe('OriTextarea', () => {
 
     it('maps size / radius / variant / color to classes', () => {
         const wrapper = mount(OriTextarea, {
-            props: { size: 'lg', radius: 'sm', variant: 'fill', color: 'danger' }
+            props: { size: 'lg', radius: 'sm', variant: 'solid', color: 'danger' }
         })
         const wrapClasses = wrapper.classes()
 
         expect(wrapClasses).toContain('ori-font-size_lg')
-        expect(wrapClasses).toContain('ori-textarea_fill')
+        expect(wrapClasses).toContain('ori-textarea_solid')
         expect(wrapClasses).toContain('ori-color_danger')
         expect(wrapClasses).toContain('ori-textarea_lg')
         expect(wrapper.find('textarea').classes()).toContain('ori-size-radius_sm')

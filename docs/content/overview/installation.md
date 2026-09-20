@@ -31,7 +31,7 @@ import { OriButton } from '@oriui/vue'
 </script>
 
 <template>
-    <OriButton text="Click me" variant="tonal" color="primary" />
+    <OriButton text="Click me" variant="soft" color="primary" />
 </template>
 ```
 

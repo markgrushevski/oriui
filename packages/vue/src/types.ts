@@ -7,14 +7,15 @@
 // the styled package's public types.
 
 /** Steps of the action-size scale — the height/padding family shared by every interactive control
- *  (button, input, select, combobox, slider handle). `text` is the label-height step. */
-export type ActionSize = 'text' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+ *  (button, input, select, combobox, slider handle). `inherit` is the label-height step: the control takes
+ *  the surrounding text size (1em) instead of a fixed one. */
+export type ActionSize = 'inherit' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
 
-/** Steps of the gap scale used by layout primitives (`<OriStack gap>`). `zero` collapses the gap. */
-export type GapSize = 'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+/** Steps of the gap scale used by layout primitives (`<OriStack gap>`). `none` collapses the gap. */
+export type GapSize = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
-/** Steps of the corner-radius scale. `zero` squares the corners, `rounded` is the pill. */
-export type RadiusSize = 'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'rounded'
+/** Steps of the corner-radius scale. `none` squares the corners, `full` is the pill. */
+export type RadiusSize = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
 
 /* ==================== Positions ==================== */
 
@@ -32,9 +33,9 @@ export type AnchoredPlacement = AnchoredSide | `${AnchoredSide}-start` | `${Anch
 
 /** The palette roles a component's `color` prop accepts — each one resolves the `--ori-color` /
  *  `--ori-color-on` alias pair through the `ori-color_*` utility. */
-export type ThemeColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'
+export type ThemeColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'
 
 /* ==================== Variants ==================== */
 
 /** The emphasis ladder a component's `variant` prop accepts, loudest to quietest. */
-export type Variant = 'fill' | 'tonal' | 'outline' | 'text' | 'plain'
+export type Variant = 'solid' | 'soft' | 'outline' | 'text' | 'plain'

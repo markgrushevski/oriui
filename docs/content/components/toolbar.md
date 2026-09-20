@@ -25,7 +25,7 @@ fully interactive version.
 ## Classes
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-toolbar","type":"Block","description":"Required base class (OriToolbar). Unstyled flex grouping container - row layout, gap - with no variant or color axis of its own; all visual weight lives on the buttons inside it."},{"class":"ori-toolbar_vertical","type":"Modifier","description":"Column layout instead of row; children stretch on the cross axis. Pair with the orientation prop (or aria-orientation=vertical by hand) for correct semantics."},{"class":"ori-toolbar__group","type":"Part","description":"OriToolbarToggleGroup - a tighter cluster of related toggle buttons; same flex and gap as the bar, column instead of row when the toolbar is vertical."},{"class":"ori-toolbar__separator","type":"Part","description":"OriToolbarSeparator - a hairline rule, perpendicular to the bar: a vertical line inside a horizontal toolbar, a horizontal line inside a vertical one."},{"class":"ori-button","type":"Part","description":"OriToolbarButton and OriToolbarToggleItem render the same ori-button classes documented on the Button page. Toolbar items default to ori-variant_text - a low-emphasis look - rather than the fill default OriButton itself uses standalone."},{"class":"data-ori-toolbar-item","type":"State","description":"Internal marker attribute the roving-focus script uses to find items in DOM order. OriToolbarButton and OriToolbarToggleItem carry it automatically - not meant to be set or styled by hand."},{"class":"role=toolbar / role=group / role=separator","type":"Semantics","description":"role=toolbar on the root, role=group on a toggle group, role=separator on the separator - always present, real attributes, not classes."},{"class":"tabindex / aria-pressed / aria-disabled","type":"State","description":"Real attributes, not classes. Exactly one item is tabindex=0 at a time (roving); aria-pressed on a toggle item reflects the toggle group selection; aria-disabled keeps an item focusable while blocking activation."}]'}
+:class-table{:rows='[{"class":"ori-toolbar","type":"Block","description":"Required base class (OriToolbar). Unstyled flex grouping container - row layout, gap - with no variant or color axis of its own; all visual weight lives on the buttons inside it."},{"class":"ori-toolbar_vertical","type":"Modifier","description":"Column layout instead of row; children stretch on the cross axis. Pair with the orientation prop (or aria-orientation=vertical by hand) for correct semantics."},{"class":"ori-toolbar__group","type":"Part","description":"OriToolbarToggleGroup - a tighter cluster of related toggle buttons; same flex and gap as the bar, column instead of row when the toolbar is vertical."},{"class":"ori-toolbar__separator","type":"Part","description":"OriToolbarSeparator - a hairline rule, perpendicular to the bar: a vertical line inside a horizontal toolbar, a horizontal line inside a vertical one."},{"class":"ori-button","type":"Part","description":"OriToolbarButton and OriToolbarToggleItem render the same ori-button classes documented on the Button page. Toolbar items default to ori-variant_text - a low-emphasis look - rather than the solid default OriButton itself uses standalone."},{"class":"data-ori-toolbar-item","type":"State","description":"Internal marker attribute the roving-focus script uses to find items in DOM order. OriToolbarButton and OriToolbarToggleItem carry it automatically - not meant to be set or styled by hand."},{"class":"role=toolbar / role=group / role=separator","type":"Semantics","description":"role=toolbar on the root, role=group on a toggle group, role=separator on the separator - always present, real attributes, not classes."},{"class":"tabindex / aria-pressed / aria-disabled","type":"State","description":"Real attributes, not classes. Exactly one item is tabindex=0 at a time (roving); aria-pressed on a toggle item reflects the toggle group selection; aria-disabled keeps an item focusable while blocking activation."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/toolbar.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -541,7 +541,7 @@ const styles = ref<string[]>([])
 ::example
 ::ori-toolbar{label="Quick actions"}
 :ori-toolbar-button{text="Export" variant="outline" size="sm"}
-:ori-toolbar-button{text="Delete" variant="tonal" color="danger"}
+:ori-toolbar-button{text="Delete" variant="soft" color="danger"}
 ::
 
 #vue
@@ -549,7 +549,7 @@ const styles = ref<string[]>([])
 ```vue
 <OriToolbar label="Quick actions">
     <OriToolbarButton text="Export" variant="outline" size="sm" />
-    <OriToolbarButton text="Delete" variant="tonal" color="danger" />
+    <OriToolbarButton text="Delete" variant="soft" color="danger" />
 </OriToolbar>
 ```
 
@@ -558,7 +558,7 @@ const styles = ref<string[]>([])
 ```html
 <!-- Structure only. -->
 <button class="ori-button ori-variant_outline ori-button_sm" data-ori-toolbar-item tabindex="0">Export</button>
-<button class="ori-button ori-variant_tonal ori-color_danger" data-ori-toolbar-item tabindex="-1">Delete</button>
+<button class="ori-button ori-variant_soft ori-color_danger" data-ori-toolbar-item tabindex="-1">Delete</button>
 ```
 
 ::
@@ -739,11 +739,11 @@ warning.
 | `icon`     | `string`     | —        | SVG path, forwarded to `OriButton`. `icon` with no `text` renders an icon-only square.                                                                                                                                 |
 | `label`    | `string`     | —        | Accessible name for an icon-only button (→ `aria-label`); falls back to `tooltip` when omitted.                                                                                                                        |
 | `pressed`  | `boolean`    | —        | Toggle state → `aria-pressed`. Omit entirely for a plain action button (no `aria-pressed` rendered); pass `true` / `false` for a standalone toggle (e.g. Bold, Italic) that is not part of an `OriToolbarToggleGroup`. |
-| `radius`   | `RadiusSize` | —        | Corner radius, forwarded. Unset falls back to `OriButton`'s own default (`rounded`).                                                                                                                                   |
+| `radius`   | `RadiusSize` | —        | Corner radius, forwarded. Unset falls back to `OriButton`'s own default (`full`).                                                                                                                                      |
 | `size`     | `ActionSize` | —        | Height and text scale, forwarded. Unset falls back to `OriButton`'s own default (`md`).                                                                                                                                |
 | `text`     | `string`     | —        | Visible label, forwarded to `OriButton`.                                                                                                                                                                               |
 | `tooltip`  | `string`     | —        | Wraps the button in an `OriTooltip`; wires `aria-describedby` onto the real `<button>` when a `label` also names it, otherwise the tooltip text becomes the accessible name.                                           |
-| `variant`  | `Variant`    | `'text'` | Visual style, forwarded. Toolbar items default to the low-emphasis `text` look rather than `OriButton`'s own `fill` default.                                                                                           |
+| `variant`  | `Variant`    | `'text'` | Visual style, forwarded. Toolbar items default to the low-emphasis `text` look rather than `OriButton`'s own `solid` default.                                                                                          |
 
 **Events & attributes**
 
@@ -813,7 +813,7 @@ role's ARIA contract; the group is a named cluster over the toolbar's flat rovin
 | `disabled` | `boolean`    | `false`      | Same `aria-disabled`, still-focusable semantics as `OriToolbarButton`.           |
 | `icon`     | `string`     | —            | SVG path, forwarded to `OriButton`.                                              |
 | `label`    | `string`     | —            | Accessible name for an icon-only item (→ `aria-label`); falls back to `tooltip`. |
-| `radius`   | `RadiusSize` | —            | Forwarded; falls back to `OriButton`'s own default (`rounded`).                  |
+| `radius`   | `RadiusSize` | —            | Forwarded; falls back to `OriButton`'s own default (`full`).                     |
 | `size`     | `ActionSize` | —            | Forwarded; falls back to `OriButton`'s own default (`md`).                       |
 | `text`     | `string`     | —            | Visible label, forwarded.                                                        |
 | `tooltip`  | `string`     | —            | Same baked `aria-describedby` wiring as `OriToolbarButton`.                      |

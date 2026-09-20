@@ -46,7 +46,7 @@ native to the Popover API).
 ```vue
 <OriPopover aria-labelledby="popover-title">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Open popover" variant="tonal" />
+        <OriButton v-bind="props" text="Open popover" variant="soft" />
     </template>
     <div style="padding: 0.35rem">
         <strong id="popover-title">Weave a popover</strong>
@@ -95,13 +95,13 @@ side; `position-try-fallbacks` flips it on overflow.
 ```vue
 <OriPopover placement="top">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="top" variant="tonal" />
+        <OriButton v-bind="props" text="top" variant="soft" />
     </template>
     <p>Above the trigger.</p>
 </OriPopover>
 <OriPopover placement="bottom-end">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="bottom-end" variant="tonal" />
+        <OriButton v-bind="props" text="bottom-end" variant="soft" />
     </template>
     <p>Below, aligned to the trigger's end edge.</p>
 </OriPopover>

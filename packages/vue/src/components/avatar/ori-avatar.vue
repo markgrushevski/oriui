@@ -5,7 +5,7 @@ import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 defineOptions({ inheritAttrs: false })
 
 const {
-    radius = 'rounded',
+    radius = 'full',
     size = 'lg',
     text
 } = defineProps<{

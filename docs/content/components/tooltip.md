@@ -92,7 +92,7 @@ tint the bubble with the matching role palette.
 :ori-tooltip{content="Danger" color="danger" placement="bottom"}
 :ori-tooltip{content="Success" color="success" placement="bottom"}
 :ori-tooltip{content="Info" color="info" placement="bottom"}
-:ori-tooltip{content="Warn" color="warn" placement="bottom"}
+:ori-tooltip{content="Warn" color="warning" placement="bottom"}
 
 #vue
 
@@ -175,7 +175,7 @@ keyboard focus.
 
 ```vue
 <OriTooltip content="Add item" placement="right">
-    <OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add item" variant="tonal" />
+    <OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add item" variant="soft" />
 </OriTooltip>
 ```
 
@@ -185,7 +185,7 @@ keyboard focus.
 <span class="ori-tooltip">
     <span class="ori-tooltip__trigger">
         <button
-            class="ori-button ori-button_icon ori-variant_tonal ori-color_primary"
+            class="ori-button ori-button_icon ori-variant_soft ori-color_primary"
             aria-label="Add item"
             aria-describedby="tip-5"
         >

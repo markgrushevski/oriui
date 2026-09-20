@@ -19,15 +19,15 @@ A button is a block class plus single-class token utilities — one class repoin
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>fill</b> · tonal · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/button.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
 `ori-size-radius_*`, …) live there, not in the component file. The full bundle `@oriui/css` is the default and
 already carries both; see [à-la-carte imports](/guides/css).
 
-The non-fill variants (`tonal` / `outline` / `text` / `plain`) paint the label with the AA-safe
-`--ori-color-text` tone rather than the raw role; `fill` keeps `--ori-color-on` for its solid
+The non-fill variants (`soft` / `outline` / `text` / `plain`) paint the label with the AA-safe
+`--ori-color-text` tone rather than the raw role; `solid` keeps `--ori-color-on` for its solid
 background — see [Design tokens](/guides/design-tokens#text-the-on-surface-foreground).
 
 ## Variants
@@ -35,8 +35,8 @@ background — see [Design tokens](/guides/design-tokens#text-the-on-surface-for
 Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
-:ori-button{text="Fill" variant="fill"}
-:ori-button{text="Tonal" variant="tonal"}
+:ori-button{text="Solid" variant="solid"}
+:ori-button{text="Tonal" variant="soft"}
 :ori-button{text="Outline" variant="outline"}
 :ori-button{text="Text" variant="text"}
 :ori-button{text="Plain" variant="plain"}
@@ -44,8 +44,8 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 #vue
 
 ```vue
-<OriButton text="Fill" variant="fill" />
-<OriButton text="Tonal" variant="tonal" />
+<OriButton text="Solid" variant="solid" />
+<OriButton text="Tonal" variant="soft" />
 <OriButton text="Outline" variant="outline" />
 <OriButton text="Text" variant="text" />
 <OriButton text="Plain" variant="plain" />
@@ -54,8 +54,8 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 #html
 
 ```html
-<button class="ori-button ori-variant_fill ori-color_primary">Fill</button>
-<!-- swap the variant: ori-variant_fill → _tonal / _outline / _text / _plain -->
+<button class="ori-button ori-variant_solid ori-color_primary">Fill</button>
+<!-- swap the variant: ori-variant_solid → _tonal / _outline / _text / _plain -->
 <button class="ori-button ori-variant_outline ori-color_primary">Outline</button>
 ```
 
@@ -69,7 +69,7 @@ Every semantic role. `surface` / `background` are also available for neutral but
 :ori-button{text="primary" color="primary"}
 :ori-button{text="secondary" color="secondary"}
 :ori-button{text="success" color="success"}
-:ori-button{text="warn" color="warn"}
+:ori-button{text="warning" color="warning"}
 :ori-button{text="danger" color="danger"}
 :ori-button{text="info" color="info"}
 
@@ -84,7 +84,7 @@ Every semantic role. `surface` / `background` are also available for neutral but
 #html
 
 ```html
-<button class="ori-button ori-variant_fill ori-color_danger">danger</button>
+<button class="ori-button ori-variant_solid ori-color_danger">danger</button>
 ```
 
 ::
@@ -92,21 +92,21 @@ Every semantic role. `surface` / `background` are also available for neutral but
 Variant × color compose freely — e.g. a tonal danger button:
 
 ::example
-:ori-button{text="Delete" variant="tonal" color="danger"}
+:ori-button{text="Delete" variant="soft" color="danger"}
 :ori-button{text="Confirm" variant="outline" color="success"}
 :ori-button{text="Note" variant="text" color="info"}
 
 #vue
 
 ```vue
-<OriButton text="Delete" variant="tonal" color="danger" />
+<OriButton text="Delete" variant="soft" color="danger" />
 <OriButton text="Confirm" variant="outline" color="success" />
 ```
 
 #html
 
 ```html
-<button class="ori-button ori-variant_tonal ori-color_danger">Delete</button>
+<button class="ori-button ori-variant_soft ori-color_danger">Delete</button>
 ```
 
 ::
@@ -140,26 +140,26 @@ Variant × color compose freely — e.g. a tonal danger button:
 
 ## Radius
 
-From `zero` to the default `rounded` (pill).
+From `none` to the default `full` (pill).
 
 ::example
-:ori-button{text="zero" radius="zero"}
+:ori-button{text="none" radius="none"}
 :ori-button{text="sm" radius="sm"}
 :ori-button{text="md" radius="md"}
 :ori-button{text="lg" radius="lg"}
-:ori-button{text="rounded" radius="rounded"}
+:ori-button{text="full" radius="full"}
 
 #vue
 
 ```vue
-<OriButton text="zero" radius="zero" />
-<OriButton text="rounded" radius="rounded" />
+<OriButton text="none" radius="none" />
+<OriButton text="full" radius="full" />
 ```
 
 #html
 
 ```html
-<button class="ori-button ori-size-radius_zero">zero</button>
+<button class="ori-button ori-size-radius_none">none</button>
 ```
 
 ::
@@ -173,7 +173,7 @@ text button is never forced into a square.
 ::example
 :ori-button{text="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"}
 :ori-button{text="Next" icon="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" iconPosition="right"}
-:ori-button{icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="tonal"}
+:ori-button{icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="soft"}
 
 #vue
 
@@ -181,13 +181,13 @@ text button is never forced into a square.
 <OriButton text="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
 <OriButton text="Next" icon="M12 4l-1.41…" iconPosition="right" />
 <!-- icon-only square: pass `icon` with no `text`, add an accessible name -->
-<OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="tonal" />
+<OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="soft" />
 ```
 
 #html
 
 ```html
-<button class="ori-button ori-button_icon ori-variant_tonal" aria-label="Add">
+<button class="ori-button ori-button_icon ori-variant_soft" aria-label="Add">
     <i class="ori-icon" aria-hidden="true"
         ><svg viewBox="0 0 24 24"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg
     ></i>
@@ -202,7 +202,7 @@ text button is never forced into a square.
 
 ::example
 :ori-button{text="Saving" :loading="true"}
-:ori-button{text="Saving" :loading="true" variant="tonal"}
+:ori-button{text="Saving" :loading="true" variant="soft"}
 :ori-button{icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Saving" :loading="true"}
 
 #vue
@@ -282,14 +282,14 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 
 ::example
 :ori-button{text="Cancel" variant="text"}
-:ori-button{text="Save changes" variant="fill"}
+:ori-button{text="Save changes" variant="solid"}
 
 #vue
 
 ```vue
 <div style="display: flex; gap: 0.5rem">
     <OriButton text="Cancel" variant="text" />
-    <OriButton text="Save changes" variant="fill" />
+    <OriButton text="Save changes" variant="solid" />
 </div>
 ```
 
@@ -298,7 +298,7 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 ```html
 <div style="display: flex; gap: 0.5rem">
     <button class="ori-button ori-variant_text">Cancel</button>
-    <button class="ori-button ori-variant_fill">Save changes</button>
+    <button class="ori-button ori-variant_solid">Save changes</button>
 </div>
 ```
 
@@ -330,10 +330,10 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | Prop           | Type                                                  | Default     | Description                                                                                                    |
 | -------------- | ----------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
 | `text`         | `string`                                              | —           | Label. A text (or slotted) button is a normal button, never an icon square.                                    |
-| `variant`      | `'fill' \| 'tonal' \| 'outline' \| 'text' \| 'plain'` | `'fill'`    | Visual style.                                                                                                  |
-| `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warn · danger · info · surface.                                 |
+| `variant`      | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'plain'` | `'solid'`   | Visual style.                                                                                                  |
+| `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warning · danger · info · surface.                              |
 | `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                                                             |
-| `radius`       | `RadiusSize`                                          | `'rounded'` | Corner radius (`zero`–`rounded`).                                                                              |
+| `radius`       | `RadiusSize`                                          | `'full'`    | Corner radius (`none`–`full`).                                                                                 |
 | `icon`         | `string`                                              | —           | SVG path for an icon; hidden while `loading`. `icon` with no `text` → an icon-only square (`ori-button_icon`). |
 | `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'`              | `'left'`    | Icon placement around the label.                                                                               |
 | `loading`      | `boolean`                                             | `false`     | Shows a spinner, sets `aria-busy`, and blocks interaction.                                                     |

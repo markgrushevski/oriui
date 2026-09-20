@@ -20,7 +20,7 @@ describe('OriSkeleton', () => {
     })
 
     it('maps the radius prop to ori-size-radius_<value>', () => {
-        for (const radius of ['zero', 'xs', 'sm', 'md', 'lg', 'xl', 'rounded'] as const) {
+        for (const radius of ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full'] as const) {
             const wrapper = mount(OriSkeleton, { props: { radius } })
 
             expect(wrapper.classes()).toContain(`ori-size-radius_${radius}`)

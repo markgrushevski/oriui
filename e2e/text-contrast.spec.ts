@@ -5,7 +5,7 @@ import a11yPlugin from 'colord/plugins/a11y'
 
 /**
  * Role-as-TEXT contrast guard (the P2 axis the token unit test can't reach). oriUI's role tokens are
- * tuned as fill BACKGROUNDS; the non-fill variants (text / outline / tonal), the selected tab, alert +
+ * tuned as fill BACKGROUNDS; the non-fill variants (text / outline / soft), the selected tab, alert +
  * tag paint the role as FOREGROUND text via --ori-color-<role>-text (an on-surface tone derived from the
  * role by color-mix, with explicit AA overrides where the derivation misses). color-mix(in oklch, …)
  * only resolves to a concrete colour in a real engine, so this must run in Chromium — happy-dom axe has
@@ -25,14 +25,14 @@ const STYLES = path.resolve('packages/css/dist/styles.css')
 
 const SKINS = ['', 'sumi', 'indigo', 'tech', 'health', 'luxury', 'neutral', 'cyber'] as const
 const THEMES = ['light', 'dark'] as const
-const ROLES = ['primary', 'secondary', 'success', 'warn', 'danger', 'info'] as const
+const ROLES = ['primary', 'secondary', 'success', 'warning', 'danger', 'info'] as const
 const FORM_BLOCKS = ['field', 'input', 'select', 'textarea', 'combobox'] as const
 const AA = 4.5
 // Guarded readings at or below this are printed in full: the tuning tail, not a failure.
 const WATCH = 6
 
 // Each measured element carries its own foreground `color` AND its own `background-color` (transparent for
-// text/outline/tab/link, a tonal tint for tonal/alert/tag), so one read per element captures the pair. The
+// text/outline/tab/link, a soft tint for soft/alert/tag), so one read per element captures the pair. The
 // `[data-active]` tonal probes exercise the raised hover/active tint (the worst-contrast state — WCAG 1.4.3
 // has no hover exemption). The `bare-*` probes carry NO `.ori-color_*` utility, so they exercise each block's
 // BAKED `--ori-color-text` (the :root default can't derive a block-baked role) — baked defaults are
@@ -48,8 +48,8 @@ function markup(): string {
     const cell = (role: string) => `
         <button class="ori-button ori-color_${role} ori-variant_text" data-role="${role}" data-kind="button-text">Text</button>
         <button class="ori-button ori-color_${role} ori-variant_outline" data-role="${role}" data-kind="button-outline">Outline</button>
-        <button class="ori-button ori-color_${role} ori-variant_tonal" data-role="${role}" data-kind="button-tonal">Tonal</button>
-        <button class="ori-button ori-color_${role} ori-variant_tonal" data-active data-role="${role}" data-kind="button-tonal-active">Tonal</button>
+        <button class="ori-button ori-color_${role} ori-variant_soft" data-role="${role}" data-kind="button-tonal">Soft</button>
+        <button class="ori-button ori-color_${role} ori-variant_soft" data-active data-role="${role}" data-kind="button-soft-active">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_plain" data-muted data-role="${role}" data-kind="button-plain">Plain</button>
         <a class="ori-link ori-color_${role}" href="#" data-role="${role}" data-kind="link">Link</a>
         <span class="ori-tag ori-color_${role}" data-role="${role}" data-kind="tag"><span class="ori-tag__text">Tag</span></span>
@@ -58,7 +58,7 @@ function markup(): string {
         <div class="ori-combobox ori-color_${role}">${listbox(role)}</div>`
     const bare = `
         <button class="ori-button ori-variant_text" data-role="baked-primary" data-kind="bare-button-text">Bare</button>
-        <button class="ori-button ori-variant_tonal" data-active data-role="baked-primary" data-kind="bare-button-tonal-active">Bare</button>
+        <button class="ori-button ori-variant_soft" data-active data-role="baked-primary" data-kind="bare-button-soft-active">Bare</button>
         <span class="ori-tag" data-role="baked-primary" data-kind="bare-tag"><span class="ori-tag__text">Bare</span></span>
         <div class="ori-alert" data-role="baked-info" data-kind="bare-alert"><div class="ori-alert__content"><div class="ori-alert__title">Bare</div></div></div>
         <div class="ori-tabs"><div class="ori-tabs__list" role="tablist"><button class="ori-tabs__tab" role="tab" aria-selected="true" data-role="baked-primary" data-kind="bare-tab-selected">Bare</button></div></div>
@@ -127,7 +127,7 @@ function form(): string {
         </div>`
     ).join('\n')
     return `${cells}
-        <div class="ori-input ori-input_fill"><input class="ori-input__field" value="Typed value" data-role="form" data-kind="input-fill-value"></div>
+        <div class="ori-input ori-input_solid"><input class="ori-input__field" value="Typed value" data-role="form" data-kind="input-fill-value"></div>
         <div class="ori-combobox"><ul class="ori-combobox__listbox">
             <li class="ori-combobox__option" data-role="form" data-kind="combobox-option">Option</li>
             <li class="ori-combobox__option" aria-disabled="true" data-muted data-role="form" data-kind="combobox-option-disabled">Option</li>
@@ -324,8 +324,8 @@ test.describe('role-as-text contrast — WCAG AA (4.5:1) across every skin, them
                 <div class="ori-dialog__body">
                     <p data-role="dialog" data-kind="dialog-body-text">Body copy inside the dialog.</p>
                     <a class="ori-link" href="#" data-role="dialog" data-kind="dialog-link">Link</a>
-                    <button class="ori-button ori-variant_fill" data-role="dialog" data-kind="dialog-button-fill">Confirm</button>
-                    <button class="ori-button ori-color_danger ori-variant_fill" data-role="dialog" data-kind="dialog-button-danger">Delete</button>
+                    <button class="ori-button ori-variant_solid" data-role="dialog" data-kind="dialog-button-fill">Confirm</button>
+                    <button class="ori-button ori-color_danger ori-variant_solid" data-role="dialog" data-kind="dialog-button-danger">Delete</button>
                     <button class="ori-button ori-variant_outline" data-role="dialog" data-kind="dialog-button-outline">Cancel</button>
                     <div class="ori-field">
                         <label class="ori-field__label" data-role="dialog" data-kind="dialog-field-label">Label</label>

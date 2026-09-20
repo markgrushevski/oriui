@@ -44,7 +44,7 @@ const {
     /** Visible rows of text — sets the field's min-height; it still grows and is resizable. */
     rows?: number
     size?: ActionSize
-    variant?: 'fill' | 'outline'
+    variant?: 'solid' | 'outline'
 }>()
 
 const model = defineModel<string>()

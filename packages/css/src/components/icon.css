@@ -15,11 +15,11 @@
        element beats inheritance at any specificity, so a nested block still reads its own value. */
     :where(.ori-icon) {
         --ori-color: currentcolor;
-        /* Baked per-axis defaults so a bare `.ori-icon` is a valid `text`-size, unspaced icon.
+        /* Baked per-axis defaults so a bare `.ori-icon` is a valid `inherit`-size, unspaced icon.
            `.ori-color_*` (utilities layer) overrides the color by layer order; the action-size /
            space axes are repointed by the component size sugar (`.ori-icon_lg`) below. */
-        --ori-size-action: var(--ori-size-action_text);
-        --ori-size-action-space: var(--ori-size-action-space_text);
+        --ori-size-action: var(--ori-size-action_inherit);
+        --ori-size-action-space: var(--ori-size-action-space_inherit);
     }
 
     .ori-icon {
@@ -43,10 +43,10 @@
     }
 
     /* Size sugar (action-size axis) — mirrors the low-level `.ori-size-action_*` utility, scoped to
-       the component. One class, like the utility it mirrors: it beats the baked `text` default because
+       the component. One class, like the utility it mirrors: it beats the baked `inherit` default because
        that default sits in the `:where(.ori-icon)` rule above at (0,0,0). */
-    .ori-icon_text {
-        --ori-size-action: var(--ori-size-action_text);
+    .ori-icon_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
     }
 
     .ori-icon_xs {

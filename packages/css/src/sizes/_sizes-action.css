@@ -1,6 +1,6 @@
 @layer ori.tokens {
     :root {
-        --ori-size-action_text: 1em;
+        --ori-size-action_inherit: 1em;
         --ori-size-action_xs: 1.25rem;
         --ori-size-action_sm: 1.5rem;
         /* The scale is rem (16px baseline) so controls follow the user's browser font-size setting.
@@ -11,9 +11,9 @@
         --ori-size-action_xl: 3.75rem;
         --ori-size-action_xxl: 4.25rem;
 
-        --ori-size-action: var(--ori-size-action_text);
+        --ori-size-action: var(--ori-size-action_inherit);
 
-        --ori-size-action-space_text: 0;
+        --ori-size-action-space_inherit: 0;
         --ori-size-action-space_xs: 0.625rem;
         --ori-size-action-space_sm: 0.75rem;
         --ori-size-action-space_md: 0.625rem;
@@ -21,7 +21,7 @@
         --ori-size-action-space_xl: 0.625rem;
         --ori-size-action-space_xxl: 0.75rem;
 
-        --ori-size-action-space: var(--ori-size-action-space_text);
+        --ori-size-action-space: var(--ori-size-action-space_inherit);
     }
 }
 
@@ -30,8 +30,8 @@
        paired `.ori-size-action` base needed (forgetting it used to be a silent no-op). They sit in
        `ori.utilities` (declared last), so they beat a block's baked-in default (e.g.
        `.ori-input { --ori-size-action: … }`) by LAYER ORDER, not specificity. */
-    .ori-size-action_text {
-        --ori-size-action: var(--ori-size-action_text);
+    .ori-size-action_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
     }
 
     .ori-size-action_xs {
@@ -60,8 +60,8 @@
 
     /* Action-space (margin) utilities — SINGLE-CLASS, like the size values: `.ori-size-action-space_md`
        repoints --ori-size-action-space on its own; a component reads it as margin (e.g. Icon). */
-    .ori-size-action-space_text {
-        --ori-size-action-space: var(--ori-size-action-space_text);
+    .ori-size-action-space_inherit {
+        --ori-size-action-space: var(--ori-size-action-space_inherit);
     }
 
     .ori-size-action-space_xs {

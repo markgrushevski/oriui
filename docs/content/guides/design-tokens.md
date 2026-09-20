@@ -95,8 +95,8 @@ Status colours carry their own meaning across every theme. They are **not** repo
 | ------------------------ | ------------------------ |
 | `--ori-color-success`    | `#15803d`                |
 | `--ori-color-on-success` | `#ffffff`                |
-| `--ori-color-warn`       | `#f59e0b`                |
-| `--ori-color-on-warn`    | `var(--ori-neutral-950)` |
+| `--ori-color-warning`    | `#f59e0b`                |
+| `--ori-color-on-warning` | `var(--ori-neutral-950)` |
 | `--ori-color-danger`     | `#b91c1c`                |
 | `--ori-color-on-danger`  | `#ffffff`                |
 | `--ori-color-info`       | `#1d4ed8`                |
@@ -132,7 +132,7 @@ three aliases at once:
 | `.ori-color_surface`    | `var(--ori-color-surface)`    | `var(--ori-color-on-surface)`    | `var(--ori-color-on-surface)`     |
 | `.ori-color_background` | `var(--ori-color-background)` | `var(--ori-color-on-background)` | `var(--ori-color-on-background)`  |
 | `.ori-color_success`    | `var(--ori-color-success)`    | `var(--ori-color-on-success)`    | `var(--ori-color-success-text)`   |
-| `.ori-color_warn`       | `var(--ori-color-warn)`       | `var(--ori-color-on-warn)`       | `var(--ori-color-warn-text)`      |
+| `.ori-color_warning`    | `var(--ori-color-warning)`    | `var(--ori-color-on-warning)`    | `var(--ori-color-warning-text)`   |
 | `.ori-color_danger`     | `var(--ori-color-danger)`     | `var(--ori-color-on-danger)`     | `var(--ori-color-danger-text)`    |
 | `.ori-color_info`       | `var(--ori-color-info)`       | `var(--ori-color-on-info)`       | `var(--ori-color-info-text)`      |
 
@@ -149,7 +149,7 @@ changes. _(For the per-component usage of these classes, see [Button](/component
 :ori-button{text="surface" color="surface"}
 :ori-button{text="background" color="background"}
 :ori-button{text="success" color="success"}
-:ori-button{text="warn" color="warn"}
+:ori-button{text="warning" color="warning"}
 :ori-button{text="danger" color="danger"}
 :ori-button{text="info" color="info"}
 ::
@@ -160,7 +160,7 @@ A role's `--ori-color-<role>` hue is engineered as a **fill background** — lig
 paired with a legible `--ori-color-on-<role>` ink for text painted **on** that fill. Used the other
 way round — as **text sitting on the surrounding surface** (the non-fill button variants, the
 selected tab, alert, tag) — a light or saturated role can drop below the WCAG AA 4.5:1 body-text bar
-(amber `warn` is the worst case). `--ori-color-<role>-text` is the dedicated on-surface tone for
+(amber `warning` is the worst case). `--ori-color-<role>-text` is the dedicated on-surface tone for
 exactly that — a **relative color** that keeps the role's own hue and chroma and clamps only its
 lightness, so the text reads as the _same_ colour as the fill, just darker (light theme) or lighter
 (dark theme) — one hue, only lightness varies, not the muddier, different-looking colour a mix toward
@@ -171,7 +171,7 @@ a neutral ink would give:
 | primary   | `oklch(from var(--ori-color-primary) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-primary) max(l, 0.86) c h)`   |
 | secondary | `oklch(from var(--ori-color-secondary) min(l, 0.42) c h)` | `oklch(from var(--ori-color-secondary) max(l, 0.86) c h)` |
 | success   | `oklch(from var(--ori-color-success) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-success) max(l, 0.86) c h)`   |
-| warn      | `oklch(from var(--ori-color-warn) min(l, 0.42) c h)`      | `oklch(from var(--ori-color-warn) max(l, 0.86) c h)`      |
+| warn      | `oklch(from var(--ori-color-warning) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-warning) max(l, 0.86) c h)`   |
 | danger    | `oklch(from var(--ori-color-danger) min(l, 0.42) c h)`    | `oklch(from var(--ori-color-danger) max(l, 0.86) c h)`    |
 | info      | `oklch(from var(--ori-color-info) min(l, 0.42) c h)`      | `oklch(from var(--ori-color-info) max(l, 0.86) c h)`      |
 
@@ -179,7 +179,7 @@ a neutral ink would give:
 carrying forward whichever channels you name bare. Naming `c` and `h` (chroma, hue) bare keeps them
 exactly as the role's; only `L` (lightness) is replaced — clamped to `min(l, 0.42)` in light (never
 lighter than 0.42) or `max(l, 0.86)` in dark (never darker than 0.86). Those are the tightest bounds
-that clear WCAG AA (≥ 4.5:1) for every role × skin × text kind, including the tonal hover/active tint
+that clear WCAG AA (≥ 4.5:1) for every role × skin × text kind, including the soft hover/active tint
 (min ~4.55:1) — verified in real Chromium by `e2e/text-contrast.spec.ts`.
 
 `surface` and `background` don't get their own `-text` token — their `on-` pair already **is** the
@@ -213,7 +213,7 @@ and a block without one keeps the defaults it bakes in. Each `.ori-variant_*` re
 | `_text`    | transparent                                             | `var(--ori-color-text)` | transparent             | `1`     |
 | `_plain`   | transparent                                             | `var(--ori-color-text)` | transparent             | `0.5`   |
 
-`fill` keeps `--ori-color-on` — the ink tuned for its own solid background. Every non-fill mapping
+`solid` keeps `--ori-color-on` — the ink tuned for its own solid background. Every non-fill mapping
 instead reads `--ori-color-text` for its label, the AA-safe on-surface tone from
 [Text — the on-surface foreground](#text-the-on-surface-foreground) above, because at those
 opacities/borders the role is painted as **text on the page**, not as a fill. `outline`'s border reads
@@ -224,8 +224,8 @@ Interaction state is derived from these same tokens, not stored — hover and `[
 the `color-mix` per variant. (See the live behaviour on [Button](/components/button).)
 
 ::example
-:ori-button{text="Fill" variant="fill"}
-:ori-button{text="Tonal" variant="tonal"}
+:ori-button{text="Solid" variant="solid"}
+:ori-button{text="Tonal" variant="soft"}
 :ori-button{text="Outline" variant="outline"}
 :ori-button{text="Text" variant="text"}
 :ori-button{text="Plain" variant="plain"}
@@ -243,7 +243,7 @@ class.
 `md` is `2.75rem` — 44px at the browser-default 16px root, meeting the iOS HIG ≥44pt and Android
 Material ≥48dp touch-target minimums; `xs` / `sm` are compact opt-ins for dense or icon-only UI.
 
-The alias `--ori-size-action` is declared at `:root` as `var(--ori-size-action_text)` (`1em`,
+The alias `--ori-size-action` is declared at `:root` as `var(--ori-size-action_inherit)` (`1em`,
 font-driven), but **no action component reads that default**: every block bakes its own step on
 itself (`.ori-button { --ori-size-action: var(--ori-size-action_md) }`), and the
 `.ori-<family>_<step>` utility beats it by layer order. Two consequences worth knowing: the `text`
@@ -251,30 +251,30 @@ default only shows up on markup that opts into it, and repointing `--ori-size-ac
 does nothing — scope a subtree through the raw step instead (see
 [Customization §5](/guides/customization)).
 
-| Token / step             | Value     |
-| ------------------------ | --------- |
-| `--ori-size-action_text` | `1em`     |
-| `--ori-size-action_xs`   | `1.25rem` |
-| `--ori-size-action_sm`   | `1.5rem`  |
-| `--ori-size-action_md`   | `2.75rem` |
-| `--ori-size-action_lg`   | `3rem`    |
-| `--ori-size-action_xl`   | `3.75rem` |
-| `--ori-size-action_xxl`  | `4.25rem` |
+| Token / step                | Value     |
+| --------------------------- | --------- |
+| `--ori-size-action_inherit` | `1em`     |
+| `--ori-size-action_xs`      | `1.25rem` |
+| `--ori-size-action_sm`      | `1.5rem`  |
+| `--ori-size-action_md`      | `2.75rem` |
+| `--ori-size-action_lg`      | `3rem`    |
+| `--ori-size-action_xl`      | `3.75rem` |
+| `--ori-size-action_xxl`     | `4.25rem` |
 
 ### Action-space (control padding)
 
 Padding scale paired with action height; alias `--ori-size-action-space` defaults to
-`var(--ori-size-action-space_text)` (`0`).
+`var(--ori-size-action-space_inherit)` (`0`).
 
-| Token / step                   | Value      |
-| ------------------------------ | ---------- |
-| `--ori-size-action-space_text` | `0`        |
-| `--ori-size-action-space_xs`   | `0.625rem` |
-| `--ori-size-action-space_sm`   | `0.75rem`  |
-| `--ori-size-action-space_md`   | `0.625rem` |
-| `--ori-size-action-space_lg`   | `0.75rem`  |
-| `--ori-size-action-space_xl`   | `0.625rem` |
-| `--ori-size-action-space_xxl`  | `0.75rem`  |
+| Token / step                      | Value      |
+| --------------------------------- | ---------- |
+| `--ori-size-action-space_inherit` | `0`        |
+| `--ori-size-action-space_xs`      | `0.625rem` |
+| `--ori-size-action-space_sm`      | `0.75rem`  |
+| `--ori-size-action-space_md`      | `0.625rem` |
+| `--ori-size-action-space_lg`      | `0.75rem`  |
+| `--ori-size-action-space_xl`      | `0.625rem` |
+| `--ori-size-action-space_xxl`     | `0.75rem`  |
 
 ### Radius
 
@@ -282,15 +282,15 @@ Corners, computed from `md` (`0.5rem`) by a `0.125rem` step. Alias `--ori-size-r
 `var(--ori-size-radius_md)`. Like the other scales, the raw values live at `:root`; the
 `.ori-size-radius_*` utilities (in `ori.utilities`) only repoint the alias. There is no `_xxl`.
 
-| Token / step                | Value (computed) |
-| --------------------------- | ---------------- |
-| `--ori-size-radius_zero`    | `0`              |
-| `--ori-size-radius_xs`      | `0.125rem`       |
-| `--ori-size-radius_sm`      | `0.25rem`        |
-| `--ori-size-radius_md`      | `0.5rem`         |
-| `--ori-size-radius_lg`      | `0.75rem`        |
-| `--ori-size-radius_xl`      | `1rem`           |
-| `--ori-size-radius_rounded` | `9999px`         |
+| Token / step             | Value (computed) |
+| ------------------------ | ---------------- |
+| `--ori-size-radius_none` | `0`              |
+| `--ori-size-radius_xs`   | `0.125rem`       |
+| `--ori-size-radius_sm`   | `0.25rem`        |
+| `--ori-size-radius_md`   | `0.5rem`         |
+| `--ori-size-radius_lg`   | `0.75rem`        |
+| `--ori-size-radius_xl`   | `1rem`           |
+| `--ori-size-radius_full` | `9999px`         |
 
 ### Gap
 
@@ -300,7 +300,7 @@ class** — it is reachable only by reading the token directly.
 
 | Token / step          | Value (computed)    |
 | --------------------- | ------------------- |
-| `--ori-size-gap_zero` | `0`                 |
+| `--ori-size-gap_none` | `0`                 |
 | `--ori-size-gap_xs`   | `0.125rem`          |
 | `--ori-size-gap_sm`   | `0.25rem`           |
 | `--ori-size-gap_md`   | `0.5rem`            |
@@ -326,17 +326,17 @@ directly.
 
 The type scale follows the same two-tier pattern, derived from `md` (`1rem`) by a `0.125rem` step. The
 raw scale lives at `:root` and the `.ori-font-size_*` utilities repoint the alias; `--ori-font-size`
-defaults to `var(--ori-font-size_text)` (`1em`, i.e. inherit).
+defaults to `var(--ori-font-size_inherit)` (`1em`, i.e. inherit).
 
-| Token / step           | Value (computed) |
-| ---------------------- | ---------------- |
-| `--ori-font-size_text` | `1em`            |
-| `--ori-font-size_xs`   | `0.75rem`        |
-| `--ori-font-size_sm`   | `0.875rem`       |
-| `--ori-font-size_md`   | `1rem`           |
-| `--ori-font-size_lg`   | `1.125rem`       |
-| `--ori-font-size_xl`   | `1.25rem`        |
-| `--ori-font-size_xxl`  | `1.375rem`       |
+| Token / step              | Value (computed) |
+| ------------------------- | ---------------- |
+| `--ori-font-size_inherit` | `1em`            |
+| `--ori-font-size_xs`      | `0.75rem`        |
+| `--ori-font-size_sm`      | `0.875rem`       |
+| `--ori-font-size_md`      | `1rem`           |
+| `--ori-font-size_lg`      | `1.125rem`       |
+| `--ori-font-size_xl`      | `1.25rem`        |
+| `--ori-font-size_xxl`     | `1.375rem`       |
 
 Nothing pins the root: the size/font scales are `rem`, so they resolve against the user's browser
 font-size setting (16px by default — at which the scales compute to their historical px values).

@@ -61,7 +61,7 @@ function flatBlocks(css: string): Array<{ selector: string; tokens: Record<strin
 
 // ---- Build the list of (skin, role, mode) pairings to check ----
 const ROLES = ['primary', 'secondary', 'surface', 'background'] as const
-const STATUS = ['success', 'warn', 'danger', 'info'] as const
+const STATUS = ['success', 'warning', 'danger', 'info'] as const
 const MODES = ['light', 'dark'] as const
 const AA = 4.5
 
@@ -138,7 +138,7 @@ describe('Design-token contrast (WCAG AA for body text, >= 4.5:1)', () => {
  * is relative colour (`oklch(from … )`), which only a real engine can resolve — so what belongs here is
  * the structural rule: a raw role is a fill BACKGROUND, never a foreground.
  */
-const ROLE_TOKEN = String.raw`--ori-color-(?:primary|secondary|success|warn|danger|info)(?:-light|-dark)?`
+const ROLE_TOKEN = String.raw`--ori-color-(?:primary|secondary|success|warning|danger|info)(?:-light|-dark)?`
 
 // `(?<![-\w])` keeps the non-text axes out: `border-color` / `background-color` / `caret-color` /
 // `outline-color`, and the `--ori-color*` custom-property declarations, all carry a `-` or word character
@@ -186,7 +186,7 @@ describe('Role tokens are never painted as foreground text', () => {
 
     it('flags a raw role as text and leaves the non-text axes alone (self-check)', () => {
         expect(findRoleAsText('x.css', '.a { color: var(--ori-color-danger); }')).toHaveLength(1)
-        expect(findRoleAsText('x.css', '.a { --ori-color-text: var(--ori-color-warn); }')).toHaveLength(1)
+        expect(findRoleAsText('x.css', '.a { --ori-color-text: var(--ori-color-warning); }')).toHaveLength(1)
         // The AA-safe tone, and the axes that deliberately keep the raw role, must not trip it.
         expect(findRoleAsText('x.css', '.a { color: var(--ori-color-danger-text); }')).toEqual([])
         expect(findRoleAsText('x.css', '.a { border-color: var(--ori-color-danger); }')).toEqual([])
@@ -209,7 +209,7 @@ describe('Role tokens are never painted as foreground text', () => {
 /**
  * Theme-shared STATUS roles are never painted as a BOUNDARY — the WCAG 1.4.11 sibling of the rule above.
  *
- * `success` / `warn` / `danger` / `info` are declared once and shared by both themes (they own their hue;
+ * `success` / `warning` / `danger` / `info` are declared once and shared by both themes (they own their hue;
  * see the "Status — shared across both themes" block in _themes-color-tokens.css). They therefore have no
  * `-dark` source to switch to, and their single value is tuned as a FILL background on the light surface.
  * Used as a border, an outline or a focus ring on a dark surface the raw role has nothing to adapt with:
@@ -221,7 +221,7 @@ describe('Role tokens are never painted as foreground text', () => {
  * each has a per-theme source pair, so a raw role on a boundary can be theme-correct — the colour picker's
  * `outline: 2px solid var(--ori-color-primary)` is legitimate and must stay passing.
  */
-const STATUS_TOKEN = String.raw`--ori-color-(?:success|warn|danger|info)`
+const STATUS_TOKEN = String.raw`--ori-color-(?:success|warning|danger|info)`
 // Longhand or shorthand, plus the box-shadow focus ring (a boundary drawn with a shadow is still a
 // boundary). `[^;{}]*` keeps the match inside one declaration so it cannot run past a `;` into the next.
 const AS_BOUNDARY = String.raw`(?<![-\w])(border|outline|box-shadow)(-[\w-]+)?\s*:[^;{}]*var\(\s*(${STATUS_TOKEN})\s*[,)]`
@@ -239,7 +239,7 @@ function findStatusAsBoundary(file: string, css: string): string[] {
 describe('Theme-shared status roles are never painted as a boundary', () => {
     it('flags the boundary axes and leaves the per-theme roles alone (self-check)', () => {
         expect(findStatusAsBoundary('x.css', '.a { border-color: var(--ori-color-danger); }')).toHaveLength(1)
-        expect(findStatusAsBoundary('x.css', '.a { border: 1px solid var(--ori-color-warn); }')).toHaveLength(1)
+        expect(findStatusAsBoundary('x.css', '.a { border: 1px solid var(--ori-color-warning); }')).toHaveLength(1)
         expect(findStatusAsBoundary('x.css', '.a { outline: 2px solid var(--ori-color-info); }')).toHaveLength(1)
         expect(
             findStatusAsBoundary(

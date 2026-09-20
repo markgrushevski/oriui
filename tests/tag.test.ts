@@ -10,10 +10,10 @@ describe('OriTag', () => {
 
         expect(wrapper.element.tagName).toBe('SPAN')
         expect(c).toContain('ori-tag')
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-color_primary')
         expect(c).toContain('ori-font-size_sm')
-        expect(c).toContain('ori-size-radius_rounded')
+        expect(c).toContain('ori-size-radius_full')
     })
 
     it('renders the text prop inside .ori-tag__text', () => {

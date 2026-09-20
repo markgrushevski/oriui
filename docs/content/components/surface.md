@@ -20,7 +20,7 @@ A block class plus two single-class axes — the elevation modifier and the shar
 utility. Bordered is a modifier; the surface colour is fixed (it's chrome).
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-surface","type":"Block","description":"Required base class. Surface background + on-surface text + lg radius; a block-level box with no padding of its own."},{"class":"ori-surface_elevation-sm | -md | -lg","type":"Modifier","description":"Shadow depth, mapped to the mode-aware --ori-shadow-{sm,md,lg} tokens (light: tinted ink; dark: deeper shadow). Default lg."},{"class":"ori-surface_bordered","type":"Modifier","description":"Adds a hairline border (a color-mix of on-surface). Present by default via the bordered prop; drop it for a shadow-only surface."},{"class":"ori-size-radius_*","type":"Radius","description":"Repoints --ori-size-radius (zero · xs · sm · md · lg · xl · rounded). The block bakes lg as the default."}]'}
+:class-table{:rows='[{"class":"ori-surface","type":"Block","description":"Required base class. Surface background + on-surface text + lg radius; a block-level box with no padding of its own."},{"class":"ori-surface_elevation-sm | -md | -lg","type":"Modifier","description":"Shadow depth, mapped to the mode-aware --ori-shadow-{sm,md,lg} tokens (light: tinted ink; dark: deeper shadow). Default lg."},{"class":"ori-surface_bordered","type":"Modifier","description":"Adds a hairline border (a color-mix of on-surface). Present by default via the bordered prop; drop it for a shadow-only surface."},{"class":"ori-size-radius_*","type":"Radius","description":"Repoints --ori-size-radius (none · xs · sm · md · lg · xl · full). The block bakes lg as the default."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/surface.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -128,7 +128,7 @@ above.
 | `as`        | `string \| object`     | `'div'` | Element / component to render as.                                                           |
 | `bordered`  | `boolean`              | `true`  | A hairline border around the surface. Set `false` for a shadow-only surface.                |
 | `elevation` | `'sm' \| 'md' \| 'lg'` | `'lg'`  | Shadow depth → `--ori-shadow-{sm,md,lg}` (mode-aware).                                      |
-| `radius`    | `RadiusSize`           | `'lg'`  | Corner radius; repoints `--ori-size-radius` via the utility (zero · xs · sm · md · lg · …). |
+| `radius`    | `RadiusSize`           | `'lg'`  | Corner radius; repoints `--ori-size-radius` via the utility (none · xs · sm · md · lg · …). |
 
 ### Slots
 

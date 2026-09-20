@@ -98,7 +98,7 @@ trigger. Page scroll is locked while it is open.
     });
 </script>
 
-<button {...$triggerProps} class="ori-button ori-variant_fill ori-color_primary">Open dialog</button>
+<button {...$triggerProps} class="ori-button ori-variant_solid ori-color_primary">Open dialog</button>
 
 <dialog {...$dialogProps} bind:this={dialogEl} class="ori-dialog">
     <div class="ori-dialog__content">
@@ -158,7 +158,7 @@ page load.
 ```vue
 <OriDialog title="Welcome back" :defaultOpen="true">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Re-open" variant="tonal" />
+        <OriButton v-bind="props" text="Re-open" variant="soft" />
     </template>
     <p>This dialog was open on first render.</p>
 </OriDialog>
@@ -195,7 +195,7 @@ function onConfirm() {
 </script>
 
 <template>
-    <OriButton text="Delete account" color="danger" variant="tonal" @click="open = true" />
+    <OriButton text="Delete account" color="danger" variant="soft" @click="open = true" />
 
     <OriDialog v-model:open="open" title="Delete account?">
         <p>This permanently deletes your account. This cannot be undone.</p>
@@ -223,7 +223,7 @@ Omit the `title` prop and supply markup in the `#title` slot when you need rich 
 ```vue
 <OriDialog>
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Rich title" variant="tonal" color="info" />
+        <OriButton v-bind="props" text="Rich title" variant="soft" color="info" />
     </template>
     <template #title>
         <span>Delete <strong>project-x</strong>?</span>
@@ -253,13 +253,13 @@ A confirm / cancel pair inside a dialog, wired to an async action.
 ```vue
 <OriDialog title="Delete account?">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Delete account" variant="tonal" color="danger" />
+        <OriButton v-bind="props" text="Delete account" variant="soft" color="danger" />
     </template>
     <p>This will permanently delete your account and all its data. This cannot be undone.</p>
     <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem">
         <!-- Close via the adapter's close mechanism or a custom event -->
         <OriButton text="Cancel" variant="text" />
-        <OriButton text="Yes, delete" color="danger" variant="fill" />
+        <OriButton text="Yes, delete" color="danger" variant="solid" />
     </div>
 </OriDialog>
 ```
@@ -278,7 +278,7 @@ A confirm / cancel pair inside a dialog, wired to an async action.
             <p>This will permanently delete your account and all its data.</p>
             <div style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:1rem">
                 <button class="ori-button ori-variant_text">Cancel</button>
-                <button class="ori-button ori-variant_fill ori-color_danger">Yes, delete</button>
+                <button class="ori-button ori-variant_solid ori-color_danger">Yes, delete</button>
             </div>
         </div>
     </div>

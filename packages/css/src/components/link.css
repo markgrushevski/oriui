@@ -13,7 +13,7 @@
             opacity 0.15s ease-out,
             color 0.15s ease-out;
         /* Role-as-TEXT: read the AA-safe on-surface text tone, not the raw role (a saturated role as body
-           text fails 4.5:1 — e.g. `ori-color_warn` would be ~2.14:1). `.ori-color_*` repoints it; bare
+           text fails 4.5:1 — e.g. `ori-color_warning` would be ~2.14:1). `.ori-color_*` repoints it; bare
            (no role) it is the neutral surface ink. Underlined by default — affordance survives without colour. */
         color: var(--ori-color-text);
 

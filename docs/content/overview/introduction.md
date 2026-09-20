@@ -15,7 +15,7 @@ oriUI ships as three independently consumable layers. Use just one, or compose t
 
 | Layer        | Package               | What it gives you                                                                 |
 | ------------ | --------------------- | --------------------------------------------------------------------------------- |
-| **Styled**   | `@oriui/vue`          | Ready components — `<OriButton variant="tonal" />`. Behavior + style composed.    |
+| **Styled**   | `@oriui/vue`          | Ready components — `<OriButton variant="soft" />`. Behavior + style composed.     |
 | **Headless** | `@oriui/headless/vue` | Behavior only — composables for state, keyboard, focus, and ARIA. You own markup. |
 | **CSS**      | `@oriui/css`          | Standalone `.ori-*` classes + tokens. No Vue, no build step, no Tailwind.         |
 
