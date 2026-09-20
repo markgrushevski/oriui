@@ -9,14 +9,14 @@ const {
     live,
     radius = 'md',
     size = 'md',
-    variant = 'tonal'
+    variant = 'soft'
 } = defineProps<{
     closable?: boolean
     closeLabel?: string
     color?: ThemeColor
     icon?: string
     /**
-     * Live-region politeness. Defaults to `assertive` (role="alert") for urgent colors (danger / warn)
+     * Live-region politeness. Defaults to `assertive` (role="alert") for urgent colors (danger / warning)
      * and `polite` (role="status") otherwise — so a static info/success banner is not announced
      * assertively on load. `off` opts out of the live region entirely.
      */
@@ -33,9 +33,9 @@ const emit = defineEmits<{
 }>()
 
 // role=alert is assertive (interrupts the screen reader) — correct only for urgent messages. Derive the
-// politeness from the color unless the caller sets `live` explicitly: danger/warn → assertive (alert),
+// politeness from the color unless the caller sets `live` explicitly: danger/warning → assertive (alert),
 // everything else → polite (status). `off` → no live region.
-const politeness = computed(() => live ?? (color === 'danger' || color === 'warn' ? 'assertive' : 'polite'))
+const politeness = computed(() => live ?? (color === 'danger' || color === 'warning' ? 'assertive' : 'polite'))
 const ariaRole = computed(() => {
     if (politeness.value === 'assertive') return 'alert'
     if (politeness.value === 'polite') return 'status'

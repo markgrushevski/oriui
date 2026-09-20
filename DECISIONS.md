@@ -1215,3 +1215,51 @@ its own source — `AuthForm.vue:37` bridges `string | number | undefined` by ha
 with itself rather than with a reference: the menu core declares `separator` in its anatomy and exports
 `getSeparatorProps()` with `role="separator"`, the headless docs describe it, and the styled `OriMenu` renders
 it zero times with zero classes in `menu.css`. The styled tier is poorer than the headless tier it sits on.
+
+## The presentational vocabulary follows the plurality, and `label` is the one word for visible text
+
+**Date:** 2026-09-20 · **Supersedes nothing; completes the lineage entry above.**
+
+The entry above established that our behaviour layer was aligned to Zag/Ark on purpose while the
+presentational vocabulary was Vuetify's, absorbed without a decision. This is that decision, taken
+against thirteen libraries and shipped in one wave while breaking is still free.
+
+**The rule for values:** where a plurality exists, take it; where none exists, keep ours. Ten of
+sixteen concepts already matched and were left alone. Six moved — `warn` → `warning`, `fill` →
+`solid`, `tonal` → `soft`, `zero` → `none`, `rounded` → `full`, and the `ActionSize` step `text` →
+`inherit`. Four proposals were rejected on merit and should not be re-opened: `xxl` → `2xl` (the
+project's own stylelint BEM pattern forbids a modifier starting with a digit — verified with the
+real linter), `hint` → `description` and `subtitle` → `description` (both would put a near-homograph
+of `describedby` on the five components that declare it), and `fluid` → `block` (`fullWidth` vs
+`block` is a genuine 2-2 split, and "block" is already the B in our BEM).
+
+**The rule for the content prop:** `label` is the component's own visible text. Where a component
+ALSO needs an accessible name that is not rendered, that prop is `ariaLabel`. Where a component can
+render no text at all, `label` stays the accessible name, because there is nothing to confuse it
+with.
+
+This reverses the audit's recommendation to DELETE the content prop, and the reversal is the more
+interesting half. The recommendation rested on two supports and both failed when checked against
+sources rather than summaries:
+
+- **"92.6% of the styled pool has no such prop"** counted headless libraries — Radix, Ark, Base UI —
+  which have no presentational props of any kind. Among the styled Vue libraries that are actually
+  our peers, four of seven ship it: Vuetify (`text`), PrimeVue (`label`), Quasar (`label`), Nuxt UI
+  (`label`). Vuetify's `VBtn` renders it with `slots.default?.() ?? toDisplayString(props.text)` —
+  our exact mechanism, in the library ours came from.
+- **"PrimeVue is removing its equivalent in v5"** is not supported by PrimeVue's source: `label` is
+  declared in `BaseButton.vue` with no deprecation.
+
+So the affordance is normal in our own neighbourhood and the NAME was the outlier — three of the four
+call it `label`, and `label` is what oriUI's own collection items have always called the same thing
+(`OriTabs`, `OriAccordion`, `OriSelect`). Renaming unifies the library with itself and with the
+plurality at once, which deleting would not have done.
+
+`OriAlert`, `OriCard` and `OriToast` keep `text`, and that is the boundary of the rule rather than an
+exception to it: there the value is a message body paired with `title`, not a label — the same shape
+Vuetify names `text`. `OriAvatar` keeps a prop but as `name`, because its value is never rendered
+verbatim: it derives the initials and the image `alt` (Chakra's word for the same prop).
+
+**No aliases.** The owner ruled against shipping two spellings for any of it: a pair of names that
+reaches 1.0 never gets removed. One set of names, a migration table in the changeset, and the cost
+paid once.

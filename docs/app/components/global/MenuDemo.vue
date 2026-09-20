@@ -15,6 +15,7 @@ const items = [
     { value: 'new', label: 'New file' },
     { value: 'open', label: 'Open…' },
     { value: 'rename', label: 'Rename', disabled: true },
+    { value: 'sep-1', separator: true },
     { value: 'delete', label: 'Delete' }
 ]
 
@@ -25,7 +26,7 @@ const selected = ref<string | null>(null)
     <div style="display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-start">
         <OriMenu :items="items" :placement="placement" @select="(value) => (selected = value)">
             <template #trigger="{ props }">
-                <OriButton v-bind="props" text="Actions" variant="tonal" />
+                <OriButton v-bind="props" label="Actions" variant="soft" />
             </template>
         </OriMenu>
         <p v-if="selected" style="margin: 0; font-size: 0.85em">

@@ -20,7 +20,7 @@ describe('OriSurface', () => {
     })
 
     it('maps the radius prop to the size-radius utility', () => {
-        expect(mount(OriSurface, { props: { radius: 'zero' } }).classes()).toContain('ori-size-radius_zero')
+        expect(mount(OriSurface, { props: { radius: 'none' } }).classes()).toContain('ori-size-radius_none')
         expect(mount(OriSurface, { props: { radius: 'md' } }).classes()).toContain('ori-size-radius_md')
     })
 

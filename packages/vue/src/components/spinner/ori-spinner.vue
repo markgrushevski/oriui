@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ActionSize, ThemeColor } from '../../types'
 
-const { label = 'Loading', size = 'text' } = defineProps<{
+const { label = 'Loading', size = 'inherit' } = defineProps<{
     color?: ThemeColor
     inline?: boolean
     label?: string

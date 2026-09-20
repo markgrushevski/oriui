@@ -9,7 +9,7 @@ describe('OriCard', () => {
         const c = wrapper.classes()
 
         expect(c).toContain('ori-card')
-        expect(c).toContain('ori-variant_fill')
+        expect(c).toContain('ori-variant_solid')
         expect(c).toContain('ori-color_surface')
         expect(c).toContain('ori-size-radius_lg')
         expect(wrapper.find('.ori-card__title').text()).toBe('Hello')

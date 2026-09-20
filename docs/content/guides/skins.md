@@ -7,7 +7,7 @@ title: Skin gallery
 A **skin** is a named palette — a set of token overrides applied with one attribute on `<html>`
 (`data-ori-skin`). Every skin repoints only the four skinnable roles (`primary` · `secondary` ·
 `surface` · `background`, each with a `-light` and `-dark` source); the status hues (`success` ·
-`warn` · `danger` · `info`) stay shared, and every pairing targets **WCAG AA** for body text. Switching
+`warning` · `danger` · `info`) stay shared, and every pairing targets **WCAG AA** for body text. Switching
 a skin is a single attribute write — zero runtime, no recompute, no flash.
 
 The default skin is **Ori** (織り) — luminous azure and cyan. Seven presets ship alongside it; click any

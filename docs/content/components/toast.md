@@ -15,7 +15,7 @@ show the look without triggering a notification.
 ## Classes
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"align","type":"Prop (OriToaster)","description":"start (default) or center — the alignment of every toast in the stack. Pairs with a top-center / bottom-center position for one-line status messages."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-coloured left-border accent, elevation shadow."},{"class":"ori-toast_align-center","type":"Modifier","description":"Centres the body on the CARD: the dismiss button leaves the flex flow and the card reserves equal inline room on both sides, so the text is not pushed off-centre by the button. A leading icon deliberately stays in flow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warn / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; coloured by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
+:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"align","type":"Prop (OriToaster)","description":"start (default) or center — the alignment of every toast in the stack. Pairs with a top-center / bottom-center position for one-line status messages."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-coloured left-border accent, elevation shadow."},{"class":"ori-toast_align-center","type":"Modifier","description":"Centres the body on the CARD: the dismiss button leaves the flex flow and the card reserves equal inline room on both sides, so the text is not pushed off-centre by the button. A leading icon deliberately stays in flow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warning / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; coloured by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/toast.css`. `.ori-toast` and `.ori-toaster`
 both live in `toast.css` — there is no `toaster.css`. Import a foundation (`@oriui/css/base.css` or
@@ -37,7 +37,7 @@ notifications; each auto-dismisses after 4 seconds unless sticky.
 <script setup lang="ts">
 import { useToast } from '@oriui/vue'
 
-const { success, error, warn, info, toast } = useToast()
+const { success, error, warning, info, toast } = useToast()
 
 const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 </script>
@@ -47,21 +47,26 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
         <OriButton
             variant="outline"
             color="success"
-            text="Success"
+            label="Success"
             @click="success({ title: 'Saved', text: 'Your changes were saved.', icon: checkIcon })"
         />
         <OriButton
             variant="outline"
             color="danger"
-            text="Error"
+            label="Error"
             @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })"
         />
-        <OriButton variant="outline" color="warn" text="Warning" @click="warn('Your session expires in 5 minutes.')" />
-        <OriButton variant="outline" color="info" text="Info" @click="info('A new version is available.')" />
-        <OriButton variant="outline" text="Plain" @click="toast('Just a plain notification.')" />
         <OriButton
             variant="outline"
-            text="Sticky"
+            color="warning"
+            label="Warning"
+            @click="warning('Your session expires in 5 minutes.')"
+        />
+        <OriButton variant="outline" color="info" label="Info" @click="info('A new version is available.')" />
+        <OriButton variant="outline" label="Plain" @click="toast('Just a plain notification.')" />
+        <OriButton
+            variant="outline"
+            label="Sticky"
             @click="toast({ text: 'I stay until you dismiss me.', duration: 0, closable: true })"
         />
     </div>
@@ -77,7 +82,7 @@ Four severity shortcuts preset a color; the plain `toast()` call has no color cl
 ::example
 :ori-toast{text="Your changes have been saved." color="success"}
 :ori-toast{text="Upload failed. Please try again." color="danger"}
-:ori-toast{text="Your session expires in 5 minutes." color="warn"}
+:ori-toast{text="Your session expires in 5 minutes." color="warning"}
 :ori-toast{text="A new version is available." color="info"}
 :ori-toast{text="Just a plain notification."}
 
@@ -87,16 +92,16 @@ Four severity shortcuts preset a color; the plain `toast()` call has no color cl
 <script setup lang="ts">
 import { useToast } from '@oriui/vue'
 
-const { success, error, warn, info, toast } = useToast()
+const { success, error, warning, info, toast } = useToast()
 </script>
 
 <template>
     <!-- each call returns the toast id -->
-    <OriButton text="Success" @click="success('Your changes have been saved.')" />
-    <OriButton text="Error" @click="error('Upload failed. Please try again.')" />
-    <OriButton text="Warning" @click="warn('Your session expires in 5 minutes.')" />
-    <OriButton text="Info" @click="info('A new version is available.')" />
-    <OriButton text="Plain" @click="toast('Just a plain notification.')" />
+    <OriButton label="Success" @click="success('Your changes have been saved.')" />
+    <OriButton label="Error" @click="error('Upload failed. Please try again.')" />
+    <OriButton label="Warning" @click="warning('Your session expires in 5 minutes.')" />
+    <OriButton label="Info" @click="info('A new version is available.')" />
+    <OriButton label="Plain" @click="toast('Just a plain notification.')" />
 </template>
 ```
 
@@ -146,11 +151,11 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 
 <template>
     <OriButton
-        text="Fire"
+        label="Fire"
         @click="success({ title: 'Saved', text: 'Your changes were saved successfully.', icon: checkIcon })"
     />
-    <OriButton text="Error" @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })" />
-    <OriButton text="Info" @click="info({ title: 'Heads up', text: 'A new version is available.' })" />
+    <OriButton label="Error" @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })" />
+    <OriButton label="Info" @click="info({ title: 'Heads up', text: 'A new version is available.' })" />
 </template>
 ```
 
@@ -192,9 +197,9 @@ const { info } = useToast()
 
 <template>
     <!-- opt in per toast; a duration: 0 toast gets the button automatically -->
-    <OriButton text="Closable" @click="info({ text: 'Dismiss me.', closable: true })" />
+    <OriButton label="Closable" @click="info({ text: 'Dismiss me.', closable: true })" />
     <!-- suppress the button for quick notifications -->
-    <OriButton text="No button" @click="info({ text: 'Gone in 4 s.', closable: false })" />
+    <OriButton label="No button" @click="info({ text: 'Gone in 4 s.', closable: false })" />
 </template>
 ```
 
@@ -219,7 +224,7 @@ until the user clicks the dismiss button or you call `dismiss(id)` / `clear()` m
 
 ::example
 :ori-toast{text="I auto-dismiss after 4 s (default duration)." color="info" :closable="true"}
-:ori-toast{text="I stay until dismissed (duration: 0)." color="warn" :closable="true"}
+:ori-toast{text="I stay until dismissed (duration: 0)." color="warning" :closable="true"}
 
 #vue
 
@@ -227,18 +232,18 @@ until the user clicks the dismiss button or you call `dismiss(id)` / `clear()` m
 <script setup lang="ts">
 import { useToast } from '@oriui/vue'
 
-const { toast, warn } = useToast()
+const { toast, warning } = useToast()
 </script>
 
 <template>
     <!-- default: auto-dismiss after 4000 ms -->
-    <OriButton text="Default" @click="toast('Gone in 4 s.')" />
+    <OriButton label="Default" @click="toast('Gone in 4 s.')" />
 
     <!-- custom duration -->
-    <OriButton text="8 s" @click="toast({ text: 'Gone in 8 s.', duration: 8000 })" />
+    <OriButton label="8 s" @click="toast({ text: 'Gone in 8 s.', duration: 8000 })" />
 
     <!-- sticky: pass duration: 0 -->
-    <OriButton text="Sticky" @click="warn({ text: 'I stay until dismissed.', duration: 0, closable: true })" />
+    <OriButton label="Sticky" @click="warning({ text: 'I stay until dismissed.', duration: 0, closable: true })" />
 </template>
 ```
 
@@ -320,7 +325,7 @@ it anywhere; no Vue injection or plugin registration required. Its behaviour is 
 ```ts
 import { useToast } from '@oriui/vue'
 
-const { toasts, toast, success, error, warn, info, dismiss, clear } = useToast()
+const { toasts, toast, success, error, warning, info, dismiss, clear } = useToast()
 ```
 
 | Return value | Type / signature                              | Description                                                                    |
@@ -329,7 +334,7 @@ const { toasts, toast, success, error, warn, info, dismiss, clear } = useToast()
 | `toast`      | `(options: ToastOptions \| string) => number` | Push a plain notification; returns the toast id.                               |
 | `success`    | `(options: ToastOptions \| string) => number` | Push with `color="success"` preset.                                            |
 | `error`      | `(options: ToastOptions \| string) => number` | Push with `color="danger"` preset.                                             |
-| `warn`       | `(options: ToastOptions \| string) => number` | Push with `color="warn"` preset.                                               |
+| `warning`    | `(options: ToastOptions \| string) => number` | Push with `color="warning"` preset.                                            |
 | `info`       | `(options: ToastOptions \| string) => number` | Push with `color="info"` preset.                                               |
 | `dismiss`    | `(id: number) => void`                        | Remove a specific toast by its id and clear its timer.                         |
 | `clear`      | `() => void`                                  | Remove all toasts and clear all pending timers.                                |
@@ -347,7 +352,7 @@ Passing a plain `string` is shorthand for `{ text: string }`.
 | `text`     | `string`     | —       | Body message.                                                                                                   |
 | `title`    | `string`     | —       | Bold heading above the body text.                                                                               |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
 ### `<OriToaster>` props
 

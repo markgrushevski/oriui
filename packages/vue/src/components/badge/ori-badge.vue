@@ -22,8 +22,8 @@ const {
     dot = false,
     label,
     max,
-    radius = 'rounded',
-    variant = 'fill'
+    radius = 'full',
+    variant = 'solid'
 } = defineProps<{
     color?: ThemeColor
     content?: string | number

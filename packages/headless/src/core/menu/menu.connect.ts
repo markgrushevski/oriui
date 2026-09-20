@@ -46,7 +46,9 @@ export function connect<T extends PropTypes>(
     const contentId = scope.getId('content')
     const itemId = (index: number) => scope.getId(`item-${index}`)
 
-    const enabled = collection.filter((item) => !item.disabled)
+    // A separator occupies a position in the collection but is neither navigable nor selectable, so it
+    // leaves the roving set the same way a disabled item does — one predicate, both exclusions.
+    const enabled = collection.filter((item) => !item.disabled && !item.separator)
     const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue)
 
     const send = service.send

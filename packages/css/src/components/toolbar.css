@@ -69,5 +69,5 @@
        lives in button.css — imported above, so this entry still ships it — keyed on the button
        alone and split by variant, because the flat tint this rule applied is only correct for the
        transparent-background variants the toolbar defaults to (`variant="text"`): applied to a
-       `fill` or `tonal` toolbar button it replaced the role colour with a neutral grey. */
+       `solid` or `soft` toolbar button it replaced the role colour with a neutral grey. */
 }

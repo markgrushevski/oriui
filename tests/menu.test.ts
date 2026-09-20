@@ -457,6 +457,84 @@ describe('OriMenu', () => {
     })
 
     // -------------------------------------------------------------------------
+    // Separators
+    // -------------------------------------------------------------------------
+
+    // The headless tier has always exported `separatorProps` (role=separator, aria-orientation) and
+    // documented it; the styled tier rendered it zero times. These cover the three things a separator
+    // must do: render as a rule, stay out of the tab order, and stay out of roving navigation.
+
+    const GROUPED: MenuItem[] = [
+        { label: 'Edit', value: 'edit' },
+        { label: 'Duplicate', value: 'duplicate' },
+        { value: 'sep-1', separator: true },
+        { label: 'Delete', value: 'delete' }
+    ]
+
+    it('renders a separator entry as role=separator, not as a menuitem', () => {
+        const wrapper = mountMenu({ items: GROUPED })
+        const separators = wrapper.findAll('[role="separator"]')
+
+        expect(separators).toHaveLength(1)
+        expect(separators[0]!.attributes('aria-orientation')).toBe('horizontal')
+        expect(separators[0]!.classes()).toContain('ori-menu__separator')
+        expect(wrapper.findAll('[role="menuitem"]')).toHaveLength(3)
+        wrapper.unmount()
+    })
+
+    it('a separator is not tabbable and carries no item wiring', () => {
+        const wrapper = mountMenu({ items: GROUPED })
+        const separator = wrapper.find('[role="separator"]')
+
+        expect(separator.attributes('tabindex')).toBeUndefined()
+        expect(separator.attributes('aria-disabled')).toBeUndefined()
+        expect(separator.text()).toBe('')
+        wrapper.unmount()
+    })
+
+    it('roving navigation steps over a separator instead of landing on it', async () => {
+        const wrapper = mountMenu({ items: GROUPED })
+        await wrapper.find('button').trigger('keydown', { key: 'ArrowDown' })
+        await nextTick()
+
+        const panel = wrapper.find('[role="menu"]')
+        await panel.trigger('keydown', { key: 'ArrowDown' })
+        await nextTick()
+        expect(wrapper.findAll('[role="menuitem"]')[1]!.attributes('data-highlighted')).toBe('')
+
+        // The next step crosses the separator: it lands on the item after it, not on the rule.
+        await panel.trigger('keydown', { key: 'ArrowDown' })
+        await nextTick()
+        expect(wrapper.findAll('[role="menuitem"]')[2]!.attributes('data-highlighted')).toBe('')
+        expect(wrapper.find('[role="separator"]').attributes('data-highlighted')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('End lands on the last ITEM even when a separator is last in the array', async () => {
+        const trailing: MenuItem[] = [...GROUPED, { value: 'sep-2', separator: true }]
+        const wrapper = mountMenu({ items: trailing })
+        await wrapper.find('button').trigger('keydown', { key: 'ArrowDown' })
+        await nextTick()
+
+        await wrapper.find('[role="menu"]').trigger('keydown', { key: 'End' })
+        await nextTick()
+
+        const items = wrapper.findAll('[role="menuitem"]')
+        expect(items[items.length - 1]!.attributes('data-highlighted')).toBe('')
+        expect(items[items.length - 1]!.text()).toBe('Delete')
+        wrapper.unmount()
+    })
+
+    it('has no axe violations with a separator in the list', async () => {
+        const wrapper = mountMenu({ items: GROUPED })
+        await wrapper.find('button').trigger('click')
+        await nextTick()
+
+        await expectNoA11yViolations(wrapper.element as HTMLElement)
+        wrapper.unmount()
+    })
+
+    // -------------------------------------------------------------------------
     // Axe
     // -------------------------------------------------------------------------
 

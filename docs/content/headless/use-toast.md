@@ -39,17 +39,17 @@ object:
 | `closable` | `boolean`    | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
 | `icon`     | `string`     | —       | SVG path for a leading icon.                                                                                                                                                               |
 
-`ToastColor` is `'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'`.
+`ToastColor` is `'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'`.
 
 ## Returns
 
-| Property                              | Type                                                   | Description                                                                                                                 |
-| ------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| `toasts`                              | `ToastItem[]` (Vue) · `Readable<ToastItem[]>` (Svelte) | The live queue the renderer iterates. `ToastItem` is `ToastOptions` + a numeric `id`.                                       |
-| `toast(options)`                      | `(options: ToastOptions \| string) => number`          | Push a toast; returns its numeric `id` (pass to `dismiss`).                                                                 |
-| `success` / `error` / `warn` / `info` | `(options: ToastOptions \| string) => number`          | Severity shortcuts — set `color` to `success` / `danger` / `warn` / `info` (an explicit `color` in the options still wins). |
-| `dismiss(id)`                         | `(id: number) => void`                                 | Remove a toast (and cancel its timer); a no-op for an unknown id.                                                           |
-| `clear()`                             | `() => void`                                           | Empty the queue and cancel every timer.                                                                                     |
+| Property                                 | Type                                                   | Description                                                                                                                    |
+| ---------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `toasts`                                 | `ToastItem[]` (Vue) · `Readable<ToastItem[]>` (Svelte) | The live queue the renderer iterates. `ToastItem` is `ToastOptions` + a numeric `id`.                                          |
+| `toast(options)`                         | `(options: ToastOptions \| string) => number`          | Push a toast; returns its numeric `id` (pass to `dismiss`).                                                                    |
+| `success` / `error` / `warning` / `info` | `(options: ToastOptions \| string) => number`          | Severity shortcuts — set `color` to `success` / `danger` / `warning` / `info` (an explicit `color` in the options still wins). |
+| `dismiss(id)`                            | `(id: number) => void`                                 | Remove a toast (and cancel its timer); a no-op for an unknown id.                                                              |
+| `clear()`                                | `() => void`                                           | Empty the queue and cancel every timer.                                                                                        |
 
 ## Usage
 

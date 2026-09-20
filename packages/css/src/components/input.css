@@ -9,7 +9,7 @@
     }
 
     /* Baked per-axis defaults, declared at ZERO specificity (`:where`) and deliberately split out of
-       the layout rule below: every single-class modifier (`.ori-input_lg`, `.ori-input_fill`) is (0,1,0)
+       the layout rule below: every single-class modifier (`.ori-input_lg`, `.ori-input_solid`) is (0,1,0)
        and therefore outranks this on SPECIFICITY, not on source order — which is what lets the modifier
        vocabulary stay flat instead of compounding `.ori-input.ori-input_lg`. Declaring a custom property
        on the element beats inheritance at any specificity, so a nested block still reads its own value. */
@@ -39,7 +39,7 @@
         width: 100%;
     }
 
-    .ori-input_fill {
+    .ori-input_solid {
         --ori-input-border: transparent;
         --ori-input-bg: color-mix(in srgb, currentcolor 6%, transparent);
     }

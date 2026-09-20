@@ -25,12 +25,12 @@ import { OriButton } from '@oriui/vue'
 
 ```vue
 <!-- Vue component -->
-<OriButton text="Save" variant="tonal" color="primary" size="lg" />
+<OriButton label="Save" variant="soft" color="primary" size="lg" />
 ```
 
 ```html
 <!-- Standalone CSS (htmx / Astro / Svelte / plain HTML) — same tokens, no Vue -->
-<button class="ori-button ori-button_lg ori-variant_tonal ori-color_primary">Save</button>
+<button class="ori-button ori-button_lg ori-variant_soft ori-color_primary">Save</button>
 ```
 
 ## The class model
@@ -40,15 +40,15 @@ class. The block bakes sensible defaults, so a **bare block is valid**; add a cl
 axis. Dynamic state is real **attributes** (`disabled`, `aria-busy="true"`, `aria-pressed`), never
 classes.
 
-| Axis                   | Class               | Values                                                                                      |
-| ---------------------- | ------------------- | ------------------------------------------------------------------------------------------- |
-| Color (the role)       | `ori-color_*`       | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background` |
-| Variant (the mapping)  | `ori-variant_*`     | `fill` · `tonal` · `outline` · `text` · `plain`                                             |
-| Size (component sugar) | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                    |
-| Radius                 | `ori-size-radius_*` | `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`                                       |
-| Font                   | `ori-font-size_*`   | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                    |
+| Axis                   | Class               | Values                                                                                         |
+| ---------------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| Color (the role)       | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background` |
+| Variant (the mapping)  | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `quiet`                                                |
+| Size (component sugar) | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |
+| Radius                 | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                                             |
+| Font                   | `ori-font-size_*`   | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |
 
-`color` is the **role**, `variant` is the **mapping** — `fill` paints the accent as background (with the
+`color` is the **role**, `variant` is the **mapping** — `solid` paints the accent as background (with the
 on-color text), `outline`/`text` paint it as border/text — so there is no separate `bg-color`. The
 low-level size utility `ori-size-action_<size>` works too; the `ori-<name>_<size>` sugar is the friendly
 shape. Full detail: [Using the CSS layer](/guides/css).
@@ -60,19 +60,19 @@ the page for the complete set.
 
 | Component                               | Vue                | Key props                                                                                            |
 | --------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| [Button](/components/button)            | `<OriButton>`      | `text` `icon` `variant` `color` `size` `radius` `as` `loading` `disabled` `fluid`                    |
+| [Button](/components/button)            | `<OriButton>`      | `label` `icon` `variant` `color` `size` `radius` `as` `loading` `disabled` `fluid`                   |
 | [Card](/components/card)                | `<OriCard>`        | `variant` `color` `radius` `title` `prependIcon` `row` `fluid` `disabled` `loading`                  |
-| [Avatar](/components/avatar)            | `<OriAvatar>`      | `src` `text` `size` `radius` `color` `title` `subtitle` `inline` `spaced`                            |
+| [Avatar](/components/avatar)            | `<OriAvatar>`      | `src` `name` `size` `radius` `color` `title` `subtitle` `inline` `spaced`                            |
 | [Icon](/components/icon)                | `<OriIcon>`        | `icon` `size` `color` `label` `inline` `spaced`                                                      |
 | [Spinner](/components/spinner)          | `<OriSpinner>`     | `size` `color` `inline`                                                                              |
 | [Badge](/components/badge)              | `<OriBadge>`       | `color` `variant` `radius` `dot` (default slot is the anchor)                                        |
-| [Tag](/components/tag)                  | `<OriTag>`         | `text` `color` `variant` `radius` `size` `closable` `prependIcon` `disabled`                         |
+| [Tag](/components/tag)                  | `<OriTag>`         | `label` `color` `variant` `radius` `size` `closable` `prependIcon` `disabled`                        |
 | [Alert](/components/alert)              | `<OriAlert>`       | `title` `text` `color` `variant` `radius` `size` `icon` `closable` `live`                            |
 | [Progress](/components/progress)        | `<OriProgress>`    | `value` `color` `radius` `size` `indeterminate` `label`                                              |
 | [Tooltip](/components/tooltip)          | `<OriTooltip>`     | `content` `placement` `color`                                                                        |
 | [Accordion](/components/accordion)      | `<OriAccordion>`   | `items` `multiple` `radius` `color`                                                                  |
 | [Tabs](/components/tabs)                | `<OriTabs>`        | `tabs` `color` `orientation` (`v-model` = selected)                                                  |
-| [Divider](/components/divider)          | `<OriDivider>`     | `color` `text` `vertical` (default slot = centered label)                                            |
+| [Divider](/components/divider)          | `<OriDivider>`     | `color` `label` `vertical` (default slot = centered label)                                           |
 | [Stack](/components/stack)              | `<OriStack>`       | `align` `as` `cluster` `gap` `justify` (`.ori-stack` column · `.ori-cluster` wrapping row)           |
 | [Join](/components/join)                | `<OriJoin>`        | `as` `vertical` — collapses children's shared radii/borders (add `aria-label`)                       |
 | [Input](/components/input)              | `<OriInput>`       | `label` `type` `color` `size` `radius` `variant` `hint` `error` `required` `disabled` (`v-model`)    |
@@ -88,7 +88,7 @@ the page for the complete set.
 | [Popover](/components/popover)          | `<OriPopover>`     | `placement` `role` — anchored panel; `#trigger` + default slot (the OriPopover ADR)                  |
 | [Link](/components/link)                | `<OriLink>`        | `as` `color` `external` `hover` `href` (inline prose link; underline-on-hover)                       |
 | [Skeleton](/components/skeleton)        | `<OriSkeleton>`    | `as` `radius` — shimmer placeholder; size via width/height; honors reduced-motion                    |
-| [Kbd](/components/kbd)                  | `<OriKbd>`         | `as` `text` (default slot = key) — keyboard-key chip                                                 |
+| [Kbd](/components/kbd)                  | `<OriKbd>`         | `as` `label` (default slot = key) — keyboard-key chip                                                |
 | [Toast](/components/toast)              | `<OriToaster>`     | imperative `useToast()` push API + `<OriToaster position>` — transient notifications                 |
 | [Slider](/components/slider)            | `<OriSlider>`      | `color` `disabled` `label` `min` `max` `step` `showValue` (`v-model` number; native range)           |
 | [Surface](/components/surface)          | `<OriSurface>`     | `as` `bordered` `elevation` `radius` — elevated surface primitive                                    |

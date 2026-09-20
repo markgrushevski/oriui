@@ -18,12 +18,12 @@ plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is t
 ## Classes
 
 A menu is the `.ori-menu` surface class plus the shared `.ori-anchored` placement primitive (and one
-placement modifier); items are `.ori-menu__item`. The `.ori-anchored*` classes are the same primitive
+placement modifier); items are `.ori-menu__item`, grouping rules `.ori-menu__separator`. The `.ori-anchored*` classes are the same primitive
 documented on the [Popover page](/components/popover#classes) — placement, the collision flip, and the
 `--ori-anchor` / `--ori-anchored-gap` custom props are shared, not duplicated here.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-menu","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg + a z-index (not top-layer, unlike Popover). Composed with .ori-anchored for placement."},{"class":"ori-anchored / ori-anchored_*","type":"Placement base","description":"Shared floating-panel placement primitive — see the Popover class reference for the full modifier list."},{"class":"ori-menu__item","type":"Part","description":"One action row (role=menuitem). Highlight follows roving focus / pointer hover via [data-highlighted]."},{"class":"aria-disabled / data-highlighted","type":"State","description":"real attributes, not classes — a disabled item is skipped by roving navigation."}]'}
+:class-table{:rows='[{"class":"ori-menu","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg + a z-index (not top-layer, unlike Popover). Composed with .ori-anchored for placement."},{"class":"ori-anchored / ori-anchored_*","type":"Placement base","description":"Shared floating-panel placement primitive — see the Popover class reference for the full modifier list."},{"class":"ori-menu__item","type":"Part","description":"One action row (role=menuitem). Highlight follows roving focus / pointer hover via [data-highlighted]."},{"class":"ori-menu__separator","type":"Part","description":"Grouping rule (role=separator) rendered for an entry marked separator: true. Spans the panel width; not navigable."},{"class":"aria-disabled / data-highlighted","type":"State","description":"real attributes, not classes — a disabled item is skipped by roving navigation."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/menu.css`. The shared `.ori-anchored`
 placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation
@@ -52,7 +52,7 @@ highlighted one, to select and close.
     @select="onSelect"
 >
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="tonal" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -111,7 +111,7 @@ highlighted one, to select and close.
     });
 </script>
 
-<button {...$triggerProps} class="ori-button ori-variant_tonal ori-color_primary" style="anchor-name: --actions">
+<button {...$triggerProps} class="ori-button ori-variant_soft ori-color_primary" style="anchor-name: --actions">
     Actions
 </button>
 
@@ -146,12 +146,12 @@ RTL-aware). Same placement classes and collision-flip logic as the Popover, sinc
 ```vue
 <OriMenu :items="items" placement="top" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="top" variant="tonal" />
+        <OriButton v-bind="props" label="top" variant="soft" />
     </template>
 </OriMenu>
 <OriMenu :items="items" placement="right" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="right" variant="tonal" />
+        <OriButton v-bind="props" label="right" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -194,7 +194,7 @@ can't be highlighted or selected.
     @select="onSelect"
 >
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="tonal" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -203,6 +203,44 @@ can't be highlighted or selected.
 
 ```html
 <div role="menuitem" tabindex="-1" class="ori-menu__item" aria-disabled="true">Rename</div>
+```
+
+::
+
+## Separator
+
+An entry marked `separator: true` renders a `role="separator"` rule in that position instead of an
+item. The array is the model here, so grouping is an entry in it rather than a slotted child — the
+same shape PrimeVue's menu takes. A separator is not navigable and not selectable: roving steps over
+it exactly as it steps over a disabled item, and `label` on it is ignored. Its `value` is still used,
+as the list key.
+
+::example
+:menu-demo
+
+#vue
+
+```vue
+<OriMenu
+    :items="[
+        { value: 'new', label: 'New file' },
+        { value: 'open', label: 'Open…' },
+        { value: 'rename', label: 'Rename', disabled: true },
+        { value: 'sep-1', separator: true },
+        { value: 'delete', label: 'Delete' }
+    ]"
+    @select="onSelect"
+>
+    <template #trigger="{ props }">
+        <OriButton v-bind="props" label="Actions" variant="soft" />
+    </template>
+</OriMenu>
+```
+
+#html
+
+```html
+<div role="separator" aria-orientation="horizontal" class="ori-menu__separator"></div>
 ```
 
 ::
@@ -220,7 +258,7 @@ Override the `#item` slot for icons, shortcuts, or any richer row content — th
 ```vue
 <OriMenu :items="items" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="tonal" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
     <template #item="{ item }">
         <span style="display: flex; justify-content: space-between; width: 100%">
@@ -322,7 +360,7 @@ behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/
 
 | Prop        | Type                                                                   | Default          | Description                                                                        |
 | ----------- | ---------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
-| `items`     | `MenuItem[]`                                                           | **required**     | `{ value: string; label?: string; disabled?: boolean }[]`, in render order.        |
+| `items`     | `MenuItem[]`                                                           | **required**     | `{ value, label?, disabled?, separator? }[]`, in render order.                     |
 | `disabled`  | `boolean`                                                              | `false`          | Disables the trigger and blocks opening the menu.                                  |
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier. |
 

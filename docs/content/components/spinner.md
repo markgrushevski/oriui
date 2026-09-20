@@ -20,7 +20,7 @@ needed. The Vue props in [Framework API](#framework-api) map 1:1 to these. There
 radius — a spinner only takes a size and an optional color.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-spinner_* (size)","type":"Size","description":"text (inherits) · xs · sm · md · lg · xl · xxl — <b>text</b> is the default; bare ori-spinner without a size modifier inherits its size from the surrounding font"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
+:class-table{:rows='[{"class":"ori-spinner","type":"Block","description":"Required base class."},{"class":"ori-spinner_* (size)","type":"Size","description":"inherit · xs · sm · md · lg · xl · xxl — <b>inherit</b> is the default; bare ori-spinner without a size modifier inherits its size from the surrounding font"},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background — inherits <code>currentcolor</code> when omitted"},{"class":"ori-spinner_inline","type":"Layout","description":"switches to <code>inline-block</code> with a small margin so it sits in a line of text"},{"class":"role=status · aria-label","type":"State","description":"live region that announces the busy state; label defaults to <b>Loading</b>"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/spinner.css`. `.ori-spinner` is also inlined
 into `button.css`, `toolbar.css` and `color-picker.css`, so those already carry it. Import a foundation
@@ -69,7 +69,7 @@ Every semantic role. Omit `color` entirely to inherit `currentcolor` from the pa
 :ori-spinner{color="primary" size="lg"}
 :ori-spinner{color="secondary" size="lg"}
 :ori-spinner{color="success" size="lg"}
-:ori-spinner{color="warn" size="lg"}
+:ori-spinner{color="warning" size="lg"}
 :ori-spinner{color="danger" size="lg"}
 :ori-spinner{color="info" size="lg"}
 
@@ -79,7 +79,7 @@ Every semantic role. Omit `color` entirely to inherit `currentcolor` from the pa
 <OriSpinner color="primary" size="lg" />
 <OriSpinner color="secondary" size="lg" />
 <OriSpinner color="success" size="lg" />
-<OriSpinner color="warn" size="lg" />
+<OriSpinner color="warning" size="lg" />
 <OriSpinner color="danger" size="lg" />
 <OriSpinner color="info" size="lg" />
 ```
@@ -203,9 +203,9 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `label`  | `string`     | `'Loading'` | `aria-label` text read by assistive technology.                               |
 | `size`   | `ActionSize` | `'text'`    | Ring size (`xs`–`xxl`). Default `'text'` inherits its size from the font.     |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
-`ActionSize`: `'text' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'`
+`ActionSize`: `'inherit' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'`
 
 ### Events & attributes
 

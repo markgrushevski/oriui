@@ -46,7 +46,7 @@ native to the Popover API).
 ```vue
 <OriPopover aria-labelledby="popover-title">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Open popover" variant="tonal" />
+        <OriButton v-bind="props" label="Open popover" variant="soft" />
     </template>
     <div style="padding: 0.35rem">
         <strong id="popover-title">Weave a popover</strong>
@@ -95,13 +95,13 @@ side; `position-try-fallbacks` flips it on overflow.
 ```vue
 <OriPopover placement="top">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="top" variant="tonal" />
+        <OriButton v-bind="props" label="top" variant="soft" />
     </template>
     <p>Above the trigger.</p>
 </OriPopover>
 <OriPopover placement="bottom-end">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="bottom-end" variant="tonal" />
+        <OriButton v-bind="props" label="bottom-end" variant="soft" />
     </template>
     <p>Below, aligned to the trigger's end edge.</p>
 </OriPopover>
@@ -130,13 +130,13 @@ A filter panel opened from a toolbar button — a typical non-modal popover use 
 ```vue
 <OriPopover placement="bottom-end" aria-labelledby="filters-title" role="dialog">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Filters" icon="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" variant="outline" />
+        <OriButton v-bind="props" label="Filters" icon="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" variant="outline" />
     </template>
     <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.35rem; min-width: 12rem">
         <strong id="filters-title">Filters</strong>
         <OriCheckbox label="In stock only" />
         <OriCheckbox label="On sale" />
-        <OriButton text="Apply" size="sm" />
+        <OriButton label="Apply" size="sm" />
     </div>
 </OriPopover>
 ```

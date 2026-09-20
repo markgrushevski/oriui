@@ -142,7 +142,7 @@ the commit.
 ```vue
 <template>
     <!-- v-model tracks the live color; @change commits the settled value (one undo entry) -->
-    <OriColorPicker v-model="color" label="Fill" @change="pushUndo" />
+    <OriColorPicker v-model="color" label="Solid" @change="pushUndo" />
 </template>
 ```
 

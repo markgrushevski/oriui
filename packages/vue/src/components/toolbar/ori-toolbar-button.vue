@@ -14,6 +14,7 @@ import { OriTooltip } from '../tooltip'
 // but activation is blocked. inheritAttrs:false so a caller's listeners/attrs land on the <button>,
 // not the tooltip wrapper.
 const {
+    ariaLabel,
     color,
     disabled = false,
     icon,
@@ -24,20 +25,20 @@ const {
     pressed = undefined,
     radius,
     size,
-    text,
     tooltip,
     variant = 'text'
 } = defineProps<{
+    /** Accessible name for an icon-only control (→ aria-label); falls back to `tooltip`. */
+    ariaLabel?: string
     color?: ThemeColor
     disabled?: boolean
     icon?: string
-    /** Accessible name for an icon-only button (→ aria-label); falls back to `tooltip`. */
+    /** Visible button text. Forwarded to OriButton; the default slot overrides it. */
     label?: string
     /** Toggle state → aria-pressed. Omit for a plain action button (no aria-pressed rendered). */
     pressed?: boolean
     radius?: RadiusSize
     size?: ActionSize
-    text?: string
     /** Optional tooltip; renders an OriTooltip and wires aria-describedby onto the button. */
     tooltip?: string
     variant?: Variant
@@ -48,28 +49,28 @@ defineOptions({ inheritAttrs: false })
 const { itemProps } = useToolbarItem()
 
 // A11y guardrail (dev only): an icon-only button with no name is an axe `button-name` failure. Warn
-// when `icon` is set but there's no `label` / `tooltip` / `text` to name it (mirrors OriToolbar's warn).
-if (import.meta.env?.DEV && icon && !label && !tooltip && !text) {
+// when `icon` is set but there's no `aria-label` / `tooltip` / `label` to name it (mirrors OriToolbar's warn).
+if (import.meta.env?.DEV && icon && !ariaLabel && !tooltip && !label) {
     console.warn(
-        '[OriToolbarButton] an icon-only button needs an accessible name — pass `label` (or `tooltip` / `text`).'
+        '[OriToolbarButton] an icon-only button needs an accessible name — pass `aria-label` (or `tooltip` / `label`).'
     )
 }
 
 // aria-describedby points the tooltip at the button ONLY when it's a genuine supplementary description
-// (a `label` names the button). When the name itself falls back to the tooltip text, describing with the
+// (an `aria-label` names the button). When the name itself falls back to the tooltip text, describing with the
 // same text would double-announce (name == description), so it's omitted.
-const describedBy = (bubbleId: string) => (label ? bubbleId : undefined)
+const describedBy = (bubbleId: string) => (ariaLabel ? bubbleId : undefined)
 
 // OriButton props + the toolbar/roving/a11y attributes (the latter fall through to the <button>).
 const buttonBindings = computed(() => ({
     ...itemProps.value,
     color,
     icon,
+    label,
     radius,
     size,
-    text,
     variant,
-    'aria-label': label ?? tooltip,
+    'aria-label': ariaLabel ?? tooltip,
     'aria-pressed': pressed,
     'aria-disabled': disabled || undefined
 }))
@@ -94,7 +95,7 @@ function onClickCapture(event: MouseEvent): void {
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
-                     falls back to the `icon`/`text` props. The `v-if` keeps that fallback working — an
+                     falls back to the `icon`/`label` props. The `v-if` keeps that fallback working — an
                      always-present (even empty) slot would suppress it. -->
                 <template v-if="$slots.default" #default><slot></slot></template>
             </OriButton>

@@ -10,25 +10,26 @@ import { OriTooltip } from '../tooltip'
 // selection) and the onClick that toggles this `value` in the group. Requires a surrounding
 // OriToolbarToggleGroup. The pressed look is styled off [aria-pressed='true'] in toolbar.css.
 const {
+    ariaLabel,
     color,
     disabled = false,
     icon,
     label,
     radius,
     size,
-    text,
     tooltip,
     value,
     variant = 'text'
 } = defineProps<{
+    /** Accessible name for an icon-only control (→ aria-label); falls back to `tooltip`. */
+    ariaLabel?: string
     color?: ThemeColor
     disabled?: boolean
     icon?: string
-    /** Accessible name for an icon-only item (→ aria-label); falls back to `tooltip`. */
+    /** Visible item text. Forwarded to OriButton; the default slot overrides it. */
     label?: string
     radius?: RadiusSize
     size?: ActionSize
-    text?: string
     /** Optional tooltip; wires aria-describedby onto the button. */
     tooltip?: string
     /** The value this item contributes to the group's v-model (required). */
@@ -40,24 +41,24 @@ defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarToggleItem(() => value)
 
-// Dev-only: warn on a nameless icon-only item (axe `button-name`); describedby only when `label` names
+// Dev-only: warn on a nameless icon-only item (axe `button-name`); describedby only when `aria-label` names
 // it (else name == tooltip, a double-announce) — see OriToolbarButton for the rationale.
-if (import.meta.env?.DEV && icon && !label && !tooltip && !text) {
+if (import.meta.env?.DEV && icon && !ariaLabel && !tooltip && !label) {
     console.warn(
-        '[OriToolbarToggleItem] an icon-only item needs an accessible name — pass `label` (or `tooltip` / `text`).'
+        '[OriToolbarToggleItem] an icon-only item needs an accessible name — pass `aria-label` (or `tooltip` / `label`).'
     )
 }
-const describedBy = (bubbleId: string) => (label ? bubbleId : undefined)
+const describedBy = (bubbleId: string) => (ariaLabel ? bubbleId : undefined)
 
 const buttonBindings = computed(() => ({
     ...itemProps.value,
     color,
     icon,
+    label,
     radius,
     size,
-    text,
     variant,
-    'aria-label': label ?? tooltip,
+    'aria-label': ariaLabel ?? tooltip,
     'aria-disabled': disabled || undefined
 }))
 
@@ -78,7 +79,7 @@ function onClickCapture(event: MouseEvent): void {
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
-                     falls back to the `icon`/`text` props. The `v-if` keeps that fallback working — an
+                     falls back to the `icon`/`label` props. The `v-if` keeps that fallback working — an
                      always-present (even empty) slot would suppress it. -->
                 <template v-if="$slots.default" #default><slot></slot></template>
             </OriButton>

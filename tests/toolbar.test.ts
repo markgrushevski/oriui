@@ -48,7 +48,7 @@ function mountToolbar(props: ToolbarTestProps = {}, count = 3) {
         slots: {
             default: () =>
                 Array.from({ length: count }, (_, i) =>
-                    h(OriToolbarButton, { key: i, label: String.fromCharCode(65 + i), icon: 'x' })
+                    h(OriToolbarButton, { key: i, ariaLabel: String.fromCharCode(65 + i), icon: 'x' })
                 )
         },
         attachTo: document.body
@@ -287,7 +287,7 @@ describe('OriToolbarButton', () => {
     it('pressed=true sets aria-pressed="true"', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x', pressed: true }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x', pressed: true }) },
             attachTo: document.body
         })
 
@@ -297,7 +297,7 @@ describe('OriToolbarButton', () => {
     it('pressed=false sets aria-pressed="false"', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x', pressed: false }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x', pressed: false }) },
             attachTo: document.body
         })
 
@@ -310,7 +310,7 @@ describe('OriToolbarButton', () => {
     it('omitting pressed renders no aria-pressed (plain action button)', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x' }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x' }) },
             attachTo: document.body
         })
 
@@ -320,7 +320,7 @@ describe('OriToolbarButton', () => {
     it('disabled sets aria-disabled, is NOT native-disabled, and stays focusable', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Disabled', icon: 'x', disabled: true }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Disabled', icon: 'x', disabled: true }) },
             attachTo: document.body
         })
         const btn = wrapper.find('.ori-button')
@@ -337,7 +337,7 @@ describe('OriToolbarButton', () => {
             setup: () => ({ onHit: () => (clicks += 1) }),
             template: `
                 <OriToolbar label="Bar">
-                    <OriToolbarButton label="Disabled" icon="x" :disabled="true" @click="onHit" />
+                    <OriToolbarButton aria-label="Disabled" icon="x" :disabled="true" @click="onHit" />
                 </OriToolbar>
             `
         })
@@ -354,9 +354,9 @@ describe('OriToolbarButton', () => {
             props: { label: 'Bar' },
             slots: {
                 default: () => [
-                    h(OriToolbarButton, { label: 'A', icon: 'x' }),
-                    h(OriToolbarButton, { label: 'B', icon: 'x', disabled: true }),
-                    h(OriToolbarButton, { label: 'C', icon: 'x' })
+                    h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }),
+                    h(OriToolbarButton, { ariaLabel: 'B', icon: 'x', disabled: true }),
+                    h(OriToolbarButton, { ariaLabel: 'C', icon: 'x' })
                 ]
             },
             attachTo: document.body
@@ -375,7 +375,7 @@ describe('OriToolbarButton', () => {
     it('tooltip wires aria-describedby onto the button, pointing at the tooltip bubble id', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x', tooltip: 'Bold (Ctrl+B)' }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x', tooltip: 'Bold (Ctrl+B)' }) },
             attachTo: document.body
         })
         const bubble = wrapper.find('.ori-tooltip__bubble')
@@ -386,17 +386,17 @@ describe('OriToolbarButton', () => {
         expect(button.attributes('aria-describedby')).toBe(bubble.attributes('id'))
     })
 
-    it('an icon-only button with an explicit label uses it as the accessible name', () => {
+    it('an icon-only button with an explicit aria-label uses it as the accessible name', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Redo', icon: 'x' }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Redo', icon: 'x' }) },
             attachTo: document.body
         })
 
         expect(wrapper.find('.ori-button').attributes('aria-label')).toBe('Redo')
     })
 
-    it('an icon-only button with no label falls back to the tooltip text as its accessible name', () => {
+    it('an icon-only button with no aria-label falls back to the tooltip text as its accessible name', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
             slots: { default: () => h(OriToolbarButton, { icon: 'x', tooltip: 'Undo' }) },
@@ -419,13 +419,13 @@ describe('OriToolbarButton', () => {
         expect(button.attributes('aria-describedby')).toBeUndefined()
     })
 
-    it('forwards color / size / variant / radius / text to the rendered OriButton', () => {
+    it('forwards color / size / variant / radius / label to the rendered OriButton', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
             slots: {
                 default: () =>
                     h(OriToolbarButton, {
-                        text: 'Save',
+                        label: 'Save',
                         color: 'danger',
                         size: 'lg',
                         variant: 'outline',
@@ -446,7 +446,7 @@ describe('OriToolbarButton', () => {
     it('participates in roving: carries data-ori-toolbar-item and a roving tabindex', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'A', icon: 'x' }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }) },
             attachTo: document.body
         })
         const btn = wrapper.find('.ori-button')
@@ -460,7 +460,7 @@ describe('OriToolbarSeparator', () => {
     it('has role=separator', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => [h(OriToolbarButton, { label: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
+            slots: { default: () => [h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
             attachTo: document.body
         })
 
@@ -470,7 +470,7 @@ describe('OriToolbarSeparator', () => {
     it('is perpendicular (vertical) inside a horizontal toolbar', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar', orientation: 'horizontal' },
-            slots: { default: () => [h(OriToolbarButton, { label: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
+            slots: { default: () => [h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
             attachTo: document.body
         })
 
@@ -480,7 +480,7 @@ describe('OriToolbarSeparator', () => {
     it('omits aria-orientation (perpendicular = horizontal, the implicit default) inside a vertical toolbar', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar', orientation: 'vertical' },
-            slots: { default: () => [h(OriToolbarButton, { label: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
+            slots: { default: () => [h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
             attachTo: document.body
         })
 
@@ -490,7 +490,7 @@ describe('OriToolbarSeparator', () => {
     it('is not a roving stop: no data-ori-toolbar-item marker and no tabindex', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => [h(OriToolbarButton, { label: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
+            slots: { default: () => [h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }), h(OriToolbarSeparator)] },
             attachTo: document.body
         })
         const sep = wrapper.find('.ori-toolbar__separator')
@@ -504,9 +504,9 @@ describe('OriToolbarSeparator', () => {
             props: { label: 'Bar' },
             slots: {
                 default: () => [
-                    h(OriToolbarButton, { label: 'A', icon: 'x' }),
+                    h(OriToolbarButton, { ariaLabel: 'A', icon: 'x' }),
                     h(OriToolbarSeparator),
-                    h(OriToolbarButton, { label: 'B', icon: 'x' })
+                    h(OriToolbarButton, { ariaLabel: 'B', icon: 'x' })
                 ]
             },
             attachTo: document.body
@@ -674,7 +674,7 @@ describe('OriToolbarToggleGroup + OriToolbarToggleItem', () => {
             setup: () => ({ value }),
             template: `
                 <OriToolbar label="Bar">
-                    <OriToolbarButton label="A" icon="x" />
+                    <OriToolbarButton aria-label="A" icon="x" />
                     <OriToolbarToggleGroup v-model="value" type="single" label="Align">
                         <OriToolbarToggleItem value="left" label="Left" icon="x" />
                     </OriToolbarToggleGroup>
@@ -718,7 +718,7 @@ describe('OriToolbarButton — slot (custom icon content)', () => {
     it('falls back to the icon prop when no slot is provided (the conditional forward keeps the fallback)', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
-            slots: { default: () => h(OriToolbarButton, { label: 'Bold', icon: 'x' }) },
+            slots: { default: () => h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x' }) },
             attachTo: document.body
         })
 
@@ -780,8 +780,8 @@ describe('OriToolbar — axe', () => {
             props: { label: 'Formatting' },
             slots: {
                 default: () => [
-                    h(OriToolbarButton, { label: 'Bold', icon: 'x' }),
-                    h(OriToolbarButton, { label: 'Italic', icon: 'x', pressed: true }),
+                    h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x' }),
+                    h(OriToolbarButton, { ariaLabel: 'Italic', icon: 'x', pressed: true }),
                     h(OriToolbarSeparator)
                 ]
             },
@@ -797,8 +797,8 @@ describe('OriToolbar — axe', () => {
             props: { label: 'Formatting', orientation: 'vertical' },
             slots: {
                 default: () => [
-                    h(OriToolbarButton, { label: 'Bold', icon: 'x' }),
-                    h(OriToolbarButton, { label: 'Italic', icon: 'x' })
+                    h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x' }),
+                    h(OriToolbarButton, { ariaLabel: 'Italic', icon: 'x' })
                 ]
             },
             attachTo: document.body
@@ -813,8 +813,8 @@ describe('OriToolbar — axe', () => {
             props: { label: 'Formatting' },
             slots: {
                 default: () => [
-                    h(OriToolbarButton, { label: 'Bold', icon: 'x' }),
-                    h(OriToolbarButton, { label: 'Disabled', icon: 'x', disabled: true })
+                    h(OriToolbarButton, { ariaLabel: 'Bold', icon: 'x' }),
+                    h(OriToolbarButton, { ariaLabel: 'Disabled', icon: 'x', disabled: true })
                 ]
             },
             attachTo: document.body
@@ -848,7 +848,7 @@ describe('OriToolbar — axe', () => {
             setup: () => ({ value }),
             template: `
                 <OriToolbar label="Formatting">
-                    <OriToolbarButton label="Undo" icon="x" />
+                    <OriToolbarButton aria-label="Undo" icon="x" />
                     <OriToolbarSeparator />
                     <OriToolbarToggleGroup v-model="value" type="single" label="Text alignment">
                         <OriToolbarToggleItem value="left" label="Left" icon="x" />

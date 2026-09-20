@@ -41,6 +41,7 @@ interface MenuItem {
     value: string // stable identity + the value passed to onSelect
     label?: string // display text; falls back to value
     disabled?: boolean // skipped by roving navigation and selection
+    separator?: boolean // renders a role=separator rule here instead of an item; skipped the same way
 }
 ```
 
@@ -56,7 +57,7 @@ The open / highlight state plus the prop bags you bind to each part. Every `*Pro
 | `items`                     | `ComputedRef<MenuItem[]>`                      | The current item list (echoes the `items` option) — convenient to `v-for` over.                                                                        |
 | `triggerProps`              | `ComputedRef<object>`                          | The menu button: `type`, `aria-haspopup="menu"`, `aria-controls`, live `aria-expanded`, `data-state`, and the click / keydown handlers.                |
 | `contentProps`              | `ComputedRef<object>`                          | The `role="menu"` panel: `aria-labelledby`, `aria-orientation="vertical"`, `tabindex="-1"`, `hidden` while closed, and the navigation keydown handler. |
-| `separatorProps`            | `ComputedRef<object>`                          | A `role="separator"` divider (`aria-orientation="horizontal"`) for grouping items.                                                                     |
+| `separatorProps`            | `ComputedRef<object>`                          | A `role="separator"` divider (`aria-orientation="horizontal"`) for grouping items — bind it for an entry whose `separator` is true.                    |
 | `getItemProps(item, index)` | `(item: MenuItem, index: number) => object`    | Per-item bag: `role="menuitem"`, roving `tabindex`, `data-highlighted`, `aria-disabled`, and the click / pointermove handlers.                         |
 | `getItemState(item)`        | `(item: MenuItem) => { highlighted: boolean }` | The item's derived state — currently just whether it is highlighted — for your own styling.                                                            |
 | `setOpen(open)`             | `(open: boolean) => void`                      | Open / close imperatively (the host uses this to close on outside click).                                                                              |

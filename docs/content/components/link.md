@@ -21,7 +21,7 @@ A link is a block class plus single-class token utilities — one class repoints
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-link","type":"Block","description":"Required base class. Underlined, inherits currentcolor, cursor pointer."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface — omit to inherit currentcolor from the parent"},{"class":"ori-link_hover","type":"Modifier","description":"Removes the underline at rest; adds it on hover (pointer device only)."}]'}
+:class-table{:rows='[{"class":"ori-link","type":"Block","description":"Required base class. Underlined, inherits currentcolor, cursor pointer."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface — omit to inherit currentcolor from the parent"},{"class":"ori-link_hover","type":"Modifier","description":"Removes the underline at rest; adds it on hover (pointer device only)."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/link.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -57,7 +57,7 @@ Apply a semantic role with `ori-color_*`. The color drives both the text and the
 :ori-link[primary]{href="#" color="primary"}
 :ori-link[secondary]{href="#" color="secondary"}
 :ori-link[success]{href="#" color="success"}
-:ori-link[warn]{href="#" color="warn"}
+:ori-link[warn]{href="#" color="warning"}
 :ori-link[danger]{href="#" color="danger"}
 :ori-link[info]{href="#" color="info"}
 
@@ -67,7 +67,7 @@ Apply a semantic role with `ori-color_*`. The color drives both the text and the
 <OriLink href="#" color="primary">primary</OriLink>
 <OriLink href="#" color="secondary">secondary</OriLink>
 <OriLink href="#" color="success">success</OriLink>
-<OriLink href="#" color="warn">warn</OriLink>
+<OriLink href="#" color="warning">warn</OriLink>
 <OriLink href="#" color="danger">danger</OriLink>
 <OriLink href="#" color="info">info</OriLink>
 ```
@@ -201,7 +201,7 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `hover`    | `boolean`          | `false` | Hides the underline at rest; shows it only on hover (`ori-link_hover`).            |
 | `href`     | `string`           | —       | The link destination. Required for the element to be keyboard-focusable as a link. |
 
-`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warn' | 'danger' | 'info' | 'surface' | 'background'`
+`ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 
 ### Events & attributes
 

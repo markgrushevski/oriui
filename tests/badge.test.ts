@@ -13,9 +13,9 @@ describe('OriBadge', () => {
         const c = wrapper.classes()
 
         expect(c).toContain('ori-badge')
-        expect(c).toContain('ori-variant_fill')
+        expect(c).toContain('ori-variant_solid')
         expect(c).toContain('ori-color_primary')
-        expect(c).toContain('ori-size-radius_rounded')
+        expect(c).toContain('ori-size-radius_full')
     })
 
     it('is a <span> in standalone mode (no slot)', () => {
@@ -80,26 +80,26 @@ describe('OriBadge', () => {
 
     it('maps all visual props together in standalone mode', () => {
         const wrapper = mount(OriBadge, {
-            props: { variant: 'tonal', color: 'danger', radius: 'xl' }
+            props: { variant: 'soft', color: 'danger', radius: 'xl' }
         })
         const c = wrapper.classes()
 
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-color_danger')
         expect(c).toContain('ori-size-radius_xl')
     })
 
     it('maps all visual props together in floating mode', () => {
         const wrapper = mount(OriBadge, {
-            props: { variant: 'tonal', color: 'warn', radius: 'zero', floating: true },
+            props: { variant: 'soft', color: 'warning', radius: 'none', floating: true },
             slots: { default: '<span>X</span>' }
         })
         const badge = wrapper.find('.ori-badge')
         const c = badge.classes()
 
-        expect(c).toContain('ori-variant_tonal')
-        expect(c).toContain('ori-color_warn')
-        expect(c).toContain('ori-size-radius_zero')
+        expect(c).toContain('ori-variant_soft')
+        expect(c).toContain('ori-color_warning')
+        expect(c).toContain('ori-size-radius_none')
     })
 
     // -------------------------------------------------------------------------
