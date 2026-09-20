@@ -77,12 +77,12 @@ describe('useToast() store', () => {
         expect(toasts[0].color).toBe('danger')
     })
 
-    it('warn() sets color "warn"', () => {
-        const { warn, toasts } = useToast()
+    it('warning() sets color "warning"', () => {
+        const { warning, toasts } = useToast()
 
-        warn({ text: 'warning' })
+        warning({ text: 'warning' })
 
-        expect(toasts[0].color).toBe('warn')
+        expect(toasts[0].color).toBe('warning')
     })
 
     it('info() sets color "info"', () => {
@@ -96,9 +96,9 @@ describe('useToast() store', () => {
     it('severity shortcut with object — own color overrides the shortcut color', () => {
         const { error, toasts } = useToast()
 
-        error({ text: 'oops', color: 'warn' })
+        error({ text: 'oops', color: 'warning' })
 
-        expect(toasts[0].color).toBe('warn')
+        expect(toasts[0].color).toBe('warning')
     })
 
     it('auto-dismiss: toast is removed from queue after duration ms', () => {
@@ -235,7 +235,7 @@ describe('OriToast component', () => {
     })
 
     it('role="status" for warn color', () => {
-        const wrapper = mount(OriToast, { props: { text: 'Careful', color: 'warn' } })
+        const wrapper = mount(OriToast, { props: { text: 'Careful', color: 'warning' } })
 
         expect(wrapper.attributes('role')).toBe('status')
     })

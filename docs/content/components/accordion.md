@@ -22,7 +22,7 @@ The accordion is a block class plus single-class token utilities — one class r
 base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · rounded"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
+:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · full"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/accordion.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -169,7 +169,7 @@ Corner rounding via the `radius` prop. When omitted, the container uses the bake
 `.ori-accordion` block bakes `--ori-size-radius: md`, so a bare block is never square).
 
 ::example
-:ori-accordion{radius="zero" :items='[{"value":"a","label":"zero — no rounding"}]'}
+:ori-accordion{radius="none" :items='[{"value":"a","label":"zero — no rounding"}]'}
 :ori-accordion{radius="sm" :items='[{"value":"a","label":"sm — subtle rounding"}]'}
 :ori-accordion{radius="md" :items='[{"value":"a","label":"md — medium rounding"}]'}
 :ori-accordion{radius="lg" :items='[{"value":"a","label":"lg — large rounding"}]'}
@@ -178,7 +178,7 @@ Corner rounding via the `radius` prop. When omitted, the container uses the bake
 #vue
 
 ```vue
-<OriAccordion radius="zero" :items="items" />
+<OriAccordion radius="none" :items="items" />
 <OriAccordion radius="md" :items="items" />
 <OriAccordion radius="xl" :items="items" />
 ```

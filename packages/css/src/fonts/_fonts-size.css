@@ -3,7 +3,7 @@
         --ori-font-size-step_dec: 0.125rem;
         --ori-font-size-step_inc: 0.125rem;
 
-        --ori-font-size_text: 1em;
+        --ori-font-size_inherit: 1em;
         --ori-font-size_xs: calc(var(--ori-font-size_md) - var(--ori-font-size-step_dec) * 2);
         --ori-font-size_sm: calc(var(--ori-font-size_md) - var(--ori-font-size-step_dec) * 1);
         /* rem (16px baseline: 1rem = 16px, steps 0.125rem = 2px) so type follows the user's browser
@@ -13,7 +13,7 @@
         --ori-font-size_xl: calc(var(--ori-font-size_md) + var(--ori-font-size-step_inc) * 2);
         --ori-font-size_xxl: calc(var(--ori-font-size_md) + var(--ori-font-size-step_inc) * 3);
 
-        --ori-font-size: var(--ori-font-size_text);
+        --ori-font-size: var(--ori-font-size_inherit);
     }
 }
 
@@ -21,8 +21,8 @@
     /* Single-class: `.ori-font-size_lg` repoints the alias on its own — the scale lives in :root
        (ori.tokens), so no `.ori-font-size` base is needed. A component may still override the step
        tokens locally (`--ori-font-size-step_inc`) to retune its own progression. */
-    .ori-font-size_text {
-        --ori-font-size: var(--ori-font-size_text);
+    .ori-font-size_inherit {
+        --ori-font-size: var(--ori-font-size_inherit);
     }
 
     .ori-font-size_xs {

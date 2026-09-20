@@ -14,9 +14,9 @@ const {
     // coercion so an unbound `pressed` stays `undefined` — no aria-pressed. Same footgun as
     // OriToolbarButton's `pressed` and OriDialog's `open`.
     pressed = undefined,
-    radius = 'rounded',
+    radius = 'full',
     size = 'md',
-    variant = 'fill'
+    variant = 'solid'
 } = defineProps<{
     /** Forced `:active` LOOK (→ `data-active`). Not a toggle state — use `pressed` for that. */
     active?: boolean

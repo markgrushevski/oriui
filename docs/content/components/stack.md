@@ -21,7 +21,7 @@ one class repoints `--ori-size-gap`, no cascade conflict. The Vue props in
 [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-stack","type":"Block","description":"Flex column. Children stack top-to-bottom, separated by the gap token."},{"class":"ori-cluster","type":"Block","description":"Flex row that wraps. Children flow left-to-right and wrap; cross-axis centered by default."},{"class":"ori-size-gap_*","type":"Gap","description":"zero · xs · sm · <b>md</b> · lg · xl — repoints --ori-size-gap on the container."}]'}
+:class-table{:rows='[{"class":"ori-stack","type":"Block","description":"Flex column. Children stack top-to-bottom, separated by the gap token."},{"class":"ori-cluster","type":"Block","description":"Flex row that wraps. Children flow left-to-right and wrap; cross-axis centered by default."},{"class":"ori-size-gap_*","type":"Gap","description":"none · xs · sm · <b>md</b> · lg · xl — repoints --ori-size-gap on the container."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/stack.css`. `.ori-cluster` lives in
 `stack.css`, not a file of its own. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`)
@@ -69,24 +69,24 @@ cluster wraps gracefully at narrow widths.
 
 ::example
 ::ori-stack{:cluster="true" gap="sm"}
-:ori-button{text="Vue 3" variant="tonal"}
-:ori-button{text="TypeScript" variant="tonal"}
-:ori-button{text="Vite" variant="tonal"}
-:ori-button{text="Nuxt" variant="tonal"}
-:ori-button{text="Vitest" variant="tonal"}
-:ori-button{text="axe-core" variant="tonal"}
+:ori-button{text="Vue 3" variant="soft"}
+:ori-button{text="TypeScript" variant="soft"}
+:ori-button{text="Vite" variant="soft"}
+:ori-button{text="Nuxt" variant="soft"}
+:ori-button{text="Vitest" variant="soft"}
+:ori-button{text="axe-core" variant="soft"}
 ::
 
 #vue
 
 ```vue
 <OriStack cluster gap="sm">
-    <OriButton text="Vue 3" variant="tonal" />
-    <OriButton text="TypeScript" variant="tonal" />
-    <OriButton text="Vite" variant="tonal" />
-    <OriButton text="Nuxt" variant="tonal" />
-    <OriButton text="Vitest" variant="tonal" />
-    <OriButton text="axe-core" variant="tonal" />
+    <OriButton text="Vue 3" variant="soft" />
+    <OriButton text="TypeScript" variant="soft" />
+    <OriButton text="Vite" variant="soft" />
+    <OriButton text="Nuxt" variant="soft" />
+    <OriButton text="Vitest" variant="soft" />
+    <OriButton text="axe-core" variant="soft" />
 </OriStack>
 ```
 
@@ -94,12 +94,12 @@ cluster wraps gracefully at narrow widths.
 
 ```html
 <div class="ori-cluster ori-size-gap_sm">
-    <button class="ori-button ori-variant_tonal">Vue 3</button>
-    <button class="ori-button ori-variant_tonal">TypeScript</button>
-    <button class="ori-button ori-variant_tonal">Vite</button>
-    <button class="ori-button ori-variant_tonal">Nuxt</button>
-    <button class="ori-button ori-variant_tonal">Vitest</button>
-    <button class="ori-button ori-variant_tonal">axe-core</button>
+    <button class="ori-button ori-variant_soft">Vue 3</button>
+    <button class="ori-button ori-variant_soft">TypeScript</button>
+    <button class="ori-button ori-variant_soft">Vite</button>
+    <button class="ori-button ori-variant_soft">Nuxt</button>
+    <button class="ori-button ori-variant_soft">Vitest</button>
+    <button class="ori-button ori-variant_soft">axe-core</button>
 </div>
 ```
 
@@ -107,39 +107,39 @@ cluster wraps gracefully at narrow widths.
 
 ## Gap scale
 
-`zero` collapses the gap entirely; `xl` spreads items wide. The `gap` prop emits a single
+`none` collapses the gap entirely; `xl` spreads items wide. The `gap` prop emits a single
 `ori-size-gap_<size>` class — the token does the rest.
 
 ::example
-::ori-stack{gap="zero"}
-:ori-button{text="zero" size="sm" variant="fill"}
-:ori-button{text="zero" size="sm" variant="fill"}
+::ori-stack{gap="none"}
+:ori-button{text="none" size="sm" variant="solid"}
+:ori-button{text="none" size="sm" variant="solid"}
 ::
 ::ori-stack{gap="xs"}
-:ori-button{text="xs" size="sm" variant="tonal"}
-:ori-button{text="xs" size="sm" variant="tonal"}
+:ori-button{text="xs" size="sm" variant="soft"}
+:ori-button{text="xs" size="sm" variant="soft"}
 ::
 ::ori-stack{gap="sm"}
 :ori-button{text="sm" size="sm" variant="outline"}
 :ori-button{text="sm" size="sm" variant="outline"}
 ::
 ::ori-stack{gap="md"}
-:ori-button{text="md" size="sm" variant="tonal"}
-:ori-button{text="md" size="sm" variant="tonal"}
+:ori-button{text="md" size="sm" variant="soft"}
+:ori-button{text="md" size="sm" variant="soft"}
 ::
 ::ori-stack{gap="lg"}
 :ori-button{text="lg" size="sm" variant="outline"}
 :ori-button{text="lg" size="sm" variant="outline"}
 ::
 ::ori-stack{gap="xl"}
-:ori-button{text="xl" size="sm" variant="fill"}
-:ori-button{text="xl" size="sm" variant="fill"}
+:ori-button{text="xl" size="sm" variant="solid"}
+:ori-button{text="xl" size="sm" variant="solid"}
 ::
 
 #vue
 
 ```vue
-<OriStack gap="zero"> … </OriStack>
+<OriStack gap="none"> … </OriStack>
 <OriStack gap="xs"> … </OriStack>
 <OriStack gap="sm"> … </OriStack>
 <OriStack gap="md"> … </OriStack>
@@ -150,7 +150,7 @@ cluster wraps gracefully at narrow widths.
 #html
 
 ```html
-<!-- swap the gap class: ori-size-gap_zero → _xs / _sm / _md / _lg / _xl -->
+<!-- swap the gap class: ori-size-gap_none → _xs / _sm / _md / _lg / _xl -->
 <div class="ori-stack ori-size-gap_lg">…</div>
 ```
 
@@ -163,8 +163,8 @@ Useful for centering a cluster horizontally, or stretching stack children to ful
 
 ::example
 ::ori-stack{:cluster="true" gap="sm" justify="center"}
-:ori-button{text="Centered" variant="fill"}
-:ori-button{text="Cluster" variant="tonal"}
+:ori-button{text="Centered" variant="solid"}
+:ori-button{text="Cluster" variant="soft"}
 :ori-button{text="Row" variant="outline"}
 ::
 
@@ -173,8 +173,8 @@ Useful for centering a cluster horizontally, or stretching stack children to ful
 ```vue
 <!-- Cluster with centered main axis -->
 <OriStack cluster gap="sm" justify="center">
-    <OriButton text="Centered" variant="fill" />
-    <OriButton text="Cluster" variant="tonal" />
+    <OriButton text="Centered" variant="solid" />
+    <OriButton text="Cluster" variant="soft" />
     <OriButton text="Row" variant="outline" />
 </OriStack>
 
@@ -190,8 +190,8 @@ Useful for centering a cluster horizontally, or stretching stack children to ful
 ```html
 <!-- justify-content via inline style -->
 <div class="ori-cluster ori-size-gap_sm" style="justify-content: center">
-    <button class="ori-button ori-variant_fill">Centered</button>
-    <button class="ori-button ori-variant_tonal">Cluster</button>
+    <button class="ori-button ori-variant_solid">Centered</button>
+    <button class="ori-button ori-variant_soft">Cluster</button>
     <button class="ori-button ori-variant_outline">Row</button>
 </div>
 
@@ -248,7 +248,7 @@ A vertical stack holding labeled inputs — the most common use in forms.
 :ori-input{label="Email" placeholder="jane@example.com"}
 ::ori-stack{:cluster="true" gap="sm" justify="flex-end"}
 :ori-button{text="Cancel" variant="text"}
-:ori-button{text="Save" variant="fill"}
+:ori-button{text="Save" variant="solid"}
 ::
 ::
 
@@ -260,7 +260,7 @@ A vertical stack holding labeled inputs — the most common use in forms.
     <OriInput label="Email" placeholder="jane@example.com" />
     <OriStack cluster gap="sm" justify="flex-end">
         <OriButton text="Cancel" variant="text" />
-        <OriButton text="Save" variant="fill" />
+        <OriButton text="Save" variant="solid" />
     </OriStack>
 </OriStack>
 ```
@@ -272,7 +272,7 @@ A vertical stack holding labeled inputs — the most common use in forms.
     <!-- inputs -->
     <div class="ori-cluster ori-size-gap_sm" style="justify-content: flex-end">
         <button class="ori-button ori-variant_text">Cancel</button>
-        <button class="ori-button ori-variant_fill">Save</button>
+        <button class="ori-button ori-variant_solid">Save</button>
     </div>
 </div>
 ```
@@ -287,7 +287,7 @@ A cluster for the header actions above a stack of cards.
 ::ori-stack{gap="md"}
 ::ori-stack{:cluster="true" gap="sm" justify="space-between" align="center"}
 :ori-button{text="Filter" variant="outline"}
-:ori-button{text="New" variant="fill"}
+:ori-button{text="New" variant="solid"}
 ::
 :ori-card{title="Project Alpha" text="Design system refactor — in progress."}
 :ori-card{title="Project Beta" text="Accessibility audit — review pending."}
@@ -299,7 +299,7 @@ A cluster for the header actions above a stack of cards.
 <OriStack gap="md">
     <OriStack cluster gap="sm" justify="space-between" align="center">
         <OriButton text="Filter" variant="outline" />
-        <OriButton text="New" variant="fill" />
+        <OriButton text="New" variant="solid" />
     </OriStack>
     <OriCard title="Project Alpha" text="Design system refactor — in progress." />
     <OriCard title="Project Beta" text="Accessibility audit — review pending." />
@@ -312,15 +312,15 @@ A cluster for the header actions above a stack of cards.
 <div class="ori-stack ori-size-gap_md">
     <div class="ori-cluster ori-size-gap_sm" style="justify-content: space-between; align-items: center">
         <button class="ori-button ori-variant_outline">Filter</button>
-        <button class="ori-button ori-variant_fill">New</button>
+        <button class="ori-button ori-variant_solid">New</button>
     </div>
-    <div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
+    <div class="ori-card ori-size-radius_lg ori-variant_solid ori-color_surface">
         <div class="ori-card__header">
             <div class="ori-card__headline"><div class="ori-card__title">Project Alpha</div></div>
         </div>
         <div class="ori-card__body">Design system refactor — in progress.</div>
     </div>
-    <div class="ori-card ori-size-radius_lg ori-variant_fill ori-color_surface">
+    <div class="ori-card ori-size-radius_lg ori-variant_solid ori-color_surface">
         <div class="ori-card__header">
             <div class="ori-card__headline"><div class="ori-card__title">Project Beta</div></div>
         </div>
@@ -354,10 +354,10 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `align`   | `string`           | —       | CSS `align-items` value applied as an inline style on the container.                           |
 | `as`      | `string \| object` | `'div'` | HTML tag name or component reference to render (e.g. `'ul'`, `'section'`, a router component). |
 | `cluster` | `boolean`          | `false` | Switches from a flex column (`ori-stack`) to a wrapping flex row (`ori-cluster`).              |
-| `gap`     | `GapSize`          | —       | Gap between children: `zero` · `xs` · `sm` · `md` · `lg` · `xl`. Emits `ori-size-gap_<size>`.  |
+| `gap`     | `GapSize`          | —       | Gap between children: `none` · `xs` · `sm` · `md` · `lg` · `xl`. Emits `ori-size-gap_<size>`.  |
 | `justify` | `string`           | —       | CSS `justify-content` value applied as an inline style on the container.                       |
 
-`GapSize = 'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'`
+`GapSize = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'`
 
 ### Events & attributes
 

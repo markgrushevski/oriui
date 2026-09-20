@@ -15,7 +15,7 @@ import { OriIcon } from '../icon'
 const {
     color = 'surface',
     radius = 'lg',
-    variant = 'fill'
+    variant = 'solid'
 } = defineProps<{
     appendAvatar?: string
     appendIcon?: string

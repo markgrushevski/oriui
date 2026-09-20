@@ -12,15 +12,15 @@
     }
 
     .ori-tag {
-        /* Baked per-axis defaults so a bare `.ori-tag` is a valid tonal-primary, rounded, sm chip.
-           Single-class utilities (.ori-color_danger, .ori-size-radius_zero, .ori-font-size_lg,
-           .ori-variant_*) override by layer order; the cluster below is the `tonal` default. */
+        /* Baked per-axis defaults so a bare `.ori-tag` is a valid soft-primary, rounded, sm chip.
+           Single-class utilities (.ori-color_danger, .ori-size-radius_none, .ori-font-size_lg,
+           .ori-variant_*) override by layer order; the cluster below is the `soft` default. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
-        /* AA-safe on-surface tone for the tonal/outline/text label (bare block: no color utility sets it). */
+        /* AA-safe on-surface tone for the soft/outline/text label (bare block: no color utility sets it). */
         --ori-color-text: var(--ori-color-primary-text);
         --ori-font-size: var(--ori-font-size_sm);
-        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-size-radius: var(--ori-size-radius_full);
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
@@ -92,7 +92,7 @@
         font-size: 0.75em;
     }
 
-    /* Focus ring: on a `fill` chip the ring is the on-color (contrasts the solid fill); on tonal/outline/
+    /* Focus ring: on a `solid` chip the ring is the on-color (contrasts the solid fill); on tonal/outline/
    text the chip surface is a pale tint of the hue, so a same-hue (currentcolor) ring can fall below the
    3:1 non-text minimum — use the neutral on-surface color there, which contrasts in both light and dark. */
     .ori-tag__close:focus-visible {
@@ -112,7 +112,7 @@
 
     /* On a fill chip the on-color ring contrasts the solid fill (the neutral default above is for the pale
    tonal/outline surfaces). Placed last to keep specificity ascending. */
-    .ori-tag.ori-variant_fill .ori-tag__close:focus-visible {
+    .ori-tag.ori-variant_solid .ori-tag__close:focus-visible {
         outline-color: currentcolor;
     }
 }

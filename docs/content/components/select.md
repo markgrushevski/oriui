@@ -24,7 +24,7 @@ class needed. The `ori-color_*` accent drives the focus ring; the idle border is
 theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-select","type":"Block","description":"Column wrapper (label, control, hint/error); carries the ori-color and ori-font-size utility classes."},{"class":"ori-color_*","type":"Color","description":"primary (default) · secondary · success · warn · danger · info · surface (focus ring accent)."},{"class":"ori-select_* (size)","type":"Size","description":"xs · sm · md (default) · lg · xl · xxl (control height sugar on the wrapper)."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md (default) · lg · xl · rounded (control corners, on the inner select element)."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · md (default) · lg · xl · xxl (text scale, driven by size prop)."},{"class":"ori-select__control","type":"Part","description":"The native select element; carries ori-size-radius utility."},{"class":"ori-select__chevron","type":"Part","description":"Decorative aria-hidden chevron (inline SVG), absolutely positioned at inset-inline-end."},{"class":"ori-select__label · ori-select__required · ori-select__control-wrap · ori-select__hint · ori-select__error","type":"Part","description":"label / required asterisk / control+chevron wrapper / helper text / error message (role=alert)."},{"class":"ori-select_fluid","type":"Layout","description":"Stretches the wrapper to full width of its container."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-select","type":"Block","description":"Column wrapper (label, control, hint/error); carries the ori-color and ori-font-size utility classes."},{"class":"ori-color_*","type":"Color","description":"primary (default) · secondary · success · warning · danger · info · surface (focus ring accent)."},{"class":"ori-select_* (size)","type":"Size","description":"xs · sm · md (default) · lg · xl · xxl (control height sugar on the wrapper)."},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md (default) · lg · xl · full (control corners, on the inner select element)."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · md (default) · lg · xl · xxl (text scale, driven by size prop)."},{"class":"ori-select__control","type":"Part","description":"The native select element; carries ori-size-radius utility."},{"class":"ori-select__chevron","type":"Part","description":"Decorative aria-hidden chevron (inline SVG), absolutely positioned at inset-inline-end."},{"class":"ori-select__label · ori-select__required · ori-select__control-wrap · ori-select__hint · ori-select__error","type":"Part","description":"label / required asterisk / control+chevron wrapper / helper text / error message (role=alert)."},{"class":"ori-select_fluid","type":"Layout","description":"Stretches the wrapper to full width of its container."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/select.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -39,7 +39,7 @@ The `ori-color_*` class controls the focus ring accent.
 :ori-select{color="primary" :options='[{"label":"Primary","value":"primary"}]'}
 :ori-select{color="secondary" :options='[{"label":"Secondary","value":"secondary"}]'}
 :ori-select{color="success" :options='[{"label":"Success","value":"success"}]'}
-:ori-select{color="warn" :options='[{"label":"Warn","value":"warn"}]'}
+:ori-select{color="warning" :options='[{"label":"Warn","value":"warning"}]'}
 :ori-select{color="danger" :options='[{"label":"Danger","value":"danger"}]'}
 :ori-select{color="info" :options='[{"label":"Info","value":"info"}]'}
 
@@ -104,26 +104,26 @@ text scale (`ori-font-size_*`).
 
 ## Radius
 
-From `zero` (square) through the default `md` to `rounded` (pill-shaped control).
+From `none` (square) through the default `md` to `full` (pill-shaped control).
 
 ::example
-:ori-select{radius="zero" :options='[{"label":"Zero","value":"zero"}]'}
+:ori-select{radius="none" :options='[{"label":"None","value":"none"}]'}
 :ori-select{radius="sm" :options='[{"label":"Small","value":"sm"}]'}
 :ori-select{radius="md" :options='[{"label":"Medium","value":"md"}]'}
 :ori-select{radius="lg" :options='[{"label":"Large","value":"lg"}]'}
-:ori-select{radius="rounded" :options='[{"label":"Rounded","value":"rounded"}]'}
+:ori-select{radius="full" :options='[{"label":"Full","value":"full"}]'}
 
 #vue
 
 ```vue
-<OriSelect v-model="value" radius="zero" :options="options" />
-<OriSelect v-model="value" radius="rounded" :options="options" />
+<OriSelect v-model="value" radius="none" :options="options" />
+<OriSelect v-model="value" radius="full" :options="options" />
 ```
 
 #html
 
 ```html
-<select class="ori-select__control ori-size-radius_zero">
+<select class="ori-select__control ori-size-radius_none">
     …
 </select>
 ```
@@ -434,7 +434,7 @@ planned.)
 | `label`       | `string`         | —           | Built-in `<label>` rendered above the control and wired to it via `for`.                                                                        |
 | `options`     | `SelectOption[]` | `[]`        | Options rendered as `<option>` elements. Ignored when a default slot is provided.                                                               |
 | `placeholder` | `string`         | —           | Renders a disabled, selected-by-default first `<option value="">` as a non-selectable prompt.                                                   |
-| `radius`      | `RadiusSize`     | `'md'`      | Border radius via the `ori-size-radius_*` single-class token (`zero` · xs · sm · md · lg · xl · rounded).                                       |
+| `radius`      | `RadiusSize`     | `'md'`      | Border radius via the `ori-size-radius_*` single-class token (`none` · xs · sm · md · lg · xl · full).                                          |
 | `required`    | `boolean`        | `false`     | Sets the native `required` attribute and renders a `*` after the label.                                                                         |
 | `size`        | `ActionSize`     | `'md'`      | Control height (`ori-select_*` size sugar) and font-size (`ori-font-size_*`) (`xs`–`xxl`).                                                      |
 

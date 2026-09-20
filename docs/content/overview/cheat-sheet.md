@@ -25,12 +25,12 @@ import { OriButton } from '@oriui/vue'
 
 ```vue
 <!-- Vue component -->
-<OriButton text="Save" variant="tonal" color="primary" size="lg" />
+<OriButton text="Save" variant="soft" color="primary" size="lg" />
 ```
 
 ```html
 <!-- Standalone CSS (htmx / Astro / Svelte / plain HTML) — same tokens, no Vue -->
-<button class="ori-button ori-button_lg ori-variant_tonal ori-color_primary">Save</button>
+<button class="ori-button ori-button_lg ori-variant_soft ori-color_primary">Save</button>
 ```
 
 ## The class model
@@ -40,15 +40,15 @@ class. The block bakes sensible defaults, so a **bare block is valid**; add a cl
 axis. Dynamic state is real **attributes** (`disabled`, `aria-busy="true"`, `aria-pressed`), never
 classes.
 
-| Axis                   | Class               | Values                                                                                      |
-| ---------------------- | ------------------- | ------------------------------------------------------------------------------------------- |
-| Color (the role)       | `ori-color_*`       | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background` |
-| Variant (the mapping)  | `ori-variant_*`     | `fill` · `tonal` · `outline` · `text` · `plain`                                             |
-| Size (component sugar) | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                    |
-| Radius                 | `ori-size-radius_*` | `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`                                       |
-| Font                   | `ori-font-size_*`   | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                    |
+| Axis                   | Class               | Values                                                                                         |
+| ---------------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| Color (the role)       | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background` |
+| Variant (the mapping)  | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `plain`                                                |
+| Size (component sugar) | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |
+| Radius                 | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                                             |
+| Font                   | `ori-font-size_*`   | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |
 
-`color` is the **role**, `variant` is the **mapping** — `fill` paints the accent as background (with the
+`color` is the **role**, `variant` is the **mapping** — `solid` paints the accent as background (with the
 on-color text), `outline`/`text` paint it as border/text — so there is no separate `bg-color`. The
 low-level size utility `ori-size-action_<size>` works too; the `ori-<name>_<size>` sugar is the friendly
 shape. Full detail: [Using the CSS layer](/guides/css).

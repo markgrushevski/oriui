@@ -13,7 +13,7 @@ to headless behavior or raw CSS when you need control, without rewriting.
 
 | Package                                                        | Layer    | What you get                                                         |
 | -------------------------------------------------------------- | -------- | -------------------------------------------------------------------- |
-| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="tonal" />`               |
+| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="soft" />`                |
 | [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless behavior for focus / keyboard / ARIA — Vue · Svelte · React |
 | [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework**       |
 
@@ -46,7 +46,7 @@ import { OriButton } from '@oriui/vue'
 ```
 
 ```vue
-<OriButton text="Save" variant="tonal" color="primary" size="lg" />
+<OriButton text="Save" variant="soft" color="primary" size="lg" />
 ```
 
 ## Use it — React / Svelte (the behavior layer)
@@ -71,7 +71,7 @@ or Next app today — no Vue anywhere in the tree.
 
 ```html
 <!-- same tokens, no Vue — one class repoints one token -->
-<button class="ori-button ori-button_lg ori-variant_tonal ori-color_primary">Save</button>
+<button class="ori-button ori-button_lg ori-variant_soft ori-color_primary">Save</button>
 ```
 
 ## Documentation
@@ -89,12 +89,12 @@ A **block class** plus **single-class token utilities** — one class repoints o
 class. The block bakes sensible defaults, so a bare block is valid; add a class only to override an
 axis. Dynamic state is real **attributes** (`disabled`, `aria-busy`), never classes.
 
-| Axis    | Class               | Values                                                               |
-| ------- | ------------------- | -------------------------------------------------------------------- |
-| Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warn` · `danger` · `info` · … |
-| Variant | `ori-variant_*`     | `fill` · `tonal` · `outline` · `text` · `plain`                      |
-| Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                             |
-| Radius  | `ori-size-radius_*` | `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`                |
+| Axis    | Class               | Values                                                                  |
+| ------- | ------------------- | ----------------------------------------------------------------------- |
+| Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · … |
+| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `plain`                         |
+| Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
+| Radius  | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                      |
 
 `color` is the **role**, `variant` is the **mapping** — so there is no separate `bg-color`. Theme and
 skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="cyber"`), reskinning everything

@@ -34,7 +34,7 @@ So dark mode is one class on the root element:
 ```
 
 `color-scheme` is part of the contract — it makes native form controls, scrollbars, and the
-`prefers-color-scheme` UA defaults match the theme. The **status hues** (`success` · `warn` ·
+`prefers-color-scheme` UA defaults match the theme. The **status hues** (`success` · `warning` ·
 `danger` · `info`) and the `--ori-color` / `--ori-color-on` component aliases are **not** touched by
 the mode selectors — only the four skinnable roles repoint. Elevation shadows are mode-aware too: the
 dark theme swaps the tinted-ink shadows for deeper black plus a hairline highlight ring.
@@ -82,7 +82,7 @@ automatically:
 
 ::example
 :ori-button{text="Primary" color="primary"}
-:ori-button{text="Secondary" color="secondary" variant="tonal"}
+:ori-button{text="Secondary" color="secondary" variant="soft"}
 :ori-button{text="Surface" color="surface" variant="outline"}
 
 #vue
@@ -90,7 +90,7 @@ automatically:
 ```vue
 <!-- skin + mode are set on <html>; components inherit the active palette -->
 <OriButton text="Primary" color="primary" />
-<OriButton text="Secondary" color="secondary" variant="tonal" />
+<OriButton text="Secondary" color="secondary" variant="soft" />
 <OriButton text="Surface" color="surface" variant="outline" />
 ```
 
@@ -98,8 +98,8 @@ automatically:
 
 ```html
 <!-- skin + mode live on <html>; only the color pair changes per button -->
-<button class="ori-button ori-variant_fill ori-color_primary">Primary</button>
-<button class="ori-button ori-variant_tonal ori-color_secondary">Secondary</button>
+<button class="ori-button ori-variant_solid ori-color_primary">Primary</button>
+<button class="ori-button ori-variant_soft ori-color_secondary">Secondary</button>
 <button class="ori-button ori-variant_outline ori-color_surface">Surface</button>
 ```
 

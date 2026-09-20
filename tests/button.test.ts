@@ -15,9 +15,9 @@ describe('OriButton', () => {
         for (const cls of [
             'ori-button',
             'ori-button_md',
-            'ori-size-radius_rounded',
+            'ori-size-radius_full',
             'ori-font-size_md',
-            'ori-variant_fill',
+            'ori-variant_solid',
             'ori-color_primary'
         ]) {
             expect(wrapper.classes()).toContain(cls)
@@ -27,11 +27,11 @@ describe('OriButton', () => {
 
     it('maps variant / size / color / radius props to classes', () => {
         const wrapper = mount(OriButton, {
-            props: { text: 'x', variant: 'tonal', size: 'lg', color: 'danger', radius: 'sm' }
+            props: { text: 'x', variant: 'soft', size: 'lg', color: 'danger', radius: 'sm' }
         })
         const c = wrapper.classes()
 
-        expect(c).toContain('ori-variant_tonal')
+        expect(c).toContain('ori-variant_soft')
         expect(c).toContain('ori-button_lg')
         expect(c).toContain('ori-font-size_lg')
         expect(c).toContain('ori-color_danger')
@@ -249,7 +249,7 @@ describe('the pressed look in @oriui/css', () => {
         )
 
         expect(ring, 'no unconditional inset box-shadow for [aria-pressed="true"]').toBeDefined()
-        // A ring is the only pressed declaration a fill / tonal button gets, so it must never be a
+        // A ring is the only pressed declaration a solid / soft button gets, so it must never be a
         // background: `background-color` in the unconditional rule IS the ORI-I-61 regression.
         expect(ring?.declarations).not.toMatch(/background-color/)
     })

@@ -26,7 +26,7 @@ import { OriButton } from '@oriui/vue'
 ```
 
 ```vue
-<OriButton text="Save" variant="tonal" color="primary" size="lg" />
+<OriButton text="Save" variant="soft" color="primary" size="lg" />
 ```
 
 Dynamic state is driven by real **attributes** (`disabled`, `aria-busy`), never classes — the
@@ -38,7 +38,7 @@ a11y-correct source of truth. Theme + skin are attributes on `<html>` (`class="d
 Same components, your brand — through a small, stable surface, ordered safest → most manual. You rarely
 need custom CSS; reach for these first:
 
-- **Props** — `variant` (`fill` / `tonal` / `outline` / `text` / `plain`), `color` (semantic roles with
+- **Props** — `variant` (`solid` / `soft` / `outline` / `text` / `plain`), `color` (semantic roles with
   a built-in contrast guarantee), `size`, `radius`. Say _what_ you mean; the accessible
   background/text pairing is handled for you, and it follows every theme + skin for free.
 - **Rebrand with tokens** — repoint a few CSS custom properties in your own `:root` (e.g.

@@ -5,9 +5,9 @@ import { OriIcon } from '../icon'
 const {
     closeLabel = 'Remove',
     color = 'primary',
-    radius = 'rounded',
+    radius = 'full',
     size = 'sm',
-    variant = 'tonal'
+    variant = 'soft'
 } = defineProps<{
     appendIcon?: string
     closable?: boolean

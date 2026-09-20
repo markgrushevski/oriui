@@ -65,7 +65,7 @@ between the field and the button merges into one line.
 ::example
 ::ori-join{aria-label="Search"}
 :ori-input{placeholder="Search…" aria-label="Search query"}
-:ori-button{variant="fill" text="Go"}
+:ori-button{variant="solid" text="Go"}
 ::
 
 #vue
@@ -73,7 +73,7 @@ between the field and the button merges into one line.
 ```vue
 <OriJoin aria-label="Search">
     <OriInput placeholder="Search…" aria-label="Search query" />
-    <OriButton variant="fill" text="Go" />
+    <OriButton variant="solid" text="Go" />
 </OriJoin>
 ```
 
@@ -82,7 +82,7 @@ between the field and the button merges into one line.
 ```html
 <div class="ori-join" role="group" aria-label="Search">
     <input class="ori-input" type="search" placeholder="Search…" aria-label="Search query" />
-    <button class="ori-button ori-variant_fill ori-color_primary">Go</button>
+    <button class="ori-button ori-variant_solid ori-color_primary">Go</button>
 </div>
 ```
 
@@ -130,21 +130,21 @@ and color on the children drive all the visual weight.
 
 ::example
 ::ori-join{aria-label="Highlight colour"}
-:ori-button{variant="tonal" color="danger" text="Red"}
-:ori-button{variant="tonal" color="warn" text="Amber"}
-:ori-button{variant="tonal" color="success" text="Green"}
-:ori-button{variant="tonal" color="info" text="Blue"}
+:ori-button{variant="soft" color="danger" text="Red"}
+:ori-button{variant="soft" color="warning" text="Amber"}
+:ori-button{variant="soft" color="success" text="Green"}
+:ori-button{variant="soft" color="info" text="Blue"}
 ::
 
 #vue
 
 ```vue
-<!-- Colour swatch toolbar — tonal buttons, each its own semantic colour -->
+<!-- Colour swatch toolbar — soft buttons, each its own semantic colour -->
 <OriJoin aria-label="Highlight colour">
-    <OriButton variant="tonal" color="danger" text="Red" />
-    <OriButton variant="tonal" color="warn" text="Amber" />
-    <OriButton variant="tonal" color="success" text="Green" />
-    <OriButton variant="tonal" color="info" text="Blue" />
+    <OriButton variant="soft" color="danger" text="Red" />
+    <OriButton variant="soft" color="warning" text="Amber" />
+    <OriButton variant="soft" color="success" text="Green" />
+    <OriButton variant="soft" color="info" text="Blue" />
 </OriJoin>
 ```
 
@@ -152,10 +152,10 @@ and color on the children drive all the visual weight.
 
 ```html
 <div class="ori-join" role="group" aria-label="Highlight colour">
-    <button class="ori-button ori-variant_tonal ori-color_danger">Red</button>
-    <button class="ori-button ori-variant_tonal ori-color_warn">Amber</button>
-    <button class="ori-button ori-variant_tonal ori-color_success">Green</button>
-    <button class="ori-button ori-variant_tonal ori-color_info">Blue</button>
+    <button class="ori-button ori-variant_soft ori-color_danger">Red</button>
+    <button class="ori-button ori-variant_soft ori-color_warning">Amber</button>
+    <button class="ori-button ori-variant_soft ori-color_success">Green</button>
+    <button class="ori-button ori-variant_soft ori-color_info">Blue</button>
 </div>
 ```
 

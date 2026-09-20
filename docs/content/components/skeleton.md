@@ -22,7 +22,7 @@ to these. There is no variant or color — a skeleton reads `currentcolor` from 
 tinted base and the shimmer highlight.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-skeleton","type":"Block","description":"Required base class. Renders a tinted, animated shimmer block."},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · <b>sm</b> · md · lg · xl · rounded — <b>sm</b> is the default; repoints --ori-size-radius on the element."},{"class":"aria-hidden=true","type":"State","description":"Always present. The skeleton is decorative; the loading region that owns the announcement should carry aria-busy on the consumer side."}]'}
+:class-table{:rows='[{"class":"ori-skeleton","type":"Block","description":"Required base class. Renders a tinted, animated shimmer block."},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · <b>sm</b> · md · lg · xl · full — <b>sm</b> is the default; repoints --ori-size-radius on the element."},{"class":"aria-hidden=true","type":"State","description":"Always present. The skeleton is decorative; the loading region that owns the announcement should carry aria-busy on the consumer side."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/skeleton.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -52,22 +52,22 @@ A single line — size it to match the text it is standing in for.
 
 ## Circle (avatar)
 
-`radius="rounded"` produces a pill / circle. Pair equal width and height for a round avatar
+`radius="full"` produces a pill / circle. Pair equal width and height for a round avatar
 placeholder.
 
 ::example
-:ori-skeleton{radius="rounded" style="width: 3rem; height: 3rem"}
+:ori-skeleton{radius="full" style="width: 3rem; height: 3rem"}
 
 #vue
 
 ```vue
-<OriSkeleton radius="rounded" style="width: 3rem; height: 3rem" />
+<OriSkeleton radius="full" style="width: 3rem; height: 3rem" />
 ```
 
 #html
 
 ```html
-<div class="ori-skeleton ori-size-radius_rounded" aria-hidden="true" style="width: 3rem; height: 3rem"></div>
+<div class="ori-skeleton ori-size-radius_full" aria-hidden="true" style="width: 3rem; height: 3rem"></div>
 ```
 
 ::
@@ -116,7 +116,7 @@ The wrapping region carries `aria-busy`.
 ::example
 ::ori-stack{gap="md" style="max-width: 20rem; padding: 1rem; border-radius: 0.5rem; background: color-mix(in srgb, currentcolor 5%, transparent)"}
 ::ori-stack{:cluster="true" gap="sm" style="align-items: center"}
-:ori-skeleton{radius="rounded" style="width: 2.5rem; height: 2.5rem; flex-shrink: 0"}
+:ori-skeleton{radius="full" style="width: 2.5rem; height: 2.5rem; flex-shrink: 0"}
 ::ori-stack{gap="xs" style="flex: 1"}
 :ori-skeleton{style="width: 60%; height: 0.875rem"}
 :ori-skeleton{style="width: 40%; height: 0.75rem"}
@@ -131,7 +131,7 @@ The wrapping region carries `aria-busy`.
 <OriStack gap="md" style="max-width: 20rem" aria-busy="true" aria-label="Loading card">
     <!-- header: avatar + two title lines -->
     <OriStack cluster gap="sm" style="align-items: center">
-        <OriSkeleton radius="rounded" style="width: 2.5rem; height: 2.5rem; flex-shrink: 0" />
+        <OriSkeleton radius="full" style="width: 2.5rem; height: 2.5rem; flex-shrink: 0" />
         <OriStack gap="xs" style="flex: 1">
             <OriSkeleton style="width: 60%; height: 0.875rem" />
             <OriSkeleton style="width: 40%; height: 0.75rem" />
@@ -149,7 +149,7 @@ The wrapping region carries `aria-busy`.
     <!-- header: avatar + two title lines -->
     <div class="ori-cluster ori-size-gap_sm" style="align-items: center">
         <div
-            class="ori-skeleton ori-size-radius_rounded"
+            class="ori-skeleton ori-size-radius_full"
             aria-hidden="true"
             style="width: 2.5rem; height: 2.5rem; flex-shrink: 0"
         ></div>
@@ -167,36 +167,36 @@ The wrapping region carries `aria-busy`.
 
 ## Radius scale
 
-The default `sm` gives a subtle rounded corner. Use `rounded` for circles and pill shapes; `zero` for
+The default `sm` gives a subtle rounded corner. Use `full` for circles and pill shapes; `none` for
 a perfectly square placeholder.
 
 ::example
-:ori-skeleton{radius="zero" style="width: 4rem; height: 2rem"}
+:ori-skeleton{radius="none" style="width: 4rem; height: 2rem"}
 :ori-skeleton{radius="xs" style="width: 4rem; height: 2rem"}
 :ori-skeleton{radius="sm" style="width: 4rem; height: 2rem"}
 :ori-skeleton{radius="md" style="width: 4rem; height: 2rem"}
 :ori-skeleton{radius="lg" style="width: 4rem; height: 2rem"}
 :ori-skeleton{radius="xl" style="width: 4rem; height: 2rem"}
-:ori-skeleton{radius="rounded" style="width: 4rem; height: 2rem"}
+:ori-skeleton{radius="full" style="width: 4rem; height: 2rem"}
 
 #vue
 
 ```vue
-<OriSkeleton radius="zero" style="width: 4rem; height: 2rem" />
+<OriSkeleton radius="none" style="width: 4rem; height: 2rem" />
 <OriSkeleton radius="xs" style="width: 4rem; height: 2rem" />
 <OriSkeleton radius="sm" style="width: 4rem; height: 2rem" />
 <OriSkeleton radius="md" style="width: 4rem; height: 2rem" />
 <OriSkeleton radius="lg" style="width: 4rem; height: 2rem" />
 <OriSkeleton radius="xl" style="width: 4rem; height: 2rem" />
-<OriSkeleton radius="rounded" style="width: 4rem; height: 2rem" />
+<OriSkeleton radius="full" style="width: 4rem; height: 2rem" />
 ```
 
 #html
 
 ```html
-<!-- swap the radius class: ori-size-radius_zero → _xs / _sm / _md / _lg / _xl / _rounded -->
-<div class="ori-skeleton ori-size-radius_zero" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
-<div class="ori-skeleton ori-size-radius_rounded" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
+<!-- swap the radius class: ori-size-radius_none → _xs / _sm / _md / _lg / _xl / _rounded -->
+<div class="ori-skeleton ori-size-radius_none" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
+<div class="ori-skeleton ori-size-radius_full" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
 ```
 
 ::
@@ -222,12 +222,12 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop     | Type               | Default | Description                                                           |
-| -------- | ------------------ | ------- | --------------------------------------------------------------------- |
-| `as`     | `string \| object` | `'div'` | HTML tag name or component reference to render.                       |
-| `radius` | `RadiusSize`       | `'sm'`  | Corner radius: `zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`. |
+| Prop     | Type               | Default | Description                                                        |
+| -------- | ------------------ | ------- | ------------------------------------------------------------------ |
+| `as`     | `string \| object` | `'div'` | HTML tag name or component reference to render.                    |
+| `radius` | `RadiusSize`       | `'sm'`  | Corner radius: `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`. |
 
-`RadiusSize`: `'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'rounded'`
+`RadiusSize`: `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'`
 
 ### Events & attributes
 

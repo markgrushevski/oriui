@@ -22,7 +22,7 @@ base class needed. The `ori-color_*` accent drives the focus ring; the idle bord
 theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · fill"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warn · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · <b>md</b> · lg · xl · rounded (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · solid"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/textarea.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -31,18 +31,18 @@ already carries both; see [à-la-carte imports](/guides/css).
 
 ## Variants
 
-Two visual styles — `outline` (default, border visible at rest) and `fill` (tinted background, no
+Two visual styles — `outline` (default, border visible at rest) and `solid` (tinted background, no
 border).
 
 ::example
 :ori-textarea{label="Outline" placeholder="Type here..." variant="outline"}
-:ori-textarea{label="Fill" placeholder="Type here..." variant="fill"}
+:ori-textarea{label="Solid" placeholder="Type here..." variant="solid"}
 
 #vue
 
 ```vue
 <OriTextarea v-model="value" label="Outline" placeholder="Type here..." variant="outline" />
-<OriTextarea v-model="value" label="Fill" placeholder="Type here..." variant="fill" />
+<OriTextarea v-model="value" label="Solid" placeholder="Type here..." variant="solid" />
 ```
 
 #html
@@ -54,8 +54,8 @@ border).
     <textarea id="t1" rows="3" placeholder="Type here..." class="ori-textarea__field"></textarea>
 </div>
 
-<!-- swap the variant: ori-textarea_outline → ori-textarea_fill -->
-<div class="ori-textarea ori-textarea_fill">
+<!-- swap the variant: ori-textarea_outline → ori-textarea_solid -->
+<div class="ori-textarea ori-textarea_solid">
     <label class="ori-textarea__label" for="t1b">Fill</label>
     <textarea id="t1b" rows="3" placeholder="Type here..." class="ori-textarea__field"></textarea>
 </div>
@@ -124,26 +124,26 @@ wrapper) and the text scale (`ori-font-size_*`).
 
 ## Radius
 
-From `zero` (square) through the default `md` to `rounded` (heavily rounded corners).
+From `none` (square) through the default `md` to `full` (heavily rounded corners).
 
 ::example
-:ori-textarea{label="zero" radius="zero" placeholder="Square"}
+:ori-textarea{label="none" radius="none" placeholder="Square"}
 :ori-textarea{label="sm" radius="sm" placeholder="Small"}
 :ori-textarea{label="md" radius="md" placeholder="Medium"}
 :ori-textarea{label="lg" radius="lg" placeholder="Large"}
-:ori-textarea{label="rounded" radius="rounded" placeholder="Rounded"}
+:ori-textarea{label="full" radius="full" placeholder="Full"}
 
 #vue
 
 ```vue
-<OriTextarea v-model="value" label="zero" radius="zero" />
-<OriTextarea v-model="value" label="rounded" radius="rounded" />
+<OriTextarea v-model="value" label="none" radius="none" />
+<OriTextarea v-model="value" label="full" radius="full" />
 ```
 
 #html
 
 ```html
-<textarea class="ori-textarea__field ori-size-radius_zero"></textarea>
+<textarea class="ori-textarea__field ori-size-radius_none"></textarea>
 ```
 
 ::
@@ -352,23 +352,23 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop          | Type                  | Default     | Description                                                                                               |
-| ------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`          | `'primary'` | Accent color for focus ring: primary · secondary · success · warn · danger · info · surface · background. |
-| `describedby` | `string`              | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                             |
-| `disabled`    | `boolean`             | `false`     | Real `disabled` attribute; blocks interaction, dims the field, and disables the resize handle.            |
-| `error`       | `string`              | —           | Error message rendered below the field (`role="alert"`); also sets `aria-invalid="true"`.                 |
-| `fluid`       | `boolean`             | `false`     | Full-width — stretches wrapper to 100 % of its container.                                                 |
-| `hint`        | `string`              | —           | Helper text below the field; hidden while `error` is shown.                                               |
-| `id`          | `string`              | —           | Explicit id for the `<textarea>`; auto-generated via `useId` when omitted.                                |
-| `invalid`     | `boolean`             | `false`     | Sets `aria-invalid="true"` without rendering an error message (for external validation).                  |
-| `label`       | `string`              | —           | Visible `<label>` text, wired to the field via `for`/`id`.                                                |
-| `placeholder` | `string`              | —           | Native placeholder text.                                                                                  |
-| `radius`      | `RadiusSize`          | `'md'`      | Corner radius of the field (`zero` · xs · sm · md · lg · xl · rounded).                                   |
-| `required`    | `boolean`             | `false`     | Native `required` attribute; also renders a visual asterisk (`aria-hidden`).                              |
-| `rows`        | `number`              | `3`         | Visible rows of text — sets the field min-height; the field still grows and is resizable.                 |
-| `size`        | `ActionSize`          | `'md'`      | Field min-height + text scale (`xs` · sm · md · lg · xl · `xxl`).                                         |
-| `variant`     | `'fill' \| 'outline'` | `'outline'` | Visual style: `outline` (border) or `fill` (tinted background).                                           |
+| Prop          | Type                   | Default     | Description                                                                                                  |
+| ------------- | ---------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| `color`       | `ThemeColor`           | `'primary'` | Accent color for focus ring: primary · secondary · success · warning · danger · info · surface · background. |
+| `describedby` | `string`               | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                                |
+| `disabled`    | `boolean`              | `false`     | Real `disabled` attribute; blocks interaction, dims the field, and disables the resize handle.               |
+| `error`       | `string`               | —           | Error message rendered below the field (`role="alert"`); also sets `aria-invalid="true"`.                    |
+| `fluid`       | `boolean`              | `false`     | Full-width — stretches wrapper to 100 % of its container.                                                    |
+| `hint`        | `string`               | —           | Helper text below the field; hidden while `error` is shown.                                                  |
+| `id`          | `string`               | —           | Explicit id for the `<textarea>`; auto-generated via `useId` when omitted.                                   |
+| `invalid`     | `boolean`              | `false`     | Sets `aria-invalid="true"` without rendering an error message (for external validation).                     |
+| `label`       | `string`               | —           | Visible `<label>` text, wired to the field via `for`/`id`.                                                   |
+| `placeholder` | `string`               | —           | Native placeholder text.                                                                                     |
+| `radius`      | `RadiusSize`           | `'md'`      | Corner radius of the field (`none` · xs · sm · md · lg · xl · full).                                         |
+| `required`    | `boolean`              | `false`     | Native `required` attribute; also renders a visual asterisk (`aria-hidden`).                                 |
+| `rows`        | `number`               | `3`         | Visible rows of text — sets the field min-height; the field still grows and is resizable.                    |
+| `size`        | `ActionSize`           | `'md'`      | Field min-height + text scale (`xs` · sm · md · lg · xl · `xxl`).                                            |
+| `variant`     | `'solid' \| 'outline'` | `'outline'` | Visual style: `outline` (border) or `solid` (tinted background).                                             |
 
 ### Events & attributes
 

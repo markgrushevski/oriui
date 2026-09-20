@@ -1,6 +1,6 @@
 /* ============================================================
    Variant utility classes — layer: ori.utilities
-   Single-class: `.ori-variant_fill` sets the full cluster (border / opacity / bg / text) on its own —
+   Single-class: `.ori-variant_solid` sets the full cluster (border / opacity / bg / text) on its own —
    no paired `.ori-variant` base is needed. The cluster reads the color axis (--ori-color /
    --ori-color-on), so color is the ROLE and variant is the MAPPING (which surface the accent paints).
    There is deliberately NO bare `.ori-variant` base rule (the `.ori-color` axis has none either).
@@ -20,7 +20,7 @@
    `ori.components`, so the same rules relocated into a block file could never win.
    ============================================================ */
 @layer ori.utilities {
-    .ori-variant_fill {
+    .ori-variant_solid {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: var(--ori-color);
@@ -29,7 +29,7 @@
         --ori-variant-text-color: var(--ori-color-on);
     }
 
-    .ori-variant_tonal {
+    .ori-variant_soft {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 1;
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 75%);
@@ -60,24 +60,24 @@
         --ori-variant-text-color: var(--ori-color-text);
     }
 
-    .ori-variant_fill[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_fill:active {
+    .ori-variant_solid[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_solid:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_fill:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_solid:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), white 15%);
         }
     }
 
-    .ori-variant_tonal[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:active {
+    .ori-variant_soft[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_soft:active {
         --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_tonal:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_soft:hover {
             --ori-variant-bg-color: color-mix(in srgb, var(--ori-color), transparent 70%);
         }
     }

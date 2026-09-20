@@ -8,6 +8,6 @@ const brightness = ref(40)
 <template>
     <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 24rem">
         <OriSlider v-model="volume" label="Volume" :show-value="true" />
-        <OriSlider v-model="brightness" label="Brightness" color="warn" :show-value="true" :max="200" />
+        <OriSlider v-model="brightness" label="Brightness" color="warning" :show-value="true" :max="200" />
     </div>
 </template>

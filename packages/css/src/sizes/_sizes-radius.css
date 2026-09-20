@@ -2,7 +2,7 @@
     :root {
         --ori-size-radius-step: calc(var(--ori-size-radius_md) / 4);
 
-        --ori-size-radius_zero: 0;
+        --ori-size-radius_none: 0;
         --ori-size-radius_xs: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 3);
         --ori-size-radius_sm: calc(var(--ori-size-radius_md) - var(--ori-size-radius-step) * 2);
         /* rem (16px baseline: 0.5rem = 8px) so corners follow the user's browser font-size setting;
@@ -11,7 +11,7 @@
         --ori-size-radius_lg: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 2);
         --ori-size-radius_xl: calc(var(--ori-size-radius_md) + var(--ori-size-radius-step) * 4);
         /* px on purpose: an "always a pill" cap, not a length on the scale — it must not scale. */
-        --ori-size-radius_rounded: 9999px;
+        --ori-size-radius_full: 9999px;
 
         --ori-size-radius: var(--ori-size-radius_md);
     }
@@ -21,8 +21,8 @@
     /* Single-class: `.ori-size-radius_lg` repoints the alias on its own — the scale lives in :root
        (ori.tokens), so no `.ori-size-radius` base is needed. They sit in ori.utilities (declared
        last), so they beat a block's baked-in default by layer order. */
-    .ori-size-radius_zero {
-        --ori-size-radius: var(--ori-size-radius_zero);
+    .ori-size-radius_none {
+        --ori-size-radius: var(--ori-size-radius_none);
     }
 
     .ori-size-radius_xs {
@@ -45,7 +45,7 @@
         --ori-size-radius: var(--ori-size-radius_xl);
     }
 
-    .ori-size-radius_rounded {
-        --ori-size-radius: var(--ori-size-radius_rounded);
+    .ori-size-radius_full {
+        --ori-size-radius: var(--ori-size-radius_full);
     }
 }

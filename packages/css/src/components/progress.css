@@ -18,9 +18,9 @@
            (utilities layer) overrides by layer order. Drives the indicator fill. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
-        /* Baked default for the radius axis: bare block uses `rounded`; `.ori-size-radius_*`
+        /* Baked default for the radius axis: bare block uses `full`; `.ori-size-radius_*`
            overrides by layer order. */
-        --ori-size-radius: var(--ori-size-radius_rounded);
+        --ori-size-radius: var(--ori-size-radius_full);
         --ori-progress-height: 8px;
     }
 

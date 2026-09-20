@@ -20,7 +20,7 @@ size and the titled layout are derived from `size` and `title` / `subtitle`. The
 an optional `color` tints the initials backdrop.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warn · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-avatar_* (size)","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space_*","type":"Size","description":"adds margin around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius_*","type":"Radius","description":"zero · xs · sm · md · lg · xl · <b>rounded</b>"},{"class":"ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
+:class-table{:rows='[{"class":"ori-avatar","type":"Block","description":"Required base class."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background — tints the initials backdrop"},{"class":"ori-avatar_* (size)","type":"Size","description":"xs · sm · md · <b>lg</b> · xl · xxl"},{"class":"ori-size-action-space_*","type":"Size","description":"adds margin around the avatar when <code>spaced</code> is set"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-font-size_*","type":"Font","description":"scales the initials text with the avatar size"},{"class":"ori-avatar__image · ori-avatar__backdrop · ori-avatar__text · ori-avatar__title · ori-avatar__subtitle","type":"Part","description":"image / initials fallback / text column / title / subtitle"},{"class":"ori-avatar_inline · ori-avatar_titled · ori-avatar_reverse","type":"Layout","description":"inline flow · title+subtitle layout · reversed image/text order"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/avatar.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -73,7 +73,7 @@ when an image is showing.
 :ori-avatar{text="Primary" color="primary"}
 :ori-avatar{text="Secondary" color="secondary"}
 :ori-avatar{text="Success" color="success"}
-:ori-avatar{text="Warn Color" color="warn"}
+:ori-avatar{text="Warn Color" color="warning"}
 :ori-avatar{text="Danger" color="danger"}
 :ori-avatar{text="Info" color="info"}
 :ori-avatar{text="Surface" color="surface"}
@@ -135,26 +135,26 @@ when an image is showing.
 
 ## Radius
 
-From `zero` (square) to the default `rounded` (full pill / circle).
+From `none` (square) to the default `full` (full pill / circle).
 
 ::example
-:ori-avatar{text="Zero" radius="zero"}
+:ori-avatar{text="None" radius="none"}
 :ori-avatar{text="Small" radius="sm"}
 :ori-avatar{text="Medium" radius="md"}
 :ori-avatar{text="Large" radius="lg"}
-:ori-avatar{text="Rounded" radius="rounded"}
+:ori-avatar{text="Full" radius="full"}
 
 #vue
 
 ```vue
-<OriAvatar text="Zero" radius="zero" />
-<OriAvatar text="Rounded" radius="rounded" />
+<OriAvatar text="None" radius="none" />
+<OriAvatar text="Full" radius="full" />
 ```
 
 #html
 
 ```html
-<div class="ori-avatar ori-size-radius_zero">
+<div class="ori-avatar ori-size-radius_none">
     <div class="ori-avatar__backdrop" aria-hidden="true">Z</div>
 </div>
 ```
@@ -345,17 +345,17 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop       | Type         | Default     | Description                                                                                                               |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | —           | Tints the initials backdrop: `primary` · `secondary` · `success` · `warn` · `danger` · `info` · `surface` · `background`. |
-| `inline`   | `boolean`    | `false`     | Renders as `inline-flex` with a small margin for flowing inside text.                                                     |
-| `radius`   | `RadiusSize` | `'rounded'` | Corner radius (`zero` · `xs` · `sm` · `md` · `lg` · `xl` · `rounded`).                                                    |
-| `reverse`  | `boolean`    | `false`     | Reverses the flex direction so the text column appears before the image.                                                  |
-| `size`     | `ActionSize` | `'lg'`      | Box size and initials scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                                   |
-| `spaced`   | `boolean`    | `false`     | Adds padding around the avatar via `ori-size-action-space`.                                                               |
-| `subtitle` | `string`     | —           | Secondary line in the text column; rendered whenever `title` or `subtitle` is set.                                        |
-| `text`     | `string`     | —           | Drives the initials (up to two letters from the first two words) and the image `alt`.                                     |
-| `title`    | `string`     | —           | Primary line in the text column; the text column appears when either `title` or `subtitle` is set.                        |
+| Prop       | Type         | Default  | Description                                                                                                                  |
+| ---------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `ThemeColor` | —        | Tints the initials backdrop: `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background`. |
+| `inline`   | `boolean`    | `false`  | Renders as `inline-flex` with a small margin for flowing inside text.                                                        |
+| `radius`   | `RadiusSize` | `'full'` | Corner radius (`none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`).                                                          |
+| `reverse`  | `boolean`    | `false`  | Reverses the flex direction so the text column appears before the image.                                                     |
+| `size`     | `ActionSize` | `'lg'`   | Box size and initials scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                                      |
+| `spaced`   | `boolean`    | `false`  | Adds padding around the avatar via `ori-size-action-space`.                                                                  |
+| `subtitle` | `string`     | —        | Secondary line in the text column; rendered whenever `title` or `subtitle` is set.                                           |
+| `text`     | `string`     | —        | Drives the initials (up to two letters from the first two words) and the image `alt`.                                        |
+| `title`    | `string`     | —        | Primary line in the text column; the text column appears when either `title` or `subtitle` is set.                           |
 
 ### Events & attributes
 

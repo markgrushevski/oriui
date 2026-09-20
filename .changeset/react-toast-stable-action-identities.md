@@ -2,7 +2,7 @@
 '@oriui/headless': patch
 ---
 
-**React `useToast`** now returns stable action identities. `toast` / `success` / `error` / `warn` /
+**React `useToast`** now returns stable action identities. `toast` / `success` / `error` / `warning` /
 `info` / `dismiss` / `clear` were rebuilt by a `createToastActions(queue)` call inside the hook body, so
 every render handed consumers brand-new function references — even though the queue they close over is a
 module-level singleton that never changes. Anything that listed one in a dependency array

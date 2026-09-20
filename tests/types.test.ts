@@ -72,15 +72,15 @@ describe('@oriui/vue public types', () => {
     // -------------------------------------------------------------------------
 
     it('ActionSize is the action scale, `text` step included', () => {
-        expectTypeOf<ActionSize>().toEqualTypeOf<'text' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'>()
+        expectTypeOf<ActionSize>().toEqualTypeOf<'inherit' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'>()
     })
 
-    it('GapSize is the gap scale, `zero` included and no `xxl`', () => {
-        expectTypeOf<GapSize>().toEqualTypeOf<'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'>()
+    it('GapSize is the gap scale, `none` included and no `xxl`', () => {
+        expectTypeOf<GapSize>().toEqualTypeOf<'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'>()
     })
 
-    it('RadiusSize is the radius scale, `zero` and `rounded` included', () => {
-        expectTypeOf<RadiusSize>().toEqualTypeOf<'zero' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'rounded'>()
+    it('RadiusSize is the radius scale, `none` and `full` included', () => {
+        expectTypeOf<RadiusSize>().toEqualTypeOf<'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'>()
     })
 
     // -------------------------------------------------------------------------
@@ -110,12 +110,12 @@ describe('@oriui/vue public types', () => {
 
     it('ThemeColor is the eight palette roles', () => {
         expectTypeOf<ThemeColor>().toEqualTypeOf<
-            'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warn' | 'danger' | 'info'
+            'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'
         >()
     })
 
     it('Variant is the five-step emphasis ladder', () => {
-        expectTypeOf<Variant>().toEqualTypeOf<'fill' | 'tonal' | 'outline' | 'text' | 'plain'>()
+        expectTypeOf<Variant>().toEqualTypeOf<'solid' | 'soft' | 'outline' | 'text' | 'plain'>()
     })
 
     // -------------------------------------------------------------------------
