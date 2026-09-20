@@ -81,17 +81,17 @@ under `data-ori-skin="cyber"` is neon fuchsia, with its contrast-checked `on-` t
 automatically:
 
 ::example
-:ori-button{text="Primary" color="primary"}
-:ori-button{text="Secondary" color="secondary" variant="soft"}
-:ori-button{text="Surface" color="surface" variant="outline"}
+:ori-button{label="Primary" color="primary"}
+:ori-button{label="Secondary" color="secondary" variant="soft"}
+:ori-button{label="Surface" color="surface" variant="outline"}
 
 #vue
 
 ```vue
 <!-- skin + mode are set on <html>; components inherit the active palette -->
-<OriButton text="Primary" color="primary" />
-<OriButton text="Secondary" color="secondary" variant="soft" />
-<OriButton text="Surface" color="surface" variant="outline" />
+<OriButton label="Primary" color="primary" />
+<OriButton label="Secondary" color="secondary" variant="soft" />
+<OriButton label="Surface" color="surface" variant="outline" />
 ```
 
 #html

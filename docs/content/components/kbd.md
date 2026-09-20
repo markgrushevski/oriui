@@ -27,21 +27,21 @@ already carries both; see [à-la-carte imports](/guides/css).
 
 ## Single key
 
-Pass the key label via the `text` prop or the default slot.
+Pass the key label via the `label` prop or the default slot.
 
 ::example
-:ori-kbd{text="Esc"}
-:ori-kbd{text="Enter"}
-:ori-kbd{text="Tab"}
-:ori-kbd{text="Space"}
+:ori-kbd{label="Esc"}
+:ori-kbd{label="Enter"}
+:ori-kbd{label="Tab"}
+:ori-kbd{label="Space"}
 
 #vue
 
 ```vue
-<OriKbd text="Esc" />
-<OriKbd text="Enter" />
-<OriKbd text="Tab" />
-<OriKbd text="Space" />
+<OriKbd label="Esc" />
+<OriKbd label="Enter" />
+<OriKbd label="Tab" />
+<OriKbd label="Space" />
 ```
 
 #html
@@ -61,14 +61,14 @@ Compose multiple chips to represent a keyboard shortcut. Separate them with a li
 between.
 
 ::example
-:ori-kbd{text="Ctrl"} + :ori-kbd{text="K"}
+:ori-kbd{label="Ctrl"} + :ori-kbd{label="K"}
 
 #vue
 
 ```vue
-<OriKbd text="Ctrl" />
+<OriKbd label="Ctrl" />
 +
-<OriKbd text="K" />
+<OriKbd label="K" />
 ```
 
 #html
@@ -80,16 +80,16 @@ between.
 ::
 
 ::example
-:ori-kbd{text="Ctrl"} + :ori-kbd{text="Shift"} + :ori-kbd{text="P"}
+:ori-kbd{label="Ctrl"} + :ori-kbd{label="Shift"} + :ori-kbd{label="P"}
 
 #vue
 
 ```vue
-<OriKbd text="Ctrl" />
+<OriKbd label="Ctrl" />
 +
-<OriKbd text="Shift" />
+<OriKbd label="Shift" />
 +
-<OriKbd text="P" />
+<OriKbd label="P" />
 ```
 
 #html
@@ -106,12 +106,12 @@ The chip is `inline-flex` and tracks the surrounding font size, so it flows natu
 sentence or tooltip hint.
 
 ::example
-Press :ori-kbd{text="Esc"} to close the dialog.
+Press :ori-kbd{label="Esc"} to close the dialog.
 
 #vue
 
 ```vue
-<p>Press <OriKbd text="Esc" /> to close the dialog.</p>
+<p>Press <OriKbd label="Esc" /> to close the dialog.</p>
 ```
 
 #html
@@ -124,13 +124,13 @@ Press :ori-kbd{text="Esc"} to close the dialog.
 
 ## Via slot
 
-When the key label is dynamic or needs rich content, use the default slot instead of the `text`
+When the key label is dynamic or needs rich content, use the default slot instead of the `label`
 prop. The slot replaces the prop — if both are supplied the slot wins.
 
 ::example
-:ori-kbd{text="⌘"}
-:ori-kbd{text="⇧"}
-:ori-kbd{text="⌥"}
+:ori-kbd{label="⌘"}
+:ori-kbd{label="⇧"}
+:ori-kbd{label="⌥"}
 
 #vue
 
@@ -158,18 +158,18 @@ prop. The slot replaces the prop — if both are supplied the slot wins.
 A two-column shortcut list — the pattern used in command palettes and help overlays.
 
 ::example
-:ori-kbd{text="Ctrl"} + :ori-kbd{text="K"} opens the command palette.
+:ori-kbd{label="Ctrl"} + :ori-kbd{label="K"} opens the command palette.
 
-:ori-kbd{text="Ctrl"} + :ori-kbd{text="/"} toggles comments.
+:ori-kbd{label="Ctrl"} + :ori-kbd{label="/"} toggles comments.
 
-:ori-kbd{text="Ctrl"} + :ori-kbd{text="S"} saves the file.
+:ori-kbd{label="Ctrl"} + :ori-kbd{label="S"} saves the file.
 
 #vue
 
 ```vue
-<p><OriKbd text="Ctrl" /> + <OriKbd text="K" /> opens the command palette.</p>
-<p><OriKbd text="Ctrl" /> + <OriKbd text="/" /> toggles comments.</p>
-<p><OriKbd text="Ctrl" /> + <OriKbd text="S" /> saves the file.</p>
+<p><OriKbd label="Ctrl" /> + <OriKbd label="K" /> opens the command palette.</p>
+<p><OriKbd label="Ctrl" /> + <OriKbd label="/" /> toggles comments.</p>
+<p><OriKbd label="Ctrl" /> + <OriKbd label="S" /> saves the file.</p>
 ```
 
 #html
@@ -202,10 +202,10 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop   | Type               | Default | Description                                                                                     |
-| ------ | ------------------ | ------- | ----------------------------------------------------------------------------------------------- |
-| `as`   | `string \| object` | `'kbd'` | HTML tag name or component to render. Override only when wrapping a non-`<kbd>` element.        |
-| `text` | `string`           | —       | Key label. Fallback content for the default slot — if the slot is provided it takes precedence. |
+| Prop    | Type               | Default | Description                                                                                     |
+| ------- | ------------------ | ------- | ----------------------------------------------------------------------------------------------- |
+| `as`    | `string \| object` | `'kbd'` | HTML tag name or component to render. Override only when wrapping a non-`<kbd>` element.        |
+| `label` | `string`           | —       | Key label. Fallback content for the default slot — if the slot is provided it takes precedence. |
 
 ### Events & attributes
 
@@ -214,6 +214,6 @@ OriKbd declares **no custom events** and does not set `inheritAttrs: false`, so 
 
 ### Slots
 
-| Slot      | Description                                                                        |
-| --------- | ---------------------------------------------------------------------------------- |
-| `default` | Key label. When provided, replaces the `text` prop. Accepts text or inline markup. |
+| Slot      | Description                                                                         |
+| --------- | ----------------------------------------------------------------------------------- |
+| `default` | Key label. When provided, replaces the `label` prop. Accepts text or inline markup. |

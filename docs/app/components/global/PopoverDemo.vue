@@ -13,7 +13,7 @@ const { placement = 'bottom-start' } = defineProps<{
 <template>
     <OriPopover :placement="placement" aria-labelledby="popover-demo-title">
         <template #trigger="{ props }">
-            <OriButton v-bind="props" text="Open popover" variant="soft" />
+            <OriButton v-bind="props" label="Open popover" variant="soft" />
         </template>
         <div style="display: flex; flex-direction: column; gap: 0.35rem; padding: 0.35rem">
             <strong id="popover-demo-title">Weave a popover</strong>

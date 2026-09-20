@@ -12,7 +12,7 @@ const BELL =
     <div style="display: inline-flex; flex-wrap: wrap; gap: 1.5rem; align-items: center">
         <!-- count over a button -->
         <OriBadge :content="3" floating color="danger" label="3 unread">
-            <OriButton text="Inbox" variant="soft" />
+            <OriButton label="Inbox" variant="soft" />
         </OriBadge>
 
         <!-- capped count over an icon button -->
@@ -22,7 +22,7 @@ const BELL =
 
         <!-- status dot over an avatar -->
         <OriBadge dot floating color="success" label="Online">
-            <OriAvatar text="Ada Lovelace" />
+            <OriAvatar name="Ada Lovelace" />
         </OriBadge>
     </div>
 </template>

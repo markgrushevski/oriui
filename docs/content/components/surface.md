@@ -94,10 +94,10 @@ lifts off the content beneath. `OriSurface` supplies the box; the toolbar suppli
 ::example
 ::ori-surface{style="padding: 0.5rem; display: inline-block"}
 ::ori-toolbar{label="Format"}
-:ori-toolbar-button{text="Bold"}
-:ori-toolbar-button{text="Italic"}
+:ori-toolbar-button{label="Bold"}
+:ori-toolbar-button{label="Italic"}
 :ori-toolbar-separator
-:ori-toolbar-button{text="Link" color="primary"}
+:ori-toolbar-button{label="Link" color="primary"}
 ::
 ::
 
@@ -106,10 +106,10 @@ lifts off the content beneath. `OriSurface` supplies the box; the toolbar suppli
 ```vue
 <OriSurface style="padding: 0.5rem; display: inline-block">
     <OriToolbar label="Format">
-        <OriToolbarButton text="Bold" />
-        <OriToolbarButton text="Italic" />
+        <OriToolbarButton label="Bold" />
+        <OriToolbarButton label="Italic" />
         <OriToolbarSeparator />
-        <OriToolbarButton text="Link" color="primary" />
+        <OriToolbarButton label="Link" color="primary" />
     </OriToolbar>
 </OriSurface>
 ```

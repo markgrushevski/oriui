@@ -11,26 +11,26 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
         <OriButton
             variant="outline"
             color="success"
-            text="Success"
+            label="Success"
             @click="success({ title: 'Saved', text: 'Your changes were saved.', icon: checkIcon })"
         />
         <OriButton
             variant="outline"
             color="danger"
-            text="Error"
+            label="Error"
             @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })"
         />
         <OriButton
             variant="outline"
             color="warning"
-            text="Warning"
+            label="Warning"
             @click="warning('Your session expires in 5 minutes.')"
         />
-        <OriButton variant="outline" color="info" text="Info" @click="info('A new version is available.')" />
-        <OriButton variant="outline" text="Plain" @click="toast('Just a plain notification.')" />
+        <OriButton variant="outline" color="info" label="Info" @click="info('A new version is available.')" />
+        <OriButton variant="outline" label="Plain" @click="toast('Just a plain notification.')" />
         <OriButton
             variant="outline"
-            text="Sticky"
+            label="Sticky"
             @click="toast({ text: 'I stay until you dismiss me.', duration: 0, closable: true })"
         />
     </div>

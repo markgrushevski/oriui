@@ -32,7 +32,7 @@ const {
     pressed?: boolean
     radius?: RadiusSize
     size?: ActionSize
-    text?: string
+    label?: string
     variant?: Variant
 }>()
 
@@ -60,7 +60,7 @@ function onClickCapture(event: MouseEvent): void {
         :class="[
             'ori-button',
             {
-                'ori-button_icon': Boolean(icon) && !text,
+                'ori-button_icon': Boolean(icon) && !label,
                 'ori-button_fluid': fluid,
                 [`ori-button_icon-position_${iconPosition}`]: iconPosition,
                 [`ori-button_${size}`]: size,
@@ -83,7 +83,7 @@ function onClickCapture(event: MouseEvent): void {
             <ori-icon v-if="icon && !loading" :icon="icon" class="ori-button__icon" />
             <ori-spinner v-else-if="loading" aria-hidden="true" class="ori-button__icon" />
 
-            <span v-if="text" class="ori-button__text">{{ text }}</span>
+            <span v-if="label" class="ori-button__text">{{ label }}</span>
         </slot>
     </component>
 </template>

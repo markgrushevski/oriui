@@ -29,16 +29,16 @@ is painted: `solid` (role as background, its `on-` color as text), `soft` / `out
 background-and-text pairing is never yours to hand-assemble.
 
 ::example
-:ori-button{text="Save" color="primary" variant="solid"}
-:ori-button{text="Delete" color="danger" variant="outline"}
-:ori-button{text="Done" color="success" variant="soft"}
+:ori-button{label="Save" color="primary" variant="solid"}
+:ori-button{label="Delete" color="danger" variant="outline"}
+:ori-button{label="Done" color="success" variant="soft"}
 
 #vue
 
 ```vue
-<OriButton text="Save" color="primary" variant="solid" />
-<OriButton text="Delete" color="danger" variant="outline" />
-<OriButton text="Done" color="success" variant="soft" />
+<OriButton label="Save" color="primary" variant="solid" />
+<OriButton label="Delete" color="danger" variant="outline" />
+<OriButton label="Done" color="success" variant="soft" />
 ```
 
 #html
@@ -207,18 +207,18 @@ This table is a quick orientation map; the full per-component class reference li
 page — see [Button](/components/button) for the canonical list.
 
 ::example
-:ori-button{text="Brand" color="primary" variant="solid"}
-:ori-button{text="Danger" color="danger" variant="soft"}
-:ori-button{text="Squared" radius="sm" variant="outline"}
-:ori-button{text="Large" size="lg" variant="solid"}
+:ori-button{label="Brand" color="primary" variant="solid"}
+:ori-button{label="Danger" color="danger" variant="soft"}
+:ori-button{label="Squared" radius="sm" variant="outline"}
+:ori-button{label="Large" size="lg" variant="solid"}
 
 #vue
 
 ```vue
-<OriButton text="Brand" color="primary" variant="solid" />
-<OriButton text="Danger" color="danger" variant="soft" />
-<OriButton text="Squared" radius="sm" variant="outline" />
-<OriButton text="Large" size="lg" variant="solid" />
+<OriButton label="Brand" color="primary" variant="solid" />
+<OriButton label="Danger" color="danger" variant="soft" />
+<OriButton label="Squared" radius="sm" variant="outline" />
+<OriButton label="Large" size="lg" variant="solid" />
 ```
 
 #html
@@ -239,7 +239,7 @@ marketing CTA — repoint the **resolved alias pair** on the element itself. `--
 and `--ori-color-on` (its legible partner) are what every variant actually reads:
 
 ```vue
-<OriButton text="One teal button" style="--ori-color: teal; --ori-color-on: white" />
+<OriButton label="One teal button" style="--ori-color: teal; --ori-color-on: white" />
 ```
 
 ```html
@@ -269,7 +269,7 @@ dark-safe one-off too):
 
 ```vue
 <OriButton
-    text="One teal button"
+    label="One teal button"
     variant="soft"
     style="--ori-color: teal; --ori-color-on: white; --ori-color-text: oklch(from teal min(l, 0.42) c h)"
 />

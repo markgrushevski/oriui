@@ -52,7 +52,7 @@ highlighted one, to select and close.
     @select="onSelect"
 >
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="soft" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -146,12 +146,12 @@ RTL-aware). Same placement classes and collision-flip logic as the Popover, sinc
 ```vue
 <OriMenu :items="items" placement="top" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="top" variant="soft" />
+        <OriButton v-bind="props" label="top" variant="soft" />
     </template>
 </OriMenu>
 <OriMenu :items="items" placement="right" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="right" variant="soft" />
+        <OriButton v-bind="props" label="right" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -194,7 +194,7 @@ can't be highlighted or selected.
     @select="onSelect"
 >
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="soft" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
 </OriMenu>
 ```
@@ -220,7 +220,7 @@ Override the `#item` slot for icons, shortcuts, or any richer row content — th
 ```vue
 <OriMenu :items="items" @select="onSelect">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Actions" variant="soft" />
+        <OriButton v-bind="props" label="Actions" variant="soft" />
     </template>
     <template #item="{ item }">
         <span style="display: flex; justify-content: space-between; width: 100%">

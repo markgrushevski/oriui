@@ -51,8 +51,8 @@ Every item component requires an ancestor `OriToolbar` — used standalone, ther
 to register with, so its `tabindex` stays `-1` forever (permanently unreachable by keyboard); the
 orientation-only pieces (the separator, the toggle group) degrade gracefully to horizontal instead of
 breaking. When `tooltip` is set, `OriToolbarButton` / `OriToolbarToggleItem` additionally wrap the
-button in an `OriTooltip` (see the [Tooltip class reference](/components/tooltip#classes)); if a `label`
-also names the button, the tooltip is wired as its `aria-describedby` description (otherwise the tooltip
+button in an `OriTooltip` (see the [Tooltip class reference](/components/tooltip#classes)); if an
+`aria-label` also names the button, the tooltip is wired as its `aria-describedby` description (otherwise the tooltip
 text is the accessible name — see [Accessibility](#accessibility)).
 
 ## Basic
@@ -63,22 +63,22 @@ leaving the bar; Tab again moves past the whole thing.
 
 ::example
 ::ori-toolbar{label="File"}
-:ori-toolbar-button{text="New"}
-:ori-toolbar-button{text="Open"}
-:ori-toolbar-button{text="Save"}
+:ori-toolbar-button{label="New"}
+:ori-toolbar-button{label="Open"}
+:ori-toolbar-button{label="Save"}
 :ori-toolbar-separator
-:ori-toolbar-button{text="Delete" color="danger"}
+:ori-toolbar-button{label="Delete" color="danger"}
 ::
 
 #vue
 
 ```vue
 <OriToolbar label="File">
-    <OriToolbarButton text="New" />
-    <OriToolbarButton text="Open" />
-    <OriToolbarButton text="Save" />
+    <OriToolbarButton label="New" />
+    <OriToolbarButton label="Open" />
+    <OriToolbarButton label="Save" />
     <OriToolbarSeparator />
-    <OriToolbarButton text="Delete" color="danger" />
+    <OriToolbarButton label="Delete" color="danger" />
 </OriToolbar>
 ```
 
@@ -106,18 +106,18 @@ arrow key means "next" in a horizontal bar.
 
 ::example
 ::ori-toolbar{label="View" orientation="vertical"}
-:ori-toolbar-button{text="List"}
-:ori-toolbar-button{text="Grid"}
-:ori-toolbar-button{text="Table"}
+:ori-toolbar-button{label="List"}
+:ori-toolbar-button{label="Grid"}
+:ori-toolbar-button{label="Table"}
 ::
 
 #vue
 
 ```vue
 <OriToolbar label="View" orientation="vertical">
-    <OriToolbarButton text="List" />
-    <OriToolbarButton text="Grid" />
-    <OriToolbarButton text="Table" />
+    <OriToolbarButton label="List" />
+    <OriToolbarButton label="Grid" />
+    <OriToolbarButton label="Table" />
 </OriToolbar>
 ```
 
@@ -139,14 +139,14 @@ matching the WAI-ARIA APG reference toolbar. Set it to `false` to stop at the en
 
 ::example
 ::ori-toolbar{label="Wraps by default"}
-:ori-toolbar-button{text="1"}
-:ori-toolbar-button{text="2"}
-:ori-toolbar-button{text="3"}
+:ori-toolbar-button{label="1"}
+:ori-toolbar-button{label="2"}
+:ori-toolbar-button{label="3"}
 ::
 ::ori-toolbar{label="Stops at the ends" :loop="false"}
-:ori-toolbar-button{text="1"}
-:ori-toolbar-button{text="2"}
-:ori-toolbar-button{text="3"}
+:ori-toolbar-button{label="1"}
+:ori-toolbar-button{label="2"}
+:ori-toolbar-button{label="3"}
 ::
 
 #vue
@@ -154,16 +154,16 @@ matching the WAI-ARIA APG reference toolbar. Set it to `false` to stop at the en
 ```vue
 <!-- default: loop is true — End then ArrowRight wraps back to item 1 -->
 <OriToolbar label="Wraps by default">
-    <OriToolbarButton text="1" />
-    <OriToolbarButton text="2" />
-    <OriToolbarButton text="3" />
+    <OriToolbarButton label="1" />
+    <OriToolbarButton label="2" />
+    <OriToolbarButton label="3" />
 </OriToolbar>
 
 <!-- loop is false — ArrowRight stops at item 3 instead of wrapping -->
 <OriToolbar label="Stops at the ends" :loop="false">
-    <OriToolbarButton text="1" />
-    <OriToolbarButton text="2" />
-    <OriToolbarButton text="3" />
+    <OriToolbarButton label="1" />
+    <OriToolbarButton label="2" />
+    <OriToolbarButton label="3" />
 </OriToolbar>
 ```
 
@@ -186,9 +186,9 @@ keyboard direction matches what is visually left and right.
 <!-- Visual mirroring is your own HTML/CSS dir — the component prop only swaps the JS key mapping. -->
 <div dir="rtl">
     <OriToolbar label="RTL toolbar" dir="rtl">
-        <OriToolbarButton text="One" />
-        <OriToolbarButton text="Two" />
-        <OriToolbarButton text="Three" />
+        <OriToolbarButton label="One" />
+        <OriToolbarButton label="Two" />
+        <OriToolbarButton label="Three" />
     </OriToolbar>
 </div>
 ```
@@ -201,37 +201,37 @@ never claims a roving stop (no `data-ori-toolbar-item`), so arrow navigation ski
 
 ::example
 ::ori-toolbar{label="Horizontal, with a separator"}
-:ori-toolbar-button{text="A"}
-:ori-toolbar-button{text="B"}
+:ori-toolbar-button{label="A"}
+:ori-toolbar-button{label="B"}
 :ori-toolbar-separator
-:ori-toolbar-button{text="C"}
-:ori-toolbar-button{text="D"}
+:ori-toolbar-button{label="C"}
+:ori-toolbar-button{label="D"}
 ::
 ::ori-toolbar{label="Vertical, with a separator" orientation="vertical"}
-:ori-toolbar-button{text="A"}
-:ori-toolbar-button{text="B"}
+:ori-toolbar-button{label="A"}
+:ori-toolbar-button{label="B"}
 :ori-toolbar-separator
-:ori-toolbar-button{text="C"}
-:ori-toolbar-button{text="D"}
+:ori-toolbar-button{label="C"}
+:ori-toolbar-button{label="D"}
 ::
 
 #vue
 
 ```vue
 <OriToolbar label="Horizontal, with a separator">
-    <OriToolbarButton text="A" />
-    <OriToolbarButton text="B" />
+    <OriToolbarButton label="A" />
+    <OriToolbarButton label="B" />
     <OriToolbarSeparator />
-    <OriToolbarButton text="C" />
-    <OriToolbarButton text="D" />
+    <OriToolbarButton label="C" />
+    <OriToolbarButton label="D" />
 </OriToolbar>
 
 <OriToolbar label="Vertical, with a separator" orientation="vertical">
-    <OriToolbarButton text="A" />
-    <OriToolbarButton text="B" />
+    <OriToolbarButton label="A" />
+    <OriToolbarButton label="B" />
     <OriToolbarSeparator />
-    <OriToolbarButton text="C" />
-    <OriToolbarButton text="D" />
+    <OriToolbarButton label="C" />
+    <OriToolbarButton label="D" />
 </OriToolbar>
 ```
 
@@ -259,10 +259,10 @@ it; pass `true` or `false` explicitly to make an item a toggle.
 
 ::example
 ::ori-toolbar{label="Text style"}
-:ori-toolbar-button{icon="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" label="Bold" :pressed="true"}
-:ori-toolbar-button{icon="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z" label="Italic" :pressed="false"}
+:ori-toolbar-button{icon="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z" aria-label="Bold" :pressed="true"}
+:ori-toolbar-button{icon="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z" aria-label="Italic" :pressed="false"}
 :ori-toolbar-separator
-:ori-toolbar-button{text="Clear formatting"}
+:ori-toolbar-button{label="Clear formatting"}
 ::
 
 #vue
@@ -278,11 +278,11 @@ const italic = ref(false)
 <template>
     <OriToolbar label="Text style">
         <!-- `pressed` is a plain prop — wire your own ref + @click to make it interactive -->
-        <OriToolbarButton :icon="boldIcon" label="Bold" :pressed="bold" @click="bold = !bold" />
-        <OriToolbarButton :icon="italicIcon" label="Italic" :pressed="italic" @click="italic = !italic" />
+        <OriToolbarButton :icon="boldIcon" aria-label="Bold" :pressed="bold" @click="bold = !bold" />
+        <OriToolbarButton :icon="italicIcon" aria-label="Italic" :pressed="italic" @click="italic = !italic" />
         <OriToolbarSeparator />
         <!-- no `pressed` prop at all — a plain action button, aria-pressed is never rendered -->
-        <OriToolbarButton text="Clear formatting" @click="clearFormatting" />
+        <OriToolbarButton label="Clear formatting" @click="clearFormatting" />
     </OriToolbar>
 </template>
 ```
@@ -325,18 +325,18 @@ pressing `Enter` / `Space` on it, does nothing.
 
 ::example
 ::ori-toolbar{label="Edit"}
-:ori-toolbar-button{text="Cut"}
-:ori-toolbar-button{text="Copy"}
-:ori-toolbar-button{text="Paste" :disabled="true"}
+:ori-toolbar-button{label="Cut"}
+:ori-toolbar-button{label="Copy"}
+:ori-toolbar-button{label="Paste" :disabled="true"}
 ::
 
 #vue
 
 ```vue
 <OriToolbar label="Edit">
-    <OriToolbarButton text="Cut" />
-    <OriToolbarButton text="Copy" />
-    <OriToolbarButton text="Paste" :disabled="true" />
+    <OriToolbarButton label="Cut" />
+    <OriToolbarButton label="Copy" />
+    <OriToolbarButton label="Paste" :disabled="true" />
 </OriToolbar>
 ```
 
@@ -352,9 +352,9 @@ pressing `Enter` / `Space` on it, does nothing.
 ## Tooltip-wired buttons
 
 Pass `tooltip` and `OriToolbarButton` (or `OriToolbarToggleItem`) wraps itself in an `OriTooltip`. When
-the button also carries a `label`, the tooltip is wired as its **description** (`aria-describedby` on the
+the button also carries an `aria-label`, the tooltip is wired as its **description** (`aria-describedby` on the
 real button) — the manual step the standalone [Tooltip](/components/tooltip#accessibility) component
-normally asks of a consumer, done for you. When there is **no** `label`, the tooltip text becomes the
+normally asks of a consumer, done for you. When there is **no** `aria-label`, the tooltip text becomes the
 button's accessible **name** instead, and `aria-describedby` is omitted so a screen reader doesn't
 announce the same text twice.
 
@@ -368,7 +368,7 @@ announce the same text twice.
 
 ```vue
 <OriToolbar label="Actions">
-    <!-- no `label` — the accessible name falls back to the tooltip text -->
+    <!-- no `aria-label` — the accessible name falls back to the tooltip text -->
     <OriToolbarButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" tooltip="Add item" />
     <OriToolbarButton
         icon="M12 8a2 2 0 100-4 2 2 0 000 4zm0 6a2 2 0 100-4 2 2 0 000 4zm0 6a2 2 0 100-4 2 2 0 000 4z"
@@ -540,16 +540,16 @@ const styles = ref<string[]>([])
 
 ::example
 ::ori-toolbar{label="Quick actions"}
-:ori-toolbar-button{text="Export" variant="outline" size="sm"}
-:ori-toolbar-button{text="Delete" variant="soft" color="danger"}
+:ori-toolbar-button{label="Export" variant="outline" size="sm"}
+:ori-toolbar-button{label="Delete" variant="soft" color="danger"}
 ::
 
 #vue
 
 ```vue
 <OriToolbar label="Quick actions">
-    <OriToolbarButton text="Export" variant="outline" size="sm" />
-    <OriToolbarButton text="Delete" variant="soft" color="danger" />
+    <OriToolbarButton label="Export" variant="outline" size="sm" />
+    <OriToolbarButton label="Delete" variant="soft" color="danger" />
 </OriToolbar>
 ```
 
@@ -670,12 +670,12 @@ is JavaScript (there is no CSS-only affordance for it).
   a plain action button has no `aria-pressed` at all. `OriToolbarToggleItem`'s `aria-pressed` is
   always rendered (`true` / `false`), derived from the enclosing `OriToolbarToggleGroup`'s selection.
 - `tooltip` on `OriToolbarButton` / `OriToolbarToggleItem` renders an `OriTooltip`. The accessible name
-  is `label ?? tooltip` — a `label` wins when present, else the tooltip text names the button. When a
-  `label` IS present, the tooltip is additionally wired as a supplementary **description**
+  is `aria-label ?? tooltip` — an `aria-label` wins when present, else the tooltip text names the button.
+  When an `aria-label` IS present, the tooltip is additionally wired as a supplementary **description**
   (`aria-describedby` on the real `<button>`, done for you — the manual step the standalone Tooltip asks
-  of a consumer); when the tooltip is serving as the **name** (no label), `aria-describedby` is omitted so
+  of a consumer); when the tooltip is serving as the **name** (no `aria-label`), `aria-describedby` is omitted so
   name and description aren't the same text (no double-announce). Either way an icon-only item ends up
-  named — and in dev, a nameless one (icon, no `label` / `tooltip` / `text`) logs a console warning.
+  named — and in dev, a nameless one (icon, no `aria-label` / `tooltip` / `label`) logs a console warning.
 - `OriToolbarSeparator` is `role="separator"`, always perpendicular to the bar, non-focusable, and
   skipped by roving navigation (no `data-ori-toolbar-item` marker).
 - `OriToolbarToggleGroup` is `role="group"` with its own `aria-label` — a second, independent
@@ -732,18 +732,18 @@ warning.
 
 **Props**
 
-| Prop       | Type         | Default  | Description                                                                                                                                                                                                            |
-| ---------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | —        | Semantic color, forwarded to the underlying `OriButton`. Unset falls back to `OriButton`'s own default (`primary`).                                                                                                    |
-| `disabled` | `boolean`    | `false`  | `aria-disabled`, **not** the native `disabled` attribute — the item stays focusable and reachable by roving navigation; only activation (click, `Enter`, `Space`) is blocked.                                          |
-| `icon`     | `string`     | —        | SVG path, forwarded to `OriButton`. `icon` with no `text` renders an icon-only square.                                                                                                                                 |
-| `label`    | `string`     | —        | Accessible name for an icon-only button (→ `aria-label`); falls back to `tooltip` when omitted.                                                                                                                        |
-| `pressed`  | `boolean`    | —        | Toggle state → `aria-pressed`. Omit entirely for a plain action button (no `aria-pressed` rendered); pass `true` / `false` for a standalone toggle (e.g. Bold, Italic) that is not part of an `OriToolbarToggleGroup`. |
-| `radius`   | `RadiusSize` | —        | Corner radius, forwarded. Unset falls back to `OriButton`'s own default (`full`).                                                                                                                                      |
-| `size`     | `ActionSize` | —        | Height and text scale, forwarded. Unset falls back to `OriButton`'s own default (`md`).                                                                                                                                |
-| `text`     | `string`     | —        | Visible label, forwarded to `OriButton`.                                                                                                                                                                               |
-| `tooltip`  | `string`     | —        | Wraps the button in an `OriTooltip`; wires `aria-describedby` onto the real `<button>` when a `label` also names it, otherwise the tooltip text becomes the accessible name.                                           |
-| `variant`  | `Variant`    | `'text'` | Visual style, forwarded. Toolbar items default to the low-emphasis `text` look rather than `OriButton`'s own `solid` default.                                                                                          |
+| Prop        | Type         | Default  | Description                                                                                                                                                                                                            |
+| ----------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ariaLabel` | `string`     | —        | Accessible name for an icon-only button (→ `aria-label`); falls back to `tooltip` when omitted.                                                                                                                        |
+| `color`     | `ThemeColor` | —        | Semantic color, forwarded to the underlying `OriButton`. Unset falls back to `OriButton`'s own default (`primary`).                                                                                                    |
+| `disabled`  | `boolean`    | `false`  | `aria-disabled`, **not** the native `disabled` attribute — the item stays focusable and reachable by roving navigation; only activation (click, `Enter`, `Space`) is blocked.                                          |
+| `icon`      | `string`     | —        | SVG path, forwarded to `OriButton`. `icon` with no `label` renders an icon-only square.                                                                                                                                |
+| `label`     | `string`     | —        | Visible button text, forwarded to `OriButton`.                                                                                                                                                                         |
+| `pressed`   | `boolean`    | —        | Toggle state → `aria-pressed`. Omit entirely for a plain action button (no `aria-pressed` rendered); pass `true` / `false` for a standalone toggle (e.g. Bold, Italic) that is not part of an `OriToolbarToggleGroup`. |
+| `radius`    | `RadiusSize` | —        | Corner radius, forwarded. Unset falls back to `OriButton`'s own default (`full`).                                                                                                                                      |
+| `size`      | `ActionSize` | —        | Height and text scale, forwarded. Unset falls back to `OriButton`'s own default (`md`).                                                                                                                                |
+| `tooltip`   | `string`     | —        | Wraps the button in an `OriTooltip`; wires `aria-describedby` onto the real `<button>` when an `aria-label` also names it, otherwise the tooltip text becomes the accessible name.                                     |
+| `variant`   | `Variant`    | `'text'` | Visual style, forwarded. Toolbar items default to the low-emphasis `text` look rather than `OriButton`'s own `solid` default.                                                                                          |
 
 **Events & attributes**
 
@@ -753,9 +753,9 @@ computed bindings onto the real `OriButton` (and, in turn, the `<button>`), so a
 
 **Slots**
 
-| Slot      | Scope | Description                                                                                                                                                                                                           |
-| --------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default` | —     | Custom button content, forwarded to the underlying `OriButton`. Falls back to the `icon` / `text` props when omitted — slot in a multi-path SVG or a custom icon component in place of the single-path `icon` string. |
+| Slot      | Scope | Description                                                                                                                                                                                                            |
+| --------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —     | Custom button content, forwarded to the underlying `OriButton`. Falls back to the `icon` / `label` props when omitted — slot in a multi-path SVG or a custom icon component in place of the single-path `icon` string. |
 
 ### OriToolbarSeparator
 
@@ -807,18 +807,18 @@ role's ARIA contract; the group is a named cluster over the toolbar's flat rovin
 
 **Props**
 
-| Prop       | Type         | Default      | Description                                                                      |
-| ---------- | ------------ | ------------ | -------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | —            | Same forwarding as `OriToolbarButton`.                                           |
-| `disabled` | `boolean`    | `false`      | Same `aria-disabled`, still-focusable semantics as `OriToolbarButton`.           |
-| `icon`     | `string`     | —            | SVG path, forwarded to `OriButton`.                                              |
-| `label`    | `string`     | —            | Accessible name for an icon-only item (→ `aria-label`); falls back to `tooltip`. |
-| `radius`   | `RadiusSize` | —            | Forwarded; falls back to `OriButton`'s own default (`full`).                     |
-| `size`     | `ActionSize` | —            | Forwarded; falls back to `OriButton`'s own default (`md`).                       |
-| `text`     | `string`     | —            | Visible label, forwarded.                                                        |
-| `tooltip`  | `string`     | —            | Same baked `aria-describedby` wiring as `OriToolbarButton`.                      |
-| `value`    | `string`     | **required** | The value this item contributes to the enclosing group's `v-model`.              |
-| `variant`  | `Variant`    | `'text'`     | Forwarded; same `text` default as `OriToolbarButton`.                            |
+| Prop        | Type         | Default      | Description                                                                      |
+| ----------- | ------------ | ------------ | -------------------------------------------------------------------------------- |
+| `ariaLabel` | `string`     | —            | Accessible name for an icon-only item (→ `aria-label`); falls back to `tooltip`. |
+| `color`     | `ThemeColor` | —            | Same forwarding as `OriToolbarButton`.                                           |
+| `disabled`  | `boolean`    | `false`      | Same `aria-disabled`, still-focusable semantics as `OriToolbarButton`.           |
+| `icon`      | `string`     | —            | SVG path, forwarded to `OriButton`.                                              |
+| `label`     | `string`     | —            | Visible item text, forwarded.                                                    |
+| `radius`    | `RadiusSize` | —            | Forwarded; falls back to `OriButton`'s own default (`full`).                     |
+| `size`      | `ActionSize` | —            | Forwarded; falls back to `OriButton`'s own default (`md`).                       |
+| `tooltip`   | `string`     | —            | Same baked `aria-describedby` wiring as `OriToolbarButton`.                      |
+| `value`     | `string`     | **required** | The value this item contributes to the enclosing group's `v-model`.              |
+| `variant`   | `Variant`    | `'text'`     | Forwarded; same `text` default as `OriToolbarButton`.                            |
 
 There is no `pressed` prop — unlike `OriToolbarButton`, press state is always derived from the
 enclosing `OriToolbarToggleGroup`'s selection, so `aria-pressed` is always rendered (`true` / `false`),
@@ -837,9 +837,9 @@ never omitted.
 
 **Slots**
 
-| Slot      | Scope | Description                                                                                                                                                                                                            |
-| --------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `default` | —     | Custom item content, forwarded to the underlying `OriButton` — same as `OriToolbarButton`. Falls back to the `icon` / `text` props when omitted — slot in a multi-path SVG or a custom icon component if you need one. |
+| Slot      | Scope | Description                                                                                                                                                                                                             |
+| --------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —     | Custom item content, forwarded to the underlying `OriButton` — same as `OriToolbarButton`. Falls back to the `icon` / `label` props when omitted — slot in a multi-path SVG or a custom icon component if you need one. |
 
 ## Headless (`useToolbar`)
 

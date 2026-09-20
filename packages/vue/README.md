@@ -26,7 +26,7 @@ import { OriButton } from '@oriui/vue'
 ```
 
 ```vue
-<OriButton text="Save" variant="soft" color="primary" size="lg" />
+<OriButton label="Save" variant="soft" color="primary" size="lg" />
 ```
 
 Dynamic state is driven by real **attributes** (`disabled`, `aria-busy`), never classes — the

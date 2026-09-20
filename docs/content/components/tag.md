@@ -35,20 +35,20 @@ Like Button, the non-fill variants (the default `soft` included) paint the label
 Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
-:ori-tag{text="Solid" variant="solid"}
-:ori-tag{text="Tonal" variant="soft"}
-:ori-tag{text="Outline" variant="outline"}
-:ori-tag{text="Text" variant="text"}
-:ori-tag{text="Plain" variant="plain"}
+:ori-tag{label="Solid" variant="solid"}
+:ori-tag{label="Tonal" variant="soft"}
+:ori-tag{label="Outline" variant="outline"}
+:ori-tag{label="Text" variant="text"}
+:ori-tag{label="Plain" variant="plain"}
 
 #vue
 
 ```vue
-<OriTag text="Solid" variant="solid" />
-<OriTag text="Tonal" variant="soft" />
-<OriTag text="Outline" variant="outline" />
-<OriTag text="Text" variant="text" />
-<OriTag text="Plain" variant="plain" />
+<OriTag label="Solid" variant="solid" />
+<OriTag label="Tonal" variant="soft" />
+<OriTag label="Outline" variant="outline" />
+<OriTag label="Text" variant="text" />
+<OriTag label="Plain" variant="plain" />
 ```
 
 #html
@@ -70,24 +70,24 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 Every semantic role. Variant and color compose freely.
 
 ::example
-:ori-tag{text="primary" color="primary"}
-:ori-tag{text="secondary" color="secondary"}
-:ori-tag{text="success" color="success"}
-:ori-tag{text="warning" color="warning"}
-:ori-tag{text="danger" color="danger"}
-:ori-tag{text="info" color="info"}
-:ori-tag{text="surface" color="surface"}
+:ori-tag{label="primary" color="primary"}
+:ori-tag{label="secondary" color="secondary"}
+:ori-tag{label="success" color="success"}
+:ori-tag{label="warning" color="warning"}
+:ori-tag{label="danger" color="danger"}
+:ori-tag{label="info" color="info"}
+:ori-tag{label="surface" color="surface"}
 
 #vue
 
 ```vue
-<OriTag text="primary" color="primary" />
-<OriTag text="secondary" color="secondary" />
-<OriTag text="success" color="success" />
-<OriTag text="warning" color="warning" />
-<OriTag text="danger" color="danger" />
-<OriTag text="info" color="info" />
-<OriTag text="surface" color="surface" />
+<OriTag label="primary" color="primary" />
+<OriTag label="secondary" color="secondary" />
+<OriTag label="success" color="success" />
+<OriTag label="warning" color="warning" />
+<OriTag label="danger" color="danger" />
+<OriTag label="info" color="info" />
+<OriTag label="surface" color="surface" />
 ```
 
 #html
@@ -103,18 +103,18 @@ Every semantic role. Variant and color compose freely.
 Variant x color compose freely — e.g. a filled success tag or an outlined danger one:
 
 ::example
-:ori-tag{text="Published" variant="solid" color="success"}
-:ori-tag{text="Blocked" variant="outline" color="danger"}
-:ori-tag{text="Beta" variant="soft" color="info"}
-:ori-tag{text="Draft" variant="text" color="warning"}
+:ori-tag{label="Published" variant="solid" color="success"}
+:ori-tag{label="Blocked" variant="outline" color="danger"}
+:ori-tag{label="Beta" variant="soft" color="info"}
+:ori-tag{label="Draft" variant="text" color="warning"}
 
 #vue
 
 ```vue
-<OriTag text="Published" variant="solid" color="success" />
-<OriTag text="Blocked" variant="outline" color="danger" />
-<OriTag text="Beta" variant="soft" color="info" />
-<OriTag text="Draft" variant="text" color="warning" />
+<OriTag label="Published" variant="solid" color="success" />
+<OriTag label="Blocked" variant="outline" color="danger" />
+<OriTag label="Beta" variant="soft" color="info" />
+<OriTag label="Draft" variant="text" color="warning" />
 ```
 
 #html
@@ -132,20 +132,20 @@ Variant x color compose freely — e.g. a filled success tag or an outlined dang
 `xs` → `xxl`. The size drives the label scale via `ori-font-size_*`. Default is `sm`.
 
 ::example
-:ori-tag{text="xs" size="xs"}
-:ori-tag{text="sm" size="sm"}
-:ori-tag{text="md" size="md"}
-:ori-tag{text="lg" size="lg"}
-:ori-tag{text="xl" size="xl"}
+:ori-tag{label="xs" size="xs"}
+:ori-tag{label="sm" size="sm"}
+:ori-tag{label="md" size="md"}
+:ori-tag{label="lg" size="lg"}
+:ori-tag{label="xl" size="xl"}
 
 #vue
 
 ```vue
-<OriTag text="xs" size="xs" />
-<OriTag text="sm" size="sm" />
-<OriTag text="md" size="md" />
-<OriTag text="lg" size="lg" />
-<OriTag text="xl" size="xl" />
+<OriTag label="xs" size="xs" />
+<OriTag label="sm" size="sm" />
+<OriTag label="md" size="md" />
+<OriTag label="lg" size="lg" />
+<OriTag label="xl" size="xl" />
 ```
 
 #html
@@ -166,19 +166,19 @@ Variant x color compose freely — e.g. a filled success tag or an outlined dang
 From `none` (square) to the default `full` (pill).
 
 ::example
-:ori-tag{text="none" radius="none"}
-:ori-tag{text="sm" radius="sm"}
-:ori-tag{text="md" radius="md"}
-:ori-tag{text="lg" radius="lg"}
-:ori-tag{text="full" radius="full"}
+:ori-tag{label="none" radius="none"}
+:ori-tag{label="sm" radius="sm"}
+:ori-tag{label="md" radius="md"}
+:ori-tag{label="lg" radius="lg"}
+:ori-tag{label="full" radius="full"}
 
 #vue
 
 ```vue
-<OriTag text="none" radius="none" />
-<OriTag text="sm" radius="sm" />
-<OriTag text="md" radius="md" />
-<OriTag text="full" radius="full" />
+<OriTag label="none" radius="none" />
+<OriTag label="sm" radius="sm" />
+<OriTag label="md" radius="md" />
+<OriTag label="full" radius="full" />
 ```
 
 #html
@@ -197,16 +197,16 @@ From `none` (square) to the default `full` (pill).
 path string. They can be used together.
 
 ::example
-:ori-tag{text="Verified" prependIcon="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"}
-:ori-tag{text="External" appendIcon="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" color="info"}
-:ori-tag{text="Warning" prependIcon="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" color="warning" variant="solid"}
+:ori-tag{label="Verified" prependIcon="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"}
+:ori-tag{label="External" appendIcon="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" color="info"}
+:ori-tag{label="Warning" prependIcon="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" color="warning" variant="solid"}
 
 #vue
 
 ```vue
-<OriTag text="Verified" prependIcon="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
-<OriTag text="External" appendIcon="M19 19H5V5h7V3H5…" color="info" />
-<OriTag text="Warning" prependIcon="M1 21h22L12 2…" color="warning" variant="solid" />
+<OriTag label="Verified" prependIcon="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+<OriTag label="External" appendIcon="M19 19H5V5h7V3H5…" color="info" />
+<OriTag label="Warning" prependIcon="M1 21h22L12 2…" color="warning" variant="solid" />
 ```
 
 #html
@@ -228,14 +228,14 @@ path string. They can be used together.
 `closeLabel` sets the button's `aria-label` (default `Remove`).
 
 ::example
-:ori-tag{text="React" :closable="true"}
-:ori-tag{text="Vue" :closable="true" color="success"}
-:ori-tag{text="Svelte" :closable="true" variant="outline" color="danger"}
+:ori-tag{label="React" :closable="true"}
+:ori-tag{label="Vue" :closable="true" color="success"}
+:ori-tag{label="Svelte" :closable="true" variant="outline" color="danger"}
 
 #vue
 
 ```vue
-<OriTag v-for="tag in tags" :key="tag" :text="tag" closable @close="removeTag(tag)" />
+<OriTag v-for="tag in tags" :key="tag" :label="tag" closable @close="removeTag(tag)" />
 ```
 
 #html
@@ -261,16 +261,16 @@ path string. They can be used together.
 events including the close button.
 
 ::example
-:ori-tag{text="Archived" :disabled="true"}
-:ori-tag{text="Archived" :disabled="true" variant="outline"}
-:ori-tag{text="Archived" :disabled="true" :closable="true"}
+:ori-tag{label="Archived" :disabled="true"}
+:ori-tag{label="Archived" :disabled="true" variant="outline"}
+:ori-tag{label="Archived" :disabled="true" :closable="true"}
 
 #vue
 
 ```vue
-<OriTag text="Archived" disabled />
-<OriTag text="Archived" disabled variant="outline" />
-<OriTag text="Archived" disabled closable />
+<OriTag label="Archived" disabled />
+<OriTag label="Archived" disabled variant="outline" />
+<OriTag label="Archived" disabled closable />
 ```
 
 #html
@@ -288,9 +288,9 @@ events including the close button.
 A filter chip list and a status badge in a table row — the everyday compositions.
 
 ::example
-:ori-tag{text="Vue" prependIcon="M2 3h3.5L12 15l6.5-12H22L12 21z" color="success" :closable="true"}
-:ori-tag{text="TypeScript" prependIcon="M3 3h18v18H3V3zm10.71 14.29a3 3 0 0 0 4.24 0l-1.41-1.42a1 1 0 0 1-1.42 1.42 1 1 0 0 1 0-1.42l-1.41-1.41a3 3 0 0 0 0 4.24z" color="info" :closable="true"}
-:ori-tag{text="Vite" color="warning" :closable="true"}
+:ori-tag{label="Vue" prependIcon="M2 3h3.5L12 15l6.5-12H22L12 21z" color="success" :closable="true"}
+:ori-tag{label="TypeScript" prependIcon="M3 3h18v18H3V3zm10.71 14.29a3 3 0 0 0 4.24 0l-1.41-1.42a1 1 0 0 1-1.42 1.42 1 1 0 0 1 0-1.42l-1.41-1.41a3 3 0 0 0 0 4.24z" color="info" :closable="true"}
+:ori-tag{label="Vite" color="warning" :closable="true"}
 
 #vue
 
@@ -300,7 +300,7 @@ A filter chip list and a status badge in a table row — the everyday compositio
     <OriTag
         v-for="filter in activeFilters"
         :key="filter.value"
-        :text="filter.label"
+        :label="filter.label"
         :color="filter.color"
         closable
         @close="removeFilter(filter.value)"
@@ -369,7 +369,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | `prependIcon` | `string`                                              | —           | SVG path for an icon rendered before the label.                                                 |
 | `radius`      | `RadiusSize`                                          | `'full'`    | Corner radius (`none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`).                             |
 | `size`        | `ActionSize`                                          | `'sm'`      | Label scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                         |
-| `text`        | `string`                                              | —           | Tag label. Alternatively use the `default` slot.                                                |
+| `label`       | `string`                                              | —           | Tag text. Alternatively use the `default` slot.                                                 |
 | `variant`     | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'plain'` | `'soft'`    | Visual style.                                                                                   |
 
 ### Events & attributes

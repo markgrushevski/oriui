@@ -32,7 +32,7 @@ describe('OriDivider', () => {
     })
 
     it('text prop adds the _text modifier and renders a label span', () => {
-        const wrapper = mount(OriDivider, { props: { text: 'OR' } })
+        const wrapper = mount(OriDivider, { props: { label: 'OR' } })
 
         expect(wrapper.classes()).toContain('ori-divider_text')
         const label = wrapper.find('.ori-divider__label')
@@ -49,7 +49,7 @@ describe('OriDivider', () => {
 
     it('default slot renders in the label span and overrides the text prop fallback', () => {
         const wrapper = mount(OriDivider, {
-            props: { text: 'fallback' },
+            props: { label: 'fallback' },
             slots: { default: 'slot content' }
         })
 
@@ -93,7 +93,7 @@ describe('OriDivider', () => {
     })
 
     it('has no axe violations with a text label', async () => {
-        const wrapper = mount(OriDivider, { props: { text: 'OR' }, attachTo: document.body })
+        const wrapper = mount(OriDivider, { props: { label: 'OR' }, attachTo: document.body })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
     })

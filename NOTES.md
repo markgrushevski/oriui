@@ -791,3 +791,28 @@ The rule this leaves: secondary text is a leaf with its own tone (`__subtitle`, 
 a region. If a wrapper must dim, the contrast has to be measured composited, with a probe that puts the real
 ancestors above it. Dark themes will usually pass while light ones fail, so a single-theme check proves
 nothing here.
+
+## A prop named `label` that only ever becomes `aria-label` renders an empty control
+
+`OriToolbarButton` declared `label` as the accessible name for an ICON-ONLY button — it went into
+`aria-label` and nowhere else. The visible text lived in a separate `text` prop. So
+`<OriToolbarButton label="New" />`, with no `icon` and no `tooltip`, rendered a button with an
+accessible name and **nothing inside it**: `OriButton`'s slot fallback needs `icon`, `loading` or
+`text`, and none was set. Four demos on the Toolbar docs page did exactly that, plus three on the
+Surface page, and they shipped that way.
+
+Nothing caught it, and the reasons are worth keeping:
+
+- **the unit tests always passed an `icon` too** — `h(OriToolbarButton, { label: 'Redo', icon: 'x' })`
+  is an icon button, which is the case the prop was designed for, so every assertion was about
+  `aria-label` and none about the rendered text being non-empty;
+- **axe is satisfied by an accessible name** — an empty button WITH `aria-label` passes `button-name`.
+  An empty control is a visual defect, not an ARIA one;
+- **the dev-time guard had the same blind spot**: it warns when `icon` is set but nothing names it —
+  the exact inverse of this case.
+
+The rule this leaves: a prop that names a control must either render or be spelled so that it cannot
+be mistaken for the visible text. `ariaLabel` (→ `aria-label`) is spelled that way; `label` is not,
+and now means the visible text everywhere in the library. Where a component can render no text at all
+(`OriIcon`, `OriSpinner`, `OriToolbar`, `OriToolbarToggleGroup`), `label` remains the accessible name
+— there is nothing for it to be confused with.

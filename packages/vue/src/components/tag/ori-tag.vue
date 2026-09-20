@@ -17,7 +17,7 @@ const {
     prependIcon?: string
     radius?: RadiusSize
     size?: ActionSize
-    text?: string
+    label?: string
     variant?: Variant
 }>()
 
@@ -44,7 +44,7 @@ const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.
         </slot>
 
         <span class="ori-tag__text">
-            <slot>{{ text }}</slot>
+            <slot>{{ label }}</slot>
         </span>
 
         <slot name="append">
