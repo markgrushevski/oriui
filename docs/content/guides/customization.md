@@ -25,7 +25,7 @@ Before overriding anything, say what you mean. The styled components take a `col
 `primary` · `secondary` · `surface` · `background` · `success` · `warning` · `danger` · `info` — and,
 where a surface can be painted more than one way, a `variant` **mapping** that decides _how_ the role
 is painted: `solid` (role as background, its `on-` color as text), `soft` / `outline` / `text` /
-`plain` (role as tint / border / text). Color is the _role_, variant is the _mapping_ — the
+`quiet` (role as tint / border / text). Color is the _role_, variant is the _mapping_ — the
 background-and-text pairing is never yours to hand-assemble.
 
 ::example
@@ -258,7 +258,7 @@ Because you repoint the alias the variants are built on, **all the machinery kee
 - state styling is untouched — it keys off real attributes (`disabled`, `aria-busy`, `data-active`),
   never off the palette.
 
-**On a non-fill variant** (`soft` / `outline` / `text` / `plain`), the label reads a _third_ alias,
+**On a non-fill variant** (`soft` / `outline` / `text` / `quiet`), the label reads a _third_ alias,
 `--ori-color-text` — not `--ori-color` directly (see
 [Text — the on-surface foreground](/guides/design-tokens#text-the-on-surface-foreground)). CSS custom
 properties don't re-substitute on inheritance: setting only `--ori-color` here does **not** also

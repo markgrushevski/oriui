@@ -938,13 +938,14 @@ Three agents compared the catalog against WAI-ARIA APG and the API shapes of Rad
 - **Where:** packages/headless/src/{vue,react,svelte}/native.ts (all three publish `descriptionProps`, covered by adapter-parity tests and six documented examples); packages/vue/src/components/dialog/ori-dialog.vue (never binds it)
 - **What:** the styled component emits no `aria-describedby`, so a dialog's body text is not announced as its description. APG marks it optional, which is why this is a nit rather than a should-fix. One bind closes it. Note the framing correction: this is not a dead API — the headless layer's `descriptionProps` is alive, tested and documented; it is the styled layer that ignores it.
 
-### ORI-I-91 — The `plain` variant measures 2.33:1 on an enabled control
+### ORI-I-91 — The `plain` variant measured 2.33:1 on an enabled control
 
-`confirmed` · severity `should-fix` · source: reference audit 2026-09-19, measured via e2e/text-contrast.spec.ts
+`fixed` · severity `should-fix` · source: reference audit 2026-09-19, measured via e2e/text-contrast.spec.ts
 
-- **Where:** packages/css/src/themes/_themes-variant.css:56-58 (`--ori-variant-opacity: 0.5`)
-- **What:** worst reading is **2.33, button-plain, neutral light, secondary**. The probe marks it `data-muted` — measured but not asserted — and NOTES.md:216 records the exemption. What does not hold is the exemption's reasoning: WCAG exempts INACTIVE controls, and a `plain` button is active and clickable. Opacity returns to 1 on hover / `[data-active]` / `:active`, so the resting state is the only one affected.
+- **Where:** packages/css/src/themes/_themes-variant.css — `.ori-variant_plain { --ori-variant-opacity: 0.5 }`
+- **What:** worst reading was **2.33, button-plain, neutral light, secondary**. The probe marked it `data-muted` — measured but not asserted — and NOTES.md recorded the exemption. What did not hold is the exemption's reasoning: WCAG exempts INACTIVE controls, and a `plain` button is active and clickable. Opacity returned to 1 on hover / `[data-active]` / `:active`, so the resting state was the only one affected.
 - **Not the same as ORI-I-85**, which was a container fading a caller's whole slot and multiplying with child fades. The honest analogue is ORI-I-78, whose fix was 0.6 → 0.7 rather than removal.
+- **Fixed** by measurement rather than by a guess. The variant is now `quiet` (`.ori-variant_quiet`) at `--ori-variant-opacity: 0.85`. The alpha was solved over every role × skin × theme from the composite the browser performs (`fg*a + bg*(1-a)` in sRGB, read off the `.ori-variant_text` probe, which is the same tone at opacity 1): 0.5 left **190 of 192** readings below AA, 0.75 left 46, **0.81 is the exact edge**, and 0.85 clears every reading with a worst of 4.95. The analytic prediction was then confirmed against the real rasteriser — `e2e/text-contrast.spec.ts` reports 4.95 for `button-quiet` (sumi · light · success). The probe no longer carries `data-muted`, so the value is **asserted** from here on and cannot silently drift back.
 
 ### ORI-I-92 — `field.md` promises an integration that Checkbox and Switch do not have
 

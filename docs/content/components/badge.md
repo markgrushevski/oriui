@@ -20,7 +20,7 @@ modifiers (`ori-badge_dot`, `ori-badge_floating`) and the wrapper class (`ori-ba
 complete the floating pattern.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: solid variant, primary color, full radius."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
+:class-table{:rows='[{"class":"ori-badge","type":"Block","description":"Required base class. Defaults baked in: solid variant, primary color, full radius."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-badge_dot","type":"Layout","description":"collapses the badge to a small filled circle; content is hidden"},{"class":"ori-badge_floating","type":"Layout","description":"positions the badge in the top-end corner of its anchor wrapper"},{"class":"ori-badge-anchor","type":"Wrapper","description":"position:relative wrapper required for floating badges"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/badge.css`. `.ori-badge-anchor` lives in
 `badge.css`. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token
@@ -36,7 +36,7 @@ Five visual styles, driven by the `ori-variant_*` single-class token.
 :ori-badge{content="Soft" variant="soft"}
 :ori-badge{content="Outline" variant="outline"}
 :ori-badge{content="Text" variant="text"}
-:ori-badge{content="Plain" variant="plain"}
+:ori-badge{content="Quiet" variant="quiet"}
 
 #vue
 
@@ -45,7 +45,7 @@ Five visual styles, driven by the `ori-variant_*` single-class token.
 <OriBadge content="Soft" variant="soft" />
 <OriBadge content="Outline" variant="outline" />
 <OriBadge content="Text" variant="text" />
-<OriBadge content="Plain" variant="plain" />
+<OriBadge content="Quiet" variant="quiet" />
 ```
 
 #html
@@ -329,7 +329,7 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `label`    | `string`           | —           | Accessible name (`aria-label`). Required for dot badges or empty badges that convey meaning to sighted users.        |
 | `max`      | `number`           | —           | When `content` is a number and exceeds `max`, the display value is capped to `{max}+`.                               |
 | `radius`   | `RadiusSize`       | `'full'`    | Corner radius: `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`.                                                   |
-| `variant`  | `Variant`          | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `plain`.                                                       |
+| `variant`  | `Variant`          | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `quiet`.                                                       |
 
 ### Events & attributes
 

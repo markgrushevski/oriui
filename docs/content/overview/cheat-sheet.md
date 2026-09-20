@@ -43,7 +43,7 @@ classes.
 | Axis                   | Class               | Values                                                                                         |
 | ---------------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
 | Color (the role)       | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background` |
-| Variant (the mapping)  | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `plain`                                                |
+| Variant (the mapping)  | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `quiet`                                                |
 | Size (component sugar) | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |
 | Radius                 | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                                             |
 | Font                   | `ori-font-size_*`   | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                                       |

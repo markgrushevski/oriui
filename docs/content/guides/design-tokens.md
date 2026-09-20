@@ -228,7 +228,7 @@ the `color-mix` per variant. (See the live behaviour on [Button](/components/but
 :ori-button{label="Tonal" variant="soft"}
 :ori-button{label="Outline" variant="outline"}
 :ori-button{label="Text" variant="text"}
-:ori-button{label="Plain" variant="plain"}
+:ori-button{label="Quiet" variant="quiet"}
 ::
 
 ## Sizes — two tiers

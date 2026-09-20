@@ -132,14 +132,14 @@
     }
 
     .ori-button.ori-variant_text[aria-pressed='true'],
-    .ori-button.ori-variant_plain[aria-pressed='true'],
+    .ori-button.ori-variant_quiet[aria-pressed='true'],
     .ori-button.ori-variant_outline[aria-pressed='true'] {
         background-color: color-mix(in srgb, var(--ori-color-on-surface) 18%, transparent);
     }
 
     @media (hover: hover) {
         .ori-button.ori-variant_text[aria-pressed='true']:hover,
-        .ori-button.ori-variant_plain[aria-pressed='true']:hover,
+        .ori-button.ori-variant_quiet[aria-pressed='true']:hover,
         .ori-button.ori-variant_outline[aria-pressed='true']:hover {
             background-color: color-mix(in srgb, var(--ori-color-on-surface) 26%, transparent);
         }

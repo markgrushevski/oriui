@@ -38,7 +38,7 @@ a11y-correct source of truth. Theme + skin are attributes on `<html>` (`class="d
 Same components, your brand — through a small, stable surface, ordered safest → most manual. You rarely
 need custom CSS; reach for these first:
 
-- **Props** — `variant` (`solid` / `soft` / `outline` / `text` / `plain`), `color` (semantic roles with
+- **Props** — `variant` (`solid` / `soft` / `outline` / `text` / `quiet`), `color` (semantic roles with
   a built-in contrast guarantee), `size`, `radius`. Say _what_ you mean; the accessible
   background/text pairing is handled for you, and it follows every theme + skin for free.
 - **Rebrand with tokens** — repoint a few CSS custom properties in your own `:root` (e.g.

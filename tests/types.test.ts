@@ -115,7 +115,7 @@ describe('@oriui/vue public types', () => {
     })
 
     it('Variant is the five-step emphasis ladder', () => {
-        expectTypeOf<Variant>().toEqualTypeOf<'solid' | 'soft' | 'outline' | 'text' | 'plain'>()
+        expectTypeOf<Variant>().toEqualTypeOf<'solid' | 'soft' | 'outline' | 'text' | 'quiet'>()
     })
 
     // -------------------------------------------------------------------------

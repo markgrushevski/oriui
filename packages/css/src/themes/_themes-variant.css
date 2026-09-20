@@ -53,9 +53,15 @@
         --ori-variant-text-color: var(--ori-color-text);
     }
 
-    .ori-variant_plain {
+    /* The quietest step: no background in ANY state (which is what separates it from `text`,
+       whose hover paints a 10% role tint), plus a resting fade. The fade is 0.85 because that is what
+       MEASURES AA — a `quiet` control is enabled and clickable, so WCAG's inactive-control exemption
+       does not cover it. Solved over every role x skin x theme with the composite the browser actually
+       performs (fg*a + bg*(1-a) in sRGB): 0.5 left 190 of 192 readings below 4.5:1 with a worst of 2.33,
+       0.81 is the exact edge, and 0.85 clears every reading with a worst of 4.95. ORI-I-91. */
+    .ori-variant_quiet {
         --ori-variant-border-color: transparent;
-        --ori-variant-opacity: 0.5;
+        --ori-variant-opacity: 0.85;
         --ori-variant-bg-color: transparent;
         --ori-variant-text-color: var(--ori-color-text);
     }
@@ -104,13 +110,13 @@
         }
     }
 
-    .ori-variant_plain[data-active],
-    :where(.ori-button, [data-ori-interactive]).ori-variant_plain:active {
+    .ori-variant_quiet[data-active],
+    :where(.ori-button, [data-ori-interactive]).ori-variant_quiet:active {
         --ori-variant-opacity: 1;
     }
 
     @media (hover: hover) {
-        :where(.ori-button, [data-ori-interactive]).ori-variant_plain:hover {
+        :where(.ori-button, [data-ori-interactive]).ori-variant_quiet:hover {
             --ori-variant-opacity: 1;
         }
     }

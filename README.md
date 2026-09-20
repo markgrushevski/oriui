@@ -92,7 +92,7 @@ axis. Dynamic state is real **attributes** (`disabled`, `aria-busy`), never clas
 | Axis    | Class               | Values                                                                  |
 | ------- | ------------------- | ----------------------------------------------------------------------- |
 | Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · … |
-| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `plain`                         |
+| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `quiet`                         |
 | Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
 | Radius  | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                      |
 

@@ -81,7 +81,7 @@ class. A bare block is valid; add a class only to override an axis. Dynamic stat
 | Axis    | Class               | Values                                                                  |
 | ------- | ------------------- | ----------------------------------------------------------------------- |
 | Color   | `ori-color_*`       | `primary` · `secondary` · `success` · `warning` · `danger` · `info` · … |
-| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `plain`                         |
+| Variant | `ori-variant_*`     | `solid` · `soft` · `outline` · `text` · `quiet`                         |
 | Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
 
 Theme + skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="…"`), reskinning everything

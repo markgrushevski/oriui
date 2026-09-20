@@ -19,7 +19,7 @@ A tag is a block class plus single-class token utilities — one class repoints 
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-tag","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"solid · <b>soft</b> · outline · text · plain"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · <b>sm</b> · md · lg · xl · xxl — drives the label scale"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-tag__icon","type":"Part","description":"icon element (prepend or append)"},{"class":"ori-tag__text","type":"Part","description":"label text element"},{"class":"ori-tag__close · ori-tag__close-icon","type":"Part","description":"close button and its icon (present when closable)"},{"class":"aria-disabled=true","type":"State","description":"real attribute — dims the tag and blocks pointer events"}]'}
+:class-table{:rows='[{"class":"ori-tag","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"solid · <b>soft</b> · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · <b>sm</b> · md · lg · xl · xxl — drives the label scale"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-tag__icon","type":"Part","description":"icon element (prepend or append)"},{"class":"ori-tag__text","type":"Part","description":"label text element"},{"class":"ori-tag__close · ori-tag__close-icon","type":"Part","description":"close button and its icon (present when closable)"},{"class":"aria-disabled=true","type":"State","description":"real attribute — dims the tag and blocks pointer events"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/tag.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -39,7 +39,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 :ori-tag{label="Tonal" variant="soft"}
 :ori-tag{label="Outline" variant="outline"}
 :ori-tag{label="Text" variant="text"}
-:ori-tag{label="Plain" variant="plain"}
+:ori-tag{label="Quiet" variant="quiet"}
 
 #vue
 
@@ -48,7 +48,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 <OriTag label="Tonal" variant="soft" />
 <OriTag label="Outline" variant="outline" />
 <OriTag label="Text" variant="text" />
-<OriTag label="Plain" variant="plain" />
+<OriTag label="Quiet" variant="quiet" />
 ```
 
 #html
@@ -370,7 +370,7 @@ component API — its surface is the [classes](#classes) above. (Svelte bindings
 | `radius`      | `RadiusSize`                                          | `'full'`    | Corner radius (`none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`).                             |
 | `size`        | `ActionSize`                                          | `'sm'`      | Label scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                         |
 | `label`       | `string`                                              | —           | Tag text. Alternatively use the `default` slot.                                                 |
-| `variant`     | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'plain'` | `'soft'`    | Visual style.                                                                                   |
+| `variant`     | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'quiet'` | `'soft'`    | Visual style.                                                                                   |
 
 ### Events & attributes
 
