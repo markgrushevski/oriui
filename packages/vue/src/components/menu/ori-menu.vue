@@ -14,7 +14,8 @@ import type { AnchoredPlacement } from '../../types'
 // site (`#trigger="{ props, open }"` swaps a caret, swaps a label, styles the trigger while the panel
 // is up). The bag already carries `aria-expanded`, so `open` exists for the caller's own rendering, not
 // for ARIA. Items come from `items` and render through the #item slot (override for icons / shortcuts).
-// Activating an item emits `select` with its value, then closes.
+// Activating an item emits `select` with its value, then closes. An entry marked `separator: true` renders
+// the machine's `role="separator"` rule instead, and roving skips it the way it skips a disabled item.
 defineOptions({ inheritAttrs: false })
 
 const {
@@ -83,13 +84,11 @@ watch(
         :class="['ori-menu', 'ori-anchored', `ori-anchored_${placement}`]"
         :style="{ '--ori-anchor': anchorName }"
     >
-        <div
-            v-for="(item, index) in items"
-            :key="item.value"
-            v-bind="m.getItemProps(item, index)"
-            class="ori-menu__item"
-        >
-            <slot name="item" :item="item">{{ item.label ?? item.value }}</slot>
-        </div>
+        <template v-for="(item, index) in items" :key="item.value">
+            <div v-if="item.separator" v-bind="m.separatorProps.value" class="ori-menu__separator"></div>
+            <div v-else v-bind="m.getItemProps(item, index)" class="ori-menu__item">
+                <slot name="item" :item="item">{{ item.label ?? item.value }}</slot>
+            </div>
+        </template>
     </div>
 </template>

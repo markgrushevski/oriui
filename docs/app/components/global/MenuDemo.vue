@@ -15,6 +15,7 @@ const items = [
     { value: 'new', label: 'New file' },
     { value: 'open', label: 'Open…' },
     { value: 'rename', label: 'Rename', disabled: true },
+    { value: 'sep-1', separator: true },
     { value: 'delete', label: 'Delete' }
 ]
 
