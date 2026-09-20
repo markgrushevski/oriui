@@ -3,6 +3,13 @@ export interface MenuItem {
     value: string
     label?: string
     disabled?: boolean
+    /**
+     * Renders a `role="separator"` rule in this position instead of an item. A separator is not
+     * navigable and not selectable — roving skips it exactly as it skips a `disabled` item, and
+     * `label` is ignored. `value` still applies, as the list key. The array is the model here, so a
+     * separator is an entry in it (PrimeVue's `{ separator: true }` shape), not a slotted child.
+     */
+    separator?: boolean
 }
 
 export interface MenuContext {
