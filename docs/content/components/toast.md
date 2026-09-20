@@ -47,26 +47,26 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
         <OriButton
             variant="outline"
             color="success"
-            text="Success"
+            label="Success"
             @click="success({ title: 'Saved', text: 'Your changes were saved.', icon: checkIcon })"
         />
         <OriButton
             variant="outline"
             color="danger"
-            text="Error"
+            label="Error"
             @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })"
         />
         <OriButton
             variant="outline"
             color="warning"
-            text="Warning"
+            label="Warning"
             @click="warning('Your session expires in 5 minutes.')"
         />
-        <OriButton variant="outline" color="info" text="Info" @click="info('A new version is available.')" />
-        <OriButton variant="outline" text="Plain" @click="toast('Just a plain notification.')" />
+        <OriButton variant="outline" color="info" label="Info" @click="info('A new version is available.')" />
+        <OriButton variant="outline" label="Plain" @click="toast('Just a plain notification.')" />
         <OriButton
             variant="outline"
-            text="Sticky"
+            label="Sticky"
             @click="toast({ text: 'I stay until you dismiss me.', duration: 0, closable: true })"
         />
     </div>
@@ -97,11 +97,11 @@ const { success, error, warning, info, toast } = useToast()
 
 <template>
     <!-- each call returns the toast id -->
-    <OriButton text="Success" @click="success('Your changes have been saved.')" />
-    <OriButton text="Error" @click="error('Upload failed. Please try again.')" />
-    <OriButton text="Warning" @click="warning('Your session expires in 5 minutes.')" />
-    <OriButton text="Info" @click="info('A new version is available.')" />
-    <OriButton text="Plain" @click="toast('Just a plain notification.')" />
+    <OriButton label="Success" @click="success('Your changes have been saved.')" />
+    <OriButton label="Error" @click="error('Upload failed. Please try again.')" />
+    <OriButton label="Warning" @click="warning('Your session expires in 5 minutes.')" />
+    <OriButton label="Info" @click="info('A new version is available.')" />
+    <OriButton label="Plain" @click="toast('Just a plain notification.')" />
 </template>
 ```
 
@@ -151,11 +151,11 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 
 <template>
     <OriButton
-        text="Fire"
+        label="Fire"
         @click="success({ title: 'Saved', text: 'Your changes were saved successfully.', icon: checkIcon })"
     />
-    <OriButton text="Error" @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })" />
-    <OriButton text="Info" @click="info({ title: 'Heads up', text: 'A new version is available.' })" />
+    <OriButton label="Error" @click="error({ title: 'Upload failed', text: 'The file could not be uploaded.' })" />
+    <OriButton label="Info" @click="info({ title: 'Heads up', text: 'A new version is available.' })" />
 </template>
 ```
 
@@ -197,9 +197,9 @@ const { info } = useToast()
 
 <template>
     <!-- opt in per toast; a duration: 0 toast gets the button automatically -->
-    <OriButton text="Closable" @click="info({ text: 'Dismiss me.', closable: true })" />
+    <OriButton label="Closable" @click="info({ text: 'Dismiss me.', closable: true })" />
     <!-- suppress the button for quick notifications -->
-    <OriButton text="No button" @click="info({ text: 'Gone in 4 s.', closable: false })" />
+    <OriButton label="No button" @click="info({ text: 'Gone in 4 s.', closable: false })" />
 </template>
 ```
 
@@ -237,13 +237,13 @@ const { toast, warning } = useToast()
 
 <template>
     <!-- default: auto-dismiss after 4000 ms -->
-    <OriButton text="Default" @click="toast('Gone in 4 s.')" />
+    <OriButton label="Default" @click="toast('Gone in 4 s.')" />
 
     <!-- custom duration -->
-    <OriButton text="8 s" @click="toast({ text: 'Gone in 8 s.', duration: 8000 })" />
+    <OriButton label="8 s" @click="toast({ text: 'Gone in 8 s.', duration: 8000 })" />
 
     <!-- sticky: pass duration: 0 -->
-    <OriButton text="Sticky" @click="warning({ text: 'I stay until dismissed.', duration: 0, closable: true })" />
+    <OriButton label="Sticky" @click="warning({ text: 'I stay until dismissed.', duration: 0, closable: true })" />
 </template>
 ```
 

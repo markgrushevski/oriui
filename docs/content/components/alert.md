@@ -334,8 +334,8 @@ A form submission result and a persistent banner with actions — the everyday c
     variant="soft"
 >
     <template #actions>
-        <OriButton text="Review" size="sm" variant="soft" color="warning" />
-        <OriButton text="Dismiss" size="sm" variant="text" color="warning" />
+        <OriButton label="Review" size="sm" variant="soft" color="warning" />
+        <OriButton label="Dismiss" size="sm" variant="text" color="warning" />
     </template>
 </OriAlert>
 ```

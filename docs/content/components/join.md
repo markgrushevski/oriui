@@ -30,18 +30,18 @@ single 1 px line; the outer corners keep their radius.
 
 ::example
 ::ori-join{aria-label="Text alignment"}
-:ori-button{variant="outline" text="Left"}
-:ori-button{variant="outline" text="Center"}
-:ori-button{variant="outline" text="Right"}
+:ori-button{variant="outline" label="Left"}
+:ori-button{variant="outline" label="Center"}
+:ori-button{variant="outline" label="Right"}
 ::
 
 #vue
 
 ```vue
 <OriJoin aria-label="Text alignment">
-    <OriButton variant="outline" text="Left" />
-    <OriButton variant="outline" text="Center" />
-    <OriButton variant="outline" text="Right" />
+    <OriButton variant="outline" label="Left" />
+    <OriButton variant="outline" label="Center" />
+    <OriButton variant="outline" label="Right" />
 </OriJoin>
 ```
 
@@ -65,7 +65,7 @@ between the field and the button merges into one line.
 ::example
 ::ori-join{aria-label="Search"}
 :ori-input{placeholder="Search…" aria-label="Search query"}
-:ori-button{variant="solid" text="Go"}
+:ori-button{variant="solid" label="Go"}
 ::
 
 #vue
@@ -73,7 +73,7 @@ between the field and the button merges into one line.
 ```vue
 <OriJoin aria-label="Search">
     <OriInput placeholder="Search…" aria-label="Search query" />
-    <OriButton variant="solid" text="Go" />
+    <OriButton variant="solid" label="Go" />
 </OriJoin>
 ```
 
@@ -94,18 +94,18 @@ between the field and the button merges into one line.
 
 ::example
 ::ori-join{:vertical="true" aria-label="View mode"}
-:ori-button{variant="outline" text="List"}
-:ori-button{variant="outline" text="Grid"}
-:ori-button{variant="outline" text="Table"}
+:ori-button{variant="outline" label="List"}
+:ori-button{variant="outline" label="Grid"}
+:ori-button{variant="outline" label="Table"}
 ::
 
 #vue
 
 ```vue
 <OriJoin :vertical="true" aria-label="View mode">
-    <OriButton variant="outline" text="List" />
-    <OriButton variant="outline" text="Grid" />
-    <OriButton variant="outline" text="Table" />
+    <OriButton variant="outline" label="List" />
+    <OriButton variant="outline" label="Grid" />
+    <OriButton variant="outline" label="Table" />
 </OriJoin>
 ```
 
@@ -130,10 +130,10 @@ and color on the children drive all the visual weight.
 
 ::example
 ::ori-join{aria-label="Highlight colour"}
-:ori-button{variant="soft" color="danger" text="Red"}
-:ori-button{variant="soft" color="warning" text="Amber"}
-:ori-button{variant="soft" color="success" text="Green"}
-:ori-button{variant="soft" color="info" text="Blue"}
+:ori-button{variant="soft" color="danger" label="Red"}
+:ori-button{variant="soft" color="warning" label="Amber"}
+:ori-button{variant="soft" color="success" label="Green"}
+:ori-button{variant="soft" color="info" label="Blue"}
 ::
 
 #vue
@@ -141,10 +141,10 @@ and color on the children drive all the visual weight.
 ```vue
 <!-- Colour swatch toolbar — soft buttons, each its own semantic colour -->
 <OriJoin aria-label="Highlight colour">
-    <OriButton variant="soft" color="danger" text="Red" />
-    <OriButton variant="soft" color="warning" text="Amber" />
-    <OriButton variant="soft" color="success" text="Green" />
-    <OriButton variant="soft" color="info" text="Blue" />
+    <OriButton variant="soft" color="danger" label="Red" />
+    <OriButton variant="soft" color="warning" label="Amber" />
+    <OriButton variant="soft" color="success" label="Green" />
+    <OriButton variant="soft" color="info" label="Blue" />
 </OriJoin>
 ```
 
@@ -165,9 +165,9 @@ and color on the children drive all the visual weight.
 
 ::example
 ::ori-join{aria-label="Quantity"}
-:ori-button{variant="outline" text="−" aria-label="Decrease quantity"}
+:ori-button{variant="outline" label="−" aria-label="Decrease quantity"}
 :ori-input{:value="1" aria-label="Current quantity"}
-:ori-button{variant="outline" text="+" aria-label="Increase quantity"}
+:ori-button{variant="outline" label="+" aria-label="Increase quantity"}
 ::
 
 #vue
@@ -175,9 +175,9 @@ and color on the children drive all the visual weight.
 ```vue
 <!-- Quantity stepper: decrement · value display · increment -->
 <OriJoin aria-label="Quantity">
-    <OriButton variant="outline" text="−" aria-label="Decrease quantity" />
+    <OriButton variant="outline" label="−" aria-label="Decrease quantity" />
     <OriInput :value="1" aria-label="Current quantity" style="width: 4rem; text-align: center" />
-    <OriButton variant="outline" text="+" aria-label="Increase quantity" />
+    <OriButton variant="outline" label="+" aria-label="Increase quantity" />
 </OriJoin>
 ```
 
@@ -253,8 +253,8 @@ Render any tag or component. Useful when the join is semantically a toolbar (`ro
 ```vue
 <!-- Use a semantic toolbar role for a group of action buttons -->
 <OriJoin as="div" role="toolbar" aria-label="Formatting options">
-    <OriButton variant="outline" text="Bold" aria-pressed="false" />
-    <OriButton variant="outline" text="Italic" aria-pressed="false" />
-    <OriButton variant="outline" text="Underline" aria-pressed="false" />
+    <OriButton variant="outline" label="Bold" aria-pressed="false" />
+    <OriButton variant="outline" label="Italic" aria-pressed="false" />
+    <OriButton variant="outline" label="Underline" aria-pressed="false" />
 </OriJoin>
 ```

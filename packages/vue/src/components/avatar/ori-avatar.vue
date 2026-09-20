@@ -5,25 +5,26 @@ import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 defineOptions({ inheritAttrs: false })
 
 const {
+    name,
     radius = 'full',
-    size = 'lg',
-    text
+    size = 'lg'
 } = defineProps<{
     color?: ThemeColor
     inline?: boolean
+    /** The person or entity the avatar stands for: drives the initials fallback and the image `alt`. */
+    name?: string
     radius?: RadiusSize
     size?: ActionSize
     spaced?: boolean
     subtitle?: string
-    text?: string
     title?: string
     reverse?: boolean
 }>()
 
 const loaded = ref(false)
 
-const name = computed(() => {
-    const words = text?.trim()?.split(' ') ?? []
+const initials = computed(() => {
+    const words = name?.trim()?.split(' ') ?? []
 
     if (words.length > 0) {
         const [word1, word2] = words
@@ -57,11 +58,11 @@ const name = computed(() => {
             v-show="loaded"
             class="ori-avatar__image"
             v-bind="$attrs"
-            :alt="text || ''"
+            :alt="name || ''"
             @load="loaded = true"
         />
         <div v-if="!$attrs.src || !loaded" aria-hidden="true" class="ori-avatar__backdrop">
-            <slot name="fallback">{{ name }}</slot>
+            <slot name="fallback">{{ initials }}</slot>
         </div>
         <div v-if="title || subtitle || $slots.title || $slots.subtitle" class="ori-avatar__text">
             <div class="ori-avatar__title">

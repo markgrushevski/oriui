@@ -4,7 +4,7 @@ title: Avatar
 
 # Avatar
 
-A data-display component that shows an image, or initials derived from `text` when there is no
+A data-display component that shows an image, or initials derived from `name` when there is no
 image (or while it loads). Supports a title / subtitle column for list and profile UIs.
 
 The examples are organised by **layer**: the [class reference](#classes) is the standalone
@@ -31,21 +31,21 @@ already carries both; see [à-la-carte imports](/guides/css).
 
 `src` (and any other image attribute) falls through via `$attrs` to the `<img>` element. When no
 `src` is present — or while the image loads — the initials backdrop is shown instead, computing up
-to two letters from the first two words of `text`.
+to two letters from the first two words of `name`.
 
 ::example
-:ori-avatar{src="/image-example.jpg" text="Marcus Tullius Cicero"}
-:ori-avatar{text="Marcus Tullius Cicero"}
-:ori-avatar{text="Ada Lovelace"}
+:ori-avatar{src="/image-example.jpg" name="Marcus Tullius Cicero"}
+:ori-avatar{name="Marcus Tullius Cicero"}
+:ori-avatar{name="Ada Lovelace"}
 
 #vue
 
 ```vue
-<OriAvatar src="/portrait.jpg" text="Marcus Tullius Cicero" />
+<OriAvatar src="/portrait.jpg" name="Marcus Tullius Cicero" />
 <!-- no src — initials "MT" are derived from text -->
-<OriAvatar text="Marcus Tullius Cicero" />
+<OriAvatar name="Marcus Tullius Cicero" />
 <!-- two words — initials "AL" -->
-<OriAvatar text="Ada Lovelace" />
+<OriAvatar name="Ada Lovelace" />
 ```
 
 #html
@@ -70,23 +70,23 @@ An optional `color` tints the initials backdrop using the standard semantic toke
 when an image is showing.
 
 ::example
-:ori-avatar{text="Primary" color="primary"}
-:ori-avatar{text="Secondary" color="secondary"}
-:ori-avatar{text="Success" color="success"}
-:ori-avatar{text="Warn Color" color="warning"}
-:ori-avatar{text="Danger" color="danger"}
-:ori-avatar{text="Info" color="info"}
-:ori-avatar{text="Surface" color="surface"}
-:ori-avatar{text="Background" color="background"}
+:ori-avatar{name="Primary" color="primary"}
+:ori-avatar{name="Secondary" color="secondary"}
+:ori-avatar{name="Success" color="success"}
+:ori-avatar{name="Warn Color" color="warning"}
+:ori-avatar{name="Danger" color="danger"}
+:ori-avatar{name="Info" color="info"}
+:ori-avatar{name="Surface" color="surface"}
+:ori-avatar{name="Background" color="background"}
 
 #vue
 
 ```vue
-<OriAvatar text="Primary" color="primary" />
-<OriAvatar text="Danger" color="danger" />
-<OriAvatar text="Info" color="info" />
-<OriAvatar text="Surface" color="surface" />
-<OriAvatar text="Background" color="background" />
+<OriAvatar name="Primary" color="primary" />
+<OriAvatar name="Danger" color="danger" />
+<OriAvatar name="Info" color="info" />
+<OriAvatar name="Surface" color="surface" />
+<OriAvatar name="Background" color="background" />
 ```
 
 #html
@@ -105,19 +105,19 @@ when an image is showing.
 (`ori-font-size_*`). Default is `lg`.
 
 ::example
-:ori-avatar{text="Extra Small" size="xs"}
-:ori-avatar{text="Small" size="sm"}
-:ori-avatar{text="Medium" size="md"}
-:ori-avatar{text="Large" size="lg"}
-:ori-avatar{text="Extra Large" size="xl"}
-:ori-avatar{text="Double Extra" size="xxl"}
+:ori-avatar{name="Extra Small" size="xs"}
+:ori-avatar{name="Small" size="sm"}
+:ori-avatar{name="Medium" size="md"}
+:ori-avatar{name="Large" size="lg"}
+:ori-avatar{name="Extra Large" size="xl"}
+:ori-avatar{name="Double Extra" size="xxl"}
 
 #vue
 
 ```vue
-<OriAvatar text="Small" size="sm" />
-<OriAvatar text="Large" size="lg" />
-<OriAvatar text="Extra Large" size="xl" />
+<OriAvatar name="Small" size="sm" />
+<OriAvatar name="Large" size="lg" />
+<OriAvatar name="Extra Large" size="xl" />
 ```
 
 #html
@@ -138,17 +138,17 @@ when an image is showing.
 From `none` (square) to the default `full` (full pill / circle).
 
 ::example
-:ori-avatar{text="None" radius="none"}
-:ori-avatar{text="Small" radius="sm"}
-:ori-avatar{text="Medium" radius="md"}
-:ori-avatar{text="Large" radius="lg"}
-:ori-avatar{text="Full" radius="full"}
+:ori-avatar{name="None" radius="none"}
+:ori-avatar{name="Small" radius="sm"}
+:ori-avatar{name="Medium" radius="md"}
+:ori-avatar{name="Large" radius="lg"}
+:ori-avatar{name="Full" radius="full"}
 
 #vue
 
 ```vue
-<OriAvatar text="None" radius="none" />
-<OriAvatar text="Full" radius="full" />
+<OriAvatar name="None" radius="none" />
+<OriAvatar name="Full" radius="full" />
 ```
 
 #html
@@ -167,20 +167,20 @@ Pass `title` and/or `subtitle` to show a text column beside the image or initial
 element switches to `max-content` width via `ori-avatar_titled`.
 
 ::example
-:ori-avatar{src="/image-example.jpg" text="Marcus Tullius Cicero" title="Marcus Tullius Cicero" subtitle="statesman · lawyer · writer · orator"}
-:ori-avatar{text="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="mathematician · first programmer"}
+:ori-avatar{src="/image-example.jpg" name="Marcus Tullius Cicero" title="Marcus Tullius Cicero" subtitle="statesman · lawyer · writer · orator"}
+:ori-avatar{name="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="mathematician · first programmer"}
 
 #vue
 
 ```vue
 <OriAvatar
     src="/portrait.jpg"
-    text="Marcus Tullius Cicero"
+    name="Marcus Tullius Cicero"
     title="Marcus Tullius Cicero"
     subtitle="statesman · lawyer · writer · orator"
 />
 <!-- initials with title -->
-<OriAvatar text="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="mathematician · first programmer" />
+<OriAvatar name="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="mathematician · first programmer" />
 ```
 
 #html
@@ -203,12 +203,12 @@ element switches to `max-content` width via `ori-avatar_titled`.
 `reverse` flips the layout so the text column appears before the image.
 
 ::example
-:ori-avatar{text="Ada Lovelace" color="primary" title="Ada Lovelace" subtitle="mathematician" :reverse="true"}
+:ori-avatar{name="Ada Lovelace" color="primary" title="Ada Lovelace" subtitle="mathematician" :reverse="true"}
 
 #vue
 
 ```vue
-<OriAvatar text="Ada Lovelace" color="primary" title="Ada Lovelace" subtitle="mathematician" reverse />
+<OriAvatar name="Ada Lovelace" color="primary" title="Ada Lovelace" subtitle="mathematician" reverse />
 ```
 
 #html
@@ -231,14 +231,14 @@ element switches to `max-content` width via `ori-avatar_titled`.
 a tag list.
 
 ::example
-:ori-avatar{text="Ada Lovelace" size="xs" :inline="true"}
-:ori-avatar{text="Marcus Tullius" size="xs" color="secondary" :inline="true"}
+:ori-avatar{name="Ada Lovelace" size="xs" :inline="true"}
+:ori-avatar{name="Marcus Tullius" size="xs" color="secondary" :inline="true"}
 
 #vue
 
 ```vue
-<OriAvatar text="Ada Lovelace" size="xs" inline />
-<OriAvatar text="Marcus Tullius" size="xs" color="secondary" inline />
+<OriAvatar name="Ada Lovelace" size="xs" inline />
+<OriAvatar name="Marcus Tullius" size="xs" color="secondary" inline />
 ```
 
 #html
@@ -257,14 +257,14 @@ a tag list.
 inside a container that provides no gap of its own.
 
 ::example
-:ori-avatar{text="Ada Lovelace" :spaced="true"}
-:ori-avatar{text="Marcus Tullius" color="secondary" :spaced="true"}
+:ori-avatar{name="Ada Lovelace" :spaced="true"}
+:ori-avatar{name="Marcus Tullius" color="secondary" :spaced="true"}
 
 #vue
 
 ```vue
-<OriAvatar text="Ada Lovelace" spaced />
-<OriAvatar text="Marcus Tullius" color="secondary" spaced />
+<OriAvatar name="Ada Lovelace" spaced />
+<OriAvatar name="Marcus Tullius" color="secondary" spaced />
 ```
 
 #html
@@ -282,9 +282,9 @@ inside a container that provides no gap of its own.
 A user-list row and a comment header — the everyday compositions.
 
 ::example
-:ori-avatar{src="/image-example.jpg" text="Marcus Tullius Cicero" title="Marcus Tullius Cicero" subtitle="Admin"}
-:ori-avatar{text="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="Editor"}
-:ori-avatar{text="Unknown User" color="surface" title="Unknown User" subtitle="Guest"}
+:ori-avatar{src="/image-example.jpg" name="Marcus Tullius Cicero" title="Marcus Tullius Cicero" subtitle="Admin"}
+:ori-avatar{name="Ada Lovelace" color="secondary" title="Ada Lovelace" subtitle="Editor"}
+:ori-avatar{name="Unknown User" color="surface" title="Unknown User" subtitle="Guest"}
 
 #vue
 
@@ -294,7 +294,7 @@ A user-list row and a comment header — the everyday compositions.
     <li v-for="user in users" :key="user.id">
         <OriAvatar
             :src="user.avatar"
-            :text="user.name"
+            :name="user.name"
             :title="user.name"
             :subtitle="user.role"
         />
@@ -325,8 +325,8 @@ A user-list row and a comment header — the everyday compositions.
 The accessibility contract holds across every layer — the standalone classes and the Vue component
 render the same attributes.
 
-- The `<img>` `alt` is always set — to the `text` prop value, or `''` (empty, decorative) when
-  `text` is omitted. Do not pass a separate `alt` via `$attrs`; it will be overridden.
+- The `<img>` `alt` is always set — to the `name` prop value, or `''` (empty, decorative) when
+  `name` is omitted. Do not pass a separate `alt` via `$attrs`; it will be overridden.
 - The initials backdrop is `aria-hidden="true"` — it is a visual fallback, not semantic content.
 - The `<img>` is revealed only after the `load` event fires (`v-show`), preventing a flash of a
   broken-image icon while the initials are still visible.
@@ -335,7 +335,7 @@ render the same attributes.
 
 | Attribute            | Element      | Notes                                                            |
 | -------------------- | ------------ | ---------------------------------------------------------------- |
-| `alt` (from `text`)  | `<img>`      | Set automatically; omit `alt` in `$attrs` — it will be replaced. |
+| `alt` (from `name`)  | `<img>`      | Set automatically; omit `alt` in `$attrs` — it will be replaced. |
 | `aria-hidden="true"` | `__backdrop` | Initials are decorative; screen readers read the image `alt`.    |
 
 ## Framework API
@@ -349,12 +349,12 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | ---------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `color`    | `ThemeColor` | —        | Tints the initials backdrop: `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background`. |
 | `inline`   | `boolean`    | `false`  | Renders as `inline-flex` with a small margin for flowing inside text.                                                        |
+| `name`     | `string`     | —        | Drives the initials (up to two letters from the first two words) and the image `alt`.                                        |
 | `radius`   | `RadiusSize` | `'full'` | Corner radius (`none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`).                                                          |
 | `reverse`  | `boolean`    | `false`  | Reverses the flex direction so the text column appears before the image.                                                     |
 | `size`     | `ActionSize` | `'lg'`   | Box size and initials scale (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`).                                                      |
 | `spaced`   | `boolean`    | `false`  | Adds padding around the avatar via `ori-size-action-space`.                                                                  |
 | `subtitle` | `string`     | —        | Secondary line in the text column; rendered whenever `title` or `subtitle` is set.                                           |
-| `text`     | `string`     | —        | Drives the initials (up to two letters from the first two words) and the image `alt`.                                        |
 | `title`    | `string`     | —        | Primary line in the text column; the text column appears when either `title` or `subtitle` is set.                           |
 
 ### Events & attributes
@@ -364,7 +364,7 @@ directly to the `<img>` element — so `src`, `alt`, `width`, `height`, `loading
 any other image attribute or listener fall through to the image, not the wrapper `<div>`. Native
 event listeners (`@error`, `@load`, …) follow the same path.
 
-The `alt` attribute is overridden internally to the value of `text` (or `''` when `text` is not set)
+The `alt` attribute is overridden internally to the value of `name` (or `''` when `name` is not set)
 so there is a single source of truth for the accessible name.
 
 ### Slots
@@ -374,7 +374,7 @@ value or prop. The image itself is not slotted — it comes through `$attrs` (se
 
 | Slot       | Falls back to                    | Description                                                                                                   |
 | ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `fallback` | the initials derived from `text` | Imageless fallback content — e.g. a person icon or monogram — shown when there is no image or while it loads. |
+| `fallback` | the initials derived from `name` | Imageless fallback content — e.g. a person icon or monogram — shown when there is no image or while it loads. |
 | `title`    | `title` prop                     | Primary line in the text column.                                                                              |
 | `subtitle` | `subtitle` prop                  | Secondary line in the text column.                                                                            |
 

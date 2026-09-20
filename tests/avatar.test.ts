@@ -5,19 +5,19 @@ import { expectNoA11yViolations } from './helpers/axe'
 
 describe('OriAvatar', () => {
     it('computes uppercase initials from text', () => {
-        const wrapper = mount(OriAvatar, { props: { text: 'John Doe' } })
+        const wrapper = mount(OriAvatar, { props: { name: 'John Doe' } })
 
         expect(wrapper.find('.ori-avatar__backdrop').text()).toBe('JD')
     })
 
     it('marks the initials backdrop as decorative', () => {
-        const wrapper = mount(OriAvatar, { props: { text: 'Ann' } })
+        const wrapper = mount(OriAvatar, { props: { name: 'Ann' } })
 
         expect(wrapper.find('.ori-avatar__backdrop').attributes('aria-hidden')).toBe('true')
     })
 
     it('renders title / subtitle and the titled modifier', () => {
-        const wrapper = mount(OriAvatar, { props: { text: 'JD', title: 'Jane', subtitle: 'Admin' } })
+        const wrapper = mount(OriAvatar, { props: { name: 'JD', title: 'Jane', subtitle: 'Admin' } })
 
         expect(wrapper.classes()).toContain('ori-avatar_titled')
         expect(wrapper.find('.ori-avatar__title').text()).toBe('Jane')
@@ -26,7 +26,7 @@ describe('OriAvatar', () => {
 
     it('renders custom #fallback slot content when imageless', () => {
         const wrapper = mount(OriAvatar, {
-            props: { text: 'John Doe' },
+            props: { name: 'John Doe' },
             slots: { fallback: '<span class="custom">JD!</span>' }
         })
 
@@ -36,14 +36,14 @@ describe('OriAvatar', () => {
     })
 
     it('falls back to the computed initials when no #fallback slot is given', () => {
-        const wrapper = mount(OriAvatar, { props: { text: 'John Doe' } })
+        const wrapper = mount(OriAvatar, { props: { name: 'John Doe' } })
 
         expect(wrapper.find('.ori-avatar__backdrop').text()).toBe('JD')
     })
 
     it('maps size / radius / inline / reverse to classes', () => {
         const c = mount(OriAvatar, {
-            props: { text: 'A', size: 'xl', radius: 'sm', inline: true, reverse: true }
+            props: { name: 'A', size: 'xl', radius: 'sm', inline: true, reverse: true }
         }).classes()
 
         expect(c).toContain('ori-avatar_xl')
@@ -53,7 +53,7 @@ describe('OriAvatar', () => {
     })
 
     it('has no axe violations', async () => {
-        const wrapper = mount(OriAvatar, { props: { text: 'John Doe' }, attachTo: document.body })
+        const wrapper = mount(OriAvatar, { props: { name: 'John Doe' }, attachTo: document.body })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
     })

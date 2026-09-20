@@ -57,7 +57,7 @@ trigger. Page scroll is locked while it is open.
 ```vue
 <OriDialog title="Hello, oriUI">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Open dialog" />
+        <OriButton v-bind="props" label="Open dialog" />
     </template>
     <p>This modal traps focus, closes on Escape, and locks page scroll.</p>
 </OriDialog>
@@ -128,7 +128,7 @@ lock, no focus trap, no `::backdrop`, no click-outside dismiss).
 ```vue
 <OriDialog title="Non-modal hint" :modal="false">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Open non-modal" variant="outline" />
+        <OriButton v-bind="props" label="Open non-modal" variant="outline" />
     </template>
     <p>Page is still scrollable and click-outside does not close this dialog.</p>
 </OriDialog>
@@ -158,7 +158,7 @@ page load.
 ```vue
 <OriDialog title="Welcome back" :defaultOpen="true">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Re-open" variant="soft" />
+        <OriButton v-bind="props" label="Re-open" variant="soft" />
     </template>
     <p>This dialog was open on first render.</p>
 </OriDialog>
@@ -195,13 +195,13 @@ function onConfirm() {
 </script>
 
 <template>
-    <OriButton text="Delete account" color="danger" variant="soft" @click="open = true" />
+    <OriButton label="Delete account" color="danger" variant="soft" @click="open = true" />
 
     <OriDialog v-model:open="open" title="Delete account?">
         <p>This permanently deletes your account. This cannot be undone.</p>
         <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem">
-            <OriButton text="Cancel" variant="text" @click="open = false" />
-            <OriButton text="Yes, delete" color="danger" @click="onConfirm" />
+            <OriButton label="Cancel" variant="text" @click="open = false" />
+            <OriButton label="Yes, delete" color="danger" @click="onConfirm" />
         </div>
     </OriDialog>
 </template>
@@ -223,7 +223,7 @@ Omit the `title` prop and supply markup in the `#title` slot when you need rich 
 ```vue
 <OriDialog>
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Rich title" variant="soft" color="info" />
+        <OriButton v-bind="props" label="Rich title" variant="soft" color="info" />
     </template>
     <template #title>
         <span>Delete <strong>project-x</strong>?</span>
@@ -253,13 +253,13 @@ A confirm / cancel pair inside a dialog, wired to an async action.
 ```vue
 <OriDialog title="Delete account?">
     <template #trigger="{ props }">
-        <OriButton v-bind="props" text="Delete account" variant="soft" color="danger" />
+        <OriButton v-bind="props" label="Delete account" variant="soft" color="danger" />
     </template>
     <p>This will permanently delete your account and all its data. This cannot be undone.</p>
     <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem">
         <!-- Close via the adapter's close mechanism or a custom event -->
-        <OriButton text="Cancel" variant="text" />
-        <OriButton text="Yes, delete" color="danger" variant="solid" />
+        <OriButton label="Cancel" variant="text" />
+        <OriButton label="Yes, delete" color="danger" variant="solid" />
     </div>
 </OriDialog>
 ```

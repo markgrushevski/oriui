@@ -25,7 +25,7 @@ const selected = ref<string | null>(null)
     <div style="display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-start">
         <OriMenu :items="items" :placement="placement" @select="(value) => (selected = value)">
             <template #trigger="{ props }">
-                <OriButton v-bind="props" text="Actions" variant="soft" />
+                <OriButton v-bind="props" label="Actions" variant="soft" />
             </template>
         </OriMenu>
         <p v-if="selected" style="margin: 0; font-size: 0.85em">

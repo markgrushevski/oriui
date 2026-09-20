@@ -257,7 +257,7 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
 
 <!-- status dot on an avatar -->
 <OriBadge dot floating color="success" label="Online">
-    <OriAvatar text="Ada Lovelace" />
+    <OriAvatar name="Ada Lovelace" />
 </OriBadge>
 
 <!-- tab with unread count -->

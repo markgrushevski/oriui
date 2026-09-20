@@ -46,7 +46,7 @@ import { OriButton } from '@oriui/vue'
 ```
 
 ```vue
-<OriButton text="Save" variant="soft" color="primary" size="lg" />
+<OriButton label="Save" variant="soft" color="primary" size="lg" />
 ```
 
 ## Use it — React / Svelte (the behavior layer)

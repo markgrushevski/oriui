@@ -144,14 +144,14 @@ All eight role pairs resolving live — each swatch is the same `.ori-color_*` u
 changes. _(For the per-component usage of these classes, see [Button](/components/button).)_
 
 ::example
-:ori-button{text="primary" color="primary"}
-:ori-button{text="secondary" color="secondary"}
-:ori-button{text="surface" color="surface"}
-:ori-button{text="background" color="background"}
-:ori-button{text="success" color="success"}
-:ori-button{text="warning" color="warning"}
-:ori-button{text="danger" color="danger"}
-:ori-button{text="info" color="info"}
+:ori-button{label="primary" color="primary"}
+:ori-button{label="secondary" color="secondary"}
+:ori-button{label="surface" color="surface"}
+:ori-button{label="background" color="background"}
+:ori-button{label="success" color="success"}
+:ori-button{label="warning" color="warning"}
+:ori-button{label="danger" color="danger"}
+:ori-button{label="info" color="info"}
 ::
 
 ### Text — the on-surface foreground
@@ -224,11 +224,11 @@ Interaction state is derived from these same tokens, not stored — hover and `[
 the `color-mix` per variant. (See the live behaviour on [Button](/components/button).)
 
 ::example
-:ori-button{text="Solid" variant="solid"}
-:ori-button{text="Tonal" variant="soft"}
-:ori-button{text="Outline" variant="outline"}
-:ori-button{text="Text" variant="text"}
-:ori-button{text="Plain" variant="plain"}
+:ori-button{label="Solid" variant="solid"}
+:ori-button{label="Tonal" variant="soft"}
+:ori-button{label="Outline" variant="outline"}
+:ori-button{label="Text" variant="text"}
+:ori-button{label="Plain" variant="plain"}
 ::
 
 ## Sizes — two tiers

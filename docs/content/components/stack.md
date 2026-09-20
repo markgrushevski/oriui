@@ -35,18 +35,18 @@ provided; without a gap class the gap is whatever `--ori-size-gap` resolves to a
 
 ::example
 ::ori-stack{gap="md"}
-:ori-button{text="First item" variant="outline"}
-:ori-button{text="Second item" variant="outline"}
-:ori-button{text="Third item" variant="outline"}
+:ori-button{label="First item" variant="outline"}
+:ori-button{label="Second item" variant="outline"}
+:ori-button{label="Third item" variant="outline"}
 ::
 
 #vue
 
 ```vue
 <OriStack gap="md">
-    <OriButton text="First item" variant="outline" />
-    <OriButton text="Second item" variant="outline" />
-    <OriButton text="Third item" variant="outline" />
+    <OriButton label="First item" variant="outline" />
+    <OriButton label="Second item" variant="outline" />
+    <OriButton label="Third item" variant="outline" />
 </OriStack>
 ```
 
@@ -69,24 +69,24 @@ cluster wraps gracefully at narrow widths.
 
 ::example
 ::ori-stack{:cluster="true" gap="sm"}
-:ori-button{text="Vue 3" variant="soft"}
-:ori-button{text="TypeScript" variant="soft"}
-:ori-button{text="Vite" variant="soft"}
-:ori-button{text="Nuxt" variant="soft"}
-:ori-button{text="Vitest" variant="soft"}
-:ori-button{text="axe-core" variant="soft"}
+:ori-button{label="Vue 3" variant="soft"}
+:ori-button{label="TypeScript" variant="soft"}
+:ori-button{label="Vite" variant="soft"}
+:ori-button{label="Nuxt" variant="soft"}
+:ori-button{label="Vitest" variant="soft"}
+:ori-button{label="axe-core" variant="soft"}
 ::
 
 #vue
 
 ```vue
 <OriStack cluster gap="sm">
-    <OriButton text="Vue 3" variant="soft" />
-    <OriButton text="TypeScript" variant="soft" />
-    <OriButton text="Vite" variant="soft" />
-    <OriButton text="Nuxt" variant="soft" />
-    <OriButton text="Vitest" variant="soft" />
-    <OriButton text="axe-core" variant="soft" />
+    <OriButton label="Vue 3" variant="soft" />
+    <OriButton label="TypeScript" variant="soft" />
+    <OriButton label="Vite" variant="soft" />
+    <OriButton label="Nuxt" variant="soft" />
+    <OriButton label="Vitest" variant="soft" />
+    <OriButton label="axe-core" variant="soft" />
 </OriStack>
 ```
 
@@ -112,28 +112,28 @@ cluster wraps gracefully at narrow widths.
 
 ::example
 ::ori-stack{gap="none"}
-:ori-button{text="none" size="sm" variant="solid"}
-:ori-button{text="none" size="sm" variant="solid"}
+:ori-button{label="none" size="sm" variant="solid"}
+:ori-button{label="none" size="sm" variant="solid"}
 ::
 ::ori-stack{gap="xs"}
-:ori-button{text="xs" size="sm" variant="soft"}
-:ori-button{text="xs" size="sm" variant="soft"}
+:ori-button{label="xs" size="sm" variant="soft"}
+:ori-button{label="xs" size="sm" variant="soft"}
 ::
 ::ori-stack{gap="sm"}
-:ori-button{text="sm" size="sm" variant="outline"}
-:ori-button{text="sm" size="sm" variant="outline"}
+:ori-button{label="sm" size="sm" variant="outline"}
+:ori-button{label="sm" size="sm" variant="outline"}
 ::
 ::ori-stack{gap="md"}
-:ori-button{text="md" size="sm" variant="soft"}
-:ori-button{text="md" size="sm" variant="soft"}
+:ori-button{label="md" size="sm" variant="soft"}
+:ori-button{label="md" size="sm" variant="soft"}
 ::
 ::ori-stack{gap="lg"}
-:ori-button{text="lg" size="sm" variant="outline"}
-:ori-button{text="lg" size="sm" variant="outline"}
+:ori-button{label="lg" size="sm" variant="outline"}
+:ori-button{label="lg" size="sm" variant="outline"}
 ::
 ::ori-stack{gap="xl"}
-:ori-button{text="xl" size="sm" variant="solid"}
-:ori-button{text="xl" size="sm" variant="solid"}
+:ori-button{label="xl" size="sm" variant="solid"}
+:ori-button{label="xl" size="sm" variant="solid"}
 ::
 
 #vue
@@ -163,9 +163,9 @@ Useful for centering a cluster horizontally, or stretching stack children to ful
 
 ::example
 ::ori-stack{:cluster="true" gap="sm" justify="center"}
-:ori-button{text="Centered" variant="solid"}
-:ori-button{text="Cluster" variant="soft"}
-:ori-button{text="Row" variant="outline"}
+:ori-button{label="Centered" variant="solid"}
+:ori-button{label="Cluster" variant="soft"}
+:ori-button{label="Row" variant="outline"}
 ::
 
 #vue
@@ -173,15 +173,15 @@ Useful for centering a cluster horizontally, or stretching stack children to ful
 ```vue
 <!-- Cluster with centered main axis -->
 <OriStack cluster gap="sm" justify="center">
-    <OriButton text="Centered" variant="solid" />
-    <OriButton text="Cluster" variant="soft" />
-    <OriButton text="Row" variant="outline" />
+    <OriButton label="Centered" variant="solid" />
+    <OriButton label="Cluster" variant="soft" />
+    <OriButton label="Row" variant="outline" />
 </OriStack>
 
 <!-- Stack with cross-axis centering (children narrower than the container) -->
 <OriStack gap="md" align="center">
-    <OriButton text="Narrow A" variant="outline" />
-    <OriButton text="Narrow B" variant="outline" />
+    <OriButton label="Narrow A" variant="outline" />
+    <OriButton label="Narrow B" variant="outline" />
 </OriStack>
 ```
 
@@ -247,8 +247,8 @@ A vertical stack holding labeled inputs — the most common use in forms.
 :ori-input{label="Full name" placeholder="Jane Smith"}
 :ori-input{label="Email" placeholder="jane@example.com"}
 ::ori-stack{:cluster="true" gap="sm" justify="flex-end"}
-:ori-button{text="Cancel" variant="text"}
-:ori-button{text="Save" variant="solid"}
+:ori-button{label="Cancel" variant="text"}
+:ori-button{label="Save" variant="solid"}
 ::
 ::
 
@@ -259,8 +259,8 @@ A vertical stack holding labeled inputs — the most common use in forms.
     <OriInput label="Full name" placeholder="Jane Smith" />
     <OriInput label="Email" placeholder="jane@example.com" />
     <OriStack cluster gap="sm" justify="flex-end">
-        <OriButton text="Cancel" variant="text" />
-        <OriButton text="Save" variant="solid" />
+        <OriButton label="Cancel" variant="text" />
+        <OriButton label="Save" variant="solid" />
     </OriStack>
 </OriStack>
 ```
@@ -286,8 +286,8 @@ A cluster for the header actions above a stack of cards.
 ::example
 ::ori-stack{gap="md"}
 ::ori-stack{:cluster="true" gap="sm" justify="space-between" align="center"}
-:ori-button{text="Filter" variant="outline"}
-:ori-button{text="New" variant="solid"}
+:ori-button{label="Filter" variant="outline"}
+:ori-button{label="New" variant="solid"}
 ::
 :ori-card{title="Project Alpha" text="Design system refactor — in progress."}
 :ori-card{title="Project Beta" text="Accessibility audit — review pending."}
@@ -298,8 +298,8 @@ A cluster for the header actions above a stack of cards.
 ```vue
 <OriStack gap="md">
     <OriStack cluster gap="sm" justify="space-between" align="center">
-        <OriButton text="Filter" variant="outline" />
-        <OriButton text="New" variant="solid" />
+        <OriButton label="Filter" variant="outline" />
+        <OriButton label="New" variant="solid" />
     </OriStack>
     <OriCard title="Project Alpha" text="Design system refactor — in progress." />
     <OriCard title="Project Beta" text="Accessibility audit — review pending." />
