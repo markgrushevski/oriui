@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useId, watchEffect } from 'vue'
+import { computed, useId, useSlots, watchEffect } from 'vue'
 import type { RadiusSize, ThemeColor } from '../../types'
 
 /**
@@ -23,6 +23,16 @@ export interface AccordionItem {
 // every <details> shares one `name`, so the browser closes the siblings when one opens. `multiple` drops
 // the shared name so each item opens independently. The accent (open marker + chevron) rides the shared
 // ori-color utility, read through the resolved --ori-color alias like the rest of the library.
+//
+// Panel content: a per-value named slot (`#panel-<value>`) is the primary mechanism, with the scoped
+// `#default="{ item }"` slot as the shared-template fallback — the same pair, and the same `panel-`
+// prefix rationale, as OriTabs. The per-value slots exist because the fallback renders once per ITEM
+// (ORI-I-87): a template carrying ids produced one copy per section, and in `multiple` mode two of
+// them can be open at once, where `<label for>` resolves to the first copy — visibly focusing the
+// wrong section's input. Tabs can dodge that by rendering its fallback into the active panel only; an
+// accordion has no single active item, so the answer here is the escape hatch instead. Content is NOT
+// gated on `open`: a closed <details> keeps its content in the DOM on purpose, which is what makes
+// find-in-page work, and that is half the reason this component is native in the first place.
 const {
     color = 'primary',
     items,
@@ -53,6 +63,7 @@ function blockDisabled(event: Event, disabled?: boolean): void {
 // rather than leaving the caller to diff the markup. Ships only in DEV; `import.meta.env.DEV` is a
 // compile-time constant, so the whole block is dropped from the production bundle.
 if (import.meta.env.DEV) {
+    const slots = useSlots()
     watchEffect(() => {
         // Typed as the caller may actually have built it, not as the prop promises: `label` optional
         // (that is the whole failure mode) and the retired `title` visible to the check.
@@ -65,6 +76,17 @@ if (import.meta.env.DEV) {
                 `[OriAccordion] item(s) ${stale.join(', ')} pass \`title\`, which was renamed to \`label\` ` +
                     'before 1.0 (matching TabItem / SelectOption / RadioOption / ComboboxItem / MenuItem). ' +
                     'Rename the key — the summary renders empty otherwise.'
+            )
+
+        // A `#panel-<value>` slot whose value is a typo, or whose item was removed, consumes nothing
+        // and Vue never warns about an unconsumed slot — the section silently falls back to `#default`
+        // or renders empty. Exact match against the item values, so it cannot fire on correct code.
+        const values = new Set(items.map((item) => `panel-${item.value}`))
+        const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))
+        if (orphans.length)
+            console.warn(
+                `[OriAccordion] panel slot(s) #${orphans.join(', #')} match no item value — check the ` +
+                    `spelling against \`items\` (${items.map((item) => item.value).join(', ')}).`
             )
     })
 }
@@ -103,7 +125,9 @@ if (import.meta.env.DEV) {
             </summary>
 
             <div class="ori-accordion__panel">
-                <slot :item="item" />
+                <slot :name="`panel-${item.value}`" :item="item">
+                    <slot :item="item" />
+                </slot>
             </div>
         </details>
     </div>

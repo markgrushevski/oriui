@@ -185,7 +185,7 @@ From `none` (square) to the default `full` (pill).
 
 ```html
 <span class="ori-tag ori-variant_soft ori-color_primary ori-font-size_sm ori-size-radius_none">
-    <span class="ori-tag__text">zero</span>
+    <span class="ori-tag__text">none</span>
 </span>
 ```
 

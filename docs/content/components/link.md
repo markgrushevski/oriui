@@ -75,7 +75,7 @@ Apply a semantic role with `ori-color_*`. The color drives both the text and the
 #html
 
 ```html
-<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warning / _danger / _info -->
 <a class="ori-link ori-color_primary" href="#">primary</a>
 <a class="ori-link ori-color_danger" href="#">danger</a>
 ```

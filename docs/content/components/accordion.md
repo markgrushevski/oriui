@@ -37,7 +37,7 @@ div.ori-accordion                     (wrapper; carries the color + optional rad
     summary.ori-accordion__trigger
       span.ori-accordion__title       (heading text)
       svg.ori-accordion__icon         (decorative chevron; aria-hidden)
-    div.ori-accordion__panel          (default scoped slot body)
+    div.ori-accordion__panel          (#panel-<value>, or the default scoped slot)
 ```
 
 ## Basic
@@ -169,7 +169,7 @@ Corner rounding via the `radius` prop. When omitted, the container uses the bake
 `.ori-accordion` block bakes `--ori-size-radius: md`, so a bare block is never square).
 
 ::example
-:ori-accordion{radius="none" :items='[{"value":"a","label":"zero — no rounding"}]'}
+:ori-accordion{radius="none" :items='[{"value":"a","label":"none — no rounding"}]'}
 :ori-accordion{radius="sm" :items='[{"value":"a","label":"sm — subtle rounding"}]'}
 :ori-accordion{radius="md" :items='[{"value":"a","label":"md — medium rounding"}]'}
 :ori-accordion{radius="lg" :items='[{"value":"a","label":"lg — large rounding"}]'}
@@ -225,6 +225,60 @@ triggers. Disabled items render `aria-disabled="true"` and `tabindex="-1"` on th
     </summary>
     <div class="ori-accordion__panel"></div>
 </details>
+```
+
+::
+
+## Panel slots — per-section content
+
+Use a `#panel-<value>` slot to give one section its own markup. The scoped `#default="{ item }"` slot
+remains the fallback for a template shared across the sections that have no named slot of their own.
+
+The distinction matters more here than it looks. The fallback is rendered **once per item** — that is what
+makes it "shared" — so a template that ignores its scope is duplicated, `id` attributes included. Unlike
+Tabs, an accordion cannot answer that by rendering into the active panel only: in `multiple` mode there is
+no single active item, and two open sections carrying the same `id` mean a `<label for>` in the second one
+focuses the input in the first. So anything with an `id`, a form control, or per-section state belongs in
+`#panel-<value>`.
+
+Content is deliberately **not** gated on the open state: a closed `<details>` keeps its content in the DOM,
+which is what lets the browser find it with find-in-page and expand the section — one of the reasons this
+component is built on the native element.
+
+::example
+:ori-accordion{:items='[{"value":"shipping","label":"Shipping"},{"value":"returns","label":"Returns"},{"value":"warranty","label":"Warranty"}]'}
+
+#vue
+
+```vue
+<!-- Primary: a named slot per value — distinct markup per section -->
+<OriAccordion :items="items">
+    <template #panel-shipping>
+        <p>Ships in 2–3 business days.</p>
+    </template>
+    <template #panel-returns>
+        <OriField label="Order number"><OriInput v-model="order" /></OriField>
+    </template>
+    <template #panel-warranty>
+        <p>Two years, parts and labour.</p>
+    </template>
+</OriAccordion>
+
+<!-- Fallback: one shared template that reads the section from scope -->
+<OriAccordion :items="items">
+    <template #default="{ item }">
+        <p>Details for {{ item.label }}.</p>
+    </template>
+</OriAccordion>
+```
+
+#html
+
+```html
+<!-- Panels are arbitrary markup inside each ori-accordion__panel -->
+<div class="ori-accordion__panel">
+    <p>Ships in 2–3 business days.</p>
+</div>
 ```
 
 ::
@@ -341,7 +395,8 @@ const items: AccordionItem[] = [
 
 ### Slots
 
-| Slot      | Scope                                                                      | Description                                                                                                                                                                                                                                                                         |
-| --------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`   | `{ item: { value: string \| number; label: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.label` string. The slot is named for the REGION it fills, the item field for the value it carries — they are deliberately different words. |
-| `default` | `{ item: { value: string \| number; title: string; disabled?: boolean } }` | Scoped per-item panel body, rendered inside each item's `.ori-accordion__panel`. Receives the current item; falls back to an empty panel if unused.                                                                                                                                 |
+| Slot            | Scope                                                                      | Description                                                                                                                                                                                                                                                                                                         |
+| --------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`         | `{ item: { value: string \| number; label: string; disabled?: boolean } }` | Scoped per-item trigger content, rendered inside each item's `.ori-accordion__title`. Receives the current item; falls back to the `item.label` string. The slot is named for the REGION it fills, the item field for the value it carries — they are deliberately different words.                                 |
+| `panel-<value>` | `{ item: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name it `panel-` plus the item value (e.g. `#panel-shipping`), rendered into that section and no other. The prefix keeps caller data out of the reserved `#title` / `#default` namespace, exactly as in OriTabs. Anything carrying an `id` or per-section state belongs here. |
+| `default`       | `{ item: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** Scoped per-item panel body, rendered into every `.ori-accordion__panel` that has no named slot of its own, with that item in scope — so a template that ignores the scope is duplicated once per section, `id`s and all. An empty panel when unused.                                                  |
