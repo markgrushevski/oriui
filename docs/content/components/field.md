@@ -13,9 +13,17 @@ by hand. Wrap a control in `OriField` and it adopts the field's id, `aria-descri
 there is exactly one of each, wired identically every time. Group and composite controls (RadioGroup,
 Combobox's listbox, ColorPicker) name themselves via `aria-labelledby` pointing at the field's label.
 
-Any control works: an Ori control nested inside wires up automatically (via `provide`/`inject`); a
+Most controls wire up automatically: `OriInput`, `OriTextarea`, `OriSelect`, `OriCombobox`,
+`OriSlider`, `OriRadioGroup` and `OriColorPicker` read the field's context via `provide`/`inject`; a
 raw `<input>` or htmx markup wires up through the scoped-slot `controlAttrs`. The standalone
 **HTML / `@oriui/css`** path is the same `.ori-field` shell around any `.ori-*` field element.
+
+**Two controls are deliberately excluded: `OriCheckbox` and `OriSwitch`.** A single boolean carries its
+own inline label _after_ the box, so wrapping one in a field renders two labels and leaves the field's
+`<label for>` pointing at an id nothing owns — and `disabled` / `required` / `invalid` / `describedby` /
+`size` are silently dropped. Label them with their own `label` prop instead; a group of them is a
+`<fieldset>` + `<legend>`, not a field. (Recorded in DECISIONS.md, "OriField composes group/composite
+controls".)
 
 ## Classes
 

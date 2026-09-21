@@ -121,4 +121,75 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         expect(Number.isFinite(arrow.top)).toBe(true)
         expect(arrow.top).toBeGreaterThan(arrow.height / 2) // sits in the bottom half, pointing down
     })
+    // WCAG 1.4.13 Content on Hover or Focus — Level AA, normative (ORI-I-86). Two of the three bullets
+    // are geometry and pointer behaviour, so they can only be checked in a real engine.
+
+    test('Hoverable: the pointer can travel from the trigger onto the bubble without crossing dead space', async ({
+        page
+    }) => {
+        await setup(page, `<div style="padding: 120px;">${tooltip('t', { placement: 'bottom' })}</div>`)
+
+        const trigger = page.locator('#t .ori-tooltip__trigger button')
+        const bubble = page.locator('#t-bubble')
+
+        await trigger.hover()
+        await expect(bubble).toBeVisible()
+
+        // The bubble itself must be hit-testable while shown — F95 is exactly the opposite.
+        expect(await bubble.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('auto')
+
+        // And the gap must be bridged: the point halfway between the trigger's bottom edge and the
+        // bubble's top edge has to belong to the tooltip, or the pointer loses the tooltip on the way.
+        const gapOwner = await page.evaluate(() => {
+            const t = document.querySelector('#t .ori-tooltip__trigger')!.getBoundingClientRect()
+            const b = document.querySelector('#t-bubble')!.getBoundingClientRect()
+            const mid = { x: b.left + b.width / 2, y: (t.bottom + b.top) / 2 }
+            const el = document.elementFromPoint(mid.x, mid.y)
+            return { inside: Boolean(el?.closest('#t')), gap: Math.round(b.top - t.bottom) }
+        })
+        expect(gapOwner.gap).toBeGreaterThan(0) // there IS a visual gap …
+        expect(gapOwner.inside).toBe(true) // … and it still belongs to the tooltip
+    })
+
+    test('Hoverable: the bubble stays shown while the pointer rests on it', async ({ page }) => {
+        await setup(page, `<div style="padding: 120px;">${tooltip('t', { placement: 'bottom' })}</div>`)
+
+        const bubble = page.locator('#t-bubble')
+        await page.locator('#t .ori-tooltip__trigger button').hover()
+        await expect(bubble).toBeVisible()
+
+        await bubble.hover()
+        await expect(bubble).toBeVisible()
+        // Poll rather than read once: the 0.15s opacity transition is still running at the moment the
+        // pointer lands, so a single read catches it mid-fade. What matters is where it SETTLES.
+        await expect.poll(() => bubble.evaluate((el) => getComputedStyle(el).opacity)).toBe('1')
+    })
+
+    test('Dismissible: the data attribute hides the bubble while the pointer stays put', async ({ page }) => {
+        // The CSS half of the contract — what the Vue component's Escape handler sets. A standalone
+        // `@oriui/css` consumer wires the attribute themselves, so this is the surface they target.
+        await setup(page, `<div style="padding: 120px;">${tooltip('t', { placement: 'bottom' })}</div>`)
+
+        const bubble = page.locator('#t-bubble')
+        await page.locator('#t .ori-tooltip__trigger button').hover()
+        await expect(bubble).toBeVisible()
+
+        await page.locator('#t').evaluate((el) => el.setAttribute('data-ori-dismissed', ''))
+        await expect(bubble).toBeHidden()
+
+        // Re-arms when the attribute goes (the component drops it on pointerleave / focusout).
+        await page.locator('#t').evaluate((el) => el.removeAttribute('data-ori-dismissed'))
+        await expect(bubble).toBeVisible()
+    })
+
+    test('the bridge captures nothing while the tooltip is hidden', async ({ page }) => {
+        await setup(page, `<div style="padding: 120px;">${tooltip('t', { placement: 'bottom' })}</div>`)
+
+        const owner = await page.evaluate(() => {
+            const b = document.querySelector('#t-bubble')!.getBoundingClientRect()
+            const el = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2)
+            return el?.closest('#t') ? 'tooltip' : 'page'
+        })
+        expect(owner).toBe('page')
+    })
 })

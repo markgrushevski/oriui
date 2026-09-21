@@ -50,6 +50,7 @@ function markup(): string {
         <button class="ori-button ori-color_${role} ori-variant_soft" data-role="${role}" data-kind="button-soft">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_soft" data-active data-role="${role}" data-kind="button-soft-active">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_quiet" data-role="${role}" data-kind="button-quiet">Quiet</button>
+        <button class="ori-button ori-color_${role} ori-variant_solid" aria-busy="true" disabled data-role="${role}" data-kind="button-busy">Busy</button>
         <a class="ori-link ori-color_${role}" href="#" data-role="${role}" data-kind="link">Link</a>
         <span class="ori-tag ori-color_${role}" data-role="${role}" data-kind="tag"><span class="ori-tag__text">Tag</span></span>
         <div class="ori-alert ori-color_${role}" data-role="${role}" data-kind="alert"><div class="ori-alert__content"><div class="ori-alert__title">Alert</div></div></div>
