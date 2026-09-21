@@ -126,7 +126,7 @@ Omit for the default subtle mix.
 #html
 
 ```html
-<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warning / _danger / _info -->
 <div class="ori-divider ori-color_primary" role="separator"></div>
 ```
 

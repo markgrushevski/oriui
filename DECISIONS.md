@@ -1263,3 +1263,60 @@ verbatim: it derives the initials and the image `alt` (Chakra's word for the sam
 **No aliases.** The owner ruled against shipping two spellings for any of it: a pair of names that
 reaches 1.0 never gets removed. One set of names, a migration table in the changeset, and the cost
 paid once.
+
+## Tabs stays array-driven — the compound shape, prototyped and priced
+
+**Date:** 2026-09-21 · **Closes** the open question left by the two entries above, and by ORI-I-84 /
+ORI-I-87. **Prototype:** branch `poc/compound-tabs`, not merged; every number below is reproducible
+there from `MEASUREMENTS-compound-tabs.md`.
+
+Tabs and Accordion were the one place oriUI stood in the minority: content-shaped collections are
+compound in 12 styled libraries to 1, and the single array outlier is Ant Design. The correction
+above already established that the framing "compound versus monolithic" is wrong — the array owns the
+model, compound owns the rendering — so the only honest way to settle it was to build the thing and
+measure. `OriTabsC` + `OriTabList` + `OriTab` + `OriTabPanel`, Vue-only, children rendering
+themselves, 8 passing behaviour tests including automatic activation and disabled-skipping.
+
+**Two of the things we believed turned out to be wrong, in opposite directions.**
+
+_The SSR blocker was real but misattributed._ The plan recorded "with naive provide/inject
+registration the SSR tablist serializes empty (0 tab buttons)". Both designs are provide/inject
+registration, and they do not behave the same: a root that renders the buttons from what children
+registered serializes **0 tabs**, because the root's render runs before any child's setup; children
+that render themselves serialize **all** of them. Measured side by side. The reference libraries use
+the second, which is PrimeVue's "each component must render itself" — the sentence this project had
+already quoted backwards once. So SSR is not a reason to reject compound, and the earlier claim
+should not be cited again.
+
+_The cost is somewhere else entirely, and it has no workaround._ The array API resolves the selection
+synchronously from the list it was handed, so an invalid bound value is corrected before the first
+byte is written. A compound root cannot: at the moment the first tab serializes, the registry holds
+only that tab, so validating the bound value against it would select the wrong tab whenever the real
+one registers later — a guaranteed hydration mismatch. The only SSR-safe rule is "a bound value wins
+unconditionally", and that produces, measured: a v-model at a **disabled** tab renders the disabled
+tab selected (the array API heals to the first enabled one), and a v-model at a value **not in the
+set** renders nothing selected and zero visible panels. Healing can then only happen after mount — a
+visible flash. This is not hypothetical: `AuthForm.vue:39-42` in justpaint exists solely to bridge a
+narrowed union into `string | number | undefined`, because the bound value can be out of set.
+
+**What the rest of the axes said.** Size is a wash — 1.48 kB against 1.58 kB gzip with behaviour
+included on both sides, so bytes decide nothing. The call site splits by case: with distinct panels
+compound is shorter and reads better (13 → 11 lines in the docs' Basic example), with a shared body it
+is far worse — the only real consumer goes 35 → 62 lines, because compound has no "one template,
+every panel" and the workaround is a `v-for` over an array in the caller's own file. And three costs
+the prototype cannot pay off: the registry is per-framework where `useTabs` is one shared core machine
+behind three adapters (315 lines, 14 headless tests); 10 inline MDC demos cannot be expressed compound
+at all and would each need a bespoke wrapper component, with 14 more on the Accordion page; and the
+migration is 41 + 14 + 7 tests, 620 doc lines and 12 selectors that pin rendered ids, which change
+because compound ids must derive from the value.
+
+**The decision, and the asymmetry behind it.** Tabs stays array-driven. The strongest argument for
+compound was that it makes the `#default` fan-out (ORI-I-84 / ORI-I-87) structurally impossible — but
+that defect is fixable directly, and now is: the Tabs fallback renders into the active panel only, and
+Accordion gained the per-value `#panel-<value>` slots it never had. The property compound gives up —
+synchronous, SSR-correct recovery from an invalid selection — is not recoverable in a compound shape
+at all. A defect you can fix is not worth a property you cannot restore.
+
+**What this does NOT license.** It is not a general verdict that compound is wrong; it is a verdict
+about a widget whose selection must be valid on the server. And it is not an invitation to reopen the
+question every time the 12-to-1 count comes up again: the count was never in dispute, the trade was.

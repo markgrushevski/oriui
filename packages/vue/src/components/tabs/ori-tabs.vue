@@ -20,7 +20,14 @@ export interface TabItem extends HeadlessTabItem {
 //
 // Panel content: a per-value named slot (`#panel-<value>`) is the primary mechanism — distinct markup
 // per tab; a scoped `#default="{ tab }"` slot is the fallback (shared template that reads the active
-// tab). The `panel-` prefix is load-bearing, not decoration: panel slot names are caller DATA (a tab's
+// tab). The fallback renders into the ACTIVE panel ONLY (ORI-I-84). It used to render into every one,
+// which multiplied a template that ignored its scope: a login form in `#default` produced two copies of
+// every `id`, and `getElementById` — so `<label for>` — resolved to the copy in the HIDDEN panel
+// whenever the active tab was not the first. One panel, one content is now the rule for every slot in
+// this component, the fallback included, and the scope it hands out is always the active tab. The cost
+// is that uncontrolled DOM state inside a shared template (an unsent draft) does not survive a tab
+// switch — that is what `#panel-<value>` is for. The `panel-` prefix is load-bearing, not decoration:
+// panel slot names are caller DATA (a tab's
 // `value`), and named slots are one flat namespace, so an unprefixed `#<value>` let a tab valued "tab"
 // resolve its panel to this component's own reserved `#tab` (the label renderer) — rendering that
 // template into the panel AND leaving the panel's real content unreachable. Prefixing moves the
@@ -84,6 +91,18 @@ if (import.meta.env.DEV) {
                     `named \`#panel-<value>\` (e.g. #panel-${stale[0]}), so a tab's value can never collide ` +
                     'with the reserved #tab / #default slots.'
             )
+
+        // The other half of the same silence: a correctly PREFIXED slot whose value is a typo, or
+        // whose tab was removed. It consumes nothing and Vue says nothing, so the panel renders the
+        // `#default` fallback (or empty) and the caller sees a blank tab. The check is exact — a
+        // `panel-*` name that matches no item — so it cannot fire on correct code.
+        const values = new Set(tabs.map((tab) => `panel-${tab.value}`))
+        const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))
+        if (orphans.length)
+            console.warn(
+                `[OriTabs] panel slot(s) #${orphans.join(', #')} match no tab value — check the spelling ` +
+                    `against \`tabs\` (${tabs.map((tab) => tab.value).join(', ')}).`
+            )
     })
 }
 </script>
@@ -103,7 +122,7 @@ if (import.meta.env.DEV) {
 
         <div v-for="(tab, index) in tabs" :key="tab.value" v-bind="getPanelProps(tab, index)" class="ori-tabs__panel">
             <slot :name="`panel-${tab.value}`" :tab="tab">
-                <slot :tab="tab" />
+                <slot v-if="tab.value === selectedValue" :tab="tab" />
             </slot>
         </div>
     </div>
