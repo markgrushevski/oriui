@@ -57,7 +57,7 @@ Five visual styles, all driven by the `ori-variant_*` utility. `soft` is the def
 ```html
 <div class="ori-alert ori-variant_soft ori-color_info" role="status">
     <div class="ori-alert__content">
-        <div class="ori-alert__body">Tonal alert</div>
+        <div class="ori-alert__body">Soft alert</div>
     </div>
 </div>
 <!-- swap the variant: ori-variant_soft → ori-variant_solid / ori-variant_outline / ori-variant_text / ori-variant_quiet -->

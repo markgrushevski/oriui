@@ -419,6 +419,68 @@ describe('OriToolbarButton', () => {
         expect(button.attributes('aria-describedby')).toBeUndefined()
     })
 
+    // A tooltip must not rename a button that already has visible text — WCAG 2.5.3 Label in Name.
+    // This combination only became reachable when `text` was renamed to `label`: before it, the
+    // visible text and the accessible name lived in different props and could not collide.
+
+    it('a visible label wins over the tooltip as the accessible name', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () => h(OriToolbarButton, { label: 'Save', tooltip: 'Write the document to disk' })
+            },
+            attachTo: document.body
+        })
+
+        const button = wrapper.find('.ori-button')
+        expect(button.text()).toContain('Save')
+        expect(button.attributes('aria-label')).toBeUndefined()
+        // The tooltip is then a genuine supplementary description, so it IS wired.
+        expect(button.attributes('aria-describedby')).toBeTruthy()
+        wrapper.unmount()
+    })
+
+    it('the tooltip still names an icon-only button that has no visible label', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: { default: () => h(OriToolbarButton, { icon: 'x', tooltip: 'Bold' }) },
+            attachTo: document.body
+        })
+
+        const button = wrapper.find('.ori-button')
+        expect(button.attributes('aria-label')).toBe('Bold')
+        expect(button.attributes('aria-describedby')).toBeUndefined() // name == description would double-announce
+        wrapper.unmount()
+    })
+
+    it('slotted content counts as the visible name too', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () => h(OriToolbarButton, { tooltip: 'Bold (Ctrl+B)' }, () => 'Bold')
+            },
+            attachTo: document.body
+        })
+
+        const button = wrapper.find('.ori-button')
+        expect(button.attributes('aria-label')).toBeUndefined()
+        expect(button.attributes('aria-describedby')).toBeTruthy()
+        wrapper.unmount()
+    })
+
+    it('an explicit aria-label still overrides both', () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () => h(OriToolbarButton, { ariaLabel: 'Save document', label: 'Save', tooltip: 'Ctrl+S' })
+            },
+            attachTo: document.body
+        })
+
+        expect(wrapper.find('.ori-button').attributes('aria-label')).toBe('Save document')
+        wrapper.unmount()
+    })
+
     it('forwards color / size / variant / radius / label to the rendered OriButton', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },

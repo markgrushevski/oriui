@@ -294,14 +294,14 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 
 ### Props
 
-| Prop     | Type         | Default  | Description                                                                                      |
-| -------- | ------------ | -------- | ------------------------------------------------------------------------------------------------ |
-| `color`  | `ThemeColor` | —        | Semantic color role. Omit to inherit `currentcolor` from the parent.                             |
-| `icon`   | `string`     | —        | SVG `<path d>` string. Renders inside a `24 × 24` viewBox. Omit to use the default slot instead. |
-| `inline` | `boolean`    | `false`  | Switches to `inline-flex` with an `em`-based margin for use inside text flow.                    |
-| `label`  | `string`     | —        | Accessible name. When set, adds `role="img"` and `aria-label`; removes `aria-hidden`.            |
-| `size`   | `ActionSize` | `'text'` | Icon box size (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). `text` inherits the current font size. |
-| `spaced` | `boolean`    | `false`  | Adds action-space margin scaled to the active `size`. Has no effect when `size` is not set.      |
+| Prop     | Type         | Default     | Description                                                                                      |
+| -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------ |
+| `color`  | `ThemeColor` | —           | Semantic color role. Omit to inherit `currentcolor` from the parent.                             |
+| `icon`   | `string`     | —           | SVG `<path d>` string. Renders inside a `24 × 24` viewBox. Omit to use the default slot instead. |
+| `inline` | `boolean`    | `false`     | Switches to `inline-flex` with an `em`-based margin for use inside text flow.                    |
+| `label`  | `string`     | —           | Accessible name. When set, adds `role="img"` and `aria-label`; removes `aria-hidden`.            |
+| `size`   | `ActionSize` | `'inherit'` | Icon box size (`xs` · `sm` · `md` · `lg` · `xl` · `xxl`). `inherit` takes the current font size. |
+| `spaced` | `boolean`    | `false`     | Adds action-space margin scaled to the active `size`. Has no effect when `size` is not set.      |
 
 ### Events & attributes
 

@@ -56,7 +56,7 @@ border).
 
 <!-- swap the variant: ori-textarea_outline → ori-textarea_solid -->
 <div class="ori-textarea ori-textarea_solid">
-    <label class="ori-textarea__label" for="t1b">Fill</label>
+    <label class="ori-textarea__label" for="t1b">Solid</label>
     <textarea id="t1b" rows="3" placeholder="Type here..." class="ori-textarea__field"></textarea>
 </div>
 ```

@@ -14,10 +14,10 @@ const {
     closeLabel?: string
     color?: ThemeColor
     disabled?: boolean
+    label?: string
     prependIcon?: string
     radius?: RadiusSize
     size?: ActionSize
-    label?: string
     variant?: Variant
 }>()
 

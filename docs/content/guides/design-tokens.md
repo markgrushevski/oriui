@@ -171,7 +171,7 @@ a neutral ink would give:
 | primary   | `oklch(from var(--ori-color-primary) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-primary) max(l, 0.86) c h)`   |
 | secondary | `oklch(from var(--ori-color-secondary) min(l, 0.42) c h)` | `oklch(from var(--ori-color-secondary) max(l, 0.86) c h)` |
 | success   | `oklch(from var(--ori-color-success) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-success) max(l, 0.86) c h)`   |
-| warn      | `oklch(from var(--ori-color-warning) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-warning) max(l, 0.86) c h)`   |
+| warning   | `oklch(from var(--ori-color-warning) min(l, 0.42) c h)`   | `oklch(from var(--ori-color-warning) max(l, 0.86) c h)`   |
 | danger    | `oklch(from var(--ori-color-danger) min(l, 0.42) c h)`    | `oklch(from var(--ori-color-danger) max(l, 0.86) c h)`    |
 | info      | `oklch(from var(--ori-color-info) min(l, 0.42) c h)`      | `oklch(from var(--ori-color-info) max(l, 0.86) c h)`      |
 
@@ -207,11 +207,11 @@ and a block without one keeps the defaults it bakes in. Each `.ori-variant_*` re
 
 | Variant    | background                                              | text                    | border                  | opacity |
 | ---------- | ------------------------------------------------------- | ----------------------- | ----------------------- | ------- |
-| `_fill`    | `var(--ori-color)`                                      | `var(--ori-color-on)`   | transparent             | `1`     |
-| `_tonal`   | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color-text)` | transparent             | `1`     |
+| `_solid`   | `var(--ori-color)`                                      | `var(--ori-color-on)`   | transparent             | `1`     |
+| `_soft`    | `color-mix(in srgb, var(--ori-color), transparent 75%)` | `var(--ori-color-text)` | transparent             | `1`     |
 | `_outline` | transparent                                             | `var(--ori-color-text)` | `var(--ori-color-text)` | `1`     |
 | `_text`    | transparent                                             | `var(--ori-color-text)` | transparent             | `1`     |
-| `_plain`   | transparent                                             | `var(--ori-color-text)` | transparent             | `0.5`   |
+| `_quiet`   | transparent                                             | `var(--ori-color-text)` | transparent             | `0.85`  |
 
 `solid` keeps `--ori-color-on` — the ink tuned for its own solid background. Every non-fill mapping
 instead reads `--ori-color-text` for its label, the AA-safe on-surface tone from
@@ -225,7 +225,7 @@ the `color-mix` per variant. (See the live behaviour on [Button](/components/but
 
 ::example
 :ori-button{label="Solid" variant="solid"}
-:ori-button{label="Tonal" variant="soft"}
+:ori-button{label="Soft" variant="soft"}
 :ori-button{label="Outline" variant="outline"}
 :ori-button{label="Text" variant="text"}
 :ori-button{label="Quiet" variant="quiet"}

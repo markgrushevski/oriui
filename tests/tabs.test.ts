@@ -594,6 +594,14 @@ describe('OriTabs', () => {
         warn.mockRestore()
     })
 
+    it('does not warn while the collection is still empty — an async list is correct code', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriTabs, { props: { tabs: [] }, slots: { 'panel-account': '<span>ok</span>' } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
     it('does not warn when every panel slot matches a tab', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         mount(OriTabs, { props: { tabs: TABS }, slots: { 'panel-account': '<span>ok</span>' } })

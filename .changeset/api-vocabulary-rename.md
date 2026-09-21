@@ -49,9 +49,13 @@ for: it was never rendered verbatim, it drives the initials and the image `alt` 
 the same prop).
 
 On the two toolbar components the old `label` was the accessible name of an icon-only button and is
-now `ariaLabel`, so the visible-text prop can be `label` like everywhere else. That split also fixed
-a rendering defect nothing had caught: `<OriToolbarButton label="New" />` with no icon and no
-tooltip used to render an **empty** button carrying only `aria-label` — as four demos on the Toolbar
-page did.
+now `ariaLabel`, so the visible-text prop can be `label` like everywhere else. Under the old split
+`<OriToolbarButton label="New" />` with no icon and no tooltip rendered an **empty** button carrying
+only `aria-label` — a shape nothing would have caught, since an empty button with an accessible name
+passes axe. With `label` as the visible text it cannot happen.
+
+`aria-label` now falls back to `tooltip` only when nothing visible names the button: overriding a
+rendered label with the tooltip text would fail WCAG 2.5.3 Label in Name, and that collision became
+reachable for the first time with this rename.
 
 No aliases ship. One set of names, because a pair of spellings that reaches 1.0 never gets removed.

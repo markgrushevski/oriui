@@ -33,7 +33,7 @@ practical gotchas go here.
   could be converted ahead of the per-component template migration without a flag day.
 - **gap is now single-class too.** `_sizes-gap.css` was the last axis on the old paired pattern
   (`.ori-size-gap` base + `.ori-size-gap.ori-size-gap_*` compound, and it lacked `_xxl`); it is now
-  `.ori-size-gap_*` single-class (zero · xs · sm · md · lg · xl), mirroring `.ori-size-radius_*`. The
+  `.ori-size-gap_*` single-class (none · xs · sm · md · lg · xl), mirroring `.ori-size-radius_*`. The
   scale tokens stay in `:root` (`ori.tokens`). `OriStack`'s `gap` prop emits one `ori-size-gap_<size>`.
 
 ## Verification / preview MCP
@@ -185,16 +185,16 @@ practical gotchas go here.
   Checkbox, Switch, Radio, the form fields) ring with **`var(--ori-color)`** — it tracks the `color`
   prop and sits on the page, which contrasts. (Don't hardcode `--ori-color-primary`: it ignores the
   prop — was a real OriButton bug.) A close button **on a tinted chip/banner** (Tag/Alert) is the hard
-  case: a same-hue `currentcolor` ring can fall below the 3:1 non-text minimum on the pale tonal/outline
-  surface (warn ≈ 1.7:1), so ring with the neutral **`--ori-color-on-surface`** (contrasts light + dark),
-  and override to `currentcolor` only on the **`fill`** variant (there the on-color contrasts the solid
-  fill, and `var(--ori-color)` would BE the fill background → invisible ring). Place the `fill` override
+  case: a same-hue `currentcolor` ring can fall below the 3:1 non-text minimum on the pale soft/outline
+  surface (warning ≈ 1.7:1), so ring with the neutral **`--ori-color-on-surface`** (contrasts light + dark),
+  and override to `currentcolor` only on the **`solid`** variant (there the on-color contrasts the
+  background, and `var(--ori-color)` would BE that background → invisible ring). Place the `solid` override
   last so stylelint `no-descending-specificity` stays happy.
 - **Role-as-FOREGROUND text uses a dedicated on-surface tone (`--ori-color-<role>-text`), NOT the raw role.**
   A role's `--ori-color-<role>` is engineered as a fill BACKGROUND (light / saturated, paired with dark
   `--ori-color-on-<role>` ink); painted directly as TEXT on the surface a saturated / light role fails body-text
-  4.5:1 (raw `warn #f59e0b` = 2.14:1 on white; the tonal tint and the dark-surface status hues are worse). So the
-  non-fill button variants (`_themes-variant.css` tonal / outline / text), the selected Tab, Alert, Tag, Link and
+  4.5:1 (raw `warning #f59e0b` = 2.14:1 on white; the soft tint and the dark-surface status hues are worse). So the
+  non-solid button variants (`_themes-variant.css` soft / outline / text), the selected Tab, Alert, Tag, Link and
   the selected Combobox option paint `var(--ori-color-text)`. FILL keeps `--ori-color-on` (unchanged). **Two
   delivery paths + a custom-property gotcha:** the tone reaches an element via the `.ori-color_*` utility (sets
   `--ori-color-text` on the element) OR via a block that bakes a role (button / tabs / tag / combobox bake the
@@ -212,8 +212,8 @@ practical gotchas go here.
   roles miss the 3:1 minimum (1.4.11) — a SEPARATE, pre-existing axis, unfixed; the outline border now reads the
   darker `--ori-color-text`, so it clears 3:1 for pale roles too. Guard: **e2e/text-contrast.spec.ts** (real
   Chromium — Node can't evaluate `oklch(from …)`, happy-dom axe has no layout): resolves computed `oklch()` /
-  `color(srgb …)` via a 1×1 canvas, composites the tonal tint over surface, asserts >= 4.5:1 for every role × skin
-  × theme × text kind + the tonal hover/active tint + the bare-block baked path. The quietest variant used to be
+  `color(srgb …)` via a 1×1 canvas, composites the soft tint over surface, asserts >= 4.5:1 for every role × skin
+  × theme × text kind + the soft hover/active tint + the bare-block baked path. The quietest variant used to be
   exempt here (`plain`, 0.5 opacity, "intentionally muted") — it is now `quiet` at 0.85, the alpha that MEASURES
   AA, and asserted like the rest (ORI-I-91). Min observed ~4.55:1.
 - **Runtime theme toggle leaves BAKED component colours stale — a Chromium bug, fixed in JS, not CSS.**
@@ -222,7 +222,7 @@ practical gotchas go here.
   through a `var()` chain — i.e. **every styled component** (`--ori-color` / `--ori-color-text` baked on the
   element → `--ori-variant-*` → the longhand). The element's cached computed style is never marked dirty, so it
   AND its paint keep the PREVIOUS theme's colour until the box is rebuilt. Confirmed real in Chromium **148 and
-  149** (not a version artifact / not fixed upstream yet). Scope is broad: fill/tonal BACKGROUNDS and the role
+  149** (not a version artifact / not fixed upstream yet). Scope is broad: solid/soft BACKGROUNDS and the role
   text all stale; a bare direct read (`color: var(--ori-color-primary)`, no element-level bake) flips fine — the
   baking + shadowing is the trigger. NOT caused by the relative-colour `-text` tone (a literal reproduces it),
   NOT alpha-9-specific; emergent in the FULL cascade WITH a consumer's unlayered brand override (a bare
@@ -386,10 +386,10 @@ practical gotchas go here.
 
 - Tests live in `tests/` (out of `src`); `vitest.config.ts` aliases `@oriui/*` to package **source**,
   so the suite needs no `build:packages` first.
-- **Test color lists must use real `ThemeColor` roles** — the role is `warn` (not `warning`) and there
-  is **no `neutral`** role (it's only the internal `--ori-neutral-*` ramp). An invalid member fails
+- **Test color lists must use real `ThemeColor` roles** — the role is `warning` (it was `warn` until
+  the pre-1.0 vocabulary rename) and there is **no `neutral`** role (it's only the internal `--ori-neutral-*` ramp). An invalid member fails
   `test:types` (not assignable to `ThemeColor`) and asserts a dead class the CSS doesn't back. Mirror
-  the docs' color row: `primary · secondary · success · warn · danger · info` (+ `surface` / `background`).
+  the docs' color row: `primary · secondary · success · warning · danger · info` (+ `surface` / `background`).
 - **Singleton stores (e.g. `useToast`) need an `afterEach` reset in tests.** The toast queue is a
   module-level reactive singleton, so state leaks across tests — `afterEach(() => useToast().clear())`,
   and don't assert exact ids (the `seq` counter keeps climbing). For auto-dismiss use `vi.useFakeTimers()`
@@ -799,14 +799,21 @@ nothing here.
 `aria-label` and nowhere else. The visible text lived in a separate `text` prop. So
 `<OriToolbarButton label="New" />`, with no `icon` and no `tooltip`, rendered a button with an
 accessible name and **nothing inside it**: `OriButton`'s slot fallback needs `icon`, `loading` or
-`text`, and none was set. Four demos on the Toolbar docs page did exactly that, plus three on the
-Surface page, and they shipped that way.
+`text`, and none was set.
 
-Nothing caught it, and the reasons are worth keeping:
+**Correction to how this was first written down here, and in the changeset:** the claim was that
+four demos on the Toolbar page and three on Surface shipped that way. They did not. Checked with
+`git log -S'ori-toolbar-button{label=' -- docs/`: that spelling first appears in the rename commit
+itself, and at the commit before it every one of those demos passed `text=`, which rendered. The
+shape was reachable and nothing would have caught it; no shipped page had it. The lesson below is
+about the shape, not about a page that broke.
+
+Nothing would have caught it, and the reasons are the part worth keeping:
 
 - **the unit tests always passed an `icon` too** — `h(OriToolbarButton, { label: 'Redo', icon: 'x' })`
   is an icon button, which is the case the prop was designed for, so every assertion was about
-  `aria-label` and none about the rendered text being non-empty;
+  `aria-label` and none about the rendered text being non-empty. Which is also why the mistaken claim
+  above survived a read of the tests: they exercise the safe shape only;
 - **axe is satisfied by an accessible name** — an empty button WITH `aria-label` passes `button-name`.
   An empty control is a visual defect, not an ARIA one;
 - **the dev-time guard had the same blind spot**: it warns when `icon` is set but nothing names it —
@@ -817,3 +824,16 @@ be mistaken for the visible text. `ariaLabel` (→ `aria-label`) is spelled that
 and now means the visible text everywhere in the library. Where a component can render no text at all
 (`OriIcon`, `OriSpinner`, `OriToolbar`, `OriToolbarToggleGroup`), `label` remains the accessible name
 — there is nothing for it to be confused with.
+
+**The one component that still has both shapes is `OriBadge`**: `content` is what it renders,
+`label` is its accessible name, so `label` there is the aria meaning, not the visible one. It is
+deliberate rather than overlooked — a badge's rendered value is a COUNT (it pairs with `max`), and
+the accessible name is what says what the count counts ("3 unread"). Vuetify names that field
+`content` too. If a third component ever needs the pair, it takes `label` + `ariaLabel` like the
+toolbar, and Badge becomes the exception to justify rather than the precedent to copy.
+
+**The corollary, learned the same day the split shipped:** once `label` renders, nothing else may
+quietly become the accessible name. `OriToolbarButton` fell back to `aria-label: tooltip`, which was
+correct while `label` was the aria name and became a WCAG 2.5.3 Label in Name failure the moment it
+was the visible one — the button read "Save" and answered to "Write the document to disk", so voice
+control could not activate it. The fallback is now conditional on nothing visible naming the button.
