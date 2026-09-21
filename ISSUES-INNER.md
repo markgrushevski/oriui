@@ -856,15 +856,19 @@ queue rather than from its own review, which is the path working as designed.
 - **What:** the earlier sweep normalised the MECHANISM (everything derives from currentcolor) but left the numbers scattered — forty-odd ad-hoc percentages — so a consumer still had nothing to repoint and had to guess.
 - **Outcome:** two tokens, `--ori-color-outline` (12%, the resting hairline) and `--ori-color-outline-strong` (28%, the interactive control edge), chosen from the measured distribution rather than invented: 12/14% and 28% were the two real clusters, and the 4-10% uses turned out to be background tinting, a different axis that would have made a single token lie. Documented on the design-tokens page with the repointing recipe, and guarded at source so a component cannot hand-roll one again. Writing the guard found four files the percentage sweep had missed.
 
-### ORI-I-82 — The checkbox and radio box edge may not clear the 3:1 non-text bar
+### ORI-I-82 — The checkbox and radio box edge did not clear the 3:1 non-text bar — measured
 
-`unconfirmed` · severity `should-fix` · source: surfaced while introducing the outline tokens, 2026-09-18
+`fixed` · severity `should-fix` · source: surfaced while introducing the outline tokens, 2026-09-18
 
 - **Where:** packages/css/src/components/checkbox.css:66, radio.css:84 — `color-mix(in srgb, currentcolor 40%, transparent)`
 - **What:** the unchecked box edge is the heaviest structural weight in the library and is deliberately excluded from the outline tokens, because dropping it to 28% would visibly weaken the affordance. But 40% of the ink on a white surface is roughly #999, which back-of-envelope lands near 2.8:1 — under the WCAG 1.4.11 3:1 minimum for a UI-component boundary. That is reasoning, not a measurement, which is exactly why it is filed as unconfirmed.
 - **How to check:** add the unchecked checkbox and radio boundary to the e2e non-text contrast probe (the same harness that now measures the invalid-field border), across all eight skins and both themes. If it fails, the fix is a heavier edge or a dedicated token — not folding it into the existing two.
 
 ## Opened by the rc.18 publish (2026-09-18)
+
+- **Confirmed by measurement, then fixed.** 40% failed **16 of 32** readings across the eight skins and both themes, worst **2.24** (checkbox, sumi, light) — the back-of-envelope 2.8:1 was in the right neighbourhood and still optimistic. Swept the alternatives in the same rig: 50% still failed 2 of 32, 55% cleared everything at 3.19, 60% clears at **3.69**. Shipped 60%, taking the headroom, because the edge is derived with `color-mix` from the ambient ink and a custom skin can move it.
+- **Guarded by a new spec rather than a comment:** `e2e/non-text-contrast.spec.ts` measures every unchecked boundary against 3:1 in all sixteen skin x theme combinations and fails with the offending readings printed. It is a separate file from the text probe on purpose — different criterion (1.4.11), different bar (3:1), different elements — and it is the place to add the next boundary rather than a second lane in the 4.5:1 spec.
+- **Still deliberately NOT folded into the shared outline tokens**, as this entry said: those are tuned lighter, and this is the heaviest structural weight in the library.
 
 ### ORI-I-83 — `changeset publish` packs the three packages in parallel, and their prepack builds fight over one dist
 
