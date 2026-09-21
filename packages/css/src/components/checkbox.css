@@ -89,6 +89,27 @@
         transform: rotate(45deg) scale(1);
     }
 
+    /* Mixed (tri-state). `indeterminate` is a DOM PROPERTY, not an attribute, so it never appeared in
+       markup and the box was drawn from `:checked` alone — a control that announced "mixed" to a screen
+       reader and painted as empty to everyone else (ORI-I-89). The fill is the checked one; the glyph is
+       the same ::after pseudo-element re-cut as a horizontal bar, so there is one mark to maintain.
+       `:indeterminate` wins over `:checked` by source order — the native property makes the two mutually
+       exclusive anyway, but the order is what keeps it honest if a caller sets both. */
+    .ori-checkbox__input:indeterminate ~ .ori-checkbox__box {
+        border-color: var(--ori-color);
+
+        background-color: var(--ori-color);
+    }
+
+    .ori-checkbox__input:indeterminate ~ .ori-checkbox__box::after {
+        width: 60%;
+        height: 0;
+
+        transform: none;
+
+        border-width: 0 0 2px;
+    }
+
     .ori-checkbox__input:focus-visible ~ .ori-checkbox__box {
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;

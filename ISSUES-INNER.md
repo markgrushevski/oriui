@@ -901,12 +901,15 @@ Three agents compared the catalog against WAI-ARIA APG and the API shapes of Rad
 
 ### ORI-I-86 — `OriTooltip` fails WCAG 1.4.13 on two of its three bullets
 
-`confirmed` · severity `blocker-for-1.0` · source: reference audit 2026-09-19 (overlays), W3C text verbatim
+`fixed` · severity `blocker-for-1.0` · source: reference audit 2026-09-19 (overlays), W3C text verbatim
 
 - **Where:** packages/css/src/components/tooltip.css:102 (`pointer-events: none`), :35 (`--ori-tooltip-gap: 0.5em`); packages/vue/src/components/tooltip/ori-tooltip.vue (contains zero JavaScript)
 - **What:** SC 1.4.13 Content on Hover or Focus is **Level AA and normative**, and its Hoverable bullet reads "If pointer hover can trigger the additional content, then the pointer can be moved over the additional content without the additional content disappearing." The bubble is `pointer-events: none` with a gap between it and the trigger, so the pointer cannot reach it — failure technique F95 exactly. The Dismissible bullet ("A mechanism is available to dismiss the additional content without moving pointer hover or keyboard focus") fails too: the component has no JavaScript at all, so there is no Escape. Consequences: a wrapped tooltip cannot be read by someone panning with screen magnification, and its text can never be selected or copied. This is the only AA-normative failure the audit produced — everything else cites APG, which is informative.
 - **Scope note:** Hoverable applies because the tooltip opens on hover; a focus-only tooltip would be exempt from that bullet but not from Dismissible.
 - **Fix:** `pointer-events: auto` plus bridging the gap closes Hoverable and breaks no existing assertion — every geometry expectation in e2e/tooltip.spec.ts is an inequality with 1-2px slack, and the 0.5em value is tooltip-local (it repoints the shared `--ori-anchored-gap`), so Popover / Menu / Combobox are untouched. Dismissible cannot be closed in CSS: it needs a key listener. So this is a decision about whether the zero-JS tooltip survives, which is free now and breaking after 1.0.
+- **Fixed, both bullets, and the component is no longer strictly zero-JS — that is the trade, taken deliberately.** Hoverable is pure CSS: the shown bubble takes `pointer-events: auto`, and a transparent `::before` at `inset: calc(var(--ori-tooltip-gap) * -1)` bridges the gap on every side at once, so no per-placement rules and no hit area at all while the bubble is hidden (it inherits `visibility: hidden`). Dismissible needs a key listener, and it is **one listener for the whole page**: instances register a callback in module scope, and on Escape each asks the DOM whether it is the one showing (`:hover` / focus containment) before setting its own `data-ori-dismissed`. The attribute gates both show rules and clears on `pointerleave` / `focusout`, so Escape dismisses THIS showing rather than the tooltip.
+- **Measured in real Chromium, not argued:** four new cases in `e2e/tooltip.spec.ts` — the midpoint of the visual gap belongs to the tooltip, the bubble is hit-testable and stays up while the pointer rests on it, the dismissed attribute hides it with the pointer unmoved, and the bridge captures nothing while hidden. Five unit tests cover the Escape handler (dismisses only what is showing, re-arms on focusout, ignores other keys, leaks no listener).
+- **What a standalone `@oriui/css` consumer gets:** Hoverable, for free. Dismissible is theirs to wire — the CSS surface is `data-ori-dismissed` on `.ori-tooltip`, which is one keydown listener. Documented on the component page rather than left implicit.
 
 ### ORI-I-87 — `OriAccordion`'s default slot fans out, and unlike Tabs the duplicates are VISIBLE
 
@@ -921,27 +924,31 @@ Three agents compared the catalog against WAI-ARIA APG and the API shapes of Rad
 
 ### ORI-I-88 — `OriCombobox` submits the form when Enter is pressed under an open listbox
 
-`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (overlays)
+`fixed` · severity `should-fix` · source: reference audit 2026-09-19 (overlays)
 
 - **Where:** packages/headless/src/core/combobox/combobox.connect.ts:136-142; combobox.machine.ts:33-35
 - **What:** `case 'Enter': if (open && highlightedValue !== null) { preventDefault(); … }` with no `else`. The machine clears `highlightedValue` on every keystroke, so after typing, Enter is un-prevented on a real `<input>` and performs implicit form submission with the listbox visibly open. `ori-combobox.vue:200` puts `:form` on the visible input, so it reaches an out-of-tree form too. Partial accidental mitigation: `setCustomValidity` blocks it when `required` and nothing is selected.
 - **Reachability today: nil** — there is no `<form>` in the combobox docs, tests or e2e, and justpaint does not use the component. Recorded rather than branched.
 - **Fix:** prevent Enter while the list is open; do NOT close the list, which would break the documented "ArrowDown then Enter commits" flow and silently change e2e/combobox-keyboard.spec.ts.
 - **Not a defect (checked verbatim):** the same report called the Home/End capture an APG violation. It is not. APG's "do not capture text-editing keys" note sits in the Combobox section, not the Listbox Popup section, and the Popup section explicitly offers Home/End as Optional with "moves focus to and selects the first option" as its first permitted reading. Our behaviour is allowed; only the absence of any test for it is worth noting.
+- **Fixed** as recommended: Enter is now prevented whenever the list is OPEN, with the selection still gated on a highlight. The list is deliberately not closed — "ArrowDown then Enter commits" stays the documented flow. Two tests: Enter after typing (list open, nothing highlighted) is prevented and emits nothing; Enter with the list closed is NOT prevented, so a real form still submits.
 
 ### ORI-I-89 — A mixed checkbox renders as an unchecked one
 
-`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
+`fixed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
 
 - **Where:** packages/vue/src/components/checkbox/ori-checkbox.vue (no `indeterminate` anywhere); packages/css/src/components/checkbox.css (no `:indeterminate` selector)
 - **What:** `indeterminate` is a DOM property and `$attrs` is spread onto the input first, so `:indeterminate="true"` does reach it and assistive tech reports mixed. The stylesheet draws the box from `:checked` alone, so the control paints as empty. A checkbox that announces "mixed" and looks unchecked is worse than one that does not support the state: sighted and non-sighted users are told different things. APG lists tri-state as REQUIRED for the pattern; Ark, Radix and Reka all model `boolean | 'indeterminate'`.
+- **Fixed** in CSS, where the defect was: `:indeterminate` now paints the box with the checked fill and re-cuts the same `::after` glyph as a horizontal bar, so a mixed checkbox looks mixed. No new prop — `indeterminate` is a DOM property and `$attrs` already reaches the real input, which is why assistive tech was right and the pixels were wrong. A test pins that the property arrives on the input.
+- **Not done, and deliberately:** modelling the value as `boolean | "indeterminate"` the way Ark / Radix / Reka do. That is a v-model shape change, it belongs with a decision about grouped checkboxes, and it is not what made a mixed control paint as empty.
 
 ### ORI-I-90 — The dialog drops an `aria-describedby` its own headless layer already provides
 
-`confirmed` · severity `nit` · source: reference audit 2026-09-19 (overlays)
+`fixed` · severity `nit` · source: reference audit 2026-09-19 (overlays)
 
 - **Where:** packages/headless/src/{vue,react,svelte}/native.ts (all three publish `descriptionProps`, covered by adapter-parity tests and six documented examples); packages/vue/src/components/dialog/ori-dialog.vue (never binds it)
 - **What:** the styled component emits no `aria-describedby`, so a dialog's body text is not announced as its description. APG marks it optional, which is why this is a nit rather than a should-fix. One bind closes it. Note the framing correction: this is not a dead API — the headless layer's `descriptionProps` is alive, tested and documented; it is the styled layer that ignores it.
+- **Fixed** in the styled tier, both halves. `descriptionProps` now goes on `.ori-dialog__body`, and the `<dialog>` gets `aria-describedby` — but only when there IS body content to point at, because a dangling reference is an axe `aria-valid-attr-value` failure and would be worse than the missing description, and only when the caller has not supplied their own. Three tests cover all three branches.
 
 ### ORI-I-91 — The `plain` variant measured 2.33:1 on an enabled control
 
@@ -954,17 +961,19 @@ Three agents compared the catalog against WAI-ARIA APG and the API shapes of Rad
 
 ### ORI-I-92 — `field.md` promises an integration that Checkbox and Switch do not have
 
-`confirmed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
+`fixed` · severity `should-fix` · source: reference audit 2026-09-19 (form controls)
 
 - **Where:** docs/content/components/field.md:16-18 — "Any control works: an Ori control nested inside wires up automatically"; DECISIONS.md:892-900 excludes Checkbox and Switch deliberately
 - **What:** the exclusion is a recorded decision; the docs state its opposite, and the page never names the two exceptions. Following it yields two labels, a `<label for>` pointing at an id nothing owns, and `disabled` / `required` / `invalid` / `describedby` / `size` silently dropped — with no DEV warning, unlike the composite shield `ori-color-picker.vue:62` uses. No test covers it.
+- **Fixed** in the docs, which is where the defect was: `field.md` now names the seven controls that DO wire up and states the two exclusions, with what happens if you ignore them (two labels, a `<label for>` pointing at an id nothing owns, and five props silently dropped) and what to do instead. The runtime behaviour is unchanged — the exclusion is a recorded decision, not a gap.
 
 ### ORI-I-93 — A fabricated standards citation, duplicated across two adapters
 
-`confirmed` · severity `nit` · source: reference audit 2026-09-19 (form controls)
+`fixed` · severity `nit` · source: reference audit 2026-09-19 (form controls)
 
 - **Where:** packages/headless/src/vue/use-color-picker.ts:159 and packages/headless/src/react/use-color-picker.ts:209 — "an APG ColorArea requirement"
 - **What:** APG has 30 patterns and ColorArea is not among them; there is no ColorPicker pattern at all. The behaviour the comment defends is right, and the neighbouring claim about a tab stop on the selected swatch IS supported, by the Listbox pattern. A false citation is worse than none: it invites a future reader to "restore compliance" with a rule that does not exist.
+- **Fixed** in both adapters: the sentence now says what it is — the general slider contract, not a citation — and states plainly that APG has no ColorArea or ColorPicker pattern. The behaviour it defends is unchanged and still right.
 
 ### ORI-I-94 — RTL arrow semantics are opt-in on Toolbar, unavailable on Tabs, and read from nothing
 
@@ -984,7 +993,18 @@ Three agents compared the catalog against WAI-ARIA APG and the API shapes of Rad
 
 ### ORI-I-96 — `OriMenu` skips disabled items, and the reason is nowhere
 
-`confirmed` · severity `nit` · source: reference audit 2026-09-19, APG text pulled verbatim
+`fixed` · severity `nit` · source: reference audit 2026-09-19, APG text pulled verbatim
 
 - **Where:** packages/headless/src/core/menu/menu.connect.ts:49-57 (navigates an `enabled` array); packages/headless/src/vue/use-toolbar.ts:100-109 (deliberately omits the same predicate)
 - **What:** APG's **Menubar** pattern states "Disabled menu items are focusable but cannot be activated" as a fact of the pattern, while the **Toolbar** pattern says "Typically, disabled elements are not focusable" and permits focusability only as an exception for discoverability. So the stricter text is the menu's, and our two components resolve it in opposite directions: OriToolbar carries an APG citation in code and an e2e assertion for keeping disabled items focusable; OriMenu carries neither for skipping them. Not calling the behaviour a defect — our menu items are `<div role="menuitem">` with `aria-disabled`, and the trade is defensible — but the asymmetry is undocumented, which is a comment, not a code change.
+- **Closed as documented, which is what the entry asked for:** `menu.connect.ts` now carries the asymmetry in full — APG's Menubar text says disabled items are focusable, our menu skips them anyway because its items are `<div role="menuitem">` rather than native controls (an unfocusable div is not a keyboard trap and nothing leaves the tab order), and OriToolbar cites the Toolbar pattern for the opposite choice. Two components, two readings, both deliberate, both now written down.
+
+### ORI-I-97 — A BUSY button was dimmed like a disabled one, taking its label to 1.68:1
+
+`fixed` · severity `should-fix` · source: justpaint JP-O-10, reported 2026-09-20 and re-verified against this tree 2026-09-21
+
+- **Where:** packages/css/src/components/button.css — `.ori-button:disabled { opacity: 0.45 }`, over packages/vue/src/components/button/ori-button.vue:74 (`loading` renders the native `disabled` attribute)
+- **What:** `loading` blocks activation by setting the real `disabled` attribute, so the disabled DIM applied to a busy button too. justpaint measured a fill-primary at **1.68:1 light / 2.30:1 dark** — effectively decorative, on the one control whose job at that moment is to say the app is working. WCAG exempts an INACTIVE component from contrast; a waiting one is not inactive, so the exemption does not obviously cover it and the dim does the opposite of what the state needs. The `[aria-busy='true']` rule already existed but only killed pointer events.
+- **Verified here before acting, not taken on report:** the two rules are exactly as described in this tree, and `loading` does render `disabled` (`as === 'button' && (disabled || loading)`).
+- **Fixed** by excluding `[aria-busy='true']` from both dim selectors. `pointer-events: none` and the native `disabled` still block the pointer and the keyboard, so nothing about activation changes; a button that is both `disabled` and `loading` now reads as busy, which is the louder of the two states. Measured after the fix by a new permanent probe in `e2e/text-contrast.spec.ts` (`data-kind="button-busy"`, asserted like the rest): worst reading **4.91** (luxury light primary) across every role × skin × theme.
+- **Why no guard caught it:** the contrast probe had no busy cell at all, and the token test walks role/on-role PAIRS — the pair here is honest, the loss happens in the compositing. Same blind spot as ORI-I-85, and the same remedy: a probe that renders the real state.
