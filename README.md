@@ -25,6 +25,9 @@ The behavior layer ships **Vue, Svelte and React** adapters over one framework-a
 CSS layer needs no framework at all — so oriUI's tokens and behavior travel to React / Next, SvelteKit,
 Astro or plain HTML, not just Vue.
 
+> **Working on oriUI itself?** Start at [START-HERE.md](START-HERE.md) — what to read in what order, where
+> each kind of question is answered, what to do next, and how to release.
+
 ## Install
 
 ```bash
