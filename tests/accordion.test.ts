@@ -252,6 +252,85 @@ describe('OriAccordion', () => {
         warn.mockRestore()
     })
 
+    // -------------------------------------------------------------------------
+    // Per-value panel slots (ORI-I-87)
+    // -------------------------------------------------------------------------
+
+    // Until these existed, `#default` was the ONLY panel mechanism, so distinct content per section
+    // meant branching on `item.value` inside one shared template — and anything carrying an id was
+    // duplicated once per item. Tabs answers that by rendering its fallback into the active panel
+    // only; an accordion has no single active item (in `multiple` two panels are open at once, where
+    // `<label for>` resolves to the first copy), so the answer here is a slot per section.
+
+    it('renders a #panel-<value> slot into its own section', () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: ITEMS },
+            slots: { 'panel-b': '<span class="own-b">B body</span>' }
+        })
+        const panels = wrapper.findAll('.ori-accordion__panel')
+
+        expect(panels[1]!.find('.own-b').exists()).toBe(true)
+        expect(panels[0]!.find('.own-b').exists()).toBe(false)
+        expect(wrapper.findAll('.own-b')).toHaveLength(1)
+    })
+
+    it('per-value slots keep ids unique where the shared template could not', () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: ITEMS, multiple: true },
+            slots: {
+                'panel-a': '<input id="email-a" />',
+                'panel-b': '<input id="email-b" />',
+                'panel-c': '<input id="email-c" />'
+            }
+        })
+
+        const ids = wrapper.findAll('input').map((input) => input.attributes('id'))
+        expect(ids).toEqual(['email-a', 'email-b', 'email-c'])
+        expect(new Set(ids).size).toBe(3)
+    })
+
+    it('#default still fills the sections that have no per-value slot', () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: ITEMS },
+            slots: {
+                default: '<span class="shared">shared</span>',
+                'panel-b': '<span class="own-b">B body</span>'
+            }
+        })
+        const panels = wrapper.findAll('.ori-accordion__panel')
+
+        expect(panels[0]!.find('.shared').exists()).toBe(true)
+        expect(panels[1]!.find('.shared').exists()).toBe(false)
+        expect(panels[1]!.find('.own-b').exists()).toBe(true)
+        expect(panels[2]!.find('.shared').exists()).toBe(true)
+    })
+
+    it('a per-value slot receives the same { item } scope as the fallback', () => {
+        const wrapper = mount(OriAccordion, {
+            props: { items: ITEMS },
+            slots: { 'panel-a': '<template #panel-a="{ item }"><span class="scope">{{ item.label }}</span></template>' }
+        })
+
+        expect(wrapper.find('.scope').text()).toBe('Section A')
+    })
+
+    it('warns in DEV when a #panel-<value> slot matches no item', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriAccordion, { props: { items: ITEMS }, slots: { 'panel-bb': '<span>typo</span>' } })
+
+        expect(warn).toHaveBeenCalledTimes(1)
+        expect(warn.mock.calls[0]![0]).toContain('#panel-bb')
+        warn.mockRestore()
+    })
+
+    it('does not warn when every panel slot matches an item', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriAccordion, { props: { items: ITEMS }, slots: { 'panel-a': '<span>ok</span>' } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
     // ----- axe -----
 
     it('has no axe violations', async () => {

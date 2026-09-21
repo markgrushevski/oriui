@@ -134,7 +134,7 @@ Every semantic role. The accent color is shared by the active indicator and the 
 #html
 
 ```html
-<!-- swap the color: ori-color_primary → _secondary / _success / _danger / _warn / _info -->
+<!-- swap the color: ori-color_primary → _secondary / _success / _danger / _warning / _info -->
 <div class="ori-tabs ori-color_secondary">…</div>
 ```
 
@@ -213,15 +213,20 @@ Set `disabled: true` on individual tab items to lock those tabs. Disabled tabs a
 
 ## Panel slots — per-tab content
 
-Use a `#panel-<value>` slot to give each panel its own markup. A scoped `#default="{ tab }"` slot is the fallback for shared/uniform content across all panels.
+Use a `#panel-<value>` slot to give each panel its own markup. A scoped `#default="{ tab }"` slot is the fallback for one template shared across panels.
 
-The fallback is rendered **once per panel**, with that panel's tab in scope — so a template that ignores the
-scope produces N identical copies, `id` attributes included. With two tabs and a login form in `#default`,
-the form exists twice and `document.getElementById('email')` resolves to whichever copy comes first in
-document order, which is the **hidden** panel whenever the active tab is not the first one: a `<label for>`
-in the visible panel then points at an input nobody can reach. Content that is genuinely the same for every
-tab belongs outside `<OriTabs>`; content that differs belongs in `#panel-<value>`. Use the fallback for
-templates that actually read `{ tab }`.
+The fallback renders into the **active panel only** — one instance, always the visible one, and the `{ tab }`
+it receives is always the selected tab. One panel, one content is the rule for every slot in this component.
+
+It used to render into every panel, which multiplied a template that ignored its scope: with two tabs and a
+login form in `#default` the form existed twice, and `document.getElementById('email')` resolved to whichever
+copy came first in document order — the **hidden** panel whenever the active tab was not the first one, so a
+`<label for>` in the visible panel pointed at an input nobody could reach.
+
+What the rule costs: uncontrolled DOM state inside the shared template (an unsent draft, a scroll position)
+does not survive a tab switch, because the content is created fresh in the panel you switch to. Content that
+must persist per tab belongs in `#panel-<value>`, which renders into its own panel whether or not that tab is
+selected. Content identical for every tab belongs outside `<OriTabs>` entirely.
 
 ::example
 :ori-tabs{:tabs='[{"value":"preview","label":"Preview"},{"value":"code","label":"Code"},{"value":"docs","label":"Docs"}]'}
@@ -413,8 +418,8 @@ to the root `div.ori-tabs`.
 
 ### Slots
 
-| Slot            | Scope                                                                     | Description                                                                                                                                                                                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tab`           | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Tab trigger.** Custom content for the tab button — icon, count badge, and the like. Applies to every tab; read the per-tab item from scope. Falls back to `tab.label`.                                                                                                                                 |
-| `panel-<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot `panel-` plus the tab's value (e.g. `#panel-account` for value `'account'`). Numeric values are stringified for the slot name. The prefix keeps caller data out of the reserved `#tab` / `#default` namespace.                                       |
-| `default`       | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered into **every** panel that has no matching named slot, with that panel's tab in scope — so a template that ignores the scope is duplicated N times, `id`s and all. Read the per-panel tab from scope, or put genuinely shared content outside the component. |
+| Slot            | Scope                                                                     | Description                                                                                                                                                                                                                                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tab`           | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Tab trigger.** Custom content for the tab button — icon, count badge, and the like. Applies to every tab; read the per-tab item from scope. Falls back to `tab.label`.                                                                                                                                                                                  |
+| `panel-<value>` | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Primary.** A per-value named slot — name the slot `panel-` plus the tab's value (e.g. `#panel-account` for value `'account'`). Numeric values are stringified for the slot name. The prefix keeps caller data out of the reserved `#tab` / `#default` namespace.                                                                                        |
+| `default`       | `{ tab: { value: string \| number; label: string; disabled?: boolean } }` | **Fallback.** A scoped default slot rendered into the **active** panel, when that panel has no matching named slot. One instance, always visible, and the tab in scope is always the selected one. Uncontrolled DOM state inside it does not survive a tab switch — use `#panel-<value>` for that, or put genuinely shared content outside the component. |

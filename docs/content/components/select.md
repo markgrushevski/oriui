@@ -54,7 +54,7 @@ The `ori-color_*` class controls the focus ring accent.
 #html
 
 ```html
-<!-- swap the color: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color: ori-color_primary → _secondary / _success / _warning / _danger / _info -->
 <div class="ori-select ori-color_danger">
     <div class="ori-select__control-wrap">
         <select class="ori-select__control ori-size-radius_md">
