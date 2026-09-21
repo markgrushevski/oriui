@@ -94,7 +94,19 @@ watchPostEffect(() => {
 const slots = useSlots()
 const attrs = useAttrs()
 const hasTitle = computed(() => Boolean(title) || Boolean(slots.title))
-const dialogBindings = computed(() => mergeProps(attrs, dlg.dialogProps.value))
+// The body IS the dialog's description (ORI-I-90). The headless layer has always published
+// `descriptionProps` — an id — and every adapter is tested on it; the styled tier simply never bound it,
+// so a dialog's body text was not announced as its description. Both halves are needed and both are
+// conditional: the id goes on the body, and the reference goes on the <dialog> ONLY when there is body
+// content to point at (a dangling `aria-describedby` is an axe `aria-valid-attr-value` failure, which is
+// worse than the missing description) and only when the caller has not supplied their own.
+const describedBy = computed(() =>
+    slots.default && !attrs['aria-describedby'] ? (dlg.descriptionProps.value.id as string) : undefined
+)
+
+const dialogBindings = computed(() =>
+    mergeProps(attrs, dlg.dialogProps.value, describedBy.value ? { 'aria-describedby': describedBy.value } : {})
+)
 
 if (import.meta.env.DEV) {
     watchPostEffect(() => {
@@ -120,7 +132,7 @@ if (import.meta.env.DEV) {
                     ×
                 </button>
             </header>
-            <div class="ori-dialog__body">
+            <div v-bind="dlg.descriptionProps.value" class="ori-dialog__body">
                 <slot></slot>
             </div>
         </div>
