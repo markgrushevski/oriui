@@ -6,7 +6,11 @@ Guidance for Claude Code / contributors working in this repository.
 
 **oriUI** (織り, "weaving") — a layered Vue 3 UI component library. Idea:
 _prototype fast, scale without rewriting_. Three independently-consumable layers
-woven around shared design tokens:
+woven around shared design tokens.
+
+**[START-HERE.md](START-HERE.md) is the human entry point** — the reading order for getting the code
+back in your head, which root file answers which question, the prioritized queue, and the release loop.
+This file is the agent-facing version of the same map; when the two disagree, they both need fixing.
 
 - `@oriui/vue` (styled) — ready components: `<OriButton variant="soft" />`
 - `@oriui/headless` (behavior) — composables for focus/keyboard/ARIA
