@@ -1,0 +1,5 @@
+export { default as OriTabsC } from './ori-tabs-c.vue'
+export { default as OriTabList } from './ori-tab-list.vue'
+export { default as OriTab } from './ori-tab.vue'
+export { default as OriTabPanel } from './ori-tab-panel.vue'
+export type { CompoundTabsContext } from './context'
