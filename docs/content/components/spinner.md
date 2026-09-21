@@ -87,7 +87,7 @@ Every semantic role. Omit `color` entirely to inherit `currentcolor` from the pa
 #html
 
 ```html
-<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warning / _danger / _info -->
 <div class="ori-spinner ori-spinner_lg ori-color_danger" role="status" aria-label="Loading"></div>
 ```
 

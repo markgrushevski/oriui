@@ -96,7 +96,7 @@ Every semantic role. The accent color is shared by the checked circle and the fo
 #html
 
 ```html
-<!-- swap the color: ori-color_primary → _success / _danger / _warn / _info -->
+<!-- swap the color: ori-color_primary → _success / _danger / _warning / _info -->
 <div class="ori-radio-group ori-color_success ori-font-size_md" role="radiogroup">…</div>
 ```
 

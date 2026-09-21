@@ -124,7 +124,7 @@ Every semantic role. `color` defaults to `primary`; set it to any role to recolo
 #html
 
 ```html
-<!-- swap the color class: ori-color_primary → _secondary / _success / _warn / _danger / _info -->
+<!-- swap the color class: ori-color_primary → _secondary / _success / _warning / _danger / _info -->
 <div
     class="ori-progress ori-color_danger"
     role="progressbar"

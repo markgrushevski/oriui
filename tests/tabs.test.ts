@@ -387,11 +387,15 @@ describe('OriTabs', () => {
         })
         await wrapper.vm.$nextTick()
 
-        // The "default"-valued tab gets its named panel; the OTHER tab still falls back to #default.
+        // The "default"-valued tab gets its named panel, not the shared fallback.
         const panels = wrapper.findAll('.ori-tabs__panel')
         expect(panels[0]!.find('.own-panel').exists()).toBe(true)
         expect(panels[0]!.find('.fallback').exists()).toBe(false)
-        expect(panels[1]!.find('.fallback').exists()).toBe(true)
+        // The other tab falls back to #default — but only once it is the ACTIVE one (ORI-I-84).
+        expect(panels[1]!.find('.fallback').exists()).toBe(false)
+
+        await wrapper.setProps({ modelValue: 'other' })
+        expect(wrapper.findAll('.ori-tabs__panel')[1]!.find('.fallback').exists()).toBe(true)
     })
 
     it('warns in DEV when a caller passes the old un-prefixed #<value> panel slot', () => {
@@ -508,6 +512,94 @@ describe('OriTabs', () => {
         const emitted = wrapper.emitted('update:modelValue')
         const lastValue = emitted?.[emitted.length - 1]
         expect(lastValue).toEqual([2])
+    })
+
+    // -------------------------------------------------------------------------
+    // The #default fallback renders into the ACTIVE panel only (ORI-I-84)
+    // -------------------------------------------------------------------------
+
+    // It used to render into every panel, so a shared template that ignored its scope was multiplied:
+    // justpaint measured a login form in `#default` producing ids `email,password,email,password`, and
+    // `getElementById` — therefore `<label for>` — resolving to the copy inside the HIDDEN panel
+    // whenever the active tab was not the first one.
+
+    it('a shared #default template renders ONCE, so its ids stay unique', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'billing' },
+            slots: { default: '<input id="email" />' }
+        })
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.findAll('#email')).toHaveLength(1)
+        expect(wrapper.findAll('.ori-tabs__panel')[1]!.find('#email').exists()).toBe(true)
+    })
+
+    it('the single copy lives in the VISIBLE panel, not a hidden one', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'security' },
+            slots: { default: '<input id="email" />' },
+            attachTo: document.body
+        })
+        await wrapper.vm.$nextTick()
+
+        const owner = document.getElementById('email')!.closest('.ori-tabs__panel') as HTMLElement
+        expect(owner.hasAttribute('hidden')).toBe(false)
+        expect(owner.getAttribute('id')).toBe(wrapper.findAll('.ori-tabs__panel')[2]!.attributes('id'))
+        wrapper.unmount()
+    })
+
+    it('the fallback follows the selection: one copy, always in the active panel', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'account' },
+            slots: { default: '<span class="shared">shared</span>' }
+        })
+        await wrapper.vm.$nextTick()
+        expect(wrapper.findAll('.ori-tabs__panel')[0]!.find('.shared').exists()).toBe(true)
+
+        await wrapper.setProps({ modelValue: 'security' })
+        const panels = wrapper.findAll('.ori-tabs__panel')
+        expect(panels[0]!.find('.shared').exists()).toBe(false)
+        expect(panels[2]!.find('.shared').exists()).toBe(true)
+        expect(wrapper.findAll('.shared')).toHaveLength(1)
+    })
+
+    it('the scope the fallback receives is the ACTIVE tab, never a hidden one', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'billing' },
+            slots: { default: '<template #default="{ tab }"><span class="scope">{{ tab.value }}</span></template>' }
+        })
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.findAll('.scope')).toHaveLength(1)
+        expect(wrapper.find('.scope').text()).toBe('billing')
+    })
+
+    it('a per-value #panel-<value> slot is unaffected — it still renders into its own panel', async () => {
+        const wrapper = mount(OriTabs, {
+            props: { tabs: TABS, modelValue: 'account' },
+            slots: { 'panel-security': '<span class="own">security only</span>' }
+        })
+        await wrapper.vm.$nextTick()
+
+        // Rendered even though its tab is not selected: a named panel slot belongs to one panel, always.
+        expect(wrapper.findAll('.ori-tabs__panel')[2]!.find('.own').exists()).toBe(true)
+    })
+
+    it('warns in DEV when a #panel-<value> slot matches no tab', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriTabs, { props: { tabs: TABS }, slots: { 'panel-acount': '<span>typo</span>' } })
+
+        expect(warn).toHaveBeenCalledTimes(1)
+        expect(warn.mock.calls[0]![0]).toContain('#panel-acount')
+        warn.mockRestore()
+    })
+
+    it('does not warn when every panel slot matches a tab', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriTabs, { props: { tabs: TABS }, slots: { 'panel-account': '<span>ok</span>' } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
     })
 
     it('has no axe violations (horizontal, 3 tabs, one selected)', async () => {

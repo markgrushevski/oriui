@@ -171,7 +171,7 @@ From `none` (sharp) to `full` (pill-like). The default is `lg`.
 ```html
 <div class="ori-card ori-size-radius_none ori-variant_solid ori-color_surface">
     <div class="ori-card__header">
-        <div class="ori-card__headline"><div class="ori-card__title">zero</div></div>
+        <div class="ori-card__headline"><div class="ori-card__title">none</div></div>
     </div>
     <div class="ori-card__body">No corner radius.</div>
 </div>
