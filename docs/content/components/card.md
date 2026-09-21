@@ -70,7 +70,7 @@ Five visual styles, all driven by the `ori-variant_*` utilities. The default is 
 ```html
 <div class="ori-card ori-size-radius_lg ori-variant_solid ori-color_surface">
     <div class="ori-card__header">
-        <div class="ori-card__headline"><div class="ori-card__title">Fill</div></div>
+        <div class="ori-card__headline"><div class="ori-card__title">Solid</div></div>
     </div>
     <div class="ori-card__body">Default fill on surface.</div>
 </div>

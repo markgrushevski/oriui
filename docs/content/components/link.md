@@ -57,7 +57,7 @@ Apply a semantic role with `ori-color_*`. The color drives both the text and the
 :ori-link[primary]{href="#" color="primary"}
 :ori-link[secondary]{href="#" color="secondary"}
 :ori-link[success]{href="#" color="success"}
-:ori-link[warn]{href="#" color="warning"}
+:ori-link[warning]{href="#" color="warning"}
 :ori-link[danger]{href="#" color="danger"}
 :ori-link[info]{href="#" color="info"}
 
@@ -67,7 +67,7 @@ Apply a semantic role with `ori-color_*`. The color drives both the text and the
 <OriLink href="#" color="primary">primary</OriLink>
 <OriLink href="#" color="secondary">secondary</OriLink>
 <OriLink href="#" color="success">success</OriLink>
-<OriLink href="#" color="warning">warn</OriLink>
+<OriLink href="#" color="warning">warning</OriLink>
 <OriLink href="#" color="danger">danger</OriLink>
 <OriLink href="#" color="info">info</OriLink>
 ```

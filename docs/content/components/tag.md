@@ -36,7 +36,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
 :ori-tag{label="Solid" variant="solid"}
-:ori-tag{label="Tonal" variant="soft"}
+:ori-tag{label="Soft" variant="soft"}
 :ori-tag{label="Outline" variant="outline"}
 :ori-tag{label="Text" variant="text"}
 :ori-tag{label="Quiet" variant="quiet"}
@@ -45,7 +45,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ```vue
 <OriTag label="Solid" variant="solid" />
-<OriTag label="Tonal" variant="soft" />
+<OriTag label="Soft" variant="soft" />
 <OriTag label="Outline" variant="outline" />
 <OriTag label="Text" variant="text" />
 <OriTag label="Quiet" variant="quiet" />
@@ -55,9 +55,9 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ```html
 <span class="ori-tag ori-variant_solid ori-color_primary ori-font-size_sm ori-size-radius_full">
-    <span class="ori-tag__text">Fill</span>
+    <span class="ori-tag__text">Solid</span>
 </span>
-<!-- swap the variant: ori-variant_solid → _tonal / _outline / _text / _plain -->
+<!-- swap the variant: ori-variant_solid → _soft / _outline / _text / _quiet -->
 <span class="ori-tag ori-variant_soft ori-color_primary ori-font-size_sm ori-size-radius_full">
     <span class="ori-tag__text">Soft</span>
 </span>
@@ -386,5 +386,5 @@ OriTag does not set `inheritAttrs: false`, so any extra attributes (`class`, `da
 | Slot      | Description                                                                                 |
 | --------- | ------------------------------------------------------------------------------------------- |
 | `prepend` | Decorator before the label. Falls back to the `prependIcon` `<ori-icon>` when not provided. |
-| `default` | Replaces the text prop content. Rendered inside `ori-tag__text`; use for rich labels.       |
+| `default` | Replaces the `label` prop content. Rendered inside `ori-tag__text`; use for rich labels.    |
 | `append`  | Decorator after the label. Falls back to the `appendIcon` `<ori-icon>` when not provided.   |

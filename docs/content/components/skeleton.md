@@ -194,7 +194,7 @@ a perfectly square placeholder.
 #html
 
 ```html
-<!-- swap the radius class: ori-size-radius_none → _xs / _sm / _md / _lg / _xl / _rounded -->
+<!-- swap the radius class: ori-size-radius_none → _xs / _sm / _md / _lg / _xl / _full -->
 <div class="ori-skeleton ori-size-radius_none" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
 <div class="ori-skeleton ori-size-radius_full" aria-hidden="true" style="width: 4rem; height: 2rem"></div>
 ```

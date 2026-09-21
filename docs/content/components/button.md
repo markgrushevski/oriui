@@ -36,7 +36,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ::example
 :ori-button{label="Solid" variant="solid"}
-:ori-button{label="Tonal" variant="soft"}
+:ori-button{label="Soft" variant="soft"}
 :ori-button{label="Outline" variant="outline"}
 :ori-button{label="Text" variant="text"}
 :ori-button{label="Quiet" variant="quiet"}
@@ -45,7 +45,7 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 
 ```vue
 <OriButton label="Solid" variant="solid" />
-<OriButton label="Tonal" variant="soft" />
+<OriButton label="Soft" variant="soft" />
 <OriButton label="Outline" variant="outline" />
 <OriButton label="Text" variant="text" />
 <OriButton label="Quiet" variant="quiet" />
@@ -54,8 +54,8 @@ Five visual styles, all driven by the `ori-variant_*` single-class token.
 #html
 
 ```html
-<button class="ori-button ori-variant_solid ori-color_primary">Fill</button>
-<!-- swap the variant: ori-variant_solid → _tonal / _outline / _text / _plain -->
+<button class="ori-button ori-variant_solid ori-color_primary">Solid</button>
+<!-- swap the variant: ori-variant_solid → _soft / _outline / _text / _quiet -->
 <button class="ori-button ori-variant_outline ori-color_primary">Outline</button>
 ```
 

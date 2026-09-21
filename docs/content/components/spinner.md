@@ -201,7 +201,7 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `color`  | `ThemeColor` | —           | Semantic color role. Omit to inherit `currentcolor` from the parent.          |
 | `inline` | `boolean`    | `false`     | Renders as `inline-block` with a small margin for use inside text or buttons. |
 | `label`  | `string`     | `'Loading'` | `aria-label` text read by assistive technology.                               |
-| `size`   | `ActionSize` | `'text'`    | Ring size (`xs`–`xxl`). Default `'text'` inherits its size from the font.     |
+| `size`   | `ActionSize` | `'inherit'` | Ring size (`xs`–`xxl`). Default `'inherit'` takes its size from the font.     |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
 

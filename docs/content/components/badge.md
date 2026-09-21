@@ -51,8 +51,8 @@ Five visual styles, driven by the `ori-variant_*` single-class token.
 #html
 
 ```html
-<span class="ori-badge">Fill</span>
-<!-- swap the variant: ori-variant_soft / _outline / _text / _plain -->
+<span class="ori-badge">Solid</span>
+<!-- swap the variant: ori-variant_soft / _outline / _text / _quiet -->
 <span class="ori-badge ori-variant_soft">Soft</span>
 ```
 

@@ -42,7 +42,7 @@ to two letters from the first two words of `name`.
 
 ```vue
 <OriAvatar src="/portrait.jpg" name="Marcus Tullius Cicero" />
-<!-- no src — initials "MT" are derived from text -->
+<!-- no src — initials "MT" are derived from name -->
 <OriAvatar name="Marcus Tullius Cicero" />
 <!-- two words — initials "AL" -->
 <OriAvatar name="Ada Lovelace" />

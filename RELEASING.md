@@ -51,6 +51,15 @@ token via `id-token: write`. No `NPM_TOKEN` secret, nothing to rotate every 90 d
 
 ## Cut a release
 
+> **Standing item for the NEXT rc — the vocabulary rename is breaking for justpaint.** The repo's own
+> consumer pins all three packages at `1.0.0-rc.18` and uses the vocabulary the rename deletes:
+> roughly 38 call sites (19 `variant="fill|tonal|plain"`, 13 `<Ori… text=…>`, one `color="warn"`, one
+> `radius="zero|rounded"`, plus 4 raw `.ori-*` classes in its own CSS). `AuthForm.vue` and
+> `DrawView.vue` carry several each. The migration table is in
+> `.changeset/api-vocabulary-rename.md`; **tell them before the publish, not after** — an rc bump that
+> silently unstyles their buttons is worse than a day's delay. Delete this block once they are on the
+> new line.
+
 1. **Add a changeset per change** (on the feature branch, before merging):
 
     ```bash
