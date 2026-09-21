@@ -80,7 +80,10 @@ if (import.meta.env.DEV) {
 
         // A `#panel-<value>` slot whose value is a typo, or whose item was removed, consumes nothing
         // and Vue never warns about an unconsumed slot — the section silently falls back to `#default`
-        // or renders empty. Exact match against the item values, so it cannot fire on correct code.
+        // or renders empty. Exact match against the item values, with the same empty-collection guard
+        // as OriTabs: an empty `items` is "not loaded yet", and every panel slot is an orphan against
+        // an empty set.
+        if (items.length === 0) return
         const values = new Set(items.map((item) => `panel-${item.value}`))
         const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))
         if (orphans.length)

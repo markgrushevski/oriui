@@ -47,7 +47,7 @@ function markup(): string {
     const cell = (role: string) => `
         <button class="ori-button ori-color_${role} ori-variant_text" data-role="${role}" data-kind="button-text">Text</button>
         <button class="ori-button ori-color_${role} ori-variant_outline" data-role="${role}" data-kind="button-outline">Outline</button>
-        <button class="ori-button ori-color_${role} ori-variant_soft" data-role="${role}" data-kind="button-tonal">Soft</button>
+        <button class="ori-button ori-color_${role} ori-variant_soft" data-role="${role}" data-kind="button-soft">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_soft" data-active data-role="${role}" data-kind="button-soft-active">Soft</button>
         <button class="ori-button ori-color_${role} ori-variant_quiet" data-role="${role}" data-kind="button-quiet">Quiet</button>
         <a class="ori-link ori-color_${role}" href="#" data-role="${role}" data-kind="link">Link</a>

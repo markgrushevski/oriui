@@ -13,11 +13,13 @@ The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** c
 worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
 clickable. The replacement was solved rather than picked: for every role × skin × theme, the minimum
 alpha that keeps 4.5:1 was computed from the composite the browser actually performs
-(`fg*a + bg*(1-a)` in sRGB). 0.5 left **190 of 192** readings below AA, 0.75 left 46, **0.81 is the
+(`fg*a + bg*(1-a)` in sRGB). 0.5 left **95 of 96** readings below AA, 0.75 left 23, **0.81 is the
 exact edge**, and **0.85** clears every reading with a worst of 4.95 — confirmed against the real
 rasteriser in `e2e/text-contrast.spec.ts`, which now **asserts** the quiet probe instead of excluding
 it as "intentionally muted".
 
-What the variant is for is unchanged, and is what separates it from `text`: `quiet` paints **no
-background in any state**, where `text` paints a 10% role tint on hover and active. `quiet` restores
+What the variant is for is unchanged, and is what separates it from `text`: the `quiet` mapping
+paints **no background of its own in any state**, where `text` paints a 10% role tint on hover and
+active. (A pressed toggle still gets a background — that is a cross-variant STATE rule, not part of
+the variant.) `quiet` restores
 full opacity on hover / `:active` / `[data-active]` as before.

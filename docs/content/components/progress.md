@@ -199,7 +199,7 @@ From `none` (square) to `full` (pill, default).
 #html
 
 ```html
-<!-- swap the radius class: ori-size-radius_none → _sm / _md / _rounded -->
+<!-- swap the radius class: ori-size-radius_none → _sm / _md / _full -->
 <div
     class="ori-progress ori-progress_lg ori-size-radius_none ori-color_primary"
     role="progressbar"

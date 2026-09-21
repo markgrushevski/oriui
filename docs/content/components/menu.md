@@ -176,8 +176,9 @@ RTL-aware). Same placement classes and collision-flip logic as the Popover, sinc
 
 ## Disabled item
 
-A disabled item is `aria-disabled`, styled dimmed, and skipped by roving navigation and typeahead — it
-can't be highlighted or selected.
+A disabled item is `aria-disabled`, styled dimmed, and skipped by roving navigation — it can't be
+highlighted or selected. (There is no typeahead: the menu's keyboard contract is Arrow / Home / End /
+Enter / Space / Escape / Tab, with no printable-character search.)
 
 ::example
 :menu-demo

@@ -323,6 +323,14 @@ describe('OriAccordion', () => {
         warn.mockRestore()
     })
 
+    it('does not warn while the collection is still empty — an async list is correct code', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mount(OriAccordion, { props: { items: [] }, slots: { 'panel-a': '<span>ok</span>' } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
     it('does not warn when every panel slot matches an item', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         mount(OriAccordion, { props: { items: ITEMS }, slots: { 'panel-a': '<span>ok</span>' } })

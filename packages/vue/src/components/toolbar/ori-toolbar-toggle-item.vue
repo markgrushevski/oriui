@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, mergeProps } from 'vue'
+import { computed, mergeProps, useSlots } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { useToolbarToggleItem } from '@oriui/headless/vue'
 import { OriButton } from '../button'
@@ -40,6 +40,7 @@ const {
 defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarToggleItem(() => value)
+const slots = useSlots()
 
 // Dev-only: warn on a nameless icon-only item (axe `button-name`); describedby only when `aria-label` names
 // it (else name == tooltip, a double-announce) — see OriToolbarButton for the rationale.
@@ -48,7 +49,8 @@ if (import.meta.env?.DEV && icon && !ariaLabel && !tooltip && !label) {
         '[OriToolbarToggleItem] an icon-only item needs an accessible name — pass `aria-label` (or `tooltip` / `label`).'
     )
 }
-const describedBy = (bubbleId: string) => (ariaLabel ? bubbleId : undefined)
+const named = () => Boolean(ariaLabel || label || slots.default)
+const describedBy = (bubbleId: string) => (named() ? bubbleId : undefined)
 
 const buttonBindings = computed(() => ({
     ...itemProps.value,
@@ -58,7 +60,8 @@ const buttonBindings = computed(() => ({
     radius,
     size,
     variant,
-    'aria-label': ariaLabel ?? tooltip,
+    // See OriToolbarButton: the tooltip names the item only when nothing visible does (WCAG 2.5.3).
+    'aria-label': ariaLabel ?? (label || slots.default ? undefined : tooltip),
     'aria-disabled': disabled || undefined
 }))
 

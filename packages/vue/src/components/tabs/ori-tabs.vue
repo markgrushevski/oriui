@@ -94,8 +94,11 @@ if (import.meta.env.DEV) {
 
         // The other half of the same silence: a correctly PREFIXED slot whose value is a typo, or
         // whose tab was removed. It consumes nothing and Vue says nothing, so the panel renders the
-        // `#default` fallback (or empty) and the caller sees a blank tab. The check is exact — a
-        // `panel-*` name that matches no item — so it cannot fire on correct code.
+        // `#default` fallback (or empty) and the caller sees a blank tab. Exact match against the
+        // tab values — with one guard: an EMPTY `tabs` is how a caller spells "not loaded yet", and
+        // every declared panel slot is an orphan against an empty set, so the check would cry on
+        // correct code on every render until the fetch resolved.
+        if (tabs.length === 0) return
         const values = new Set(tabs.map((tab) => `panel-${tab.value}`))
         const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))
         if (orphans.length)
