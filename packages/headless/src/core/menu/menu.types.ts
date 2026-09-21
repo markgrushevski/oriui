@@ -1,4 +1,4 @@
-/** A single menu item. `value` is the stable identity; `label` is optional (display / typeahead). */
+/** A single menu item. `value` is the stable identity; `label` is optional (display text). */
 export interface MenuItem {
     value: string
     label?: string

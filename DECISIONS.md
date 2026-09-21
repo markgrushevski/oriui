@@ -1131,7 +1131,7 @@ external reading required:
 
 - `OriCard` declares `prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` / `title` / `subtitle`
   / `text`. That exact set of four prepend/append props is VCard's.
-- `Variant = 'fill' | 'tonal' | 'outline' | 'text' | 'plain'`. Three of the five — `tonal`, `text`, `plain`
+- `Variant` was `'fill' | 'tonal' | 'outline' | 'text' | 'plain'` **at the time of this entry** (it is now `'solid' | 'soft' | 'outline' | 'text' | 'quiet'` — see the vocabulary entry below). Three of those five — `tonal`, `text`, `plain`
   — are VBtn's variant names; `tonal` is a Material-3 term that only Vuetify exposes as a variant.
 
 What we renamed, and why it matters: `fill` where Vuetify has `elevated`/`flat` (ours describes the paint,
@@ -1140,9 +1140,10 @@ not the elevation, because elevation is `OriSurface`'s axis); `outline` where Vu
 
 **Two names collide with other ecosystems and are worth knowing before someone reports them as bugs:**
 
-- `variant="plain"` is a half-faded control here and in Vuetify. In Chakra v3 `plain` means _no styling at
+- `variant="plain"` was a half-faded control here and in Vuetify. In Chakra v3 `plain` means _no styling at
   all_, so a Chakra arrival asking for an unstyled button gets a 50%-opacity one. (Its contrast is
-  separately recorded as ORI-I-91.)
+  separately recorded as ORI-I-91.) **Both halves were acted on:** the value is now `quiet` (Adobe Spectrum's
+  word for the same treatment) and the fade is the measured 0.85 rather than 0.5.
 - `OriLink`'s `external` sets `target="_blank"` + `rel="noopener noreferrer"`. `NuxtLink`'s `external`
   means "bypass the router" — the same word for a different job, in the framework our own docs are built
   with.
@@ -1301,7 +1302,7 @@ narrowed union into `string | number | undefined`, because the bound value can b
 
 **What the rest of the axes said.** Size is a wash — 1.48 kB against 1.58 kB gzip with behaviour
 included on both sides, so bytes decide nothing. The call site splits by case: with distinct panels
-compound is shorter and reads better (13 → 11 lines in the docs' Basic example), with a shared body it
+compound is shorter and reads better (12 → 11 lines in the docs' Basic example), with a shared body it
 is far worse — the only real consumer goes 35 → 62 lines, because compound has no "one template,
 every panel" and the workaround is a `v-for` over an array in the caller's own file. And three costs
 the prototype cannot pay off: the registry is per-framework where `useTabs` is one shared core machine

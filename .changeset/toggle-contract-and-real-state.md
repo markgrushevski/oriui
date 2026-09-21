@@ -19,7 +19,7 @@ beats the variant token and repaints `solid` and `soft` toggles with a neutral g
 Chromium: a pressed `solid` button went from `rgb(3, 105, 161)` to an 18% near-black tint). Instead the
 universal affordance is an inset hairline in `currentcolor` — no variant touches `box-shadow`, and the
 button's own label colour is contrast-paired with whatever background sits under it — and the neutral
-tint is added only for `text` / `plain` / `outline`, the three variants whose background is
+tint is added only for `text` / `quiet` / `outline`, the three variants whose background is
 transparent. A toolbar button (`variant="text"` by default) renders exactly the same tint it did
 before; `solid` and `soft` toolbar toggles stop being flattened. A source-level test fails if the rule
 is re-gated behind an ancestor, or if a pressed background ever reaches a variant that owns its own.

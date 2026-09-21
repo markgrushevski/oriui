@@ -303,7 +303,7 @@ API — its surface is the [classes](#classes) above. (Svelte bindings are plann
 | `invalid`  | `boolean`          | —           | Sets `aria-invalid="true"` on the input to signal a validation error.                          |
 | `label`    | `string`           | —           | Visible text rendered inside `ori-checkbox__label`. Omit when providing your own slot content. |
 | `required` | `boolean`          | —           | Sets the native `required` attribute on the input.                                             |
-| `size`     | `ActionSize`       | `'md'`      | Font (and therefore box) scale: `xs` · `sm` · `md` · `lg` · `xl` · `xxl` · `text`.             |
+| `size`     | `ActionSize`       | `'md'`      | Font (and therefore box) scale: `xs` · `sm` · `md` · `lg` · `xl` · `xxl` · `inherit`.          |
 | `value`    | `string \| number` | —           | Bound to the array model for a native checkbox group; omit for a single boolean `v-model`.     |
 
 ### Events & attributes

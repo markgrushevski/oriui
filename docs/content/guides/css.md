@@ -86,7 +86,7 @@ defaults**, so a bare block is already valid — you add a class only to overrid
 <button class="ori-button ori-button_lg ori-variant_soft ori-color_danger">Button</button>
 ```
 
-Swap `ori-variant_solid` → `_tonal`, or `ori-color_primary` → `ori-color_danger`, and nothing else
+Swap `ori-variant_solid` → `_soft`, or `ori-color_primary` → `ori-color_danger`, and nothing else
 changes — each class repoints exactly one CSS variable the component reads. It is the **same markup**
 whether rendered from Vue, Svelte, htmx, Astro, or hand-written HTML. Dynamic state is real
 **attributes**, not classes (`disabled`, `aria-busy="true"`, `aria-pressed`), so it stays accessible

@@ -27,12 +27,12 @@ const {
     fluid?: boolean
     icon?: string
     iconPosition?: CenteredPosition
+    label?: string
     loading?: boolean
     /** Toggle STATE (→ `aria-pressed` + the pressed look). Omit for a plain action button. */
     pressed?: boolean
     radius?: RadiusSize
     size?: ActionSize
-    label?: string
     variant?: Variant
 }>()
 
