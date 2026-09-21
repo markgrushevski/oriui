@@ -1,6 +1,29 @@
 <script lang="ts" setup>
-import { useId } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from 'vue'
 import type { AnchoredPlacement, ThemeColor } from '../../types'
+
+// WCAG 1.4.13 "Dismissible" (Level AA, normative): a mechanism must exist to dismiss hover/focus content
+// WITHOUT moving the pointer or the focus — i.e. Escape. That is the one bullet CSS cannot answer, and
+// the reason this component is no longer strictly zero-JS (ORI-I-86). The cost is kept to a single
+// document listener for the whole page, not one per tooltip: instances register a callback here, and
+// each decides for itself whether it is the one showing, by asking the DOM (`:hover` / focus
+// containment) rather than by tracking state the CSS owns. The show/hide mechanism is still pure CSS.
+const shown = new Set<() => void>()
+
+function onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Escape') return
+    for (const dismiss of shown) dismiss()
+}
+
+function register(dismiss: () => void): void {
+    if (shown.size === 0) document.addEventListener('keydown', onDocumentKeydown, true)
+    shown.add(dismiss)
+}
+
+function unregister(dismiss: () => void): void {
+    shown.delete(dismiss)
+    if (shown.size === 0) document.removeEventListener('keydown', onDocumentKeydown, true)
+}
 
 // OriTooltip — a CSS-driven tooltip overlay, native-first: no JS state machine and no positioning
 // engine. The default slot is the trigger; the .ori-tooltip__bubble[role="tooltip"] is always in the
@@ -34,10 +57,31 @@ const {
 
 // SSR-safe id (Vue 3.5) so the trigger's aria-describedby always targets the bubble.
 const bubbleId = useId()
+
+// Dismissed state is per instance and lives on the root as `data-ori-dismissed`, which tooltip.css
+// gates both show rules on. It re-arms by itself: the moment the pointer or the focus leaves, the
+// attribute goes and the tooltip can show again — so Escape dismisses THIS showing, not the tooltip.
+const root = useTemplateRef<HTMLElement>('root')
+const dismissed = ref(false)
+
+function dismissIfShowing(): void {
+    const el = root.value
+    if (!el) return
+    if (el.matches(':hover') || el.contains(document.activeElement)) dismissed.value = true
+}
+
+onMounted(() => register(dismissIfShowing))
+onBeforeUnmount(() => unregister(dismissIfShowing))
 </script>
 
 <template>
-    <span :class="['ori-tooltip', color && `ori-color_${color}`]">
+    <span
+        ref="root"
+        :class="['ori-tooltip', color && `ori-color_${color}`]"
+        :data-ori-dismissed="dismissed || undefined"
+        @pointerleave="dismissed = false"
+        @focusout="dismissed = false"
+    >
         <span class="ori-tooltip__trigger" :aria-describedby="bubbleId">
             <!-- bubbleId is exposed so the consumer can put aria-describedby on their OWN focusable
                  control — aria-describedby only announces when the element bearing it is focused, and

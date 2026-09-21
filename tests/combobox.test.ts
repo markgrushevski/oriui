@@ -164,6 +164,37 @@ describe('OriCombobox', () => {
         expect(input.attributes('aria-expanded')).toBe('false')
     })
 
+    // ORI-I-88: Enter used to be prevented only when something was highlighted, and the machine clears
+    // the highlight on every keystroke — so after typing, Enter fell through to the real <input> and
+    // performed implicit form submission with the listbox visibly open.
+    it('Enter is prevented whenever the list is open, even with nothing highlighted', async () => {
+        const wrapper = mountCb()
+        const input = wrapper.find('input')
+
+        await input.setValue('a') // typing opens the list AND clears the highlight
+        expect(input.attributes('aria-expanded')).toBe('true')
+        expect(input.attributes('aria-activedescendant')).toBeFalsy()
+
+        const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+        input.element.dispatchEvent(event)
+
+        expect(event.defaultPrevented).toBe(true)
+        // The list deliberately stays open: "ArrowDown then Enter commits" is the documented flow.
+        expect(input.attributes('aria-expanded')).toBe('true')
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('Enter is NOT prevented while the list is closed, so a form still submits', async () => {
+        const wrapper = mountCb()
+        const input = wrapper.find('input')
+
+        expect(input.attributes('aria-expanded')).toBe('false')
+        const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+        input.element.dispatchEvent(event)
+
+        expect(event.defaultPrevented).toBe(false)
+    })
+
     it('ArrowDown skips a disabled option during navigation', async () => {
         const wrapper = mountCb()
         const input = wrapper.find('input')

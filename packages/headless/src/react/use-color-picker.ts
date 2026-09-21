@@ -206,7 +206,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
     // The two visually-hidden native range inputs — the a11y surface (role=slider, focusable, form value).
     // Each input owns one axis: its onKeyDown handles only that axis's keys (preventing the native range's
     // own arrow handling), so the focused slider's aria-valuenow/valuetext changes on every keystroke and a
-    // screen reader announces it (an APG ColorArea requirement — Up/Down on "Saturation" must NOT silently
+    // screen reader announces it (APG has no ColorArea or ColorPicker pattern — this is$1    // the general slider contract, not a citation: Up/Down on "Saturation" must NOT silently
     // move brightness). onInput covers an AT setting a value directly (and a native arrow on the non-owned
     // axis, a harmless same-axis nudge).
     const getChannelInputProps = (channel: 'saturation' | 'value') => {
