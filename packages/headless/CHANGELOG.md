@@ -1,5 +1,133 @@
 # @oriui/headless
 
+## 1.0.0-rc.19
+
+### Minor Changes
+
+- c769e57: **The public vocabulary now follows the industry plurality — every prop VALUE and the content prop
+  are renamed.** This is the vocabulary pass the 1.0 freeze makes permanent; each item was measured
+  against the API of thirteen libraries, and only the outliers moved. Ten concepts already matched
+  (`variant`, `color`, `size`, `loading`, `disabled`, `open` / `defaultOpen`, `modelValue`, `as`,
+  `outline`) and were deliberately left alone.
+
+    **Migration — values.** Every one of these is interpolated into a class name, so each is also a
+    `@oriui/css` class rename, and the colour is a public TOKEN rename:
+
+    | Before                       | After             | Also renamed                                                                                                            |
+    | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
+    | `color="warn"`               | `color="warning"` | `--ori-color-warn` / `-on-warn` / `-warn-text`, `.ori-color_warn`, `ToastColor`, `useToast().warn()` → `.warning()`     |
+    | `variant="fill"`             | `variant="solid"` | `.ori-variant_fill`, `.ori-input_fill`, `.ori-textarea_fill`                                                            |
+    | `variant="tonal"`            | `variant="soft"`  | `.ori-variant_tonal`                                                                                                    |
+    | `radius="zero"`              | `radius="none"`   | `.ori-size-radius_zero`, `--ori-size-radius_zero`                                                                       |
+    | `radius="rounded"`           | `radius="full"`   | `.ori-size-radius_rounded`, `--ori-size-radius_rounded`                                                                 |
+    | `gap="zero"`                 | `gap="none"`      | `.ori-size-gap_zero`, `--ori-size-gap_zero`                                                                             |
+    | `size="text"` (`ActionSize`) | `size="inherit"`  | `--ori-size-action_text`, `--ori-size-action-space_text`, `--ori-font-size_text`, `.ori-icon_text`, `.ori-spinner_text` |
+
+    `warn` was the smallest-weight spelling in the whole audit (PrimeVue alone); `fill` exists in no
+    library while `solid` is AntD + Chakra v3 + Radix Themes + Nuxt UI + Park UI; `tonal` is Material-3
+    jargon only Vuetify exposes; `zero` is ours alone where `none` is the CSS keyword, and
+    `radius="rounded"` read as "radius=radius" because `rounded` is the PROP name in Vuetify, PrimeVue
+    and Chakra. The action-size step is `inherit` (MUI's word for the same step) rather than `inline`,
+    because `OriIcon`, `OriSpinner` and `OriAvatar` each already ship an `inline` BOOLEAN whose class is
+    `.ori-<block>_inline` — `size="inline"` would have silently switched them to `display: inline-flex`
+    with a margin.
+
+    **Migration — the content prop.** `text` becomes `label` on the components whose text names the
+    control, which is what PrimeVue, Quasar and Nuxt UI all call it, and what oriUI's own collection
+    items (`OriTabs`, `OriAccordion`, `OriSelect`) have always called it:
+
+    | Component                                     | Before  | After       |
+    | --------------------------------------------- | ------- | ----------- |
+    | `OriButton`, `OriTag`, `OriKbd`, `OriDivider` | `text`  | `label`     |
+    | `OriToolbarButton`, `OriToolbarToggleItem`    | `text`  | `label`     |
+    | `OriToolbarButton`, `OriToolbarToggleItem`    | `label` | `ariaLabel` |
+    | `OriAvatar`                                   | `text`  | `name`      |
+
+    `OriAlert`, `OriCard` and `OriToast` keep `text`: there it is a message body paired with `title`,
+    not a label — which is also how Vuetify names it. `OriAvatar.name` is the person the avatar stands
+    for: it was never rendered verbatim, it drives the initials and the image `alt` (Chakra's word for
+    the same prop).
+
+    On the two toolbar components the old `label` was the accessible name of an icon-only button and is
+    now `ariaLabel`, so the visible-text prop can be `label` like everywhere else. Under the old split
+    `<OriToolbarButton label="New" />` with no icon and no tooltip rendered an **empty** button carrying
+    only `aria-label` — a shape nothing would have caught, since an empty button with an accessible name
+    passes axe. With `label` as the visible text it cannot happen.
+
+    `aria-label` now falls back to `tooltip` only when nothing visible names the button: overriding a
+    rendered label with the tooltip text would fail WCAG 2.5.3 Label in Name, and that collision became
+    reachable for the first time with this rename.
+
+    No aliases ship. One set of names, because a pair of spellings that reaches 1.0 never gets removed.
+
+- 80a7bc2: **`OriMenu` renders separators — the grouping rule the headless tier already exported.** The menu
+  machine has always declared `separator` in its anatomy, exported `separatorProps`
+  (`role="separator"`, `aria-orientation="horizontal"`) and documented it on the `useMenu` page, while
+  the styled `OriMenu` rendered it zero times and `menu.css` carried no separator class. The styled
+  tier was poorer than the tier it sits on.
+
+    Mark an entry in the `items` array:
+
+    ```vue
+    <OriMenu
+        :items="[
+            { value: 'new', label: 'New file' },
+            { value: 'sep-1', separator: true },
+            { value: 'delete', label: 'Delete' }
+        ]"
+    />
+    ```
+
+    The array is the model for this component, so a separator is an entry in it (PrimeVue's shape) rather
+    than a slotted child. `MenuItem` gains `separator?: boolean`; a separator is not navigable and not
+    selectable — the machine drops it from the roving set with the same predicate that drops a disabled
+    item, so `ArrowDown` steps over it and `End` lands on the last real item even when a separator is
+    last in the array. `label` on a separator is ignored; `value` is still the list key. New part class:
+    `.ori-menu__separator`.
+
+### Patch Changes
+
+- 93eaf82: **The pre-1.0 accessibility queue, closed.** Seven recorded defects, one of them the only
+  WCAG-normative failure in the register.
+
+    **`OriTooltip` now meets WCAG 1.4.13 Content on Hover or Focus (Level AA).** It failed two of the
+    three bullets. _Hoverable_ — the bubble was `pointer-events: none` with a gap to cross, so the pointer
+    could never reach it (failure technique F95) and the text could not be selected, copied, or read by
+    someone panning with screen magnification. It now takes pointer events while shown, and a transparent
+    bridge covers the gap. _Dismissible_ — there was no Escape, because the component had no JavaScript at
+    all. **It now has exactly one document listener for the whole page**, shared by every instance: on
+    Escape, each tooltip asks the DOM whether it is the one showing and sets `data-ori-dismissed` on
+    itself, which both show rules are gated on and which clears on `pointerleave` / `focusout`. The
+    show/hide mechanism is still pure CSS. A standalone `@oriui/css` consumer gets Hoverable for free and
+    wires the one listener themselves — the surface is that attribute.
+
+    **A busy button is no longer dimmed like a disabled one.** `loading` renders the native `disabled`
+    attribute, so the `opacity: .45` disabled dim applied to a button that is _working_, not inactive —
+    reported by justpaint (JP-O-10) at **1.68:1** on a solid primary. WCAG's contrast exemption covers
+    inactive components, not waiting ones. The dim now skips `[aria-busy='true']`; the pointer and
+    keyboard blocking are unchanged. Measured after the fix at a worst of **4.91:1** across every role,
+    skin and theme, and pinned by a new probe in the contrast guard.
+
+    **A mixed checkbox looks mixed.** `:indeterminate` is a DOM property, so it reached the real input and
+    assistive tech announced "mixed" — while the stylesheet drew the box from `:checked` alone and painted
+    it empty. Sighted and non-sighted users were told different things. The mixed state now paints the
+    checked fill with a horizontal bar.
+
+    **`OriCombobox` no longer submits the form on Enter with the listbox open.** Enter was prevented only
+    when an option was highlighted, and the machine clears the highlight on every keystroke — so after
+    typing, Enter fell through to the real `<input>`. It is now prevented whenever the list is open; the
+    list deliberately stays open, so "ArrowDown then Enter commits" is unchanged.
+
+    **`OriDialog` announces its body as the dialog's description.** The headless layer has always
+    published `descriptionProps`; the styled tier never bound it. Both halves now ship, and the
+    `aria-describedby` appears only when there is body content to point at.
+
+    Docs and comments: `field.md` named the two controls that are deliberately NOT field-integrated
+    (`OriCheckbox`, `OriSwitch`) and what happens if you ignore that; a fabricated "APG ColorArea
+    requirement" citation was replaced with what it actually is in both colour-picker adapters; and
+    `OriMenu`'s deliberate divergence from APG's Menubar text on disabled items is now written down
+    beside the code that does it.
+
 ## 1.0.0-rc.18
 
 ### Patch Changes

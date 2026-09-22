@@ -1,5 +1,189 @@
 # @oriui/css
 
+## 1.0.0-rc.19
+
+### Minor Changes
+
+- c769e57: **The public vocabulary now follows the industry plurality — every prop VALUE and the content prop
+  are renamed.** This is the vocabulary pass the 1.0 freeze makes permanent; each item was measured
+  against the API of thirteen libraries, and only the outliers moved. Ten concepts already matched
+  (`variant`, `color`, `size`, `loading`, `disabled`, `open` / `defaultOpen`, `modelValue`, `as`,
+  `outline`) and were deliberately left alone.
+
+    **Migration — values.** Every one of these is interpolated into a class name, so each is also a
+    `@oriui/css` class rename, and the colour is a public TOKEN rename:
+
+    | Before                       | After             | Also renamed                                                                                                            |
+    | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
+    | `color="warn"`               | `color="warning"` | `--ori-color-warn` / `-on-warn` / `-warn-text`, `.ori-color_warn`, `ToastColor`, `useToast().warn()` → `.warning()`     |
+    | `variant="fill"`             | `variant="solid"` | `.ori-variant_fill`, `.ori-input_fill`, `.ori-textarea_fill`                                                            |
+    | `variant="tonal"`            | `variant="soft"`  | `.ori-variant_tonal`                                                                                                    |
+    | `radius="zero"`              | `radius="none"`   | `.ori-size-radius_zero`, `--ori-size-radius_zero`                                                                       |
+    | `radius="rounded"`           | `radius="full"`   | `.ori-size-radius_rounded`, `--ori-size-radius_rounded`                                                                 |
+    | `gap="zero"`                 | `gap="none"`      | `.ori-size-gap_zero`, `--ori-size-gap_zero`                                                                             |
+    | `size="text"` (`ActionSize`) | `size="inherit"`  | `--ori-size-action_text`, `--ori-size-action-space_text`, `--ori-font-size_text`, `.ori-icon_text`, `.ori-spinner_text` |
+
+    `warn` was the smallest-weight spelling in the whole audit (PrimeVue alone); `fill` exists in no
+    library while `solid` is AntD + Chakra v3 + Radix Themes + Nuxt UI + Park UI; `tonal` is Material-3
+    jargon only Vuetify exposes; `zero` is ours alone where `none` is the CSS keyword, and
+    `radius="rounded"` read as "radius=radius" because `rounded` is the PROP name in Vuetify, PrimeVue
+    and Chakra. The action-size step is `inherit` (MUI's word for the same step) rather than `inline`,
+    because `OriIcon`, `OriSpinner` and `OriAvatar` each already ship an `inline` BOOLEAN whose class is
+    `.ori-<block>_inline` — `size="inline"` would have silently switched them to `display: inline-flex`
+    with a margin.
+
+    **Migration — the content prop.** `text` becomes `label` on the components whose text names the
+    control, which is what PrimeVue, Quasar and Nuxt UI all call it, and what oriUI's own collection
+    items (`OriTabs`, `OriAccordion`, `OriSelect`) have always called it:
+
+    | Component                                     | Before  | After       |
+    | --------------------------------------------- | ------- | ----------- |
+    | `OriButton`, `OriTag`, `OriKbd`, `OriDivider` | `text`  | `label`     |
+    | `OriToolbarButton`, `OriToolbarToggleItem`    | `text`  | `label`     |
+    | `OriToolbarButton`, `OriToolbarToggleItem`    | `label` | `ariaLabel` |
+    | `OriAvatar`                                   | `text`  | `name`      |
+
+    `OriAlert`, `OriCard` and `OriToast` keep `text`: there it is a message body paired with `title`,
+    not a label — which is also how Vuetify names it. `OriAvatar.name` is the person the avatar stands
+    for: it was never rendered verbatim, it drives the initials and the image `alt` (Chakra's word for
+    the same prop).
+
+    On the two toolbar components the old `label` was the accessible name of an icon-only button and is
+    now `ariaLabel`, so the visible-text prop can be `label` like everywhere else. Under the old split
+    `<OriToolbarButton label="New" />` with no icon and no tooltip rendered an **empty** button carrying
+    only `aria-label` — a shape nothing would have caught, since an empty button with an accessible name
+    passes axe. With `label` as the visible text it cannot happen.
+
+    `aria-label` now falls back to `tooltip` only when nothing visible names the button: overriding a
+    rendered label with the tooltip text would fail WCAG 2.5.3 Label in Name, and that collision became
+    reachable for the first time with this rename.
+
+    No aliases ship. One set of names, because a pair of spellings that reaches 1.0 never gets removed.
+
+- 0104b16: **The unchecked checkbox and radio edge is heavier, because the old one failed WCAG 1.4.11.** The box
+  boundary was `color-mix(in srgb, currentcolor 40%, transparent)` — measured, that fell below the 3:1
+  non-text minimum in **16 of 32** readings across the eight skins and both themes, worst **2.24** on
+  sumi light. A control's visual boundary is exactly what 1.4.11 binds, and an unchecked box is nothing
+  but its boundary.
+
+    It is now 60%, chosen from a sweep rather than picked: 50% still failed 2 of 32, 55% cleared
+    everything at 3.19 — too close to the bar for a colour derived from the ambient ink, which a custom
+    skin can move — and 60% clears at **3.69**. The edge stays out of the shared outline tokens on
+    purpose; those are tuned lighter, and this is the heaviest structural weight in the library.
+
+    New guard: `e2e/non-text-contrast.spec.ts`, a separate spec from the 4.5:1 text probe because it is a
+    different criterion, a different bar and a different set of elements. It measures every unchecked
+    boundary in all sixteen skin × theme combinations and prints the offending readings when it fails.
+
+- 80a7bc2: **`OriMenu` renders separators — the grouping rule the headless tier already exported.** The menu
+  machine has always declared `separator` in its anatomy, exported `separatorProps`
+  (`role="separator"`, `aria-orientation="horizontal"`) and documented it on the `useMenu` page, while
+  the styled `OriMenu` rendered it zero times and `menu.css` carried no separator class. The styled
+  tier was poorer than the tier it sits on.
+
+    Mark an entry in the `items` array:
+
+    ```vue
+    <OriMenu
+        :items="[
+            { value: 'new', label: 'New file' },
+            { value: 'sep-1', separator: true },
+            { value: 'delete', label: 'Delete' }
+        ]"
+    />
+    ```
+
+    The array is the model for this component, so a separator is an entry in it (PrimeVue's shape) rather
+    than a slotted child. `MenuItem` gains `separator?: boolean`; a separator is not navigable and not
+    selectable — the machine drops it from the roving set with the same predicate that drops a disabled
+    item, so `ArrowDown` steps over it and `End` lands on the last real item even when a separator is
+    last in the array. `label` on a separator is ignored; `value` is still the list key. New part class:
+    `.ori-menu__separator`.
+
+- 93eaf82: **The pre-1.0 accessibility queue, closed.** Seven recorded defects, one of them the only
+  WCAG-normative failure in the register.
+
+    **`OriTooltip` now meets WCAG 1.4.13 Content on Hover or Focus (Level AA).** It failed two of the
+    three bullets. _Hoverable_ — the bubble was `pointer-events: none` with a gap to cross, so the pointer
+    could never reach it (failure technique F95) and the text could not be selected, copied, or read by
+    someone panning with screen magnification. It now takes pointer events while shown, and a transparent
+    bridge covers the gap. _Dismissible_ — there was no Escape, because the component had no JavaScript at
+    all. **It now has exactly one document listener for the whole page**, shared by every instance: on
+    Escape, each tooltip asks the DOM whether it is the one showing and sets `data-ori-dismissed` on
+    itself, which both show rules are gated on and which clears on `pointerleave` / `focusout`. The
+    show/hide mechanism is still pure CSS. A standalone `@oriui/css` consumer gets Hoverable for free and
+    wires the one listener themselves — the surface is that attribute.
+
+    **A busy button is no longer dimmed like a disabled one.** `loading` renders the native `disabled`
+    attribute, so the `opacity: .45` disabled dim applied to a button that is _working_, not inactive —
+    reported by justpaint (JP-O-10) at **1.68:1** on a solid primary. WCAG's contrast exemption covers
+    inactive components, not waiting ones. The dim now skips `[aria-busy='true']`; the pointer and
+    keyboard blocking are unchanged. Measured after the fix at a worst of **4.91:1** across every role,
+    skin and theme, and pinned by a new probe in the contrast guard.
+
+    **A mixed checkbox looks mixed.** `:indeterminate` is a DOM property, so it reached the real input and
+    assistive tech announced "mixed" — while the stylesheet drew the box from `:checked` alone and painted
+    it empty. Sighted and non-sighted users were told different things. The mixed state now paints the
+    checked fill with a horizontal bar.
+
+    **`OriCombobox` no longer submits the form on Enter with the listbox open.** Enter was prevented only
+    when an option was highlighted, and the machine clears the highlight on every keystroke — so after
+    typing, Enter fell through to the real `<input>`. It is now prevented whenever the list is open; the
+    list deliberately stays open, so "ArrowDown then Enter commits" is unchanged.
+
+    **`OriDialog` announces its body as the dialog's description.** The headless layer has always
+    published `descriptionProps`; the styled tier never bound it. Both halves now ship, and the
+    `aria-describedby` appears only when there is body content to point at.
+
+    Docs and comments: `field.md` named the two controls that are deliberately NOT field-integrated
+    (`OriCheckbox`, `OriSwitch`) and what happens if you ignore that; a fabricated "APG ColorArea
+    requirement" citation was replaced with what it actually is in both colour-picker adapters; and
+    `OriMenu`'s deliberate divergence from APG's Menubar text on disabled items is now written down
+    beside the code that does it.
+
+- eea7717: **`variant="plain"` is now `variant="quiet"`, and its fade is the one that measures AA.**
+
+    The name moved because `plain` means two different things in the libraries that ship it — "unstyled"
+    in Chakra v3, "tinted" in Element Plus — while Adobe Spectrum's `isQuiet` names exactly this
+    treatment: the quietest step, minimal chrome. `.ori-variant_plain` → `.ori-variant_quiet`.
+
+    The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** control (ORI-I-91,
+    worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
+    clickable. The replacement was solved rather than picked: for every role × skin × theme, the minimum
+    alpha that keeps 4.5:1 was computed from the composite the browser actually performs
+    (`fg*a + bg*(1-a)` in sRGB). 0.5 left **95 of 96** readings below AA, 0.75 left 23, **0.81 is the
+    exact edge**, and **0.85** clears every reading with a worst of 4.95 — confirmed against the real
+    rasteriser in `e2e/text-contrast.spec.ts`, which now **asserts** the quiet probe instead of excluding
+    it as "intentionally muted".
+
+    What the variant is for is unchanged, and is what separates it from `text`: the `quiet` mapping
+    paints **no background of its own in any state**, where `text` paints a 10% role tint on hover and
+    active. (A pressed toggle still gets a background — that is a cross-variant STATE rule, not part of
+    the variant.) `quiet` restores
+    full opacity on hover / `:active` / `[data-active]` as before.
+
+### Patch Changes
+
+- c91bdb0: **Fix: `.ori-dialog__body` no longer fades everything a dialog contains below WCAG AA.** The body carried
+  `opacity: 0.85` for visual hierarchy, but that element wraps the caller's whole slot — so the fade applied
+  to controls, not only to explanatory text, and multiplied with any fade a child carried of its own. A field
+  hint's `opacity: 0.7` compounded to 0.595.
+
+    Measured in real Chromium across all eight skins and both themes, before the fix: a primary `solid` button's
+    label at **3.35:1** (luxury, light), a `danger` fill button at **4.14:1**, a field hint at **3.95:1** — all
+    against a 4.5:1 bar. Dark themes passed, which is why it survived to rc: the token pairs themselves are
+    honestly AA (5.43:1 for the button), and the margin was only lost at paint time.
+
+    The fade is gone; hierarchy in a dialog comes from the title's size and weight, as it does elsewhere in the
+    library, where secondary text is always a leaf class with its own tone (`__subtitle`, `__hint`) rather than
+    a group fade over someone else's content. Worst reading inside a dialog is now 4.87:1.
+
+    Neither existing guard could see this by construction — the Node token test reads token PAIRS and never
+    renders, and an axe pass reads declared colours, not composited pixels. `e2e/text-contrast.spec.ts` gains a
+    third test that measures a composited dialog body (128 readings) so an ancestor fade cannot return unseen.
+
+    Reported by the justpaint session against its own login modal (JP-O-09 → ORI-I-85).
+
 ## 1.0.0-rc.18
 
 ### Minor Changes
