@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>oriUI Weave icon</title>
+  <g stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 128c0-35.346 28.654-64 64-64s64 28.654 64 64-28.654 64-64 64-64-28.654-64-64Z"/>
+    <path d="M66 92c18-24 43-28 61-10 18 18 18 46 0 64-18 18-44 18-62 0"/>
+    <path d="M190 164c-18 24-43 28-61 10-18-18-18-46 0-64 18-18 44-18 62 0"/>
+  </g>
+</svg>

@@ -53,7 +53,8 @@ so a `dependencies` entry could never enforce the match anyway. While the line i
 ranges pin the exact version (a `^1.0.0` range cannot match `1.0.0-rc.N`); widening them is part of the 1.0
 cutover in [RELEASING.md](RELEASING.md).
 
-Every version publishes to the **`latest`** dist-tag, so `npm install @oriui/vue` always gets the current line.
+Releases publish to the `rc` dist-tag, and `latest` is moved to each new version right after
+([RELEASING.md](RELEASING.md)), so `npm install @oriui/vue` gets the current line.
 
 ## Releases
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>oriUI Fold icon</title>
+  <path d="M58 66 126 40l72 36-70 36-70-46Z" fill="currentColor" opacity=".28"/>
+  <path d="M58 66v76l70 40V106L58 66Z" fill="currentColor" opacity=".9"/>
+  <path d="m126 106 72-30v76l-72 30v-76Z" fill="currentColor" opacity=".58"/>
+  <path d="m126 106 72-30-72-36-68 26 68 40Z" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M84 122 126 146l42-18" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+</svg>

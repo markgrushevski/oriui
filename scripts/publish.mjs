@@ -7,10 +7,6 @@
 // `ignore-scripts` turns the rebuilds off: the `release` script has already built the graph in order,
 // and the gate has measured that exact dist. `prepack` stays for RELEASING.md's manual fallback.
 //
-// `--tag latest`: in pre mode changesets would publish to the `rc` tag and leave `latest` on an older
-// line, so a plain `npm install` would get a different API from the one the docs describe. Every version
-// so far is a prerelease, so there is no stable for `latest` to protect. Drop the flag at the 1.0 cutover.
-//
 // Runs the CLI's bin.js under this node, not the `changeset.cmd` shim: Node won't spawn a `.cmd`
 // without a shell.
 import { spawnSync } from 'node:child_process'
@@ -18,7 +14,7 @@ import { createRequire } from 'node:module'
 
 const cli = createRequire(import.meta.url).resolve('@changesets/cli/bin.js')
 
-const result = spawnSync(process.execPath, [cli, 'publish', '--tag', 'latest', ...process.argv.slice(2)], {
+const result = spawnSync(process.execPath, [cli, 'publish', ...process.argv.slice(2)], {
     stdio: 'inherit',
     env: { ...process.env, npm_config_ignore_scripts: 'true' }
 })

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>oriUI Origin icon</title>
+  <path d="M128 40c48.601 0 88 39.399 88 88s-39.399 88-88 88-88-39.399-88-88 39.399-88 88-88Z" stroke="currentColor" stroke-width="20"/>
+  <path d="M104 64c22-20 58-18 76 7 18 25 11 60-14 78-24 17-58 10-74-15-16-25-10-54 12-70Z" fill="currentColor" opacity=".22"/>
+  <path d="M128 95a33 33 0 1 0 0 66 33 33 0 0 0 0-66Z" stroke="currentColor" stroke-width="14"/>
+</svg>

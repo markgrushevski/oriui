@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>oriUI Control icon</title>
+  <path d="m128 38 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".22" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+  <path d="m128 92 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".42" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+  <path d="m128 146 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".75" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+</svg>
