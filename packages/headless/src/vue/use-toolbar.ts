@@ -168,9 +168,7 @@ const TOOLBAR_TOGGLE_KEY: InjectionKey<ToolbarToggleContext> = Symbol.for('ori-t
  * Every member here is LIVE — re-read on each press, not captured once — so each takes the reactive form
  * (`MaybeRefOrGetter`: a value, a ref or a getter). That is the rule across the Vue adapter: an option
  * that SEEDS a primitive (`defaultOpen`, an initial `value`) accepts a value, a ref or a getter and is
- * read once; an option that is LIVE is re-read, so passing a bare value freezes it. `value` used to be a
- * bare getter here while `type` beside it was a `MaybeRefOrGetter` — one interface, two idioms
- * (ISSUES-INNER ORI-I-04) — so it is widened; a getter still satisfies it.
+ * read once; an option that is LIVE is re-read, so passing a bare value freezes it.
  */
 export interface UseToolbarToggleGroupOptions {
     /** 'single' keeps at most one value; 'multiple' keeps a set. */

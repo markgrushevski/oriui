@@ -81,13 +81,8 @@
 
         transition: border-color 0.15s ease-out;
 
-        /* 60%, not the 40% this shipped with, because 40% MEASURED below the WCAG 1.4.11 3:1
-           non-text minimum: 16 of 32 readings failed across the eight skins and both themes, worst
-           2.24 (sumi, light). This edge is the boundary of a UI component, so 1.4.11 binds it. The
-           sweep: 50% still failed 2 of 32, 55% cleared everything at 3.19 — too close to the bar for a
-           derived colour a custom skin can shift — and 60% clears at 3.69. Deliberately NOT folded into
-           the shared outline tokens: this is the heaviest structural weight in the library and the
-           tokens are tuned lighter. Guarded by e2e/non-text-contrast.spec.ts. ORI-I-82. */
+        /* Same 60% edge as the checkbox box — the lightest that clears WCAG 1.4.11 (3:1) everywhere.
+           Guarded by e2e/non-text-contrast.spec.ts. */
         border: 1px solid color-mix(in srgb, currentcolor 60%, transparent);
         border-radius: 50%;
     }

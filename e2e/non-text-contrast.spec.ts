@@ -9,11 +9,8 @@ import a11yPlugin from 'colord/plugins/a11y'
  * `text-contrast.spec.ts` (4.5:1, foregrounds), which is why it is its own file rather than another
  * `data-kind` there.
  *
- * It exists because ORI-I-82 sat `unconfirmed` for three days on back-of-envelope arithmetic. Measured,
- * the unchecked checkbox and radio edge failed in **16 of 32** readings at the 40% it shipped with —
- * worst 2.24 on sumi light. The value is now 60%, and this spec is what keeps it there: the edge is
- * derived with `color-mix` from the ambient ink, so any skin, any theme token, or any future "let's
- * lighten the chrome" pass can move it without touching these files.
+ * The edges are derived with `color-mix` from the ambient ink, so a skin or theme token can move them
+ * without touching the component CSS — only a measurement in a real engine catches that.
  *
  * Adding a cell: give the element an id, push it into PARTS, and say what its boundary colour is. The
  * measurement composites the boundary over the opaque surface on a 1x1 canvas, exactly as the text

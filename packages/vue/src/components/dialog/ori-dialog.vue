@@ -94,12 +94,8 @@ watchPostEffect(() => {
 const slots = useSlots()
 const attrs = useAttrs()
 const hasTitle = computed(() => Boolean(title) || Boolean(slots.title))
-// The body IS the dialog's description (ORI-I-90). The headless layer has always published
-// `descriptionProps` — an id — and every adapter is tested on it; the styled tier simply never bound it,
-// so a dialog's body text was not announced as its description. Both halves are needed and both are
-// conditional: the id goes on the body, and the reference goes on the <dialog> ONLY when there is body
-// content to point at (a dangling `aria-describedby` is an axe `aria-valid-attr-value` failure, which is
-// worse than the missing description) and only when the caller has not supplied their own.
+// The body is the dialog's description: `aria-describedby` points at it only when there is body content
+// (a dangling reference fails axe) and the caller has not supplied their own.
 const describedBy = computed(() =>
     slots.default && !attrs['aria-describedby'] ? (dlg.descriptionProps.value.id as string) : undefined
 )

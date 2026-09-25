@@ -18,11 +18,8 @@ export interface TabItem {
 }
 
 /**
- * The one declaration of the `useTabs` options, for the same reason as `TabItem` above and the four
- * behaviour option shapes in `./options`: every member is framework-neutral, so three hand-written
- * copies could only drift (ISSUES-INNER ORI-I-07). Each adapter re-exports this and wraps it in its own
- * reactivity — `MaybeRefOrGetter<UseTabsOptions>` in Vue, `MaybeReactive<UseTabsOptions>` in Svelte,
- * plain in React — which is the one thing that legitimately differs.
+ * The `useTabs` options, declared once like `./options`. Each adapter re-exports them inside its own
+ * reactivity wrapper — `MaybeRefOrGetter` in Vue, `MaybeReactive` in Svelte, plain in React.
  */
 export interface UseTabsOptions {
     /** The set of tabs, in order. */

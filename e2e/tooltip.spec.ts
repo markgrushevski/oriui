@@ -9,8 +9,7 @@ import path from 'node:path'
 const CSS = path.resolve('packages/css/dist/styles.css')
 
 // The default chip is the PAGE INVERTED — on-background over background — not a literal neutral step.
-// It moved off the raw ramp when the theme-blind literals were removed (ORI-I-23), which is what makes it
-// track skin and theme instead of only the default skin.
+// That is what makes it track skin and theme instead of only the default skin.
 const CHIP_BG_LIGHT = 'rgb(10, 34, 51)' // --ori-color-on-background-light #0a2233
 const CHIP_TEXT_LIGHT = 'rgb(243, 248, 252)' // --ori-color-background-light  #f3f8fc
 const PRIMARY_LIGHT = 'rgb(3, 105, 161)' // --ori-color-primary-light #0369a1
@@ -121,8 +120,8 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         expect(Number.isFinite(arrow.top)).toBe(true)
         expect(arrow.top).toBeGreaterThan(arrow.height / 2) // sits in the bottom half, pointing down
     })
-    // WCAG 1.4.13 Content on Hover or Focus — Level AA, normative (ORI-I-86). Two of the three bullets
-    // are geometry and pointer behaviour, so they can only be checked in a real engine.
+    // WCAG 1.4.13 Content on Hover or Focus (AA). Two of its three bullets are geometry and pointer
+    // behaviour, so they can only be checked in a real engine.
 
     test('Hoverable: the pointer can travel from the trigger onto the bubble without crossing dead space', async ({
         page

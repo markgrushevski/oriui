@@ -89,7 +89,7 @@ describe('OriButton', () => {
 
     // OriToolbarButton / OriToolbarToggleItem pass aria-pressed as a fall-through ATTRIBUTE (the
     // toggle item gets it straight from the headless prop bag). The new `:aria-pressed="pressed"`
-    // binding must not overwrite that with `undefined` — the exact failure mode ORI-I-13 recorded.
+    // binding must not overwrite that with `undefined`.
     it('a caller-supplied aria-pressed attribute survives the pressed binding', () => {
         const wrapper = mount(OriButton, { props: { label: 'x' }, attrs: { 'aria-pressed': 'true' } })
 
@@ -204,10 +204,10 @@ describe('OriButton', () => {
  * pull in opposite directions:
  *
  *  1. The look must not be gated behind a `.ori-toolbar` ancestor again — that is what left every
- *     toggle button outside a toolbar with no pressed affordance (ORI-I-10 / ORI-I-41).
+ *     toggle button outside a toolbar with no pressed affordance.
  *  2. The obvious "just ungate it" edit — one flat `.ori-button[aria-pressed='true'] {
- *     background-color: <neutral> }` — silently strips the role colour off every fill / tonal toggle
- *     (ORI-I-61). A literal background beats `.ori-button`'s own `background-color:
+ *     background-color: <neutral> }` — silently strips the role colour off every solid / soft toggle.
+ *     A literal background beats `.ori-button`'s own `background-color:
  *     var(--ori-variant-bg-color)` on specificity, so the pressed tint may only be applied to the
  *     variants whose background is `transparent`.
  */
@@ -250,7 +250,7 @@ describe('the pressed look in @oriui/css', () => {
 
         expect(ring, 'no unconditional inset box-shadow for [aria-pressed="true"]').toBeDefined()
         // A ring is the only pressed declaration a solid / soft button gets, so it must never be a
-        // background: `background-color` in the unconditional rule IS the ORI-I-61 regression.
+        // background: `background-color` in the unconditional rule IS regression 2 above.
         expect(ring?.declarations).not.toMatch(/background-color/)
     })
 

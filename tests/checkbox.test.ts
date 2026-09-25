@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
+import { nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { OriCheckbox } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
@@ -118,5 +119,14 @@ describe('OriCheckbox', () => {
         const wrapper = mount(OriCheckbox, { props: { label: 'Accept terms' }, attachTo: document.body })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
+    })
+})
+
+describe('OriCheckbox — the mixed state', () => {
+    it('passes `indeterminate` through to the real input, where AT reads it', async () => {
+        const wrapper = mount(OriCheckbox, { props: { label: 'All' }, attrs: { indeterminate: true } })
+        await nextTick()
+
+        expect((wrapper.find('input').element as HTMLInputElement).indeterminate).toBe(true)
     })
 })

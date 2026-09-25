@@ -253,7 +253,7 @@ describe('OriAccordion', () => {
     })
 
     // -------------------------------------------------------------------------
-    // Per-value panel slots (ORI-I-87)
+    // Per-value panel slots
     // -------------------------------------------------------------------------
 
     // Until these existed, `#default` was the ONLY panel mechanism, so distinct content per section

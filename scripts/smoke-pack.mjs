@@ -2,7 +2,7 @@
 //
 // Every other path that says `@oriui/vue` or `@oriui/headless` (vitest, the docs, the e2e harness,
 // the library build) is ALIASED to `src/`, so `dist/` and the `exports` maps were built, weighed by
-// size-limit and statically parsed by publint/attw — but never executed. See ISSUES-INNER ORI-I-30.
+// size-limit and statically parsed by publint/attw — but never executed.
 //
 // What this does: `npm pack` the three workspaces, install the tarballs plus vue/svelte/react into a
 // throwaway directory, and run one ESM module there that imports every published entry point through
@@ -104,7 +104,7 @@ for (const name of ['@oriui/vue', '@oriui/headless', '@oriui/css']) {
     })
 }
 
-// --- adapter isolation: the premise the optional peers rest on (ISSUES-INNER ORI-I-38) ---
+// --- adapter isolation: the premise the optional peers rest on ---
 // Each subpath entry may only reach its OWN framework, transitively through the shared chunks. If
 // dist/vue/index.js could pull in react, marking all three peers optional would be unsound.
 function bareImports(entry) {
@@ -139,7 +139,7 @@ for (const adapter of FRAMEWORKS) {
     })
 }
 
-// --- the one thing a duplicate install would break silently (ISSUES-INNER ORI-I-42) ---
+// --- the one thing a duplicate install would break silently ---
 check('@oriui/headless resolves to a single copy from both consumers', () => {
     const fromRoot = require.resolve('@oriui/headless/package.json')
     const fromVue = createRequire(require.resolve('@oriui/vue/package.json')).resolve('@oriui/headless/package.json')

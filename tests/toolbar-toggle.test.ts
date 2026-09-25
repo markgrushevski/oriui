@@ -6,17 +6,13 @@ import { isToolbarTogglePressed, resolveToolbarToggle, type ToolbarToggleValue }
 import { useToolbarToggleGroup as useGroupVue, useToolbarToggleItem as useItemVue } from '@oriui/headless/vue'
 
 /**
- * The toolbar toggle group's SELECTION rules — the one thing the three adapters used to hand-write three
- * times, and the home of two register entries:
+ * The toolbar toggle group's SELECTION rules:
  *
- * - ORI-I-48: `type: 'single'` was unconditionally deselectable. Pressing the active item always cleared
- *   it, so a tool picker that must always have a tool was impossible and its only consumer guarded it by
- *   hand. `deselectable` (default `true`, today's behaviour) is the missing option.
- * - ORI-I-04: the options interfaces mixed idioms — Vue's `value` was a bare getter while `type` beside
- *   it was a `MaybeRefOrGetter`, and Svelte's toggle group took per-member stores while every other
- *   Svelte composable (its own `useToolbar` included) takes `MaybeReactive<UseXOptions>`.
+ * - `deselectable` (default `true`): `false` lets a single-select tool picker always keep a tool.
+ * - Options follow each adapter's idiom — `MaybeRefOrGetter` members in Vue, `MaybeReactive<Options>`
+ *   in Svelte.
  *
- * So: the rules once, as a truth table over the shared `../core/toolbar` helpers, then each adapter's
+ * The rules once, as a truth table over the shared `../core/toolbar` helpers, then each adapter's
  * plumbing to them in that adapter's own idiom. React's half lives in tests/react-toolbar.test.ts, on the
  * component-tree harness already there.
  *
@@ -103,7 +99,7 @@ function mountVueGroup(options: Parameters<typeof useGroupVue>[0]) {
     return mount(Group, { attachTo: document.body })
 }
 
-describe('Vue useToolbarToggleGroup — `value` accepts the whole MaybeRefOrGetter family (ORI-I-04)', () => {
+describe('Vue useToolbarToggleGroup — `value` accepts the whole MaybeRefOrGetter family', () => {
     it('takes a ref: reads it for aria-pressed and re-reads it on press', async () => {
         const value = ref<ToolbarToggleValue>('pen')
         const wrapper = mountVueGroup({ type: 'single', value, onChange: (next) => (value.value = next) })
@@ -135,7 +131,7 @@ describe('Vue useToolbarToggleGroup — `value` accepts the whole MaybeRefOrGett
     })
 })
 
-describe('Vue useToolbarToggleGroup — deselectable (ORI-I-48)', () => {
+describe('Vue useToolbarToggleGroup — deselectable', () => {
     it('defaults to deselectable: re-pressing the active item clears the selection', async () => {
         const value = ref<ToolbarToggleValue>('pen')
         const wrapper = mountVueGroup({ type: 'single', value, onChange: (next) => (value.value = next) })
@@ -182,7 +178,7 @@ describe('Vue useToolbarToggleGroup — deselectable (ORI-I-48)', () => {
 
 // ── Svelte: MaybeReactive<Options>, the idiom its own `useToolbar` uses ─────────────────────────
 
-describe('Svelte useToolbarToggleGroup — options are the whole object, plain or a store (ORI-I-04)', () => {
+describe('Svelte useToolbarToggleGroup — options are the whole object, plain or a store', () => {
     it('takes a plain options object', () => {
         const onChange = vi.fn()
         useGroupSvelte({ type: 'single', value: 'pen', onChange })
@@ -211,7 +207,7 @@ describe('Svelte useToolbarToggleGroup — options are the whole object, plain o
     })
 })
 
-describe('Svelte useToolbarToggleGroup — deselectable (ORI-I-48)', () => {
+describe('Svelte useToolbarToggleGroup — deselectable', () => {
     it('deselectable:false pins the selection — no clear, and no redundant onChange', () => {
         const onChange = vi.fn()
         useGroupSvelte({ type: 'single', value: 'pen', deselectable: false, onChange })

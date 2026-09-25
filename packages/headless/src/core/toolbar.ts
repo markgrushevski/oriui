@@ -1,8 +1,6 @@
 /**
  * Pure toggle-group selection math for the WAI-ARIA toolbar — the selection half of what `./roving` is
- * for navigation. The three `use-toolbar.ts` adapters each hand-wrote the same two rules, so a fix
- * applied to one and forgotten in the others was invisible (ISSUES-INNER ORI-I-07); the rules live here
- * once and each adapter supplies only its own reactivity.
+ * for navigation. Shared by all three adapters, which supply only their reactivity.
  */
 
 /** 'single' keeps at most one value; 'multiple' keeps a set. */

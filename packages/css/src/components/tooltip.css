@@ -156,26 +156,17 @@
         }
     }
 
-    /* WCAG 1.4.13 "Hoverable" (Level AA, normative): if hover can trigger the content, the pointer must
-       be able to move ONTO that content without it disappearing. The bubble used to be
-       `pointer-events: none` with a gap between it and the trigger, so the pointer could not reach it at
-       all — failure technique F95 exactly, and the text could never be selected, copied, or read by
-       someone panning with screen magnification. Two halves: the shown bubble takes pointer events
-       (below), and this transparent ::before bridges the gap so the pointer never crosses dead space on
-       the way. `inset` with the negative gap covers every side at once, which is why this needs no
-       per-placement rules; while the bubble is hidden it inherits `pointer-events: none` AND
-       `visibility: hidden`, so the bridge captures nothing. */
+    /* WCAG 1.4.13 Hoverable: the pointer must be able to move onto the bubble. The shown bubble takes
+       pointer events, and this transparent ::before bridges the gap on every side at once. While hidden
+       the bubble has `pointer-events: none` and `visibility: hidden`, so the bridge captures nothing. */
     .ori-tooltip__bubble::before {
         content: '';
         position: absolute;
         inset: calc(var(--ori-tooltip-gap) * -1);
     }
 
-    /* Show on keyboard focus (works on touch + desktop). The `:not([data-ori-dismissed])` gate is WCAG
-       1.4.13 "Dismissible": Escape hides the tooltip without moving the pointer or the focus. The
-       attribute is set by OriTooltip's own Escape handler and cleared when the pointer or focus leaves,
-       so it re-arms naturally. A standalone `@oriui/css` consumer (no Vue) gets Hoverable from the rule
-       above but must wire the attribute themselves — it is one keydown listener; see tooltip.md. */
+    /* Show on keyboard focus. `data-ori-dismissed` (WCAG 1.4.13 Dismissible) is set on Escape and cleared
+       when the pointer or focus leaves; a CSS-layer consumer wires it themselves (see the tooltip docs). */
     .ori-tooltip:not([data-ori-dismissed]):focus-within .ori-tooltip__bubble {
         visibility: visible;
         opacity: 1;

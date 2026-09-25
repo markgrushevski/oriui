@@ -164,7 +164,7 @@ describe('OriCombobox', () => {
         expect(input.attributes('aria-expanded')).toBe('false')
     })
 
-    // ORI-I-88: Enter used to be prevented only when something was highlighted, and the machine clears
+    // Enter used to be prevented only when something was highlighted, and the machine clears
     // the highlight on every keystroke — so after typing, Enter fell through to the real <input> and
     // performed implicit form submission with the listbox visibly open.
     it('Enter is prevented whenever the list is open, even with nothing highlighted', async () => {

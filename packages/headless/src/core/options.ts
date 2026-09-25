@@ -2,19 +2,10 @@ import type { ComboboxItem } from './combobox'
 import type { MenuItem } from './menu'
 
 /**
- * The option shapes behind the four swappable behaviours, declared ONCE.
- *
- * Every member here is framework-neutral — strings, booleans, item arrays, plain callbacks — yet each of
- * `{vue,svelte,react}/contract.ts` re-declared the whole set, with nothing holding the copies together
- * (ISSUES-INNER ORI-I-07). Only the CONTROL shapes legitimately differ per framework (`ComputedRef` vs
- * `Readable` vs plain values), and so does the way an adapter takes its options — Vue wraps them in
- * `MaybeRefOrGetter`, Svelte in `MaybeReactive`, React passes them per render. That wrapping is the
- * adapter's job; the members inside it are these.
- *
- * `tests/adapter-parity.test.ts` pins each adapter's declaration to these bidirectionally, so a member
- * added, renamed or re-typed on one side is a `npm run test:types` failure naming the two interfaces —
- * not a review item. The same types are exported from `@oriui/headless` for anyone writing their own
- * adapter against the contract.
+ * The option shapes behind the four swappable behaviours, declared once. Every member is
+ * framework-neutral; only how an adapter wraps them differs (`MaybeRefOrGetter` in Vue, `MaybeReactive`
+ * in Svelte, per render in React). `tests/adapter-parity.test.ts` pins each adapter to these at compile
+ * time. Exported from `@oriui/headless` for anyone writing their own adapter.
  */
 
 export interface UseDisclosureOptions {

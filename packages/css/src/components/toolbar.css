@@ -63,11 +63,6 @@
         margin-inline: 0;
     }
 
-    /* The pressed toggle look is NOT here any more. It used to be `.ori-toolbar .ori-button
-       [aria-pressed='true']`, which gave the toolbar the only correct pressed treatment in the
-       library and left a toggle button anywhere else with nothing (ORI-I-10 / ORI-I-41). It now
-       lives in button.css — imported above, so this entry still ships it — keyed on the button
-       alone and split by variant, because the flat tint this rule applied is only correct for the
-       transparent-background variants the toolbar defaults to (`variant="text"`): applied to a
-       `solid` or `soft` toolbar button it replaced the role colour with a neutral grey. */
+    /* The pressed-toggle look lives in button.css (imported above), keyed on the button alone and split
+       by variant, so a toggle outside a toolbar gets it too. */
 }

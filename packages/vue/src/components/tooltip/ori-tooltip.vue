@@ -2,12 +2,9 @@
 import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from 'vue'
 import type { AnchoredPlacement, ThemeColor } from '../../types'
 
-// WCAG 1.4.13 "Dismissible" (Level AA, normative): a mechanism must exist to dismiss hover/focus content
-// WITHOUT moving the pointer or the focus — i.e. Escape. That is the one bullet CSS cannot answer, and
-// the reason this component is no longer strictly zero-JS (ORI-I-86). The cost is kept to a single
-// document listener for the whole page, not one per tooltip: instances register a callback here, and
-// each decides for itself whether it is the one showing, by asking the DOM (`:hover` / focus
-// containment) rather than by tracking state the CSS owns. The show/hide mechanism is still pure CSS.
+// WCAG 1.4.13 requires dismissing hover/focus content without moving the pointer or focus — Escape,
+// the one part CSS cannot do. One document listener serves every tooltip: each instance registers a
+// callback and checks the DOM (`:hover` / focus) to see whether it is the one showing. Show/hide stays CSS.
 const shown = new Set<() => void>()
 
 function onDocumentKeydown(event: KeyboardEvent): void {

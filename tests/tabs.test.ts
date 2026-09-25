@@ -391,7 +391,7 @@ describe('OriTabs', () => {
         const panels = wrapper.findAll('.ori-tabs__panel')
         expect(panels[0]!.find('.own-panel').exists()).toBe(true)
         expect(panels[0]!.find('.fallback').exists()).toBe(false)
-        // The other tab falls back to #default — but only once it is the ACTIVE one (ORI-I-84).
+        // The other tab falls back to #default — but only once it is the ACTIVE one.
         expect(panels[1]!.find('.fallback').exists()).toBe(false)
 
         await wrapper.setProps({ modelValue: 'other' })
@@ -515,11 +515,11 @@ describe('OriTabs', () => {
     })
 
     // -------------------------------------------------------------------------
-    // The #default fallback renders into the ACTIVE panel only (ORI-I-84)
+    // The #default fallback renders into the ACTIVE panel only
     // -------------------------------------------------------------------------
 
     // It used to render into every panel, so a shared template that ignored its scope was multiplied:
-    // justpaint measured a login form in `#default` producing ids `email,password,email,password`, and
+    // a login form in `#default` produced ids `email,password,email,password`, and
     // `getElementById` — therefore `<label for>` — resolving to the copy inside the HIDDEN panel
     // whenever the active tab was not the first one.
 

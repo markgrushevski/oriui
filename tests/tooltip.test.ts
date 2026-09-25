@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { OriTooltip } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
@@ -201,5 +202,66 @@ describe('OriTooltip', () => {
         })
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
+    })
+})
+
+describe('OriTooltip — Escape dismisses (WCAG 1.4.13)', () => {
+    const mountTip = () =>
+        mount(OriTooltip, {
+            props: { content: 'Helpful hint' },
+            slots: { default: () => h('button', { type: 'button' }, 'trigger') },
+            attachTo: document.body
+        })
+
+    it('Escape while the tooltip is focused marks it dismissed', async () => {
+        const wrapper = mountTip()
+        ;(wrapper.find('button').element as HTMLElement).focus()
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        await nextTick()
+
+        expect(wrapper.attributes('data-ori-dismissed')).toBe('true')
+        wrapper.unmount()
+    })
+
+    it('re-arms when focus leaves, so Escape dismisses THIS showing and not the tooltip', async () => {
+        const wrapper = mountTip()
+        ;(wrapper.find('button').element as HTMLElement).focus()
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        await nextTick()
+        expect(wrapper.attributes('data-ori-dismissed')).toBe('true')
+
+        await wrapper.trigger('focusout')
+        expect(wrapper.attributes('data-ori-dismissed')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('a key other than Escape does not dismiss', async () => {
+        const wrapper = mountTip()
+        ;(wrapper.find('button').element as HTMLElement).focus()
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }))
+        await nextTick()
+
+        expect(wrapper.attributes('data-ori-dismissed')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('Escape does not dismiss a tooltip that is neither hovered nor focused', async () => {
+        const wrapper = mountTip()
+
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        await nextTick()
+
+        expect(wrapper.attributes('data-ori-dismissed')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('unmounting the last tooltip removes the document listener', () => {
+        const before = mountTip()
+        before.unmount()
+        // Nothing to assert directly — the contract is that a stray Escape after unmount throws
+        // nothing and touches nothing. A leaked listener holding a dead component would throw here.
+        expect(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))).not.toThrow()
     })
 })

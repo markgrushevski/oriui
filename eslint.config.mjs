@@ -17,8 +17,6 @@ export default /** @type {import('eslint').Linter.Config[]} */ [
     // emits every shipped stylesheet, packages/vue/scripts/fix-dts.mjs rewrites every shipped .d.ts
     // specifier), the release smoke test, and the flat configs themselves. These are Node ESM, not
     // browser code — without `globals.node` the recommended config flags `console` as no-undef.
-    // They sat outside every lint/format glob until ORI-I-37; the globs in package.json now reach
-    // them, and this block gives them the right environment.
     {
         files: ['*.mjs', 'scripts/**/*.mjs', 'packages/*/*.mjs', 'packages/*/scripts/**/*.mjs'],
         languageOptions: {

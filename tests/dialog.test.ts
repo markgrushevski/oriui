@@ -205,3 +205,41 @@ describe('OriDialog (native <dialog> engine)', () => {
         await expectNoA11yViolations(dialog)
     })
 })
+
+describe('OriDialog — the body is the description', () => {
+    it('wires aria-describedby to the body when there is body content', () => {
+        const wrapper = mount(OriDialog, {
+            props: { title: 'Confirm', defaultOpen: true },
+            slots: { default: () => 'This cannot be undone.' },
+            attachTo: document.body
+        })
+
+        const dialog = wrapper.find('dialog')
+        const body = wrapper.find('.ori-dialog__body')
+        expect(body.attributes('id')).toBeTruthy()
+        expect(dialog.attributes('aria-describedby')).toBe(body.attributes('id'))
+        wrapper.unmount()
+    })
+
+    it('renders NO aria-describedby when the dialog has no body — a dangling reference is worse', () => {
+        const wrapper = mount(OriDialog, {
+            props: { title: 'Confirm', defaultOpen: true },
+            attachTo: document.body
+        })
+
+        expect(wrapper.find('dialog').attributes('aria-describedby')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it("a caller's own aria-describedby wins", () => {
+        const wrapper = mount(OriDialog, {
+            props: { title: 'Confirm', defaultOpen: true },
+            attrs: { 'aria-describedby': 'my-own-id' },
+            slots: { default: () => 'body' },
+            attachTo: document.body
+        })
+
+        expect(wrapper.find('dialog').attributes('aria-describedby')).toBe('my-own-id')
+        wrapper.unmount()
+    })
+})

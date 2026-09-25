@@ -72,15 +72,10 @@
         }
     }
 
-    /* No ambient fade here. This element wraps the caller's whole slot, so an `opacity` on it is applied
-       to everything inside — buttons, inputs, links — and multiplies with any fade those carry of their
-       own: the 0.85 that used to live here met a field hint's 0.7 and landed at 0.595, taking a primary
-       fill button to 3.35:1 and the hint to 3.95:1 on a light skin (reported by the only real consumer,
-       ORI-I-85). A container fade is invisible to both other guards by construction — the token pair
-       stays honestly AA and the contrast is lost on the way to the screen — so e2e/text-contrast.spec.ts
-       now measures a composited dialog. Secondary text in this library is a leaf class with its own tone
-       (`__subtitle`, `__hint`), never a group fade over someone else's content; here the hierarchy is
-       carried by the title's size and weight. */
+    /* No opacity here: this element wraps the caller's content, and a container fade multiplies with
+       every fade inside it (0.85 × a hint's 0.7 took text below AA). Hierarchy comes from the title's
+       size and weight; secondary text uses its own leaf class. e2e/text-contrast.spec.ts measures a
+       composited dialog. */
     .ori-dialog__body {
         font-size: 14px;
     }
