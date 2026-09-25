@@ -355,7 +355,7 @@ type="button">` with a visible `:focus-visible` ring.
 ## Framework API
 
 The props, events, slots, and attributes of the **Vue** component. The standalone CSS layer has no
-component API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+component API — its surface is the [classes](#classes) above.
 
 ### Props
 

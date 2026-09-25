@@ -22,8 +22,7 @@ raw `<input>` or htmx markup wires up through the scoped-slot `controlAttrs`. Th
 own inline label _after_ the box, so wrapping one in a field renders two labels and leaves the field's
 `<label for>` pointing at an id nothing owns — and `disabled` / `required` / `invalid` / `describedby` /
 `size` are silently dropped. Label them with their own `label` prop instead; a group of them is a
-`<fieldset>` + `<legend>`, not a field. (Recorded in DECISIONS.md, "OriField composes group/composite
-controls".)
+`<fieldset>` + `<legend>`, not a field.
 
 ## Classes
 
@@ -229,7 +228,7 @@ attributes and ARIA wiring.
 ## Framework API
 
 The props and slots of the **Vue** component. The standalone CSS layer has no component API — its
-surface is the [classes](#classes) above. (Svelte bindings are planned.)
+surface is the [classes](#classes) above.
 
 ### Props
 

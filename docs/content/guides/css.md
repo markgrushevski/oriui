@@ -127,8 +127,8 @@ per request. With **htmx**, fragments you swap in are already themed — CSS tra
 
 The **CSS layer works everywhere** — that's the whole point. Vue and the headless layer need a JS
 framework; the classes don't. Only complex behavior (focus traps, menus, comboboxes) needs the
-headless layer, which is Vue today; a vanilla adapter (via Zag) is planned for the no-framework
-targets. For the full cross-layer breakdown (Vue / Svelte / htmx / Astro / plain HTML / Capacitor),
+headless layer, which has Vue, Svelte and React adapters. For the full cross-layer breakdown
+(Vue / Svelte / React / htmx / Astro / plain HTML / Capacitor),
 see the [applicability matrix](/overview/introduction#where-each-layer-fits) in the Introduction.
 
 Per-component class references live on each component page — flip any example to the **HTML** tab;

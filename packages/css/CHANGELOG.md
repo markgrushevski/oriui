@@ -100,8 +100,7 @@
     last in the array. `label` on a separator is ignored; `value` is still the list key. New part class:
     `.ori-menu__separator`.
 
-- 93eaf82: **The pre-1.0 accessibility queue, closed.** Seven recorded defects, one of them the only
-  WCAG-normative failure in the register.
+- 93eaf82: **Accessibility fixes before 1.0, among them the last WCAG AA failure** (`OriTooltip`, 1.4.13).
 
     **`OriTooltip` now meets WCAG 1.4.13 Content on Hover or Focus (Level AA).** It failed two of the
     three bullets. _Hoverable_ — the bubble was `pointer-events: none` with a gap to cross, so the pointer
@@ -116,7 +115,7 @@
 
     **A busy button is no longer dimmed like a disabled one.** `loading` renders the native `disabled`
     attribute, so the `opacity: .45` disabled dim applied to a button that is _working_, not inactive —
-    reported by justpaint (JP-O-10) at **1.68:1** on a solid primary. WCAG's contrast exemption covers
+    measured at **1.68:1** on a solid primary. WCAG's contrast exemption covers
     inactive components, not waiting ones. The dim now skips `[aria-busy='true']`; the pointer and
     keyboard blocking are unchanged. Measured after the fix at a worst of **4.91:1** across every role,
     skin and theme, and pinned by a new probe in the contrast guard.
@@ -135,20 +134,14 @@
     published `descriptionProps`; the styled tier never bound it. Both halves now ship, and the
     `aria-describedby` appears only when there is body content to point at.
 
-    Docs and comments: `field.md` named the two controls that are deliberately NOT field-integrated
-    (`OriCheckbox`, `OriSwitch`) and what happens if you ignore that; a fabricated "APG ColorArea
-    requirement" citation was replaced with what it actually is in both colour-picker adapters; and
-    `OriMenu`'s deliberate divergence from APG's Menubar text on disabled items is now written down
-    beside the code that does it.
-
 - eea7717: **`variant="plain"` is now `variant="quiet"`, and its fade is the one that measures AA.**
 
     The name moved because `plain` means two different things in the libraries that ship it — "unstyled"
     in Chakra v3, "tinted" in Element Plus — while Adobe Spectrum's `isQuiet` names exactly this
     treatment: the quietest step, minimal chrome. `.ori-variant_plain` → `.ori-variant_quiet`.
 
-    The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** control (ORI-I-91,
-    worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
+    The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** control
+    (worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
     clickable. The replacement was solved rather than picked: for every role × skin × theme, the minimum
     alpha that keeps 4.5:1 was computed from the composite the browser actually performs
     (`fg*a + bg*(1-a)` in sRGB). 0.5 left **95 of 96** readings below AA, 0.75 left 23, **0.81 is the
@@ -181,8 +174,6 @@
     Neither existing guard could see this by construction — the Node token test reads token PAIRS and never
     renders, and an axe pass reads declared colours, not composited pixels. `e2e/text-contrast.spec.ts` gains a
     third test that measures a composited dialog body (128 readings) so an ancestor fade cannot return unseen.
-
-    Reported by the justpaint session against its own login modal (JP-O-09 → ORI-I-85).
 
 ## 1.0.0-rc.18
 
@@ -280,7 +271,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 
 - 04c63bf: **CSS layer: the modifier vocabulary goes flat — 106 `.ori-x.ori-x_y` compounds collapse to one class.**
 
-    REVIEW.md has always set the bar ("specificity stays flat — `:where()`, no `.a.a_b` stacking") and the
+    The rule is that specificity stays flat (`:where()`, no `.a.a_b` stacking), and the
     component layer broke it 106 times, across 22 files. The cause was structural rather than sloppy: each
     block declared its baked token defaults in the very same `.ori-input { … }` rule (0,1,0) that carried
     its layout, so a single-class modifier could never outrank it, and `input.css` said so out loud
@@ -458,9 +449,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 
     No API or class-name change; LTR rendering is byte-identical.
 
-- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
-  came in from a consumer's outbound queue rather than from the library's own review, which is the first time
-  that path produced fixes.
+- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
     `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
     centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline

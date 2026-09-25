@@ -355,7 +355,7 @@ JavaScript.
 The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
 API — its surface is the [classes](#classes) above; the roving-tabindex keyboard and open/close
 behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/headless/core) in
-`@oriui/headless/vue`. (Svelte bindings are planned.)
+`@oriui/headless/vue`.
 
 ### Props
 

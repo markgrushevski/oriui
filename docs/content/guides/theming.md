@@ -119,10 +119,9 @@ card, an email-compose pane — without touching the page:
 </section>
 ```
 
-One caveat: **skins are page-level today.** The active color alias resolves at `:root`, so
-`data-ori-skin` only takes effect on the root element — you can scope a **mode** to a subtree, but not
-yet a different **skin** per subtree (that needs a `light-dark()` restructure and is planned). Mode
-scoping works anywhere.
+One caveat: **skins are page-level.** The active color alias resolves at `:root`, so `data-ori-skin`
+only takes effect on the root element — you can scope a **mode** to a subtree, but not a different **skin**
+(that would need a `light-dark()` restructure). Mode scoping works anywhere.
 
 ## Setting the initial theme — no hydration flash
 

@@ -54,16 +54,15 @@ For a deeper, library-by-library take, see [Idea & comparisons](/overview/compar
 
 ## Where each layer fits
 
-The CSS layer works **everywhere**; the styled layer is Vue, and the headless layer ships **Vue and
-Svelte** adapters over one core. See the full [Applicability matrix](/overview/applicability) for the
-per-environment breakdown (Vue / Svelte / Astro / htmx, plus the Nuxt / SvelteKit / Capacitor / Electron
-shells). A vanilla / htmx headless adapter is still planned.
+The CSS layer works **everywhere**; the styled layer is Vue, and the headless layer ships **Vue, Svelte
+and React** adapters over one core. See the full [Applicability matrix](/overview/applicability) for the
+per-environment breakdown (Vue / Svelte / React / Astro / htmx, plus the Nuxt / Next.js / SvelteKit /
+Capacitor / Electron shells).
 
 ## Status
 
-oriUI is in **alpha** (the `1.0.0-alpha.*` line). The token contract, the CSS layer, and the styled components
-under [Components](/components/button) are solid enough to build with; the catalog is still growing and
-the public API may shift before `1.0`.
+oriUI is a **release candidate** (the `1.0.0-rc.*` line): the public API is meant to be final, and the
+catalog grows as real screens need new components.
 
 ## Next
 

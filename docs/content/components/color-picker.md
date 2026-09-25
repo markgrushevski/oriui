@@ -189,7 +189,7 @@ hidden input with a `<form>` by id when the picker sits outside it.
 
 The props, events, and slots of the **Vue** component. Behaviour comes from `useColorPicker`
 (`@oriui/headless/vue`); the standalone CSS layer renders the panel statically from the
-[classes](#classes) (interactivity is JS). (Svelte bindings are planned.)
+[classes](#classes) (interactivity is JS).
 
 ### Props
 

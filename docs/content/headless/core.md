@@ -69,8 +69,8 @@ Three small building blocks back every primitive:
 ## The core toolkit
 
 Beyond the disclosure engine above, `@oriui/headless` ships the behaviour every binding composes —
-state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue
-and Svelte adapters consume them without re-implementing anything.
+state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue,
+Svelte and React adapters consume them without re-implementing anything.
 
 | Export                                                            | What it is                                                                                                                                                                      | Vue binding                                                                                                       |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |

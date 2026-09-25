@@ -26,9 +26,8 @@ without changing your design tokens. This page maps each layer to where it runs.
    (Svelte stores) or `@oriui/headless/react` (plain values via `useSyncExternalStore`). All three are at
    parity; the core itself imports no framework, and each framework is an **optional** peer dependency.
 2. The core is framework-agnostic building blocks (state machine + prop-getters), so it runs anywhere
-   JavaScript does — but you wire the DOM binding yourself. A no-framework / htmx adapter is deferred
-   (see [ROADMAP](https://github.com/markgrushevski/oriui/blob/main/ROADMAP.md)); until then, use the
-   `.ori-*` classes for the look and hand-roll the small amount of behaviour.
+   JavaScript does — but you wire the DOM binding yourself. There is no no-framework / htmx adapter yet;
+   use the `.ori-*` classes for the look and hand-roll the small amount of behaviour.
 3. Inside an [Astro island](https://docs.astro.build/en/guides/framework-components/) for that framework
    (`client:load` / `client:visible`); Astro renders the Vue, Svelte or React component as usual.
 

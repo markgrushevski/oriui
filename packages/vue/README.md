@@ -78,9 +78,6 @@ resolve. Editors need a Vue language service for template prop hints — **VS Co
 editor's dependency index is usually stale — reload the TS server (VS Code) or _Invalidate Caches /
 Restart_ (WebStorm).
 
-> **Alpha** (`1.0.0-alpha.*`, `alpha` dist-tag). `npm i @oriui/vue` works today; APIs may shift before
-> `1.0.0`.
-
 ## License
 
 [MIT](https://github.com/markgrushevski/oriui/blob/main/LICENSE) © Leonid

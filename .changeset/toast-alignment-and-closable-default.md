@@ -4,9 +4,7 @@
 '@oriui/headless': patch
 ---
 
-**Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
-came in from a consumer's outbound queue rather than from the library's own review, which is the first time
-that path produced fixes.
+**Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
 `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
 centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline

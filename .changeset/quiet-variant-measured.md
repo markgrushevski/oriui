@@ -9,8 +9,8 @@ The name moved because `plain` means two different things in the libraries that 
 in Chakra v3, "tinted" in Element Plus — while Adobe Spectrum's `isQuiet` names exactly this
 treatment: the quietest step, minimal chrome. `.ori-variant_plain` → `.ori-variant_quiet`.
 
-The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** control (ORI-I-91,
-worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
+The fade moved because 0.5 was a guess and it failed WCAG AA on an **enabled** control
+(worst reading 2.33:1). The exemption the code leaned on covers INACTIVE controls; a `quiet` button is
 clickable. The replacement was solved rather than picked: for every role × skin × theme, the minimum
 alpha that keeps 4.5:1 was computed from the composite the browser actually performs
 (`fg*a + bg*(1-a)` in sRGB). 0.5 left **95 of 96** readings below AA, 0.75 left 23, **0.81 is the
