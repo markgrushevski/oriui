@@ -5,9 +5,10 @@ title: Tooltip
 # Tooltip
 
 A CSS-driven tooltip that shows additional context when a control is focused or hovered. The bubble
-is always in the DOM (so the `aria-describedby` reference is never dangling) and shown/hidden
-entirely in CSS — no JS state machine, no positioning engine. Show is pure `:focus-within` (keyboard)
-and `:hover` wrapped in `@media (hover: hover)` (pointer, without sticking open on touch).
+is always in the DOM (so the `aria-describedby` reference is never dangling) and shown/hidden in CSS —
+no state machine, no positioning engine. Show is `:focus-within` (keyboard) and `:hover` wrapped in
+`@media (hover: hover)` (pointer, without sticking open on touch). The pointer can move onto the bubble,
+and `Escape` hides it without moving focus or the pointer (WCAG 1.4.13).
 
 The examples are organised by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
@@ -252,10 +253,8 @@ pattern.
 
 ## Limitations
 
-OriTooltip is a CSS-only implementation. The following features would require JavaScript and are
-out of scope for this component:
+Show and hide are CSS-only, so these are out of scope:
 
-- **Esc-to-dismiss** — the CSS model dismisses on blur / pointer-leave only.
 - **The arrow does not track a collision flip** — the bubble itself repositions via
   `position-try-fallbacks`, but the decorative arrow is keyed to the requested `placement` class (a
   pure-CSS pseudo-element cannot observe which fallback fired), so it keeps pointing at the requested
@@ -283,7 +282,7 @@ component cannot do for arbitrary slot content.
 - The decorative arrow is a `::after` pseudo-element — invisible to assistive technology, no
   `aria-hidden` needed.
 - Color is applied only on the wrapper, not on the bubble directly, so the `ori-color_*` utility
-  is never shadowed (a NOTES.md gotcha confirmed for OriProgress and OriTooltip alike).
+  is never shadowed.
 
 > **Design / a11y trade-off:** a pure-CSS tooltip can't inject `aria-describedby` onto arbitrary slot
 > content without JS. The Vue component therefore renders it on the `.ori-tooltip__trigger` wrapper and
@@ -293,16 +292,19 @@ component cannot do for arbitrary slot content.
 > control. Hand-written markup has no such limit: put the attribute straight on the `<button>`.
 > `:focus-within` governs the bubble's CSS visibility, not the ARIA announcement; the two are independent.
 
-| Key         | Action                                                        |
-| ----------- | ------------------------------------------------------------- |
-| `Tab`       | Focuses the trigger control; shows the tooltip.               |
-| `Shift+Tab` | Blurs the trigger control; hides the tooltip.                 |
-| `Escape`    | Not supported (CSS-only model — blur the trigger to hide it). |
+| Key         | Action                                                                  |
+| ----------- | ----------------------------------------------------------------------- |
+| `Tab`       | Focuses the trigger control; shows the tooltip.                         |
+| `Shift+Tab` | Blurs the trigger control; hides the tooltip.                           |
+| `Escape`    | Hides the tooltip while focus or the pointer stays; leaving re-arms it. |
+
+In the CSS layer, `Escape` is yours to wire: set `data-ori-dismissed` on `.ori-tooltip` to hide the bubble,
+and remove it on `pointerleave` / `focusout`.
 
 ## Framework API
 
 The props, events, slots, and polymorphism of the **Vue** component. The standalone CSS layer has no
-component API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+component API — its surface is the [classes](#classes) above.
 
 ### Props
 

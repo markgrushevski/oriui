@@ -4,7 +4,7 @@
 
 **CSS layer: the modifier vocabulary goes flat — 106 `.ori-x.ori-x_y` compounds collapse to one class.**
 
-REVIEW.md has always set the bar ("specificity stays flat — `:where()`, no `.a.a_b` stacking") and the
+The rule is that specificity stays flat (`:where()`, no `.a.a_b` stacking), and the
 component layer broke it 106 times, across 22 files. The cause was structural rather than sloppy: each
 block declared its baked token defaults in the very same `.ori-input { … }` rule (0,1,0) that carried
 its layout, so a single-class modifier could never outrank it, and `input.css` said so out loud

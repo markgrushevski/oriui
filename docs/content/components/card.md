@@ -446,7 +446,7 @@ render the same attributes.
 ## Framework API
 
 The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
-API — its surface is the [classes](#classes) above. (Svelte bindings are planned.)
+API — its surface is the [classes](#classes) above.
 
 ### Props
 

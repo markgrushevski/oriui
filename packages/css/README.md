@@ -100,8 +100,6 @@ upgrade-safe. Recipes: [Customization](https://oriui.vercel.app/guides/customiza
 
 **[Full docs → oriui.vercel.app](https://oriui.vercel.app)**
 
-> **Alpha** (`1.0.0-alpha.*`, `alpha` dist-tag). APIs may shift before `1.0.0`.
-
 ## License
 
 [MIT](https://github.com/markgrushevski/oriui/blob/main/LICENSE) © Leonid

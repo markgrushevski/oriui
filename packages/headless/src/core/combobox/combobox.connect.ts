@@ -134,13 +134,9 @@ export function connect<T extends PropTypes>(
                             highlightAt(open ? enabledCursor - 1 : enabled.length - 1)
                             break
                         case 'Enter':
-                            // Prevented whenever the list is OPEN, not only when something is highlighted
-                            // (ORI-I-88). The machine clears the highlight on every keystroke, so after
-                            // typing, Enter used to fall through un-prevented to a real <input> and trigger
-                            // implicit form submission with the listbox visibly on screen — and the styled
-                            // combobox forwards `form`, so it reached an out-of-tree form too. The list is
-                            // deliberately NOT closed here: "ArrowDown then Enter commits" stays the
-                            // documented flow, and closing on a bare Enter would change it silently.
+                            // Prevented whenever the list is open, highlighted or not: typing clears the
+                            // highlight, and an un-prevented Enter would submit the form under an open
+                            // listbox. The list stays open — "ArrowDown, then Enter" is the commit gesture.
                             if (open) {
                                 event.preventDefault()
                                 if (highlightedValue !== null) {

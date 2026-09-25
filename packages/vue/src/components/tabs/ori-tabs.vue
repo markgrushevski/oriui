@@ -18,21 +18,10 @@ export interface TabItem extends HeadlessTabItem {
 // skip); this SFC renders the styled shell and spreads the bags. The active indicator (underline / pill)
 // is driven by the `aria-selected` attribute selector, not a class, matching the rest of oriUI.
 //
-// Panel content: a per-value named slot (`#panel-<value>`) is the primary mechanism — distinct markup
-// per tab; a scoped `#default="{ tab }"` slot is the fallback (shared template that reads the active
-// tab). The fallback renders into the ACTIVE panel ONLY (ORI-I-84). It used to render into every one,
-// which multiplied a template that ignored its scope: a login form in `#default` produced two copies of
-// every `id`, and `getElementById` — so `<label for>` — resolved to the copy in the HIDDEN panel
-// whenever the active tab was not the first. One panel, one content is now the rule for every slot in
-// this component, the fallback included, and the scope it hands out is always the active tab. The cost
-// is that uncontrolled DOM state inside a shared template (an unsent draft) does not survive a tab
-// switch — that is what `#panel-<value>` is for. The `panel-` prefix is load-bearing, not decoration:
-// panel slot names are caller DATA (a tab's
-// `value`), and named slots are one flat namespace, so an unprefixed `#<value>` let a tab valued "tab"
-// resolve its panel to this component's own reserved `#tab` (the label renderer) — rendering that
-// template into the panel AND leaving the panel's real content unreachable. Prefixing moves the
-// data-derived names into their own namespace, where no caller value can ever collide with a reserved
-// one. `tabs` is the one required prop — the component is meaningless without its set of tabs.
+// Panel content: `#panel-<value>` gives a tab its own markup; the scoped `#default="{ tab }"` slot is a
+// shared template rendered into the ACTIVE panel only, so ids inside it never repeat (state inside it
+// does not survive a tab switch — use `#panel-<value>` for that). The `panel-` prefix keeps
+// caller-derived slot names from colliding with reserved ones like `#tab`. `tabs` is required.
 const {
     color = 'primary',
     label,

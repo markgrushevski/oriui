@@ -37,8 +37,8 @@
         width: 100%;
     }
 
-    /* The engine treats the physical RIGHT as the range minimum under RTL, so the paint has to start
-       there too — otherwise the fill sits opposite its own thumb (ORI-I-75). */
+    /* Under RTL the engine puts the range minimum on the physical right, so the fill starts there too —
+       otherwise it sits opposite its own thumb. */
     .ori-slider:dir(rtl) {
         --ori-slider-axis: to left;
     }

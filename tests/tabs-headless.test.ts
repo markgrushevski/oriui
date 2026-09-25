@@ -132,7 +132,7 @@ describe('useTabs (Vue)', () => {
         expect(document.activeElement).toBe(buttons[0])
     })
 
-    // ORI-I-71: this composable used to demand `() => UseTabsOptions` while every sibling (useDisclosure /
+    // This composable used to demand `() => UseTabsOptions` while every sibling (useDisclosure /
     // useCombobox / useMenu) accepted `MaybeRefOrGetter` — a consumer who passed a plain object got a type
     // error with no hint that this one was different. All three call styles must now work.
     it('accepts the three MaybeRefOrGetter call styles, like every sibling composable', () => {
@@ -148,7 +148,7 @@ describe('useTabs (Vue)', () => {
     })
 })
 
-// ORI-I-73: the item type is declared ONCE in core and re-exported by each adapter — this import is what
+// The item type is declared ONCE in core and re-exported by each adapter — this import is what
 // fails to compile if the core declaration goes away, and `test:types` runs the suite through `vue-tsc`.
 // (Structural typing means a runtime assertion cannot tell one shared declaration from three identical
 // copies; the proof that matters here is that the core name resolves and the adapters agree with it.)

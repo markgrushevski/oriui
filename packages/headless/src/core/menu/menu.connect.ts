@@ -49,15 +49,9 @@ export function connect<T extends PropTypes>(
     // A separator occupies a position in the collection but is neither navigable nor selectable, so it
     // leaves the roving set the same way a disabled item does — one predicate, both exclusions.
     //
-    // Why a DISABLED item is skipped here while OriToolbar deliberately keeps its disabled items
-    // focusable (ORI-I-96 — the asymmetry is intentional and was undocumented): APG's Menubar pattern
-    // states "Disabled menu items are focusable but cannot be activated", so the stricter text is in
-    // fact the menu's. We diverge from it knowingly, because our items are `<div role="menuitem">`
-    // with `aria-disabled`, not native controls: an unfocusable div is not a keyboard trap, nothing is
-    // lost from the tab order, and skipping keeps Arrow navigation from stalling on rows that do
-    // nothing. The Toolbar pattern's own text ("typically, disabled elements are not focusable", with
-    // discoverability as the exception) is what OriToolbar cites for the opposite choice. Two
-    // components, two readings, both deliberate — if one of them ever changes, change this comment too.
+    // Disabled items are skipped, unlike OriToolbar, which keeps them focusable. Both are deliberate:
+    // APG's Menubar says disabled items are focusable, but ours are `<div role="menuitem">` rows, so
+    // skipping loses nothing from the tab order and keeps Arrow navigation from stalling on dead rows.
     const enabled = collection.filter((item) => !item.disabled && !item.separator)
     const enabledCursor = highlightedValue === null ? -1 : enabled.findIndex((i) => i.value === highlightedValue)
 

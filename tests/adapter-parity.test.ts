@@ -521,11 +521,9 @@ describe.each(WIDGETS)('$name — one surface across Vue, Svelte and React', (wi
 })
 
 // ── the option surface, pinned at compile time ─────────────────────────────────────────────────
-// The table above proves the OUTPUT matches. This proves the INPUT does. Each adapter used to hand-write
-// its own option interfaces with nothing holding the copies together (ISSUES-INNER ORI-I-07), so an
-// option added to one, or re-typed on one, was exactly the drift 1.0 would freeze. The shapes are now
-// declared ONCE in core — `core/options.ts` for the four swappable behaviours, `core/tabs.ts` for tabs —
-// and every adapter is pinned to that declaration here, in BOTH directions:
+// The table above proves the OUTPUT matches. This proves the INPUT does. The shapes are declared ONCE
+// in core — `core/options.ts` for the four swappable behaviours, `core/tabs.ts` for tabs — and every
+// adapter is pinned to that declaration here, in BOTH directions:
 //
 //   - key parity catches a member present on one side only (mutual assignability does NOT: an extra
 //     OPTIONAL member is assignable both ways),

@@ -49,13 +49,9 @@ jobs:
             - name: Install Playwright Chromium (for the e2e leg of the gate)
               run: npx playwright install --with-deps chromium
 
-            # Gate the publish on the same checks CI runs — otherwise a regression only fails the
-            # (separate, non-blocking) CI workflow while this one still publishes. The gate is ONE root
-            # script, `npm run gate`, so the two workflows cannot drift the way they had by ORI-I-31:
-            # the list lives in package.json, and tests/packaging.test.ts fails if a check reachable
-            # from ci.yml is not reachable from here. `npm run release` builds again before publishing.
-            # ORI_SMOKE_IGNORE_SCRIPTS: the gate's own build step already produced the dist that the
-            # smoke leg packs, so skip the per-package `prepack` rebuild.
+            # Gate the publish on the same checks CI runs: one root script, `npm run gate`, and
+            # tests/packaging.test.ts fails if a check reachable from ci.yml is not reachable from here.
+            # ORI_SMOKE_IGNORE_SCRIPTS: the gate has just built the dist the smoke leg packs.
             - name: Quality gate (lint → types → test → build → size → publint → attw → smoke → docs)
               run: npm run gate
               env:
@@ -72,11 +68,8 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            # npm runs the publish non-foreground, so when it fails the diagnostics go to its own debug
-            # log and the step above shows only an exit code — that is what hid the rc.18 prepack crash
-            # (ORI-I-83), and npm can even exit 0 on a failure it only wrote there. The log is discarded
-            # with the runner, so print it whenever the publish did not go green. npm redacts
-            # credentials in this log; the OIDC exchange uses a short-lived token in any case.
+            # A failed publish shows only an exit code; npm writes the real error to its debug log, which
+            # dies with the runner. Print it. npm redacts credentials there.
             - name: npm debug log (the publish's real error)
               if: failure()
               run: |

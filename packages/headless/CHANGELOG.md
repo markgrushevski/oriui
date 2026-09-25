@@ -87,8 +87,7 @@
 
 ### Patch Changes
 
-- 93eaf82: **The pre-1.0 accessibility queue, closed.** Seven recorded defects, one of them the only
-  WCAG-normative failure in the register.
+- 93eaf82: **Accessibility fixes before 1.0, among them the last WCAG AA failure** (`OriTooltip`, 1.4.13).
 
     **`OriTooltip` now meets WCAG 1.4.13 Content on Hover or Focus (Level AA).** It failed two of the
     three bullets. _Hoverable_ — the bubble was `pointer-events: none` with a gap to cross, so the pointer
@@ -103,7 +102,7 @@
 
     **A busy button is no longer dimmed like a disabled one.** `loading` renders the native `disabled`
     attribute, so the `opacity: .45` disabled dim applied to a button that is _working_, not inactive —
-    reported by justpaint (JP-O-10) at **1.68:1** on a solid primary. WCAG's contrast exemption covers
+    measured at **1.68:1** on a solid primary. WCAG's contrast exemption covers
     inactive components, not waiting ones. The dim now skips `[aria-busy='true']`; the pointer and
     keyboard blocking are unchanged. Measured after the fix at a worst of **4.91:1** across every role,
     skin and theme, and pinned by a new probe in the contrast guard.
@@ -121,12 +120,6 @@
     **`OriDialog` announces its body as the dialog's description.** The headless layer has always
     published `descriptionProps`; the styled tier never bound it. Both halves now ship, and the
     `aria-describedby` appears only when there is body content to point at.
-
-    Docs and comments: `field.md` named the two controls that are deliberately NOT field-integrated
-    (`OriCheckbox`, `OriSwitch`) and what happens if you ignore that; a fabricated "APG ColorArea
-    requirement" citation was replaced with what it actually is in both colour-picker adapters; and
-    `OriMenu`'s deliberate divergence from APG's Menubar text on disabled items is now written down
-    beside the code that does it.
 
 ## 1.0.0-rc.18
 
@@ -200,9 +193,9 @@
       `mergeProps` use.
 
 - 04c63bf: Headless API consistency — one declaration per option shape, one rule for how options are passed, and
-  the toggle group's missing `deselectable`. Closes ISSUES-INNER ORI-I-04, ORI-I-07, ORI-I-09 and ORI-I-48.
+  the toggle group's missing `deselectable`.
 
-    **`useToolbarToggleGroup` gains `deselectable` (ORI-I-48).** `type: 'single'` was unconditionally
+    **`useToolbarToggleGroup` gains `deselectable`.** `type: 'single'` was unconditionally
     deselectable — pressing the active item always cleared it — so a tool picker that must always have a
     tool was impossible, and its only consumer guarded it by hand. `deselectable` defaults to `true`, which
     is exactly today's behaviour and the Radix default the JSDoc always claimed; `false` guarantees a
@@ -211,7 +204,7 @@
     rather than re-committing the value the group already holds. Available in all three adapters; the
     styled `OriToolbarToggleGroup` does not surface it yet.
 
-    **One rule for reactive options (ORI-I-04).** The rule, now written into the option interfaces
+    **One rule for reactive options.** The rule, now written into the option interfaces
     themselves: an option that SEEDS a primitive (`defaultOpen`, an initial `value`) is read once and
     accepts a value, a ref or a store; an option that is LIVE is re-read on every use and must be passed in
     the adapter's reactive form. Two signatures disagreed with their own adapter and are aligned:
@@ -228,7 +221,7 @@
       stores stop type-checking, so this fails loudly at build time; taken now because pre-1.0 is the last
       moment it is free.
 
-    **Option shapes are declared once (ORI-I-07).** `UseTabsOptions` moves into `core` beside `TabItem` and
+    **Option shapes are declared once.** `UseTabsOptions` moves into `core` beside `TabItem` and
     each adapter re-exports it, and `UseDisclosureOptions` / `UseDialogOptions` / `UseComboboxOptions` /
     `UseMenuOptions` are now declared in `core` too and exported from `@oriui/headless` for anyone writing
     their own adapter. The toggle group's selection rules likewise move into `core/toolbar` (`resolveToolbarToggle`
@@ -238,7 +231,7 @@
     one side, or re-typed on one side, is a `test:types` failure naming the adapter — key parity alone missed
     the second case.
 
-    **React's compound-event map is held to the core (ORI-I-09).** The `onKeydown` → `onKeyDown` allowlist
+    **React's compound-event map is held to the core.** The `onKeydown` → `onKeyDown` allowlist
     failed silently: an event the core emits that the map does not know reaches React mis-cased and is
     dropped with no error. A new test derives the event list from the core's own `connect()` bags (open and
     closed, item getters included), pushes each through the real normalizer onto a real React element and
@@ -309,9 +302,7 @@
 
     Additive: existing `$theme` / `setTheme` / `toggleTheme` / `cycleTheme` usage is unchanged.
 
-- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.** Both
-  came in from a consumer's outbound queue rather than from the library's own review, which is the first time
-  that path produced fixes.
+- 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
     `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
     centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline

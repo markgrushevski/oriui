@@ -4,8 +4,7 @@
 '@oriui/headless': patch
 ---
 
-**The pre-1.0 accessibility queue, closed.** Seven recorded defects, one of them the only
-WCAG-normative failure in the register.
+**Accessibility fixes before 1.0, among them the last WCAG AA failure** (`OriTooltip`, 1.4.13).
 
 **`OriTooltip` now meets WCAG 1.4.13 Content on Hover or Focus (Level AA).** It failed two of the
 three bullets. _Hoverable_ — the bubble was `pointer-events: none` with a gap to cross, so the pointer
@@ -20,7 +19,7 @@ wires the one listener themselves — the surface is that attribute.
 
 **A busy button is no longer dimmed like a disabled one.** `loading` renders the native `disabled`
 attribute, so the `opacity: .45` disabled dim applied to a button that is _working_, not inactive —
-reported by justpaint (JP-O-10) at **1.68:1** on a solid primary. WCAG's contrast exemption covers
+measured at **1.68:1** on a solid primary. WCAG's contrast exemption covers
 inactive components, not waiting ones. The dim now skips `[aria-busy='true']`; the pointer and
 keyboard blocking are unchanged. Measured after the fix at a worst of **4.91:1** across every role,
 skin and theme, and pinned by a new probe in the contrast guard.
@@ -38,9 +37,3 @@ list deliberately stays open, so "ArrowDown then Enter commits" is unchanged.
 **`OriDialog` announces its body as the dialog's description.** The headless layer has always
 published `descriptionProps`; the styled tier never bound it. Both halves now ship, and the
 `aria-describedby` appears only when there is body content to point at.
-
-Docs and comments: `field.md` named the two controls that are deliberately NOT field-integrated
-(`OriCheckbox`, `OriSwitch`) and what happens if you ignore that; a fabricated "APG ColorArea
-requirement" citation was replaced with what it actually is in both colour-picker adapters; and
-`OriMenu`'s deliberate divergence from APG's Menubar text on disabled items is now written down
-beside the code that does it.

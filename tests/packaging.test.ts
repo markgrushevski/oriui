@@ -65,7 +65,7 @@ describe('published package manifests', () => {
  * `dist` is gitignored and untracked, so nothing in a fresh checkout puts a build inside a tarball
  * except the root `release` script. `prepack` runs for BOTH `npm pack` and `npm publish`, which makes
  * the build unskippable whichever command anyone types — including RELEASING.md's manual fallback,
- * which could otherwise publish an empty package (ORI-I-39).
+ * which could otherwise publish an empty package.
  */
 describe('every package rebuilds before it is packed', () => {
     it.each(PACKAGES)('@oriui/%s runs its build on prepack', (dir) => {
@@ -76,8 +76,8 @@ describe('every package rebuilds before it is packed', () => {
     // The other half of that hook: the AUTOMATED path must NOT take the rebuild. `changeset publish`
     // packs all three workspaces in parallel, and @oriui/headless's build (tsdown, `clean: true`) empties
     // the very dist that @oriui/vue's declaration emit resolves @oriui/headless from — so overlapping
-    // packs make vue-tsc exit 2 and the fixed group half-publishes. That is what 1.0.0-rc.18 did
-    // (ORI-I-83). The release script builds the graph in dependency order and publishes THAT artifact
+    // packs make vue-tsc exit 2 and the fixed group half-publishes. That is what 1.0.0-rc.18 did.
+    // The release script builds the graph in dependency order and publishes THAT artifact
     // with the pack scripts off; these assertions are what stop `changeset publish` being wired back in.
     it('the release script builds in order, then publishes without re-running the pack scripts', () => {
         const release: string = rootManifest.scripts.release
@@ -97,7 +97,7 @@ describe('every package rebuilds before it is packed', () => {
 /**
  * The Node floor a package PUBLISHES is a claim about running its code. The root's floor is a claim
  * about building this repo (tsdown wants ^22.18) and has no business being copied into a tarball —
- * that is exactly what @oriui/vue did (ORI-I-34). The rule these tests pin: a package that ships
+ * that is exactly what @oriui/vue did. The rule these tests pin: a package that ships
  * executable JS declares the supported Node line and nothing finer; @oriui/css ships stylesheets and
  * declares nothing, because there is no runtime to have a requirement.
  */
@@ -122,7 +122,7 @@ describe('published Node engine floors', () => {
 
 /**
  * What @oriui/vue declares about its two siblings, and why the two relationships land on the same
- * mechanism for different reasons (ORI-I-33 / ORI-I-42):
+ * mechanism for different reasons:
  *
  *  - `@oriui/headless` IS imported at runtime and holds process-wide singletons (module-scope
  *    `Symbol()` injection keys, the toolbar/toast registries). A second copy is not wasteful, it is
@@ -175,7 +175,7 @@ describe('internal dependency graph', () => {
 
 /**
  * The release gate used to be a hand-copied subset of CI's under a comment that claimed parity, and it
- * had already drifted by four checks (ORI-I-31). The gate is now ONE root script that release.yml
+ * had already drifted by four checks. The gate is now ONE root script that release.yml
  * invokes, and this test is what keeps it honest: every npm script reachable from ci.yml must be
  * reachable from release.yml, directly or through a script it calls.
  *

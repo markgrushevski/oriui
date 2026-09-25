@@ -312,9 +312,7 @@ test.describe('role-as-text contrast — WCAG AA (4.5:1) across every skin, them
      * way to the screen, so neither the Node token guard (it reads pairs, never a render) nor an axe pass
      * (it reads declared colours) can see it. Only a composited reading can.
      *
-     * The case that made this necessary: `.ori-dialog__body` carried `opacity: 0.85`, which applied to the
-     * caller's whole slot — controls included — and multiplied with a field hint's own 0.7 into 0.595.
-     * Reported from the justpaint session (JP-O-09 → ORI-I-85).
+     * Example: an `opacity: 0.85` on `.ori-dialog__body` multiplied with a field hint's own 0.7 into 0.595.
      */
     test('a dialog body does not fade the content it wraps below AA', async ({ page }) => {
         await prepare(

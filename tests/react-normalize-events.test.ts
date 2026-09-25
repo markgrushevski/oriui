@@ -5,7 +5,7 @@ import { combobox, createNormalizer, disclosure, menu, type Dict } from '@oriui/
 import { normalizeProps } from '@oriui/headless/react'
 
 /**
- * ISSUES-INNER ORI-I-09 — the React normalizer renames compound handlers (`onKeydown` → `onKeyDown`)
+ * The React normalizer renames compound handlers (`onKeydown` → `onKeyDown`)
  * through a hand-maintained allowlist and passes everything else through. Its failure mode is SILENCE:
  * the day a `connect()` emits an `onXxx` the map does not know, it reaches React mis-cased, React ignores
  * the unknown prop, and the widget loses that interaction with no error, no warning and no failing test.
@@ -80,7 +80,7 @@ function coreHandlerKeys(): string[] {
     return [...new Set(keys)].sort()
 }
 
-describe('React normalizeProps vs. the events the core actually emits (ORI-I-09)', () => {
+describe('React normalizeProps vs. the events the core actually emits', () => {
     it('the derivation itself works — the walk finds the handlers the connects are known to emit', () => {
         // Without this, a broken walk would hand the test below an empty list and it would pass vacuously.
         expect(coreHandlerKeys()).toEqual(expect.arrayContaining(['onClick', 'onInput', 'onKeydown', 'onPointermove']))

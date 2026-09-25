@@ -1,8 +1,450 @@
 # Decisions
 
-Architecture decision log for oriUI — the "why" behind key choices, so they aren't
-relitigated after a context compaction or by a new contributor. Companion to
-[ROADMAP.md](ROADMAP.md) (what / when) and [CLAUDE.md](CLAUDE.md) (how). Newest first.
+Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
+argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
+
+## Tabs stays array-driven — the compound shape, prototyped and priced
+
+**Date:** 2026-09-21. **Prototype:** branch `poc/compound-tabs` (not merged); every number below is
+reproducible there from `MEASUREMENTS-compound-tabs.md`.
+
+Tabs and Accordion were the one place oriUI stood in the minority: content-shaped collections are
+compound in 12 styled libraries to 1, and the single array outlier is Ant Design. "Where each layer's
+API comes from" already established that the framing "compound versus monolithic" is wrong — the array owns the
+model, compound owns the rendering — so the only honest way to settle it was to build the thing and
+measure. `OriTabsC` + `OriTabList` + `OriTab` + `OriTabPanel`, Vue-only, children rendering
+themselves, 8 passing behaviour tests including automatic activation and disabled-skipping.
+
+**Two of the things we believed turned out to be wrong, in opposite directions.**
+
+_The SSR blocker was real but misattributed._ The plan recorded "with naive provide/inject
+registration the SSR tablist serializes empty (0 tab buttons)". Both designs are provide/inject
+registration, and they do not behave the same: a root that renders the buttons from what children
+registered serializes **0 tabs**, because the root's render runs before any child's setup; children
+that render themselves serialize **all** of them. Measured side by side. The reference libraries use
+the second, which is PrimeVue's "each component must render itself". So SSR is not a reason to reject compound, and the earlier claim
+should not be cited again.
+
+_The cost is somewhere else entirely, and it has no workaround._ The array API resolves the selection
+synchronously from the list it was handed, so an invalid bound value is corrected before the first
+byte is written. A compound root cannot: at the moment the first tab serializes, the registry holds
+only that tab, so validating the bound value against it would select the wrong tab whenever the real
+one registers later — a guaranteed hydration mismatch. The only SSR-safe rule is "a bound value wins
+unconditionally", and that produces, measured: a v-model at a **disabled** tab renders the disabled
+tab selected (the array API heals to the first enabled one), and a v-model at a value **not in the
+set** renders nothing selected and zero visible panels. Healing can then only happen after mount — a
+visible flash. This is not hypothetical: `AuthForm.vue:39-42` in justpaint exists solely to bridge a
+narrowed union into `string | number | undefined`, because the bound value can be out of set.
+
+**What the rest of the axes said.** Size is a wash — 1.48 kB against 1.58 kB gzip with behaviour
+included on both sides, so bytes decide nothing. The call site splits by case: with distinct panels
+compound is shorter and reads better (12 → 11 lines in the docs' Basic example), with a shared body it
+is far worse — the only real consumer goes 35 → 62 lines, because compound has no "one template,
+every panel" and the workaround is a `v-for` over an array in the caller's own file. And three costs
+the prototype cannot pay off: the registry is per-framework where `useTabs` is one shared core machine
+behind three adapters (315 lines, 14 headless tests); 10 inline MDC demos cannot be expressed compound
+at all and would each need a bespoke wrapper component, with 14 more on the Accordion page; and the
+migration is 41 + 14 + 7 tests, 620 doc lines and 12 selectors that pin rendered ids, which change
+because compound ids must derive from the value.
+
+**The decision, and the asymmetry behind it.** Tabs stays array-driven. The strongest argument for
+compound was that it makes the `#default` fan-out structurally impossible — but
+that defect is fixable directly, and now is: the Tabs fallback renders into the active panel only, and
+Accordion gained the per-value `#panel-<value>` slots it never had. The property compound gives up —
+synchronous, SSR-correct recovery from an invalid selection — is not recoverable in a compound shape
+at all. A defect you can fix is not worth a property you cannot restore.
+
+**What this does NOT license.** It is not a general verdict that compound is wrong; it is a verdict
+about a widget whose selection must be valid on the server. And it is not an invitation to reopen the
+question every time the 12-to-1 count comes up again: the count was never in dispute, the trade was.
+
+## The presentational vocabulary follows the plurality, and `label` is the one word for visible text
+
+**Date:** 2026-09-20.
+
+The presentational vocabulary came from Vuetify without a decision (see "Where each layer's API comes
+from"). This is that decision, taken against thirteen libraries while breaking is still free.
+
+**The rule for values:** where a plurality exists, take it; where none exists, keep ours. Ten of
+sixteen concepts already matched and were left alone. Six moved — `warn` → `warning`, `fill` →
+`solid`, `tonal` → `soft`, `zero` → `none`, `rounded` → `full`, and the `ActionSize` step `text` →
+`inherit`. Four proposals were rejected on merit and should not be re-opened: `xxl` → `2xl` (the
+project's own stylelint BEM pattern forbids a modifier starting with a digit — verified with the
+real linter), `hint` → `description` and `subtitle` → `description` (both would put a near-homograph
+of `describedby` on the five components that declare it), and `fluid` → `block` (`fullWidth` vs
+`block` is a genuine 2-2 split, and "block" is already the B in our BEM).
+
+**The rule for the content prop:** `label` is the component's own visible text. Where a component
+ALSO needs an accessible name that is not rendered, that prop is `ariaLabel`. Where a component can
+render no text at all, `label` stays the accessible name, because there is nothing to confuse it
+with.
+
+Deleting the content prop instead was considered and rejected — both arguments for it failed against
+the sources:
+
+- **"92.6% of the styled pool has no such prop"** counted headless libraries — Radix, Ark, Base UI —
+  which have no presentational props of any kind. Among the styled Vue libraries that are actually
+  our peers, four of seven ship it: Vuetify (`text`), PrimeVue (`label`), Quasar (`label`), Nuxt UI
+  (`label`). Vuetify's `VBtn` renders it with `slots.default?.() ?? toDisplayString(props.text)` —
+  our exact mechanism, in the library ours came from.
+- **"PrimeVue is removing its equivalent in v5"** is not supported by PrimeVue's source: `label` is
+  declared in `BaseButton.vue` with no deprecation.
+
+So the affordance is normal in our own neighbourhood and the NAME was the outlier — three of the four
+call it `label`, and `label` is what oriUI's own collection items have always called the same thing
+(`OriTabs`, `OriAccordion`, `OriSelect`). Renaming unifies the library with itself and with the
+plurality at once, which deleting would not have done.
+
+`OriAlert`, `OriCard` and `OriToast` keep `text`, and that is the boundary of the rule rather than an
+exception to it: there the value is a message body paired with `title`, not a label — the same shape
+Vuetify names `text`. `OriAvatar` keeps a prop but as `name`, because its value is never rendered
+verbatim: it derives the initials and the image `alt` (Chakra's word for the same prop).
+
+**No aliases.** No old spelling ships next to the new one: a pair of names that reaches 1.0 never gets
+removed. One set of names, a migration table in the changeset, and the cost
+paid once.
+
+## Where each layer's API comes from
+
+**Behaviour is Radix/Zag-shaped, presentation is Vuetify-shaped.** The headless layer follows Zag's
+part-based anatomy, the Radix/Ark thin-adapter model and APG for every keyboard contract. The styled
+layer's props came from Vuetify: `OriCard`'s prepend/append icon and avatar props are VCard's, and the
+original variant names were VBtn's (since renamed — see "The presentational vocabulary follows the
+plurality").
+
+**A name that means something else elsewhere:** `OriLink`'s `external` sets `target="_blank"` +
+`rel="noopener noreferrer"`; `NuxtLink`'s `external` means "bypass the router".
+
+**`color` is the role on every component**, where MUI and PrimeVue say `severity` and Chakra says
+`status` — deliberate, because color is a ROLE and variant the MAPPING (see "Token-axis classes").
+`OriAlert`'s `live` covers what `severity` is really for: it derives the live-region politeness from
+urgency.
+
+**Collections: the array owns the model, the slot owns the rendering.** Data-shaped collections (Select,
+Combobox) take an array in every tier — value→label resolution, typeahead and `aria-activedescendant`
+cannot be derived from slotted children. Content-shaped ones (Tabs, Accordion) are compound in most
+styled libraries; oriUI keeps them array-driven (see "Tabs stays array-driven"). The array carries only
+the affordances a real screen needs — the menu `separator` is one; submenus, option grouping and field
+mapping wait for demand.
+
+## Options SEED or are LIVE, and the JSDoc says which
+
+Three composables re-read an option after creation (`disabled` on disclosure, combobox and menu); everything
+else — `id`, `defaultOpen`, `defaultValue` — is read once at creation and ignored afterwards. The distinction
+was previously implied by whether a signature accepted `MaybeRefOrGetter`, which promised reactivity the
+machine could not deliver.
+
+Each option's JSDoc now states which it is, the docs repeat it, and the signatures are consistent across the
+three adapters: a seed still accepts a value / ref / store for call-site uniformity, it just does not pretend
+that changing it later does anything.
+
+## `data-ori-interactive` is an opt-in attribute, and now public API
+
+Ten rules in `ori.utilities` hard-coded `.ori-button`, so the variant vocabulary's hover/active half fired
+for exactly one component — a block built on the css layer (the audience that layer exists for) got the
+static tints and could not opt into the interactive ones.
+
+They now key off `data-ori-interactive`. The rules cannot simply move into `button.css` instead: `ori.utilities`
+outranks `ori.components`, so a component-file copy would lose to the very utilities it is meant to extend.
+An attribute is the smallest opt-in that keeps the layer order intact — and it is a name the library is now
+on the hook for.
+
+## Modifier classes are flat: `.ori-x_y`, not `.ori-x.ori-x_y`
+
+The project's own bar said flat specificity — `:where()`, no `.a.a_b` stacking — and 106 selectors across 22
+files said otherwise. They are now single-class modifiers, which drops each from (0,2,0) to (0,1,0).
+
+That is a real change for one audience: a consumer overriding from **inside** a cascade layer, whose rule was
+sized against the old weight. It is invisible to `@oriui/vue` consumers (no class name moved) and invisible
+to anyone overriding from an unlayered stylesheet, since layer order already beat the library there. Pre-1.0
+is the only moment this is free, so it happened now, proved visually neutral by a computed-style diff in real
+Chromium over every component and all 106 modifiers in both themes.
+
+One consequence worth knowing: for the ten blocks whose modifiers repoint a baked token, the block's own
+defaults moved into a `:where(.ori-x)` rule. A single-class modifier then outranks the default on
+**specificity** rather than on source order — which is what makes the flat vocabulary work at all, and why
+those defaults must not be moved back into the block rule.
+
+## Vue `useTheme` returns `destroy()`, mirroring the Svelte twin
+
+`onScopeDispose` no-ops outside an effect scope, exactly as `onDestroy` does outside Svelte component init,
+so a module-scope caller leaked its `MutationObserver` and `matchMedia` listener with no way to dispose. Vue
+now registers `onScopeDispose(destroy, true)` — the `failSilently` flag, so a genuinely scope-less call does
+not warn — and returns `destroy()` for that caller. Same shape, same reason, both adapters.
+
+## Disclosure's `SET_DISABLED` does not close an open panel
+
+Menu and Combobox close when disabled mid-flight; Disclosure deliberately does not. The APG accordion idiom
+is "this section is open and must stay open even while interaction is suspended" — collapsing it would lose
+content the user is reading. This is the one place the three machines' disable semantics differ on purpose,
+so a future "consistency" pass should not flatten it.
+
+## Structural hairlines derive from `currentcolor`, not from `--ori-color-on-surface`
+
+The library derived its neutral structure two ways for the same job — `color-mix(… var(--ori-color-on-surface) 12% …)`
+in one block, `color-mix(… currentcolor 12% …)` in another. They agree today and diverge the moment anyone
+sets `color` on a panel, which is exactly the kind of latent split that surfaces as a bug report years later.
+
+`currentcolor` wins on the count (36 structural declarations against 6) and on behaviour: a hairline should
+follow the text it accompanies. No new public token was introduced — that is an API decision, and this is a
+mechanism decision.
+
+## `@oriui/vue` declares no runtime dependencies — both siblings are peers, for different reasons
+
+`@oriui/headless` is a genuine runtime import AND holds process-wide singletons behind `Symbol.for` keys, so
+a duplicated copy is not merely wasteful, it silently breaks provide/inject. `@oriui/css` is never imported
+by any file in `@oriui/vue` — the app imports the stylesheet itself — so an exact `dependencies` entry could
+never enforce the version match it appeared to promise. Different relationships, same mechanism: both move
+to `peerDependencies` + `devDependencies`.
+
+The ranges stay pinned to the exact lockstep version while the line is a prerelease (a `^` range cannot
+match `1.0.0-alpha.N`), so the 1.0 cutover is a documented one-time edit of two range strings rather than a
+redesign — see RELEASING.md.
+
+## The toggle contract: `pressed` is state, `active` is a look, and the affordance belongs to the button
+
+`OriButton` had one prop for two jobs and neither was complete: `active` emitted `data-active` — a forced
+`:active` LOOK that announces nothing — while the only correct pressed treatment (a tint plus an inset ring)
+was gated behind a `.ori-toolbar` ancestor. So a toggle button outside a toolbar told assistive tech nothing
+AND painted the same pixels as `:hover`.
+
+Now `pressed` renders `aria-pressed` and the affordance, on the button itself, with no ancestor gate;
+`active` keeps its old meaning and is documented as a look. `pressed` defaults to `undefined`, not `false`,
+because Vue coerces an absent boolean prop to `false` and would otherwise stamp `aria-pressed="false"` on
+every plain action button — claiming every button is a toggle that happens to be off.
+
+**The trap this replaced, recorded because two independent reviewers walked into it:** the obvious fix is to
+ungate the toolbar's pressed rule to `.ori-button[aria-pressed='true']`. That rule was authored for the
+toolbar's `variant="text"` default; ungated, it strips the background from every solid / soft / outline
+toggle. The shipped version separates the two halves — a universal inset ring that no variant can erase, and
+a tint that reaches only the variants whose background is transparent.
+
+## RTL: the CSS layer mirrors, three things stay physical on purpose
+
+Verified rather than intended, as of 2026-09-18: `e2e/rtl.spec.ts` renders the same markup under `dir=ltr`
+and `dir=rtl` in real Chromium and asserts real geometry — bounding boxes relative to their container, never
+class names — so every claim below is a test, not a promise. The package turned out to be about 90% logical
+already (`inset-inline-*`, `padding-inline-*`, `border-start-start-radius`); the audit found 6 physical box
+properties, of which 4 were correct as physical.
+
+**Mirrors** (asserted): the vertical tabs rule and the selected-tab indicator, the vertical divider, the
+badge overhang, the whole 12-value anchored placement grid, toolbar item order, the select chevron and its
+reserved padding, and the switch thumb travel.
+
+**Stays physical** (also asserted, so a future "helpful" logical swap has to break a test):
+
+- **The six toaster corners.** `.ori-toaster_top-right` is the screen's top right in both directions. This
+  matches Sonner and Radix: a toast corner is a screen position, not a reading-order position.
+- **Safe-area insets** (`utils.css`). A device notch does not move with the writing direction; swapping
+  `padding-left: env(safe-area-inset-left)` to a logical property would be the bug, not the fix.
+- **The colour-picker value plane.** Its saturation/value area is physical by construction and
+  self-consistently so — the thumb is placed with a physical `left: %`, the pointer maths is
+  `clientX - rect.left`, and the gradients run `to right`. Mirroring one of those three without the others
+  is how you get a picker whose thumb disagrees with the colour under it.
+
+**The slider fill follows the engine.** Chromium reverses a native `<input type=range>` under RTL (the
+minimum end becomes the right), so `.ori-slider:dir(rtl)` repoints `--ori-slider-axis` and the painted
+track flips with it — fill and thumb agree.
+
+**Naming note:** the placement classes read physical and behave logically —
+`.ori-anchored_left` resolves to `position-area: inline-start`, so under RTL it places the panel to the
+physical right. That is the correct behaviour and the wrong-sounding name; renaming it is a breaking change,
+so it is a documentation duty instead.
+
+## Svelte `useTheme` exposes `destroy()`; the other two adapters do not
+
+A framework deviation of the same kind as React's `ToolbarProvider` (recorded above): the shape differs
+because the host's lifecycle primitive does, not because the behaviour does.
+
+The controller owns a `MutationObserver` and a `matchMedia` listener, so something has to tear it down.
+Tying that to the **store's subscriber count** was wrong and shipped broken: an ordinary `{#if}` around
+markup reading `$theme` drops the count to zero, destroys the controller, and `auto` mode is dead for the
+rest of the session — silently, because the store still resolves. Teardown now rides on `onDestroy`, which
+ties the controller to the component, matching Vue's `onScopeDispose`.
+
+`onDestroy` only exists during component init, so a `useTheme()` called at **module scope** has nothing to
+hang teardown on. Rather than leak, the Svelte store exposes `destroy()` for that caller — documented on
+the use-theme page. Vue got the same escape hatch later (see "Vue `useTheme` returns `destroy()`").
+
+## Injection keys are `Symbol.for('…@<major>')` — global, but scoped to the major
+
+Every provide/inject key the packages own — `ORI_HEADLESS` (Vue + Svelte), the two toolbar context keys in
+each adapter, and `oriFieldKey` in `@oriui/vue` — is a **registered** symbol, not a module-local one.
+
+The bug it fixes: a module-local `Symbol('ori-headless')` is identity-scoped to the module instance, so when
+npm cannot dedupe the package (a transitive duplicate, two lockfile entries, a monorepo with mismatched
+ranges), a root provides under one symbol and a child injects under a different one. Nothing throws — the
+child silently falls back to the native engine, or to a toolbar's no-context default. It is invisible
+precisely where it matters, and the exact-version internal pins (`@oriui/vue` depends on exact
+`@oriui/headless`) make a duplicate copy MORE likely, not less.
+
+**The `@<major>` suffix is the non-obvious half.** `Symbol.for` is cross-realm AND cross-version: a v1 copy
+and a v2 copy of this package would compute the SAME key from a bare `'ori-field'`. During an incremental
+major migration a v2 `OriField` would then satisfy a v1 control's `inject` with a shape it was never typed
+against — a wrong-shape hit, which is worse than today's bug, because today's miss at least falls back
+safely. `@1` keeps same-major duplicates interoperable (the case we are fixing) and lets majors miss each
+other (the case where missing is correct).
+
+Consequences:
+
+- **The suffix must be bumped at 2.0.** A forgotten bump silently reinstates the cross-major hazard, years
+  later, in someone else's app. `tests/headless-adapter-swap.test.ts` reads the major from the package
+  manifest and scans `packages/*/src` for `Symbol.for(…)` literals, so the version bump turns the suite red
+  until the keys follow. That guard is the only thing standing between a future maintainer and a silent
+  regression — do not delete it as redundant.
+- These four descriptions now live in the process-wide registry shared with every library on the page.
+  `ori-headless@1`, `ori-toolbar@1`, `ori-toolbar-toggle@1`, `ori-field@1` are namespaced enough that a
+  collision would have to be deliberate.
+- `oriFieldKey` is not exported from the `@oriui/vue` barrel, so its duplicate scenario is two copies of
+  `@oriui/vue` rather than of the headless package.
+
+## `@oriui/css` component stylesheet FILENAMES are public API (the `./components/*.css` wildcard)
+
+The à-la-carte scheme exports `"./components/*.css": "./dist/components/*.css"` — a wildcard, so **every
+file that lands in `dist/components/` is a published entry point**. At 1.0 that makes each filename a
+compatibility promise: renaming `color-picker.css` is a breaking change, and a new file is new public API
+the moment it is emitted. That is easy to forget precisely because a wildcard has no list to review.
+
+**Decided: keep the wildcard, pin the list in a test.** The alternative — enumerating 35 explicit export
+entries — buys the same guarantee and costs a manual edit per component, which is the kind of hand-kept
+registry this project has repeatedly found rotting (see the closed-list contrast guard that let a 2.4:1
+error message ship). Instead `tests/css.entries.test.ts` asserts the exact set of per-component entry names.
+Adding or renaming a component stylesheet now fails that test, so it becomes a deliberate line in the diff
+and a reviewer sees a public-API change rather than a file rename.
+
+Consequences to keep in mind:
+
+- The build emits one file per component (`packages/css/build.mjs`), so **any partial or helper stylesheet
+  that ever gets emitted into `components/` becomes public too**. Shared pieces belong in the foundation
+  entries (`base.css` / `tokens.css`), never as a `components/*.css` file.
+- **An entry filename is not a component name, and not always a block name either** — do not build tooling
+  that derives one from the other. Today's divergences: `OriToaster` ships in `toast.css` (`.ori-toaster` + the transition
+  classes), `OriRadioGroup` in `radio.css`, `.ori-cluster` in `stack.css`, `.ori-badge-anchor` in
+  `badge.css`, and `toolbar.css` additionally carries a `.ori-button` rule. Entries are also deliberately
+  self-contained, so a block can appear in several files (`.ori-spinner` is inlined into `button.css` and
+  `toolbar.css` as well as shipping as `spinner.css`). The filename is what consumers import, so it is the
+  thing that cannot move — but a completeness check has to reason about **selectors present in the
+  concatenated sheets**, never about one import per component.
+- `@oriui/vue` consumers are unaffected either way — they get the full sheet. This surface exists for the
+  direct-CSS audience (htmx / Astro / React / plain HTML), which is also the audience least able to absorb a
+  rename.
+
+## OriField composes group/composite controls, not just single text inputs
+
+`OriField` now provides its label / hint / error / id / required / disabled / size context to
+**Combobox, Slider, RadioGroup, ColorPicker** (on top of Input / Select / Textarea). Decisions from the
+integration:
+
+- **Checkbox / Switch stay out.** A single boolean uses an inline label _after_ the box, not the field's
+  label-above layout; wrapping one in a field would render two labels. Grouped boolean sets are a
+  `fieldset` story, not this one.
+- **Group / composite controls name themselves via `aria-labelledby`**, not `<label for>` — `for` can
+  only target a labelable element, and a `role=radiogroup` / `role=group` div is not one. `OriField`
+  gained `labelId` on its context for this; it is **`undefined` when the field renders no label**, so
+  the `aria-labelledby` is omitted rather than dangling (mirrors `describedBy`). The field's
+  `<label for=fieldId>` is therefore **inert for group controls** (nothing owns that id) — a known,
+  harmless conformance nit, not a bug to "fix" by pointing `for` at an inner element.
+- **A composite built from field-aware children must shield them.** `OriColorPicker` embeds
+  `OriSlider` ×2 + `OriInput`; the field context flows via `provide`/`inject` to the whole subtree, so
+  those children would each adopt `field.id` (duplicate ids — WCAG 4.1.1) and the hex `OriInput` would
+  suppress its own validation error. Fix: the picker calls `provide(oriFieldKey, undefined)` to reset
+  the context for its subtree and forwards its own resolved `isDisabled` to the children explicitly.
+  Any future composite made of Ori form controls must do the same.
+- **Size-less controls don't scale.** Slider and ColorPicker have no `size` variant, so a field's
+  `size` scales only its label + helper for them (documented on the field page).
+
+## OriColorPicker: compositional core helpers (not the adapter contract), two hidden range inputs, hand-rolled color engine
+
+The color picker follows the **Toolbar shape** — pure framework-agnostic math in the core + a Vue state
+composable — deliberately **outside** the `OriHeadless` adapter contract. The contract's test (the
+roving-tabindex ADR) is "enter it only for real swappable/async state (focus-trap, typeahead, open/close)."
+A color picker has neither: no native `<color-area>`, no engine a consumer would swap, only deterministic
+synchronous math — sRGB conversion + 2D pointer/keyboard coordinates. Wrapping that in `useDisclosure` / a
+`ColorPickerAdapter` would be the wrong abstraction. But it is more than styled-compose: the math must not
+be hand-rolled in the SFC (that traps it in Vue and forces duplication for a Svelte twin). So, like
+`roving.ts` + `useToolbar`: `core/color-picker/color.ts` + `color-area.ts` (pure) + `use-color-picker.ts`
+(Vue binding). `OriColorPicker` is an **inline** panel, open-state-agnostic — compose it into `OriPopover`
+for a trigger flow (the OriPopover ADR: the widget and the overlay are separate). Three decisions, each
+approved before building (per [[design-to-industry-standard]] — a NEW public component):
+
+**1. The 2D area is two visually-hidden native `<input type="range">`, one per axis (saturation, value).**
+Each is a real `role=slider` with `aria-label` + `aria-valuetext` — the a11y surface, focusable and
+form-associable, exactly the React-Aria de-facto standard and oriUI's "state on real focusable elements"
+rule (the native-`<dialog>` / native-Popover thesis). The 2D coordinate + arrow-step math is
+`core/color-picker/color-area.ts`; the area's keydown routes the arrows in 2D (Left/Right → saturation,
+Up/Down → value) because a single native range can't span two axes.
+
+**2. The color engine is hand-rolled (~180 lines, zero-dependency), NOT colord.** `@oriui/headless` has
+**no runtime dependencies** (a portfolio signal) and its core `.` entry has a 1 kB budget. The lossy
+grayscale round-trips colord guards against are avoided by design — the picker keeps its own **HSVA** object
+across interaction, so hue survives when saturation/value hit 0. **Guardrail:** `core/color-picker/*` is
+imported ONLY by the `./vue` composable and is **never re-exported from the core `.` barrel**, so it stays
+out of the 1 kB core budget (verified via `npm run size`). Echoes the "hand-roll the tiny core, copy Zag's
+anatomy" call.
+
+**3. v-model is a lowercase color STRING (dual event), and v1 is hex6 — alpha is deferred to v2.**
+`update:modelValue` streams live per tick; `change` commits once on pointer-release / keyboard-settle (one
+undo entry) — the OriSlider commit convention verbatim (which named ColorPicker as its reference consumer).
+Output is lowercased before emit (justpaint's validator is lowercase-only).
+
+**Update (alpha.13, still unreleased): alpha + eyedropper landed in v1 after all.** Both were designed-for
+and cheap, so they went in before the ColorPicker's first publish rather than a v2: `alpha` (opt-in) adds a
+checkerboard `.ori-slider_alpha` track + a checkerboard swatch and emits `#rrggbbaa` / `rgba()` / `hsla()`
+(the internal HSVA always carried `a`; `parseColor` already read 8-digit hex / `rgba()`); `eyedropper`
+(opt-in) is the EyeDropper API behind a **feature-detected** trigger — `eyedropperSupported` is false where
+`window.EyeDropper` is absent, so the styled button is hidden, never dead (a picked color keeps the current
+alpha). **Still deferred to v2** (all additive): a user-facing format switcher, per-channel numeric inputs,
+a built-in recent-colors buffer (v1 stays consumer-supplied `presets`), a color wheel, wide-gamut /
+CSS-Color-4, and the Svelte twin.
+
+## Slots: prop-backed content also ships a slot (prop = fallback); per-item slots are the collection's singular
+
+Two conventions the catalog now follows, from the slot-DX retrofit pass (alpha.12, ~12 components).
+
+**(1) Prop-backed displayable content is ALSO a slot, with the prop render as the slot fallback.** A
+styled component may take a string prop for ergonomics (`label`, `title`, `text`, an `icon` path, an
+option `label`), but any such _displayable_ content must also be reachable as a slot so a consumer can
+pass rich children — an inline Terms link in a checkbox label, an icon+count in a tab trigger, an
+avatar+email row in a combobox option. The shape is `<slot name="x">{{ prop }}</slot>`: the slot's
+**fallback IS the current prop rendering**, so the prop path is unchanged and the addition is
+non-breaking. When the content was conditionally rendered (`v-if="prop"`), broaden to
+`v-if="prop || $slots.x"` so the slot works with the prop empty. OriCard / OriAlert were the reference;
+Tag/Toast/Checkbox/Switch/Tabs/Combobox/Radio/Accordion/Badge/Field/Avatar were retrofitted. A styled
+**wrapper** that composes a slot-capable Ori child forwards the child's slot the same way, guarded so the
+child's own prop fallback survives: `<template v-if="$slots.default" #default><slot/></template>`
+(OriToolbarButton → OriButton). **Corollary (a11y — do not skip):** when slotted content participates in
+an a11y relationship (a Field error/hint driving `aria-describedby`/`aria-invalid`, a Badge deciding
+`aria-hidden`), the DERIVED state must track `$slots.x` too, not just the prop — else the attribute
+dangles or the element is wrongly hidden. See [NOTES.md] (this bit the first Field/Badge cut).
+
+**(2) A per-item slot is named for the SINGULAR of its collection prop.** A component rendering a
+collection exposes its per-item content as a **scoped** slot named for the singular: `items → #item`
+(OriMenu), `options → #option` (OriCombobox, OriRadioGroup), `tabs → #tab` (OriTabs) — exposing the item
+plus useful derived state (index, selected). This kills the earlier Menu(`#item`)/Combobox(none)
+divergence. Non-collection decorators use `#prepend` / `#append` (Tag), a region name
+(`#header-prepend`, Card), or the part name (`#icon` / `#title` / `#fallback`).
+
+## OriPopover: non-modal overlays are platform primitives, not headless-contract behavior
+
+OriPopover deliberately sits **outside** the `OriHeadless` contract — no `useDisclosure` / adapter, no JS
+state machine. The platform supplies everything a non-modal popover needs with zero JS: top-layer +
+light-dismiss + `Esc` from the **Popover API** (`popover` + `popovertarget`), and placement + collision
+flip from **CSS Anchor Positioning** (`position-anchor` + `position-area` + `position-try-fallbacks`). This
+extends the native-`<dialog>` thesis (see "`OriDialog` defaults to the native `<dialog>`") to the non-modal case: the contract seam is
+for behavior with real state (focus-trap, roving-tabindex, typeahead); a pure placement primitive has
+none, so wrapping it in `useDisclosure` would be a wrong abstraction. **Corollary:** OriMenu _will_ re-enter
+the contract (roving-tabindex is real state) while **reusing** OriPopover's placement CSS.
+
+Its a11y is a **consumer contract** (the zero-JS cost): the panel `role` defaults to `dialog`, the
+accessible name comes from `aria-label` / `aria-labelledby` (fall through via `inheritAttrs: false` +
+`v-bind="$attrs"`), and the trigger's expanded state is **unmanaged** — `aria-haspopup` + `aria-controls`
+convey the relationship statically, since there is no JS open-state to bind `aria-expanded` to.
+
+This anchor-positioning placement is the **new catalog reference** for floating panels; OriTooltip and
+OriCombobox use older static placement and are **legacy to retrofit** onto it. Pending (with OriMenu):
+extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating `positions/positions.css`),
+retrofit Combobox/Tooltip collision-flip, and lock the shared `placement` enum to the 12-value
+`<side>-<align>` grid before Menu consumes it.
 
 ## React adapter: adapter-swap is choose-once-at-root (rules of hooks) — a React-only constraint
 
@@ -143,7 +585,7 @@ refactor and a convention choice, out of scope here. Left open for a dedicated p
 Decided 2026-07-08. Toggling the `ori-theme_dark` class at runtime leaves every styled component painting
 the PREVIOUS theme's colours until it re-renders — a real Chromium bug (reproduced in **148 and 149**): the
 engine misses the style invalidation for elements that bake a resolved alias into an element-scoped custom
-property consumed through a `var()` chain (oriUI's core mechanism — see NOTES). It is broad (fill/tonal
+property consumed through a `var()` chain (oriUI's core mechanism — see NOTES). It is broad (solid/soft
 backgrounds AND role text), NOT specific to the relative-colour `-text` tone (a literal reproduces it), and
 emergent in the full cascade with a consumer's unlayered brand override. A bare `var(--ori-color-primary)`
 read flips fine; the baking is the trigger.
@@ -178,9 +620,9 @@ Alternatives considered:
 ## Role-as-text gets a dedicated on-surface tone (`--ori-color-<role>-text`) — a darker/lighter shade of the role
 
 Decided 2026-07-08. A role's `--ori-color-<role>` is engineered as a fill **background** (light / saturated,
-paired with dark `--ori-color-on-<role>` ink). The non-fill variants (text / outline / tonal), the selected
+paired with dark `--ori-color-on-<role>` ink). The non-solid variants (text / outline / soft), the selected
 tab, alert + tag painted that raw role as **foreground text on the surface** — where a saturated or light role
-fails WCAG AA 4.5:1 (default amber `warn` = 2.14:1 on white; the pale `secondary` and the dark-theme status hues
+fails WCAG AA 4.5:1 (default amber `warning` = 2.14:1 on white; the pale `secondary` and the dark-theme status hues
 worse). One token can't be both a good light fill-bg (dark ink on it) and dark on-surface text — opposite
 lightness requirements — so a **third member of the role token family** was added: `--ori-color-<role>-text`,
 the AA-safe on-surface foreground; consumers read it through the `--ori-color-text` alias.
@@ -194,7 +636,7 @@ block** (`:root` / light default + `.ori-theme_dark`), so it re-resolves for the
 override at ANY nesting — a **custom brand gets an AA text tone for free**, no per-skin authoring — and stays fully
 overridable (`:root`, per-skin, per-instance) as the sanctioned replacement for the `.ori-button { --ori-color: … }`
 hack. The light cap 0.42 / dark floor 0.86 are the tightest bounds that clear WCAG AA (>= 4.5:1) for every role ×
-skin × text kind incl. the tonal hover/active tint (min ~4.55:1).
+skin × text kind incl. the soft hover/active tint (min ~4.55:1).
 
 Alternatives considered:
 
@@ -204,9 +646,9 @@ Alternatives considered:
 - **Explicit per-role `-text` tones per skin** (~40 hand-tuned values) — best aesthetic control but heavy, and a
   custom skin would have to author its own (no free AA). The derived default subsumes it; a specific hue is still
   available by overriding `--ori-color-<role>-text` directly.
-- **Neutral (on-surface) text for the non-fill variants** — trivially AA but discards the role colour (a danger
+- **Neutral (on-surface) text for the non-solid variants** — trivially AA but discards the role colour (a danger
   text button would be plain ink), so rejected.
-- **Darken the role token itself** — breaks the working fill variant (its dark on-ink loses contrast on a
+- **Darken the role token itself** — breaks the working solid variant (its dark on-ink loses contrast on a
   darkened fill) and changes the whole palette's character, so rejected.
 
 **Delivery — and a custom-property gotcha.** The tone reaches an element two ways: the `.ori-color_*` utility sets
@@ -221,7 +663,7 @@ re-resolve correctly even when a consumer overrides `--ori-color-<role>` with an
 earlier `:root`-only derive silently froze to the page value there (it bit a real consumer's dark theme in testing).
 
 Guarded by **e2e/text-contrast.spec.ts** in real Chromium (the Node token guard can't evaluate `oklch(from …)`;
-happy-dom axe has no layout engine) — covering every role × skin × theme × text kind, the tonal hover/active tint,
+happy-dom axe has no layout engine) — covering every role × skin × theme × text kind, the soft hover/active tint,
 and the bare-block baked path. **Revisit trigger:** if CSS `contrast-color()` reaches Baseline, the derived default
 could become a true auto-contrast pick rather than a fixed mix ratio.
 
@@ -243,8 +685,7 @@ keeping the out-of-`src` principle.
 ## Token-axis classes are single-class + block-baked defaults (dropped the paired base)
 
 The `.ori-*` token utilities were **paired** — a base class plus a value (`ori-color ori-color_primary`,
-`ori-size-action ori-size-action_md`). That had two costs the user flagged while imagining a consumer
-building their **own** Vue components on the css layer: **verbosity** (five axes × two classes is a wall
+`ori-size-action ori-size-action_md`). That had two costs for anyone building their **own** components on the CSS layer: **verbosity** (five axes × two classes is a wall
 of markup) and a **silent-no-op footgun** (the utility selector was the compound `.ori-x.ori-x_y`, so a
 value class without its base did nothing, with no error). Decision: make every axis a **single-class**
 utility and **bake sensible defaults into each block**.
@@ -266,18 +707,15 @@ utility and **bake sensible defaults into each block**.
   the value class matches; the now-inert base is a harmless extra — so all 18 components + 19 doc pages
   migrated without a flag day.
 
-**Color is a ROLE, variant is the MAPPING — there is deliberately no `bg-color`** (user asked).
+**Color is a ROLE, variant is the MAPPING — there is deliberately no `bg-color`.**
 `ori-color_*` sets a semantic pair (`--ori-color` accent + `--ori-color-on` contrast); the variant
-decides how it is painted (fill → bg + on-text; tonal / outline / text → accent). A separate `bg-color`
+decides how it is painted (solid → bg + on-text; soft / outline / text → accent). A separate `bg-color`
 would re-introduce the manual "pick bg AND matching text" pairing the variant abstracts away — and break
 the AA contrast pairing the contrast test enforces. An arbitrary background is a surface token
 (`ori-color_surface`) or an inline `--ori-color`.
 
-This supersedes the "two-tier aliases repointed by a utility class" entry below **only in the class
-surface** (one class, not a pair); the two-tier **token** model (raw scale → resolved alias the component
-reads) is unchanged and is exactly what makes the single class a one-line repoint. Rolled out via an
-orchestrated workflow with per-component / per-page adversarial verification; verified by 324 tests,
-types, lint, and browser measurements at every step. Input and Button are the hand-built references.
+This changes only the class surface. The two-tier **token** model (raw scale → resolved alias the
+component reads, see "CSS tokens") is unchanged, and it is what makes the single class a one-line repoint.
 
 ## `OriDialog` defaults to the native `<dialog>`; Zag dropped from the default path
 
@@ -293,7 +731,7 @@ one ever appears in a real project.
 
 **Why now, and on what evidence:** an exhaustive inventory of the two real consumer apps (justpaint —
 already on oriUI; mtp-tg — a Telegram Mini-App marketplace) classified **every** interactive/overlay
-surface, and three adversarial reviewers each hunted for a Zag-only widget. Verdict: **none exists**. The
+surface and looked for a widget only Zag could serve. Verdict: **none exists**. The
 three canonical Zag justifications — async combobox/typeahead, datepicker, virtualized/multi-select
 listbox — are absent from both. The "hardest" surfaces were ordinary modals (`ContactFormModal`,
 `OrderConfirmModal`, justpaint's menu drawer) that hand-roll an overlay and are **missing**
@@ -306,26 +744,19 @@ want a small positioning helper (floating-ui-style) — still **not** Zag. This 
 "`useDialog` has no native default / fails loud without Zag" design. Removed the prototype `zagDialog`
 adapter and the `@zag-js/*` docs dependencies; `@oriui/headless` + the agnostic contract remain the hedge.
 
-## Scope: a portfolio showcase + the author's own Vue design system (not a market competitor)
+## Scope: a portfolio piece and a design system for real apps, not a market competitor
 
-oriUI's two goals are a **senior-level GitHub portfolio** piece and the author's **own design system**
-for personal Vue projects (justpaint, mtp-shop) — **not** competing with Ark UI / Panda / Reka on market
-reach, framework breadth, or catalog size. Comparing a solo alpha to those mature, team-built libraries
-is the wrong frame: the portfolio value is visibly senior-level architecture + judgment, and the
-personal value is a design system the author understands and can bend to their own needs. Consequences:
+oriUI has two goals: a portfolio piece that shows library engineering, and the design system behind my
+own Vue apps (justpaint, mtp-shop). It does **not** compete with Ark UI, Panda or Reka on reach,
+framework breadth or catalog size. Consequences:
 
-- **No multi-framework race.** Styled components stay **Vue-only**; `@oriui/css` + `@oriui/headless` are the
-  framework-agnostic hedge already in place (React/Svelte styled wrappers come only on real adoption —
-  YAGNI, not speculative layers built blind).
-- **No catalog-breadth race.** Build only the components the author's projects actually need, not Ark's 40. Requirements come from building a real screen of a personal project, not imagined gaps.
-- **Zag dropped from the default path** (done — see the dialog ADR above). Presentational components need
-  no behaviour engine; `OriDialog` now runs on the native `<dialog>` + `showModal()` platform path
-  (focus-trap, `Esc`, `::backdrop`, focus-return, `inert` — Baseline ~2023) with no adapter to wire,
-  confirmed by an inventory of both real consumer apps. The **swappable contract stays** as the hedge:
-  re-add Zag **per-widget** only if a genuinely hard widget (combobox, datepicker, listbox,
-  typeahead-menu) shows up in a real project — no rewrite needed.
-- **Next step = a real screen** of justpaint / mtp-shop on oriUI: it proves usefulness, surfaces real
-  requirements, and is the portfolio's "a real app built on my library" story.
+- **No multi-framework race for the styled layer.** Styled components stay Vue-only; `@oriui/css` and
+  `@oriui/headless` (Vue, Svelte, React) are what travels between frameworks. Styled wrappers for other
+  frameworks come only with real adoption.
+- **No catalog-breadth race.** A component is built when a real screen needs it, not to match a count.
+- **Native first, Zag optional.** The platform now covers what used to justify Zag (see "`OriDialog`
+  defaults to the native `<dialog>`"); the swappable contract stays, so a genuinely hard widget can take a
+  Zag adapter later without a rewrite.
 
 ## CSS layer extracted to a standalone `@oriui/css` package
 
@@ -353,45 +784,40 @@ last) now wins over component rules — fine, since utilities only set tokens th
 npm's typosquatting filter **rejects the unscoped name `oriui`** as "too similar to existing package
 `cliui`" (a popular yargs dependency) — a hard 403 on the first publish, not appealable in practice.
 Unscoped variants that normalize to the same token (e.g. `ori-ui`) are blocked too; **scoped names
-bypass the filter**, which is why `@oriui/headless` and `@oriui/headless` published fine. So the flagship styled
-package ships as **`@oriui/vue`** under the existing `oriui` npm org, giving a clean trio: `@oriui/headless`
-(agnostic contract) · `@oriui/headless` (headless Vue) · `@oriui/vue` (styled). Consumers
-`import { OriButton } from '@oriui/vue'` and `import '@oriui/css'`. The **oriUI brand** (project name,
-npm org, docs title) is unchanged — only the install/import specifier moved. The docs Nuxt alias, the
-MDC plugin registration, and every install/import example were updated to match.
+bypass the filter**. So the styled package ships as **`@oriui/vue`** under the `oriui` npm org, next to
+`@oriui/css` and `@oriui/headless`. The **oriUI brand** (project name, npm org, docs title) is unchanged —
+only the install/import specifier moved.
 
 ## Trunk-based `main`; a release is a separate tagged event
 
 `main` is an always-green **trunk**, not a release-only branch: coherent, green work merges in
 continuously — the docs site deploys from `main`, so doc and fix work shouldn't wait on the npm
 cadence. A **release** is a distinct, deliberate event layered on top — bump the three packages in
-lockstep, publish ([RELEASING.md](RELEASING.md)), and **tag `vX.Y.Z`** on the release commit, so
-every published npm version maps to an exact commit. Decoupling "on `main`" from "published" is the
+lockstep and publish ([RELEASING.md](RELEASING.md)); changesets tags each published version
+(`@oriui/vue@1.0.0-rc.19`), so every npm version maps to an exact commit. Decoupling "on `main`" from "published" is the
 reason internal deps are pinned and publishing is its own runbook.
 
-- **`--no-ff` merges** into `main` (user preference): the merge commit keeps each branch as a single
-  unit in `main`'s first-parent history. Work lands on **short-lived topic branches** off `main` —
-  `refactor/oriui-foundation` was a one-off foundation epic, not the ongoing model.
+- **`--no-ff` merges** into `main`: the merge commit keeps each branch as a single unit in `main`'s
+  first-parent history. Work lands on **short-lived topic branches** off `main`.
 - Rejected **release-gated `main`** (advance `main` only at releases): it would leave the live docs
-  stale between alpha publishes — bad for a portfolio site.
+  stale between publishes.
 
 The full branch / commit / release workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Docs IA: Reka-style sections; framework split is per-component, not a nav branch
 
-Reworked the docs navigation to the Reka/Radix model (user-driven). The top level is four sections:
+The docs navigation follows the Reka/Radix model. The top level is four sections:
 **Overview** (intro, get-started, installation, a11y), **Guides** (styling, theming, customization,
 the CSS layer), **Components** (nested by category — Actions / Data Input / Data Display / Feedback →
-pages), and **Headless** (the behaviour layer, nested by sub-layer: **Core** = `@oriui/headless`, the
-framework-agnostic contract + native engine; **Vue** = the composables; a Svelte group / Utilities
-slot in later). The nav tree (`NavTree` → collapsible `NavSection`, built on `useDisclosure`) is
+pages), and **Headless** (the behaviour layer: the framework-agnostic core, then one page per
+composable). The nav tree (`NavTree` → collapsible `NavSection`, built on `useDisclosure`) is
 shared by the desktop sidebar and the mobile drawer.
 
 - **Frameworks are a per-component switcher, not a nav dimension.** A component page shows the same
   example as **Vue** (the styled component) or **HTML** (the standalone `.ori-*` CSS layer) via the
-  Example tabs; a Svelte tab joins later. So "Vue vs Svelte vs CSS" lives _inside_ the page, and the
-  headless composables sit under Headless → Vue (their framework binding). Rejected a top-level
-  framework branch (premature — only Vue exists) and a global framework switcher (a no-op today).
+  Example tabs, plus Svelte / React where a real snippet ships. So the framework lives _inside_ the
+  page. Rejected a top-level framework branch and a global framework switcher: the framework is a
+  property of an example, not of the site.
 - **The home is a landing**, not a doc page: no sidebar, the nav sits behind the burger, and the hero
   bleeds full-width (100vw). Responsive (≤ 860px): the header collapses to a burger → a drawer
   carrying the full nav; horizontal overflow is clipped at the viewport with `overflow-x: clip` on
@@ -404,15 +830,12 @@ and stays honest about the layered architecture (styled / headless / CSS; Vue bi
 
 ## Dropped silent no-op props (Avatar `shadow`, Card `icon`)
 
-The first orchestrated docs review surfaced props declared in the SFCs but never wired to the
-template — silent no-ops a consumer could set with zero effect (a misleading API, worse than a
-missing feature). Removed `shadow` from OriAvatar and `icon` from OriCard (the latter redundant with
-`prependIcon` / `appendIcon`). `OriCard.image` is kept for now but **documented as a reserved/planned
-hero image** — the rule going forward: a reserved feature ships with real behaviour, not as a no-op
-prop. (Pre-1.0 alpha, so the removal is a free breaking change.) Notable: the multi-agent review
-earned its keep by finding real component bugs while writing the docs.
+Writing the docs surfaced props declared in the SFCs but never wired to the template — silent no-ops a
+consumer could set with zero effect (a misleading API, worse than a missing feature). Removed `shadow`
+from OriAvatar and `icon` from OriCard (redundant with `prependIcon` / `appendIcon`); `OriCard.image`
+went later for the same reason. The rule: a feature ships with real behaviour, never as a no-op prop.
 
-## CI: GitHub Actions quality gate (Phase 8, first slice)
+## CI: GitHub Actions quality gate
 
 `.github/workflows/ci.yml` runs on push to `main` + every PR: **lint → types → test → build**
 across a Node matrix (`22` and `24`; the tsdown build toolchain requires Node ≥ 22.18, and Node 20 is EOL). Decisions:
@@ -425,8 +848,7 @@ across a Node matrix (`22` and `24`; the tsdown build toolchain requires Node �
   not-Prettier-clean (caught here: `ori-dialog.vue` had a stray blank line). Prettier-last makes it
   authoritative. Added `.prettierignore` entries for generated output (`.output`, `.nuxt`, `coverage`).
 - **Deploy stays Vercel-side**, not in Actions — Vercel's Git integration builds `npm run docs:build`
-  on push (preset pinned in an earlier commit). **npm publish via changesets is deferred** — it needs
-  the npm Trusted-Publishing setup and a release-flow decision (the `alpha` prerelease dist-tag), which are the maintainer's call.
+  on push. Publishing is its own workflow (`release.yml`, see [RELEASING.md](RELEASING.md)).
 
 **Stack** — Vitest 4 (the line that peer-supports Vite 8), happy-dom (fast, no layout engine),
 `@vue/test-utils` for mounting, `axe-core` for structural a11y. Lives in `tests/` (out of `src`,
@@ -438,175 +860,59 @@ lib build's externals/preserveModules out of the test run and aliases `@oriui/*`
   attributes and ARIA — VTU queries them more directly, and `axe-core` covers the "test like a
   user" a11y dimension better than role-queries would. Lean dependency surface; can add later.
 - **Contrast is an executable test, not a comment.** `tests/tokens.contrast.test.ts` parses the
-  token CSS, resolves `var(--ori-neutral-*)`, and asserts every role/on-role pair (base + 6 skins,
-  light+dark, +status) meets WCAG AA >= 4.5:1. It immediately caught a real failure (Sumi
+  token CSS, resolves `var(--ori-neutral-*)`, and asserts every role/on-role pair (every skin, light +
+  dark, + status) meets WCAG AA >= 4.5:1. It immediately caught a real failure (Sumi
   `secondary-dark` at 4.18:1 -> darkened to `#7e5e44`, 5.18:1), making the "every colour ships a
   contrast-checked on-color" promise enforceable on every change.
 - **Headless contract tested without Zag.** OriDialog is driven by a fake in-memory `DialogAdapter`
   (`tests/helpers/fake-dialog.ts`) that emits the contract's accessible prop shape. This unit-tests
   the component against the _contract_ (proving swappability) and keeps Zag — a docs/app dependency,
-  not a lib one — out of the library's test graph. Also asserts the no-adapter case fails loud.
-- **Playwright/visual regression deferred.** The component + a11y + contrast unit layer delivers
-  most of the signal at a fraction of the flakiness; visual-regression E2E is a later add (Phase 8
-  CI), not a blocker for the first test pass.
-
-## OriDialog promoted into the `oriui` package: styled = headless + css (depends on @oriui/headless)
-
-The first behavioral styled component now lives in the library (moved out of the docs prototype).
-`oriui` gains a runtime **dependency on `@oriui/headless`** — `OriDialog` consumes `useDialog()`, so the
-layering is literally "styled = headless + css". Mechanics:
-
-- `@oriui/headless` (+ `@oriui/headless`) are **external** in the Vite lib build (not bundled); the import is
-  preserved and resolved from the consumer's deps. The root `build` script runs `build:packages`
-  first so `vue-tsc` can resolve the package `.d.ts` (fresh-clone / CI safe). Verified: the built
-  `ori-dialog.js` keeps `import … from '@oriui/headless'` and the types flow through the barrel.
-- The library can't use Nuxt's `<ClientOnly>`, so the Teleport is gated on a `mounted` ref —
-  SSR-stable in any Vue/Nuxt host. Styles are tokenized (`--ori-color-surface`, `--ori-shadow-lg`).
-- `useDialog` still has **no native default** — the consumer wires a dialog adapter via `OriHeadless`
-  (e.g. Zag), per the native-simple / Zag-complex split. The docs `DialogDemo` now imports
-  `OriDialog` from `oriui` and the prototype is deleted; build + live behavior both verified.
-- `@oriui/headless` is a regular `dependency` (not peer) for DX — the contract core is tiny and the
-  behavioral components need it. The 5 presentational components don't import it, so a Button-only
-  consumer tree-shakes it out.
+  not a lib one — out of the library's test graph.
+- **Playwright only for what happy-dom cannot model** — geometry, composited colour, pointer behaviour
+  (`e2e/`, real Chromium). Visual-regression snapshots are not done.
 
 ## Docs IA: component page is the single source (class table + Vue/HTML tabs); CSS guide = concepts
 
-User likes DaisyUI's model — one component page carrying both the live examples and the CSS-class
-usage, so examples aren't duplicated across sections. Adapted to oriUI's two layers:
+DaisyUI's model — one component page carrying both the live examples and the CSS-class usage, so
+examples aren't duplicated across sections — adapted to oriUI's layers:
 
 - The **component page is the single source** for that component's examples. The Example framework
   tabs already make one example serve both audiences — **Vue** (the styled component) and **HTML**
-  (the standalone `.ori-*` classes; relabeled from "Svelte" — the static markup is identical and
-  "HTML" covers htmx / Astro / Svelte / plain-HTML at once). The HTML tab shows the _complete_ class
-  set (the old Svelte snippets were missing the size/radius/font pairs).
+  (the standalone `.ori-*` classes — "HTML" covers htmx / Astro / Svelte / plain HTML at once), with
+  the complete class set.
 - Each component page gets a DaisyUI-style **class-reference table** at the top (block / variant /
   color / size / radius / state) — the canonical `.ori-*` reference, in one place.
-- `/guide/css` is **concepts only**: setup, how the compound classes compose, zero-runtime theming,
+- `/guides/css` is **concepts only**: setup, how the compound classes compose, zero-runtime theming,
   and the applicability matrix — no per-component examples (they would duplicate the component pages).
 
 Net: examples live once (component pages), the class reference lives once (per-component table),
-concepts live once (the CSS guide). Done for Button as the exemplar; the same table + HTML tab roll
-out to the other component pages.
+concepts live once (the CSS guide). Live demos run on the page itself — there is no separate
+playground route.
 
-## Default skin = "Ori" (luminous azure/cyan); indigo & graphite become named skins
+## Default skin = "Ori" (luminous azure/cyan); indigo and graphite are named skins
 
-User feedback: the default's colours should evoke the word "ori" — which reads as the Ori game's
-ethereal blue/cyan/white spirit-light ("blue and white, maybe neon"). So the **default (no-attribute
-base) skin is now "Ori"**: a luminous azure `#0369a1` (light) / glowing cyan `#38bdf8` (dark) on
-ink-navy + cool white, with a deep ori-night `#06131f` page in dark. Strict WCAG AA (≥5.9:1). A faint
-spirit-light halo on the docs brand mark sells the "neon" without touching text contrast.
+The default (no-attribute) skin evokes the name: a luminous azure `#0369a1` (light) / glowing cyan
+`#38bdf8` (dark) on ink-navy and cool white, with a deep `#06131f` page in dark — strict WCAG AA
+(≥ 5.9:1). A faint halo on the docs brand mark carries the "neon" without touching text contrast.
+Surfaces lift off the page — white panels on a soft-grey page, an elevated slate panel in dark — with
+theme-aware `--ori-shadow-{sm,md,lg,ring}` elevation tokens instead of hairline borders.
 
-Nothing was lost: the previous indigo default became the **"Indigo"** skin, and the graphite/paper
-織り skin was renamed **"Sumi" (墨, ink)** to free the "Ori" name for the signature default. The base
-skin id is `ori` (= no `data-ori-skin` attribute); 7 skins total — Ori, Sumi, Indigo, Tech, Health,
-Luxury, Cyber. The depth/elevation work from the entry below still stands; only the default accent
-hue changed.
+The earlier indigo default became the **Indigo** skin, and the graphite-and-paper skin became **Sumi**
+(墨, ink). Eight skins in total: Ori (the base, no `data-ori-skin`), Sumi, Indigo, Tech, Health, Luxury,
+Neutral, Cyber.
 
-## Default skin refresh: depth (elevated surfaces) + indigo accent + 織り weave identity
+## No-framework / htmx is a first-class target for `@oriui/css`
 
-User feedback: the original neutral default read flat and "uninteresting" — `surface` (`neutral-50`)
-sat ~2% off a white `background`, so cards/examples/nav melted into the page, and the slate-blue
-accent (`#3b56c8`), used sparingly, left the whole site grayscale. Revised the **default skin** (not
-the signature `ori` skin) for depth and character while staying vendor-neutral + strict WCAG AA:
-
-- **Surface now lifts off the page.** Light: soft-grey page `#f5f6f8` + **white** panels; dark: inky
-  `#0a0e16` page + an elevated slate `#161b26` panel. Added **`--ori-shadow-{sm,md,lg,ring}`**
-  elevation tokens (`themes/_themes-elevation.css`, theme-aware) so panels cast a real, cool-tinted
-  shadow instead of relying on a hairline border.
-- **Confident indigo primary** `#4f46e5` (light) / `#818cf8` (dark) — modern, AA both ways
-  (~6.2:1 / ~6.45:1). Status hues stay reserved; indigo is not a status color.
-- **Docs identity (織り "weaving"):** a CSS-only diagonal-crosshatch + indigo-bloom hero backdrop, an
-  ink→indigo gradient title, a woven brand-mark tile, a pill kicker, indigo active states, and a
-  canvas-style (dotted) Example preview with elevation. Pure tokens/CSS — zero runtime.
-
-Rejected promoting the warm `ori` skin to default: it's the _signature_ skin, deliberately distinct
-from the neutral "safe" default, which stays cool-neutral (Linear / Radix / Vercel register).
-
-## No-framework / htmx is a first-class target for `oriui/css`
-
-The `oriui/css` layer (pure `.ori-*` classes + zero-runtime token theming) works with **no JS
-framework** — server-rendered **htmx**, Astro, and plain HTML are first-class. The server emits
-`<button class="ori-button ori-variant_fill …" hx-get="/x">`, htmx swaps fragments: no build step,
-no hydration. Theme/skin are a `.dark` class / `data-ori-skin` attribute on `<html>` that the
-server (or a tiny inline script) sets — zero JS theming runtime; CSS transitions compose with
-`hx-swap`. (The DaisyUI-with-htmx niche, minus Tailwind.) The styled **Vue** layer is N/A in htmx;
-the **headless** layer is Vue-oriented today.
-
-Complex behavior htmx doesn't provide (focus-trap, roving-tabindex) → a **future** `oriui/headless`
-vanilla adapter via Zag's `@zag-js/vanilla` behind the existing contract (deferred). Recorded as an
-explicit target: "works even without a JS framework" is a strong portfolio signal and shapes the
-docs applicability matrix (and an optional HTML/htmx tab in the Example switcher).
-
-## Docs: per-component pages, framework-switchable examples, Vercel SSG
-
-Four docs requirements (user):
-
-- **Hosted on Vercel as a static site.** Deploy via `nuxi generate` (SSG — fast, cheap, ideal for
-  docs): install at the repo **root** (npm workspaces), build `npm run docs:build`, output
-  `docs/.output/public`. (SSR on Vercel is possible via Nitro's vercel preset, but SSG is simpler
-  and enough here.)
-- **Every component gets a full page** — intro + explanation + props/slots + a11y notes + live demos.
-- **The playground lives ON each component page, not a separate route.** Retire `/playground`; its
-  grid distributes into the per-component pages. A shared `Demo`/`Example` wrapper = live preview +
-  source, reused everywhere (theme/skin are already global).
-- **Framework-switchable examples (Vue ↔ Svelte).** The css layer is framework-agnostic, so each
-  example shows code for both. A global toggle (like the skin switch, persisted) selects which code
-  is shown. The **live** demo stays Vue (the docs host); Svelte gets a **code** example using the
-  standalone `.ori-*` classes (and later `@oriui/svelte`). Mirrors how agnostic libs (Zag) do a
-  framework switcher; truly-live Svelte islands are out of scope for now. Build the `Example`
-  component with this switch from the start so component pages don't need reworking.
-
-## Native default for simple behavior, Zag for complex; a deep own-engine is a separate project
-
-Portfolio reasoning (user asked what's best for a portfolio): do **not** build a full own headless
-inside oriUI — it muddies oriUI's story (design system / CSS / a11y / library engineering + the
-mature "integrate, don't reinvent" judgment) and invites an unflattering same-repo comparison to
-Zag. Concretely:
-
-- **Simple primitives** (disclosure, toggle) keep a tiny **native zero-dependency default** — they
-  work out of the box ("daisyUI-simple"); that is a feature, not reinvention.
-- **Complex behavior** (dialog, menu, combobox, listbox, datepicker — focus traps, typeahead, RTL,
-  full keyboard) uses the **Zag adapter** (opt-in). Reinventing those is the foolish part; a focus
-  trap looks identical in a portfolio whether it's ours or Zag's.
-- **A deep from-scratch headless engine belongs in its own focused project** if you want to show
-  that skill — and the swappable contract here lets you plug it into oriUI later as another adapter
-  (the two portfolio pieces then link). Don't block oriUI on it.
-
-One contract, three sources (native / Zag / your own). `useDisclosure` has a native default;
-`useDialog` has **no** native default and requires an adapter (fails loud with guidance) — it is by
-definition the hard case we delegate. oriUI's energy goes to its niche.
-
-## Headless = use Zag, don't reinvent it; keep a swappable contract (supersedes the next entry)
-
-After building the native Disclosure (below) to understand the model, the call: **don't compete
-with Zag on behavior.** Its edge cases (focus trap/return, typeahead, RTL, WAI-ARIA keyboard,
-pointer vs touch) are years of tested work a fresh reimplementation would only do worse — and a
-correct focus trap looks identical in a portfolio whether it's ours or Zag's. ori's _original_
-contribution is the end Zag has nothing of: the **design-system / token contract + skins, the
-standalone CSS layer, and a11y-checked on-color tokens.** So:
-
-- **Behavior = Zag** (recommended default adapter). Components depend on a thin **contract**
-  (`DisclosureAdapter` returning normalized prop-getters), not on a concrete engine.
-- **Swappable** via provide/inject (`OriHeadless` plugin / `provideHeadless`): an app runs our
-  components on Zag, on our **native** `@oriui/headless` adapter, or on a user-supplied one — same
-  markup. If runtime swap ever proves messy, the fallback is the simpler "enable Zag or use no
-  headless" toggle (user-approved).
-- **The native `@oriui/headless` Disclosure is kept** as the reference/default adapter and the "one
-  primitive built to understand the internals" — not expanded into a full catalog. We will not
-  hand-roll Toggle/Tabs/etc.; those come from Zag behind the contract.
-- Zag adapter is prototyped in the docs app first (consumer side); promote to an `@oriui/zag`
-  package when worth publishing (keeps Zag out of native-only consumers' trees).
-
-The mature build-vs-reuse call: understand Zag enough to mirror it, then spend energy where ori
-is unique. Reka UI stays a possible _Vue-only_ alternative adapter; Zag generalizes to Svelte/React.
+The CSS layer (plain `.ori-*` classes + zero-runtime token theming) works with no JS framework —
+server-rendered htmx, Astro and plain HTML are first-class. The server emits
+`<button class="ori-button ori-variant_solid …" hx-get="/x">` and htmx swaps fragments: no build step, no
+hydration. Theme and skin are a class / `data-ori-skin` on `<html>`, set by the server or a tiny inline
+script. Behaviour htmx doesn't provide (focus trap, roving tabindex) would need a vanilla headless adapter
+— see [IDEAS.md](IDEAS.md).
 
 ## Headless = framework-agnostic core + thin per-framework adapters (Zag-mirrored)
 
-**Superseded by the entry above** — kept for the rationale, and because the native adapter remains
-the reference implementation behind the contract.
-
-Chosen over Vue-only composables — the user wants genuine multi-framework (Vue now, Svelte
-next, maybe React). The architecture mirrors Zag.js / Ark UI (verified against their source):
+Chosen over Vue-only composables so one behaviour runs in Vue, Svelte and React. The architecture mirrors Zag.js / Ark UI (verified against their source):
 
 - **`core/` (vanilla TS, zero framework deps):** per-primitive `machine` (a tiny typed reducer
   and a `scope` for deterministic, SSR-safe ids) plus `connect(service, normalizeProps)`
@@ -630,10 +936,7 @@ next, maybe React). The architecture mirrors Zag.js / Ark UI (verified against t
   `useMachine → connect(service, normalize) → spread getters` seam lets us drop real
   `@zag-js/<component>` machines behind our `connect` for hard widgets (combobox/date) later.
 
-First primitives, driven by docs needs: **Disclosure** (sidebar groups, mobile nav) →
-**Toggle** (OriButton toggle state) → **Tabs** (example demo/source switch).
-
-**Update — Svelte adapter shipped (`@oriui/headless/svelte`), with two deviations from the sketch above:**
+**The Svelte adapter (`@oriui/headless/svelte`) deviates from the sketch above in two ways:**
 (1) **Svelte stores, not runes.** The reactive cell is a `readable`/`derived` store (a `connectStore`
 bridge re-emitting `connect()` on every `subscribe()`), not `$state`/`$derived`. Rationale: runes only
 compile in `.svelte`/`.svelte.ts` files, which would pull the Svelte compiler into the `tsdown` library
@@ -651,22 +954,20 @@ SSR ids: Svelte has no `useId()` callable outside component init, so the adapter
 (`uid`) and documents "pass an explicit `id` for SSR". The build adds a third `tsdown` entry
 (`src/svelte/index.ts` → `dist/svelte/*`) and a `./svelte` export; `svelte ^5` is an optional peer.
 
-## Packaging = scoped monorepo packages, not subpath exports
+## Packaging: three scoped packages; framework adapters are subpaths of `@oriui/headless`
 
-Multi-framework needs **separate npm packages**: `dependencies`/`peerDependencies` are declared
-once per package, so a single `oriui` with `./headless/vue` + `./headless/svelte` subpaths would
-force a Svelte consumer to carry `vue` as a peer (and vice-versa). Ark UI proves the split —
-`@ark-ui/vue` (peer vue) and `@ark-ui/svelte` (peer svelte) are separate; a Svelte app installs
-zero Vue. So: `@oriui/headless` ships the vanilla-TS engine (`.`) + a Vue adapter (`./vue`, peer vue), with a
-`./svelte` adapter later; styled stays `@oriui/vue`; `@oriui/css` split deferred.
+`@oriui/css`, `@oriui/headless` and `@oriui/vue` release together as one fixed changesets group. The
+headless package ships the engine (`.`) plus one adapter per framework (`./vue`, `./svelte`, `./react`)
+and declares `vue`, `svelte` and `react` as **optional** peers — the standard escape for
+mutually-exclusive framework peers.
 
-- **Build:** per-package — `tsdown` (headless `@oriui/headless` — engine + Vue adapter, ESM + dts; migrated off
-  `tsup`, now maintenance-mode), Vite-lib + `vue-tsc` (styled `@oriui/vue`, SFCs + CSS),
-  `svelte-package` (svelte, later); validate exports with `publint` + `@arethetypeswrong/cli`.
-- **Tooling:** keep **npm workspaces** for now (pnpm's phantom-dep strictness pays off at Svelte
-  time — switch then); `changesets` at first publish; skip Turborepo/Nx (overkill solo).
-- **Testing (Phase 6):** vitest + @testing-library/{dom,user-event,jest-dom,vue,svelte} +
-  axe-core + vitest-axe (matches Ark's own stack).
+The cost: npm cannot express "exactly one of these is required", so a missing framework produces no
+install warning, only a resolution error on import. Accepted — per-framework packages would multiply the
+release surface to buy a warning. What keeps the shape sound is isolation: each adapter entry imports only
+its own framework, which `scripts/smoke-pack.mjs` checks on the packed tarballs.
+
+Tooling: npm workspaces (no Turborepo / Nx), `tsdown` for headless, Vite + `vue-tsc` for the styled
+package, `publint` and `attw` in CI.
 
 ## Docs tooling: add nuxt-llms; mcp-toolkit optional; spyglass no
 
@@ -686,47 +987,15 @@ the entire visible surface (shell, nav, demos, toggles) is oriUI. The docs' need
 **forcing function** for the component catalog + headless layer — every shell piece that isn't
 yet an ori component is the next thing to build.
 
-- **Layout:** docs is a private **npm workspace** (`docs/`, `workspaces: ["docs"]`); a single
-  root `npm install` installs it. It imports components as `from 'oriui'`, aliased in
-  `nuxt.config` to `../src` for live HMR (dogfoods source; a true package dep arrives with the
-  `@oriui/*` monorepo split). Publishing is unaffected — `files: ["dist"]`, docs is `private`.
+- **Layout:** docs is a private **npm workspace** (`docs/`); a single root `npm install` installs
+  it. It imports the packages by name, aliased in `nuxt.config` to their `src` for live HMR.
 - **Theming:** the whole shell uses `--ori-color-*` tokens, so the nav theme (light/dark via
   `html.dark`) + skin (`data-ori-skin`) toggles reskin the entire site, not just the demos. An
   inline head script applies the saved theme/skin before paint (no flash).
-- **Trade-off accepted (user chose "commit to Nuxt now"):** more non-ori scaffolding up front
+- **Trade-off accepted:** more non-ori scaffolding up front
   (shell starts as plain markup, replaced by ori components as they land) in exchange for the
   "this is a real app built on my library" signal sooner. Rejected: staged VitePress-theme
   dogfooding (cheaper, but VitePress's shell never becomes truly ours).
-
-## Living preview = the VitePress docs, not a standalone playground
-
-The dev playground (`index.html` + `playground/`) duplicated what the docs already do — the
-docs render live components through the `@lib` → `src/` alias. Consolidated onto one preview
-surface: `npm run dev` now runs VitePress, the playground grid moved to `docs/playground.md`,
-and component pages grow alongside each feature (so Phase 7 becomes polish + comparison prose +
-theme gallery, not a from-scratch docs build). Light/dark rides VitePress's built-in appearance
-toggle — our dark selector is `:root.dark`, which VitePress sets on `<html>` — so only a nav
-**skin** toggle is custom (switches `data-ori-skin`, neutral ↔ ori, persisted to localStorage).
-The full foundation (`styles.css`, not just `reset.css`) is imported in the docs theme and the
-5 components are globally registered, so tokens and components are available site-wide.
-
-## Reorder: a11y-polish the 5 components before the headless adapter (Phase 4 ↔ 5)
-
-The current components are presentational; a full headless contract + Reka adapter pays off
-for interactive widgets (Modal / Menu / Combobox) that don't exist yet, so building it now
-risks a wrong abstraction. Bring the 5 components to production a11y first (dynamic state via
-attributes, `:focus-visible`, roles/labels), then ground the headless contract + swappable
-adapter on the first genuinely interactive component. Approved by the user (fewer reworks).
-
-## Working mode: Opus implements, decisions written here, user compacts
-
-Opus does implementation directly (best judgment + continuity); every key decision lands in
-this file / CLAUDE.md / ROADMAP.md so it survives a `/compact`, and the harness task list
-holds in-flight progress. A `sonnet` subagent is used only for clearly-mechanical, high-volume
-work (one transform across many files, scaffolding from a template). Rejected: full Sonnet
-delegation — cheaper per token, but it executes spec literally without questioning intent
-(it left a token ramp defined-but-unwired and contorted token names around a lint rule
-instead of relaxing the rule). Judgment-heavy work needs Opus review.
 
 ## CSS tokens: `@layer` + two-tier aliases + numeric neutral ramp as single source
 
@@ -736,29 +1005,18 @@ instead of relaxing the rule). Judgment-heavy work needs Opus review.
   repointed by a utility class; components read only the alias.
 - Numeric neutral ramp `--ori-neutral-50..950` is the single source of truth; semantic role
   tokens (`--ori-color-surface`, …) reference it instead of duplicating hex.
-- Every color ships a contrast-checked `--ori-color-on-*` (WCAG AA); the `fill` variant text
-  uses the on-color (fixes contrast on filled surfaces).
+- Every color ships a contrast-checked `--ori-color-on-*` (WCAG AA); the `solid` variant's text
+  uses the on-color.
 
 ## Design system = token contract + skins (not "be Material 3")
 
-Default skin is vendor-neutral (cool slate ramp + a confident **indigo** accent over **elevated
-surfaces** — see the refresh entry above; status hues red/green/amber are reserved for status, not
-brand) and stays strict WCAG AA. Optional skins
-override the role source tokens; Material 3 / iOS would just be more skins. Rejected:
+Skins override the role source tokens; Material 3 or iOS would just be more skins. Status hues
+(red / green / amber) are reserved for status, never brand, and every pair stays WCAG AA. Rejected:
 anchoring on Material 3 — too vendor-specific for a layered, skinnable system.
 
-**Skin mechanism:** a skin is applied via `data-ori-skin="<name>"` on `<html>` and overrides
-the `--ori-color-<role>-<light|dark>` source tokens; the existing light/dark machinery then
-resolves on top. This is **page-level** (the active alias resolves at `:root`, so a skin on a
-descendant wouldn't propagate). Per-subtree skins (e.g. a theme gallery showing several at
-once) would need a `light-dark()` restructure — deferred, noted as a future option.
-
-**Signature "ori" skin (織り):** graphite ink + paper — primary `#2b2d42` (paper text),
-secondary wood `#ddb892`, surface milky `#f4f1de`, background ivory `#fffdf6`; status colors
-stay default. Coral `#e63946` is reserved as a future sparing accent. The user first picked a
-bold coral primary, then reverted: coral sits at nearly the same hue as the red danger status
-(confusing) and only met AA-large. Graphite primary is fully WCAG AA and clearly distinct from
-the danger status.
+**Skin mechanism:** `data-ori-skin="<name>"` on `<html>` overrides the `--ori-color-<role>-<light|dark>`
+source tokens; the light/dark machinery resolves on top. This is page-level (the active alias resolves at
+`:root`); per-subtree skins would need a `light-dark()` restructure.
 
 ## Styling: standalone CSS, no Tailwind in core
 
@@ -772,11 +1030,10 @@ Tailwind v4 preset may come later as a style adapter.
 Defaults co-locate with the declaration, no duplicated `@default` JSDoc to drift; pass a
 getter when a prop feeds a composable (lint guard: `vue/no-setup-props-reactivity-loss`).
 
-## State via attributes (aria/data), not classes — planned (Phase 5)
+## State via attributes (aria/data), not classes
 
-Dynamic state (disabled / loading / active) becomes real `disabled` / `aria-*` / `data-*` —
-the a11y-correct source of truth, matching the headless layer. The legacy `ori-disabled`
-class (CSS-only, no real `disabled`) is a known bug to fix in the rebuild.
+Dynamic state (disabled / loading / pressed) is a real `disabled` / `aria-*` / `data-*` attribute — the
+accessible source of truth and the one the headless layer emits — styled with attribute selectors.
 
 ## Type declarations via vue-tsc, not vite-plugin-dts
 
@@ -784,540 +1041,8 @@ vite-plugin-dts 5 (now on unplugin-dts) stopped emitting `.vue` SFC declarations
 consumer types. Generate `.d.ts` with native `vue-tsc` (`tsconfig.build.json`); the build
 fails on type errors instead of emitting them as warnings.
 
-## Headless: own composables behind a swappable adapter — planned (Phase 4)
-
-Components depend on a behavior contract; the default implementation is our own composables,
-with an optional Reka UI adapter, selected via `app.use(OriUI, { adapter })`. Lets the
-behavior layer be swapped without touching component markup.
-
 ## Platform: web-first + mobile-first styling; hybrid planned; Ionic not a target
 
 Touch minimum 44px in the action scale; safe-area insets + `@media (hover:hover)`. Capacitor
 is supported via a planned `hybrid` platform mode (token + behavior tweaks). Ionic is a
 competing adaptive component library, not a backend — deliberately out of scope.
-
-## OriPopover: non-modal overlays are platform primitives, not headless-contract behavior
-
-OriPopover deliberately sits **outside** the `OriHeadless` contract — no `useDisclosure` / adapter, no JS
-state machine. The platform supplies everything a non-modal popover needs with zero JS: top-layer +
-light-dismiss + `Esc` from the **Popover API** (`popover` + `popovertarget`), and placement + collision
-flip from **CSS Anchor Positioning** (`position-anchor` + `position-area` + `position-try-fallbacks`). This
-extends the native-`<dialog>` thesis (the dialog ADR above) to the non-modal case: the contract seam is
-for behavior with real state (focus-trap, roving-tabindex, typeahead); a pure placement primitive has
-none, so wrapping it in `useDisclosure` would be a wrong abstraction. **Corollary:** OriMenu _will_ re-enter
-the contract (roving-tabindex is real state) while **reusing** OriPopover's placement CSS.
-
-Its a11y is a **consumer contract** (the zero-JS cost): the panel `role` defaults to `dialog`, the
-accessible name comes from `aria-label` / `aria-labelledby` (fall through via `inheritAttrs: false` +
-`v-bind="$attrs"`), and the trigger's expanded state is **unmanaged** — `aria-haspopup` + `aria-controls`
-convey the relationship statically, since there is no JS open-state to bind `aria-expanded` to.
-
-This anchor-positioning placement is the **new catalog reference** for floating panels; OriTooltip and
-OriCombobox use older static placement and are **legacy to retrofit** onto it. Pending (with OriMenu):
-extract the placement + flip into a reusable `.ori-anchored_*` primitive (populating `positions/positions.css`),
-retrofit Combobox/Tooltip collision-flip, and lock the shared `placement` enum to the 12-value
-`<side>-<align>` grid before Menu consumes it.
-
-## Slots: prop-backed content also ships a slot (prop = fallback); per-item slots are the collection's singular
-
-Two conventions the catalog now follows, from the slot-DX retrofit pass (alpha.12, ~12 components).
-
-**(1) Prop-backed displayable content is ALSO a slot, with the prop render as the slot fallback.** A
-styled component may take a string prop for ergonomics (`label`, `title`, `text`, an `icon` path, an
-option `label`), but any such _displayable_ content must also be reachable as a slot so a consumer can
-pass rich children — an inline Terms link in a checkbox label, an icon+count in a tab trigger, an
-avatar+email row in a combobox option. The shape is `<slot name="x">{{ prop }}</slot>`: the slot's
-**fallback IS the current prop rendering**, so the prop path is unchanged and the addition is
-non-breaking. When the content was conditionally rendered (`v-if="prop"`), broaden to
-`v-if="prop || $slots.x"` so the slot works with the prop empty. OriCard / OriAlert were the reference;
-Tag/Toast/Checkbox/Switch/Tabs/Combobox/Radio/Accordion/Badge/Field/Avatar were retrofitted. A styled
-**wrapper** that composes a slot-capable Ori child forwards the child's slot the same way, guarded so the
-child's own prop fallback survives: `<template v-if="$slots.default" #default><slot/></template>`
-(OriToolbarButton → OriButton). **Corollary (a11y — do not skip):** when slotted content participates in
-an a11y relationship (a Field error/hint driving `aria-describedby`/`aria-invalid`, a Badge deciding
-`aria-hidden`), the DERIVED state must track `$slots.x` too, not just the prop — else the attribute
-dangles or the element is wrongly hidden. See [NOTES.md] (this bit the first Field/Badge cut).
-
-**(2) A per-item slot is named for the SINGULAR of its collection prop.** A component rendering a
-collection exposes its per-item content as a **scoped** slot named for the singular: `items → #item`
-(OriMenu), `options → #option` (OriCombobox, OriRadioGroup), `tabs → #tab` (OriTabs) — exposing the item
-plus useful derived state (index, selected). This kills the earlier Menu(`#item`)/Combobox(none)
-divergence. Non-collection decorators use `#prepend` / `#append` (Tag), a region name
-(`#header-prepend`, Card), or the part name (`#icon` / `#title` / `#fallback`).
-
-## OriColorPicker: compositional core helpers (not the adapter contract), two hidden range inputs, hand-rolled color engine
-
-The color picker follows the **Toolbar shape** — pure framework-agnostic math in the core + a Vue state
-composable — deliberately **outside** the `OriHeadless` adapter contract. The contract's test (the
-roving-tabindex ADR) is "enter it only for real swappable/async state (focus-trap, typeahead, open/close)."
-A color picker has neither: no native `<color-area>`, no engine a consumer would swap, only deterministic
-synchronous math — sRGB conversion + 2D pointer/keyboard coordinates. Wrapping that in `useDisclosure` / a
-`ColorPickerAdapter` would be the wrong abstraction. But it is more than styled-compose: the math must not
-be hand-rolled in the SFC (that traps it in Vue and forces duplication for a Svelte twin). So, like
-`roving.ts` + `useToolbar`: `core/color-picker/color.ts` + `color-area.ts` (pure) + `use-color-picker.ts`
-(Vue binding). `OriColorPicker` is an **inline** panel, open-state-agnostic — compose it into `OriPopover`
-for a trigger flow (the OriPopover ADR: the widget and the overlay are separate). Three decisions, each
-approved before building (per [[design-to-industry-standard]] — a NEW public component):
-
-**1. The 2D area is two visually-hidden native `<input type="range">`, one per axis (saturation, value).**
-Each is a real `role=slider` with `aria-label` + `aria-valuetext` — the a11y surface, focusable and
-form-associable, exactly the React-Aria de-facto standard and oriUI's "state on real focusable elements"
-rule (the native-`<dialog>` / native-Popover thesis). The 2D coordinate + arrow-step math is
-`core/color-picker/color-area.ts`; the area's keydown routes the arrows in 2D (Left/Right → saturation,
-Up/Down → value) because a single native range can't span two axes.
-
-**2. The color engine is hand-rolled (~180 lines, zero-dependency), NOT colord.** `@oriui/headless` has
-**no runtime dependencies** (a portfolio signal) and its core `.` entry has a 1 kB budget. The lossy
-grayscale round-trips colord guards against are avoided by design — the picker keeps its own **HSVA** object
-across interaction, so hue survives when saturation/value hit 0. **Guardrail:** `core/color-picker/*` is
-imported ONLY by the `./vue` composable and is **never re-exported from the core `.` barrel**, so it stays
-out of the 1 kB core budget (verified via `npm run size`). Echoes the "hand-roll the tiny core, copy Zag's
-anatomy" call.
-
-**3. v-model is a lowercase color STRING (dual event), and v1 is hex6 — alpha is deferred to v2.**
-`update:modelValue` streams live per tick; `change` commits once on pointer-release / keyboard-settle (one
-undo entry) — the OriSlider commit convention verbatim (which named ColorPicker as its reference consumer).
-Output is lowercased before emit (justpaint's validator is lowercase-only).
-
-**Update (alpha.13, still unreleased): alpha + eyedropper landed in v1 after all.** Both were designed-for
-and cheap, so they went in before the ColorPicker's first publish rather than a v2: `alpha` (opt-in) adds a
-checkerboard `.ori-slider_alpha` track + a checkerboard swatch and emits `#rrggbbaa` / `rgba()` / `hsla()`
-(the internal HSVA always carried `a`; `parseColor` already read 8-digit hex / `rgba()`); `eyedropper`
-(opt-in) is the EyeDropper API behind a **feature-detected** trigger — `eyedropperSupported` is false where
-`window.EyeDropper` is absent, so the styled button is hidden, never dead (a picked color keeps the current
-alpha). **Still deferred to v2** (all additive): a user-facing format switcher, per-channel numeric inputs,
-a built-in recent-colors buffer (v1 stays consumer-supplied `presets`), a color wheel, wide-gamut /
-CSS-Color-4, and the Svelte twin.
-
-## OriField composes group/composite controls, not just single text inputs
-
-`OriField` now provides its label / hint / error / id / required / disabled / size context to
-**Combobox, Slider, RadioGroup, ColorPicker** (on top of Input / Select / Textarea). Decisions from the
-integration (an adversarial a11y + correctness review shaped these):
-
-- **Checkbox / Switch stay out.** A single boolean uses an inline label _after_ the box, not the field's
-  label-above layout; wrapping one in a field would render two labels. Grouped boolean sets are a
-  `fieldset` story, not this one.
-- **Group / composite controls name themselves via `aria-labelledby`**, not `<label for>` — `for` can
-  only target a labelable element, and a `role=radiogroup` / `role=group` div is not one. `OriField`
-  gained `labelId` on its context for this; it is **`undefined` when the field renders no label**, so
-  the `aria-labelledby` is omitted rather than dangling (mirrors `describedBy`). The field's
-  `<label for=fieldId>` is therefore **inert for group controls** (nothing owns that id) — a known,
-  harmless conformance nit, not a bug to "fix" by pointing `for` at an inner element.
-- **A composite built from field-aware children must shield them.** `OriColorPicker` embeds
-  `OriSlider` ×2 + `OriInput`; the field context flows via `provide`/`inject` to the whole subtree, so
-  those children would each adopt `field.id` (duplicate ids — WCAG 4.1.1) and the hex `OriInput` would
-  suppress its own validation error. Fix: the picker calls `provide(oriFieldKey, undefined)` to reset
-  the context for its subtree and forwards its own resolved `isDisabled` to the children explicitly.
-  Any future composite made of Ori form controls must do the same.
-- **Size-less controls don't scale.** Slider and ColorPicker have no `size` variant, so a field's
-  `size` scales only its label + helper for them (documented on the field page).
-
-## `@oriui/css` component stylesheet FILENAMES are public API (the `./components/*.css` wildcard)
-
-The à-la-carte scheme exports `"./components/*.css": "./dist/components/*.css"` — a wildcard, so **every
-file that lands in `dist/components/` is a published entry point**. At 1.0 that makes each filename a
-compatibility promise: renaming `color-picker.css` is a breaking change, and a new file is new public API
-the moment it is emitted. That is easy to forget precisely because a wildcard has no list to review.
-
-**Decided: keep the wildcard, pin the list in a test.** The alternative — enumerating 35 explicit export
-entries — buys the same guarantee and costs a manual edit per component, which is the kind of hand-kept
-registry this project has repeatedly found rotting (see the closed-list contrast guard that let a 2.4:1
-error message ship). Instead `tests/css.entries.test.ts` asserts the exact set of per-component entry names.
-Adding or renaming a component stylesheet now fails that test, so it becomes a deliberate line in the diff
-and a reviewer sees a public-API change rather than a file rename.
-
-Consequences to keep in mind:
-
-- The build emits one file per component (`packages/css/build.mjs`), so **any partial or helper stylesheet
-  that ever gets emitted into `components/` becomes public too**. Shared pieces belong in the foundation
-  entries (`base.css` / `tokens.css`), never as a `components/*.css` file.
-- **An entry filename is not a component name, and not always a block name either** — do not build tooling
-  that derives one from the other (the consumer tried, and it produced a false positive; see ISSUES-INNER.md
-  ORI-I-40). Today's divergences: `OriToaster` ships in `toast.css` (`.ori-toaster` + the transition
-  classes), `OriRadioGroup` in `radio.css`, `.ori-cluster` in `stack.css`, `.ori-badge-anchor` in
-  `badge.css`, and `toolbar.css` additionally carries a `.ori-button` rule. Entries are also deliberately
-  self-contained, so a block can appear in several files (`.ori-spinner` is inlined into `button.css` and
-  `toolbar.css` as well as shipping as `spinner.css`). The filename is what consumers import, so it is the
-  thing that cannot move — but a completeness check has to reason about **selectors present in the
-  concatenated sheets**, never about one import per component.
-- `@oriui/vue` consumers are unaffected either way — they get the full sheet. This surface exists for the
-  direct-CSS audience (htmx / Astro / React / plain HTML), which is also the audience least able to absorb a
-  rename.
-
-## Injection keys are `Symbol.for('…@<major>')` — global, but scoped to the major
-
-Every provide/inject key the packages own — `ORI_HEADLESS` (Vue + Svelte), the two toolbar context keys in
-each adapter, and `oriFieldKey` in `@oriui/vue` — is a **registered** symbol, not a module-local one.
-
-The bug it fixes: a module-local `Symbol('ori-headless')` is identity-scoped to the module instance, so when
-npm cannot dedupe the package (a transitive duplicate, two lockfile entries, a monorepo with mismatched
-ranges), a root provides under one symbol and a child injects under a different one. Nothing throws — the
-child silently falls back to the native engine, or to a toolbar's no-context default. It is invisible
-precisely where it matters, and the exact-version internal pins (`@oriui/vue` depends on exact
-`@oriui/headless`) make a duplicate copy MORE likely, not less.
-
-**The `@<major>` suffix is the non-obvious half.** `Symbol.for` is cross-realm AND cross-version: a v1 copy
-and a v2 copy of this package would compute the SAME key from a bare `'ori-field'`. During an incremental
-major migration a v2 `OriField` would then satisfy a v1 control's `inject` with a shape it was never typed
-against — a wrong-shape hit, which is worse than today's bug, because today's miss at least falls back
-safely. `@1` keeps same-major duplicates interoperable (the case we are fixing) and lets majors miss each
-other (the case where missing is correct).
-
-Consequences:
-
-- **The suffix must be bumped at 2.0.** A forgotten bump silently reinstates the cross-major hazard, years
-  later, in someone else's app. `tests/headless-adapter-swap.test.ts` reads the major from the package
-  manifest and scans `packages/*/src` for `Symbol.for(…)` literals, so the version bump turns the suite red
-  until the keys follow. That guard is the only thing standing between a future maintainer and a silent
-  regression — do not delete it as redundant.
-- These four descriptions now live in the process-wide registry shared with every library on the page.
-  `ori-headless@1`, `ori-toolbar@1`, `ori-toolbar-toggle@1`, `ori-field@1` are namespaced enough that a
-  collision would have to be deliberate.
-- `oriFieldKey` is not exported from the `@oriui/vue` barrel, so its duplicate scenario is two copies of
-  `@oriui/vue` rather than of the headless package.
-
-## Svelte `useTheme` exposes `destroy()`; the other two adapters do not
-
-A framework deviation of the same kind as React's `ToolbarProvider` (recorded above): the shape differs
-because the host's lifecycle primitive does, not because the behaviour does.
-
-The controller owns a `MutationObserver` and a `matchMedia` listener, so something has to tear it down.
-Tying that to the **store's subscriber count** was wrong and shipped broken: an ordinary `{#if}` around
-markup reading `$theme` drops the count to zero, destroys the controller, and `auto` mode is dead for the
-rest of the session — silently, because the store still resolves. Teardown now rides on `onDestroy`, which
-ties the controller to the component, matching Vue's `onScopeDispose`.
-
-`onDestroy` only exists during component init, so a `useTheme()` called at **module scope** has nothing to
-hang teardown on. Rather than leak, the Svelte store exposes `destroy()` for that caller — documented on
-the use-theme page. Vue has the mirror-image hole (`onScopeDispose` also no-ops outside an effect scope)
-and does **not** expose an escape hatch today; that asymmetry is recorded in ISSUES-INNER.md rather than
-papered over here.
-
-## RTL: the CSS layer mirrors, three things stay physical on purpose
-
-Verified rather than intended, as of 2026-09-18: `e2e/rtl.spec.ts` renders the same markup under `dir=ltr`
-and `dir=rtl` in real Chromium and asserts real geometry — bounding boxes relative to their container, never
-class names — so every claim below is a test, not a promise. The package turned out to be about 90% logical
-already (`inset-inline-*`, `padding-inline-*`, `border-start-start-radius`); the audit found 6 physical box
-properties, of which 4 were correct as physical.
-
-**Mirrors** (asserted): the vertical tabs rule and the selected-tab indicator, the vertical divider, the
-badge overhang, the whole 12-value anchored placement grid, toolbar item order, the select chevron and its
-reserved padding, and the switch thumb travel.
-
-**Stays physical** (also asserted, so a future "helpful" logical swap has to break a test):
-
-- **The six toaster corners.** `.ori-toaster_top-right` is the screen's top right in both directions. This
-  matches Sonner and Radix: a toast corner is a screen position, not a reading-order position.
-- **Safe-area insets** (`utils.css`). A device notch does not move with the writing direction; swapping
-  `padding-left: env(safe-area-inset-left)` to a logical property would be the bug, not the fix.
-- **The colour-picker value plane.** Its saturation/value area is physical by construction and
-  self-consistently so — the thumb is placed with a physical `left: %`, the pointer maths is
-  `clientX - rect.left`, and the gradients run `to right`. Mirroring one of those three without the others
-  is how you get a picker whose thumb disagrees with the colour under it.
-
-**Open, deliberately unresolved:** the slider fill. Chromium reverses a native `<input type=range>` under
-RTL (the engine's minimum end becomes the right), but the fill oriUI paints still runs `to right`, so fill
-and thumb end up on opposite sides — measured, recorded as ORI-I-75, and carried in the spec as a
-`test.fail` so whichever way it is decided, the test is the thing that flips.
-
-**Naming note the audit surfaced:** the placement classes read physical and behave logically —
-`.ori-anchored_left` resolves to `position-area: inline-start`, so under RTL it places the panel to the
-physical right. That is the correct behaviour and the wrong-sounding name; renaming it is a breaking change,
-so it is a documentation duty instead (ORI-I-77).
-
-## The toggle contract: `pressed` is state, `active` is a look, and the affordance belongs to the button
-
-`OriButton` had one prop for two jobs and neither was complete: `active` emitted `data-active` — a forced
-`:active` LOOK that announces nothing — while the only correct pressed treatment (a tint plus an inset ring)
-was gated behind a `.ori-toolbar` ancestor. So a toggle button outside a toolbar told assistive tech nothing
-AND painted the same pixels as `:hover`.
-
-Now `pressed` renders `aria-pressed` and the affordance, on the button itself, with no ancestor gate;
-`active` keeps its old meaning and is documented as a look. `pressed` defaults to `undefined`, not `false`,
-because Vue coerces an absent boolean prop to `false` and would otherwise stamp `aria-pressed="false"` on
-every plain action button — claiming every button is a toggle that happens to be off.
-
-**The trap this replaced, recorded because two independent reviewers walked into it:** the obvious fix is to
-ungate the toolbar's pressed rule to `.ori-button[aria-pressed='true']`. That rule was authored for the
-toolbar's `variant="text"` default; ungated, it strips the background from every fill / tonal / outline
-toggle. The shipped version separates the two halves — a universal inset ring that no variant can erase, and
-a tint that reaches only the variants whose background is transparent.
-
-## `@oriui/vue` declares no runtime dependencies — both siblings are peers, for different reasons
-
-`@oriui/headless` is a genuine runtime import AND holds process-wide singletons behind `Symbol.for` keys, so
-a duplicated copy is not merely wasteful, it silently breaks provide/inject. `@oriui/css` is never imported
-by any file in `@oriui/vue` — the app imports the stylesheet itself — so an exact `dependencies` entry could
-never enforce the version match it appeared to promise. Different relationships, same mechanism: both move
-to `peerDependencies` + `devDependencies`.
-
-The ranges stay pinned to the exact lockstep version while the line is a prerelease (a `^` range cannot
-match `1.0.0-alpha.N`), so the 1.0 cutover is a documented one-time edit of two range strings rather than a
-redesign — see RELEASING.md.
-
-## Structural hairlines derive from `currentcolor`, not from `--ori-color-on-surface`
-
-The library derived its neutral structure two ways for the same job — `color-mix(… var(--ori-color-on-surface) 12% …)`
-in one block, `color-mix(… currentcolor 12% …)` in another. They agree today and diverge the moment anyone
-sets `color` on a panel, which is exactly the kind of latent split that surfaces as a bug report years later.
-
-`currentcolor` wins on the count (36 structural declarations against 6) and on behaviour: a hairline should
-follow the text it accompanies. No new public token was introduced — that is an API decision, and this is a
-mechanism decision.
-
-## Disclosure's `SET_DISABLED` does not close an open panel
-
-Menu and Combobox close when disabled mid-flight; Disclosure deliberately does not. The APG accordion idiom
-is "this section is open and must stay open even while interaction is suspended" — collapsing it would lose
-content the user is reading. This is the one place the three machines' disable semantics differ on purpose,
-so a future "consistency" pass should not flatten it.
-
-## Vue `useTheme` returns `destroy()`, mirroring the Svelte twin
-
-`onScopeDispose` no-ops outside an effect scope, exactly as `onDestroy` does outside Svelte component init,
-so a module-scope caller leaked its `MutationObserver` and `matchMedia` listener with no way to dispose. Vue
-now registers `onScopeDispose(destroy, true)` — the `failSilently` flag, so a genuinely scope-less call does
-not warn — and returns `destroy()` for that caller. Same shape, same reason, both adapters.
-
-## Modifier classes are flat: `.ori-x_y`, not `.ori-x.ori-x_y`
-
-The project's own bar said flat specificity — `:where()`, no `.a.a_b` stacking — and 106 selectors across 22
-files said otherwise. They are now single-class modifiers, which drops each from (0,2,0) to (0,1,0).
-
-That is a real change for one audience: a consumer overriding from **inside** a cascade layer, whose rule was
-sized against the old weight. It is invisible to `@oriui/vue` consumers (no class name moved) and invisible
-to anyone overriding from an unlayered stylesheet, since layer order already beat the library there. Pre-1.0
-is the only moment this is free, so it happened now, proved visually neutral by a computed-style diff in real
-Chromium over every component and all 106 modifiers in both themes.
-
-One consequence worth knowing: for the ten blocks whose modifiers repoint a baked token, the block's own
-defaults moved into a `:where(.ori-x)` rule. A single-class modifier then outranks the default on
-**specificity** rather than on source order — which is what makes the flat vocabulary work at all, and why
-those defaults must not be moved back into the block rule.
-
-## `data-ori-interactive` is an opt-in attribute, and now public API
-
-Ten rules in `ori.utilities` hard-coded `.ori-button`, so the variant vocabulary's hover/active half fired
-for exactly one component — a block built on the css layer (the audience that layer exists for) got the
-static tints and could not opt into the interactive ones.
-
-They now key off `data-ori-interactive`. The rules cannot simply move into `button.css` instead: `ori.utilities`
-outranks `ori.components`, so a component-file copy would lose to the very utilities it is meant to extend.
-An attribute is the smallest opt-in that keeps the layer order intact — and it is a name the library is now
-on the hook for.
-
-## Options SEED or are LIVE, and the JSDoc says which
-
-Three composables re-read an option after creation (`disabled` on disclosure, combobox and menu); everything
-else — `id`, `defaultOpen`, `defaultValue` — is read once at creation and ignored afterwards. The distinction
-was previously implied by whether a signature accepted `MaybeRefOrGetter`, which promised reactivity the
-machine could not deliver.
-
-Each option's JSDoc now states which it is, the docs repeat it, and the signatures are consistent across the
-three adapters: a seed still accepts a value / ref / store for call-site uniformity, it just does not pretend
-that changing it later does anything.
-
-## Where each layer's API actually comes from (recorded 2026-09-19, after the fact)
-
-A reference audit asked a question this file could not answer: for each component, which library was the
-model, and which names did we invent? The behaviour layer's lineage was recorded all along — Zag's
-part-based anatomy, the Radix/Ark thin-adapter model, APG for every keyboard contract. The presentational
-layer's was not, and the answer turns out to be a second library that appears nowhere above.
-
-**The split: behaviour is Radix-shaped, presentation is Vuetify-shaped.** Evidence from our own side, no
-external reading required:
-
-- `OriCard` declares `prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` / `title` / `subtitle`
-  / `text`. That exact set of four prepend/append props is VCard's.
-- `Variant` was `'fill' | 'tonal' | 'outline' | 'text' | 'plain'` **at the time of this entry** (it is now `'solid' | 'soft' | 'outline' | 'text' | 'quiet'` — see the vocabulary entry below). Three of those five — `tonal`, `text`, `plain`
-  — are VBtn's variant names; `tonal` is a Material-3 term that only Vuetify exposes as a variant.
-
-What we renamed, and why it matters: `fill` where Vuetify has `elevated`/`flat` (ours describes the paint,
-not the elevation, because elevation is `OriSurface`'s axis); `outline` where Vuetify and MUI say
-`outlined`; `fluid` where MUI and Mantine say `fullWidth` and Vuetify and Element say `block`.
-
-**Two names collide with other ecosystems and are worth knowing before someone reports them as bugs:**
-
-- `variant="plain"` was a half-faded control here and in Vuetify. In Chakra v3 `plain` means _no styling at
-  all_, so a Chakra arrival asking for an unstyled button gets a 50%-opacity one. (Its contrast is
-  separately recorded as ORI-I-91.) **Both halves were acted on:** the value is now `quiet` (Adobe Spectrum's
-  word for the same treatment) and the fade is the measured 0.85 rather than 0.5.
-- `OriLink`'s `external` sets `target="_blank"` + `rel="noopener noreferrer"`. `NuxtLink`'s `external`
-  means "bypass the router" — the same word for a different job, in the framework our own docs are built
-  with.
-
-**What is NOT changing, and why.** `color` carries the semantic role on all 34 components, where MUI and
-PrimeVue say `severity` and Chakra says `status` on their alert. That divergence is deliberate and follows
-from the entry above — color is a ROLE, variant is the MAPPING — and renaming the prop on one component
-would split a uniform axis across the catalog to match one library's spelling. `OriAlert` already has the
-better handle for what `severity` is really for: `live` derives the live-region politeness from urgency and
-lets the caller override it, which none of the references do.
-
-**Still unrecorded, and a real gap: compound versus monolithic.** All four headless references (Radix, Ark,
-Reka, Headless UI) expose collections as compound children. Our styled layer is monolithic with array
-props — `items` / `options` / `tabs` — and the only multi-component exports are Toolbar and Toast. Array
-props ARE the styled-tier norm (PrimeVue, Element Plus), but those arrays carry affordances ours do not:
-`separator: true`, nested `items` for submenus, `optionLabel` / `optionValue` field mapping. We took the
-shape without the affordances, and no entry in this file explains the choice. The per-component
-consequences are in ISSUES-INNER (ORI-I-84 and ORI-I-87 are both this shape meeting slots). Writing the
-rule down is a prerequisite for 1.0, because after it the shape is frozen either way.
-
-**Also unwritten: which components are polymorphic.** `as` exists on button, join, kbd, link, skeleton,
-stack and surface — 7 of 34 — and nothing says why those seven. Every reference is universally
-polymorphic (`component` in MUI and Mantine, `asChild` across Radix / Ark / Reka). The components that
-render a `<div>` and lack `as` (Card, Alert, Surface's siblings) are the ones where it bites, because a
-`<div>` has a far wider set of invalid parents than the `<span>` a Tag renders.
-
-### Correction to the entry above (2026-09-19, same day)
-
-The paragraph beginning "Still unrecorded, and a real gap: compound versus monolithic" contains two errors and
-one framing mistake. An adversarial pass caught them; they are corrected here rather than edited away,
-because the shape of the mistake is the useful part.
-
-**Error 1 — Element Plus was cited as an array precedent. Its Tabs are compound** (`el-tabs` / `el-tab-pane`),
-as are Vuetify's, Naive UI's and PrimeVue v4's. Of the two precedents that paragraph named, one was misread.
-
-**Error 2 — "every headless reference is compound" is not true either.** Downshift's `useSelect` is
-`items`-driven, and React Aria Components accepts `items` plus a render function.
-
-**Framing mistake — "compound VERSUS monolithic" is the wrong axis, and the references settle it.**
-`mui/base-ui`'s `SelectRoot` ships an `items` prop (`Record | ReadonlyArray<{label, value}> | ReadonlyArray<Group>`)
-**alongside** its compound parts, and Ark requires `createListCollection` in addition to compound children.
-Both needed the data array because value→label resolution, typeahead and `aria-activedescendant` cannot be
-derived from slotted children alone. Neither library treats the two as alternatives; both ship both.
-
-**What the evidence actually shows is a per-WIDGET split, not a per-layer one:**
-
-- **Data-shaped collections** (Select, Combobox) take an array in BOTH tiers. An array-driven `OriSelect`
-  needs no defence.
-- **Content-shaped collections** (Tabs, Accordion) are compound in both tiers: counted across the styled
-  libraries, Tabs is **12 compound to 1 array** and Accordion **11 to 1**, and the single array outlier is
-  Ant Design. Here oriUI stands with Ant Design against roughly a dozen peers, including every other Vue
-  library.
-
-**One more correction, to a claim made in the review that produced this entry:** "the short compound form is
-impossible in Vue" is false. Vuetify ships `<v-tabs><v-tab value="one">`, and so do Element Plus and Naive UI.
-The defensible narrow statement is that **slot-vnode introspection is fragile in Vue — coordinate through
-provide/inject instead**, which is an implementation note, not an API verdict. It was reached by quoting
-PrimeVue backwards: their "each component must render itself" is the argument FOR the compound Tabs they
-shipped in v4, not against compound.
-
-**The rule this leaves, and the one to write down:** the array prop owns the MODEL; the slot owns the
-RENDERING; and the array has to carry the affordances a model needs. What it does NOT license is building
-those affordances speculatively — measured against the only real consumer, four of the six gaps that entry
-listed (menu separators, submenus, option grouping, field mapping) have zero demand, and grouping is already
-reachable through a slot nobody uses. The one real gap is narrower than it was written: consumers need
-`T extends string` NARROWING on the item value, not generic object values. justpaint carries the complaint in
-its own source — `AuthForm.vue:37` bridges `string | number | undefined` by hand.
-
-**The internal inconsistency that IS worth fixing on its own merits**, because it is our own layer disagreeing
-with itself rather than with a reference: the menu core declares `separator` in its anatomy and exports
-`getSeparatorProps()` with `role="separator"`, the headless docs describe it, and the styled `OriMenu` renders
-it zero times with zero classes in `menu.css`. The styled tier is poorer than the headless tier it sits on.
-
-## The presentational vocabulary follows the plurality, and `label` is the one word for visible text
-
-**Date:** 2026-09-20 · **Supersedes nothing; completes the lineage entry above.**
-
-The entry above established that our behaviour layer was aligned to Zag/Ark on purpose while the
-presentational vocabulary was Vuetify's, absorbed without a decision. This is that decision, taken
-against thirteen libraries and shipped in one wave while breaking is still free.
-
-**The rule for values:** where a plurality exists, take it; where none exists, keep ours. Ten of
-sixteen concepts already matched and were left alone. Six moved — `warn` → `warning`, `fill` →
-`solid`, `tonal` → `soft`, `zero` → `none`, `rounded` → `full`, and the `ActionSize` step `text` →
-`inherit`. Four proposals were rejected on merit and should not be re-opened: `xxl` → `2xl` (the
-project's own stylelint BEM pattern forbids a modifier starting with a digit — verified with the
-real linter), `hint` → `description` and `subtitle` → `description` (both would put a near-homograph
-of `describedby` on the five components that declare it), and `fluid` → `block` (`fullWidth` vs
-`block` is a genuine 2-2 split, and "block" is already the B in our BEM).
-
-**The rule for the content prop:** `label` is the component's own visible text. Where a component
-ALSO needs an accessible name that is not rendered, that prop is `ariaLabel`. Where a component can
-render no text at all, `label` stays the accessible name, because there is nothing to confuse it
-with.
-
-This reverses the audit's recommendation to DELETE the content prop, and the reversal is the more
-interesting half. The recommendation rested on two supports and both failed when checked against
-sources rather than summaries:
-
-- **"92.6% of the styled pool has no such prop"** counted headless libraries — Radix, Ark, Base UI —
-  which have no presentational props of any kind. Among the styled Vue libraries that are actually
-  our peers, four of seven ship it: Vuetify (`text`), PrimeVue (`label`), Quasar (`label`), Nuxt UI
-  (`label`). Vuetify's `VBtn` renders it with `slots.default?.() ?? toDisplayString(props.text)` —
-  our exact mechanism, in the library ours came from.
-- **"PrimeVue is removing its equivalent in v5"** is not supported by PrimeVue's source: `label` is
-  declared in `BaseButton.vue` with no deprecation.
-
-So the affordance is normal in our own neighbourhood and the NAME was the outlier — three of the four
-call it `label`, and `label` is what oriUI's own collection items have always called the same thing
-(`OriTabs`, `OriAccordion`, `OriSelect`). Renaming unifies the library with itself and with the
-plurality at once, which deleting would not have done.
-
-`OriAlert`, `OriCard` and `OriToast` keep `text`, and that is the boundary of the rule rather than an
-exception to it: there the value is a message body paired with `title`, not a label — the same shape
-Vuetify names `text`. `OriAvatar` keeps a prop but as `name`, because its value is never rendered
-verbatim: it derives the initials and the image `alt` (Chakra's word for the same prop).
-
-**No aliases.** The owner ruled against shipping two spellings for any of it: a pair of names that
-reaches 1.0 never gets removed. One set of names, a migration table in the changeset, and the cost
-paid once.
-
-## Tabs stays array-driven — the compound shape, prototyped and priced
-
-**Date:** 2026-09-21 · **Closes** the open question left by the two entries above, and by ORI-I-84 /
-ORI-I-87. **Prototype:** branch `poc/compound-tabs`, not merged; every number below is reproducible
-there from `MEASUREMENTS-compound-tabs.md`.
-
-Tabs and Accordion were the one place oriUI stood in the minority: content-shaped collections are
-compound in 12 styled libraries to 1, and the single array outlier is Ant Design. The correction
-above already established that the framing "compound versus monolithic" is wrong — the array owns the
-model, compound owns the rendering — so the only honest way to settle it was to build the thing and
-measure. `OriTabsC` + `OriTabList` + `OriTab` + `OriTabPanel`, Vue-only, children rendering
-themselves, 8 passing behaviour tests including automatic activation and disabled-skipping.
-
-**Two of the things we believed turned out to be wrong, in opposite directions.**
-
-_The SSR blocker was real but misattributed._ The plan recorded "with naive provide/inject
-registration the SSR tablist serializes empty (0 tab buttons)". Both designs are provide/inject
-registration, and they do not behave the same: a root that renders the buttons from what children
-registered serializes **0 tabs**, because the root's render runs before any child's setup; children
-that render themselves serialize **all** of them. Measured side by side. The reference libraries use
-the second, which is PrimeVue's "each component must render itself" — the sentence this project had
-already quoted backwards once. So SSR is not a reason to reject compound, and the earlier claim
-should not be cited again.
-
-_The cost is somewhere else entirely, and it has no workaround._ The array API resolves the selection
-synchronously from the list it was handed, so an invalid bound value is corrected before the first
-byte is written. A compound root cannot: at the moment the first tab serializes, the registry holds
-only that tab, so validating the bound value against it would select the wrong tab whenever the real
-one registers later — a guaranteed hydration mismatch. The only SSR-safe rule is "a bound value wins
-unconditionally", and that produces, measured: a v-model at a **disabled** tab renders the disabled
-tab selected (the array API heals to the first enabled one), and a v-model at a value **not in the
-set** renders nothing selected and zero visible panels. Healing can then only happen after mount — a
-visible flash. This is not hypothetical: `AuthForm.vue:39-42` in justpaint exists solely to bridge a
-narrowed union into `string | number | undefined`, because the bound value can be out of set.
-
-**What the rest of the axes said.** Size is a wash — 1.48 kB against 1.58 kB gzip with behaviour
-included on both sides, so bytes decide nothing. The call site splits by case: with distinct panels
-compound is shorter and reads better (12 → 11 lines in the docs' Basic example), with a shared body it
-is far worse — the only real consumer goes 35 → 62 lines, because compound has no "one template,
-every panel" and the workaround is a `v-for` over an array in the caller's own file. And three costs
-the prototype cannot pay off: the registry is per-framework where `useTabs` is one shared core machine
-behind three adapters (315 lines, 14 headless tests); 10 inline MDC demos cannot be expressed compound
-at all and would each need a bespoke wrapper component, with 14 more on the Accordion page; and the
-migration is 41 + 14 + 7 tests, 620 doc lines and 12 selectors that pin rendered ids, which change
-because compound ids must derive from the value.
-
-**The decision, and the asymmetry behind it.** Tabs stays array-driven. The strongest argument for
-compound was that it makes the `#default` fan-out (ORI-I-84 / ORI-I-87) structurally impossible — but
-that defect is fixable directly, and now is: the Tabs fallback renders into the active panel only, and
-Accordion gained the per-value `#panel-<value>` slots it never had. The property compound gives up —
-synchronous, SSR-correct recovery from an invalid selection — is not recoverable in a compound shape
-at all. A defect you can fix is not worth a property you cannot restore.
-
-**What this does NOT license.** It is not a general verdict that compound is wrong; it is a verdict
-about a widget whose selection must be valid on the server. And it is not an invitation to reopen the
-question every time the 12-to-1 count comes up again: the count was never in dispute, the trade was.

@@ -53,15 +53,10 @@
         --ori-variant-text-color: var(--ori-color-text);
     }
 
-    /* The quietest step: the variant itself paints no background in any state, which is what
-       separates it from `text`, whose hover and active paint a 10% role tint. (A pressed toggle
-       still gets one — `.ori-button[aria-pressed='true']` in button.css is a cross-variant rule
-       about STATE, not part of the variant's own mapping.) Plus a resting fade: 0.85, because that
-       is what MEASURES AA — a `quiet` control is enabled and clickable, so WCAG's inactive-control
-       exemption does not cover it. Solved over all 96 role x skin x theme combinations with the
-       composite the browser actually performs (fg*a + bg*(1-a) in sRGB): 0.5 left 95 of 96 readings
-       below 4.5:1 with a worst of 2.33, 0.81 is the exact edge, and 0.85 clears every reading with a
-       worst of 4.95. ORI-I-91. */
+    /* The quietest step: no background in any state (`text` paints a 10% tint on hover and active; a
+       pressed toggle still gets button.css's cross-variant pressed rule). The resting 0.85 fade is the
+       lightest that keeps every role × skin × theme at AA (worst 4.95) — `quiet` is an enabled control,
+       so the inactive-control exemption does not apply. */
     .ori-variant_quiet {
         --ori-variant-border-color: transparent;
         --ori-variant-opacity: 0.85;

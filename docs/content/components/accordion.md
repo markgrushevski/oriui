@@ -363,8 +363,7 @@ render the same attributes and keyboard behaviour.
 ## Framework API
 
 The props, events, slots, and standalone CSS surface of the **Vue** component. The standalone CSS
-layer has no component API — its surface is the [classes](#classes) above. (Svelte bindings are
-planned.)
+layer has no component API — its surface is the [classes](#classes) above.
 
 ### Props
 

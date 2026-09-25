@@ -311,7 +311,6 @@ same attributes. The interactive behaviour, however, must be driven by JavaScrip
 
 The props, events, slots, and headless wiring of the **Vue** component. The standalone CSS layer has
 no component API — its surface is the [classes](#classes) above, and the behaviour is yours to wire.
-(Svelte bindings are planned.)
 
 ### Props
 

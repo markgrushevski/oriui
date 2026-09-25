@@ -186,8 +186,7 @@ const TOOLBAR_TOGGLE_KEY = Symbol.for('ori-toolbar-toggle@1')
  * react (`derived(tool, (t) => ({ type: 'single', value: t, onChange }))`), a plain object for a fixed
  * group. That is the rule the whole Svelte adapter follows — `useToolbar`, `useCombobox`, `useMenu`,
  * `useTabs`, `useColorPicker` and `useDismissable` all take `MaybeReactive<UseXOptions>` with plain
- * members. This one used to take a plain object of per-member stores instead, the only composable that
- * did (ISSUES-INNER ORI-I-04); per-member stores no longer type-check here.
+ * members.
  */
 export interface UseToolbarToggleGroupOptions {
     /** 'single' keeps at most one value; 'multiple' keeps a set. */

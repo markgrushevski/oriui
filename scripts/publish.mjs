@@ -1,30 +1,24 @@
 // Publish the artifact `npm run release` has just built, instead of letting all three packages rebuild
 // themselves while they are packed.
 //
-// `changeset publish` packs every workspace in PARALLEL, and each one's `prepack` runs its own build
-// (ORI-I-39). Those builds are not independent: `@oriui/headless` builds with tsdown's `clean: true`,
-// so it empties `packages/headless/dist` — which is exactly where `@oriui/vue`'s `tsconfig.build.json`
-// resolves `@oriui/headless` types from (`"paths": {}`, deliberately: declaration emit reads dist).
-// When the two packs overlap, vue-tsc raises TS2307 on every headless import and exits 2, npm buries
-// that output in its debug log and reports a bare `code 2`, and the fixed group half-publishes. That is
-// what happened to 1.0.0-rc.18 — see ISSUES-INNER ORI-I-83.
+// `changeset publish` packs every workspace in parallel, and each `prepack` rebuilds its package. Those
+// builds race: `@oriui/headless` cleans its `dist`, which is where `@oriui/vue` resolves its types
+// from, so vue-tsc fails and the fixed group half-publishes (that is what happened to 1.0.0-rc.18).
+// `ignore-scripts` turns the rebuilds off: the `release` script has already built the graph in order,
+// and the gate has measured that exact dist. `prepack` stays for RELEASING.md's manual fallback.
 //
-// `ignore-scripts` turns those rebuilds off for the packs changesets performs. Nothing stale can slip
-// through: the `release` script builds the graph in dependency order first, and the gate ahead of it
-// built, weighed (size-limit), statically checked (publint/attw) and smoke-installed that same dist —
-// so this publishes the exact artifact the gate measured, which is the trade the smoke leg already
-// makes with ORI_SMOKE_IGNORE_SCRIPTS. `prepack` stays in place for RELEASING.md's manual fallback,
-// where packages are packed one at a time and nothing races.
+// `--tag latest`: in pre mode changesets would publish to the `rc` tag and leave `latest` on an older
+// line, so a plain `npm install` would get a different API from the one the docs describe. Every version
+// so far is a prerelease, so there is no stable for `latest` to protect. Drop the flag at the 1.0 cutover.
 //
-// Run the CLI's own bin.js under this node rather than the `changeset` / `changeset.cmd` shim: Node
-// refuses to spawn a `.cmd` without `shell: true`, and a shell would need every path re-quoted — the
-// same reasoning as scripts/smoke-pack.mjs.
+// Runs the CLI's bin.js under this node, not the `changeset.cmd` shim: Node won't spawn a `.cmd`
+// without a shell.
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 
 const cli = createRequire(import.meta.url).resolve('@changesets/cli/bin.js')
 
-const result = spawnSync(process.execPath, [cli, 'publish', ...process.argv.slice(2)], {
+const result = spawnSync(process.execPath, [cli, 'publish', '--tag', 'latest', ...process.argv.slice(2)], {
     stdio: 'inherit',
     env: { ...process.env, npm_config_ignore_scripts: 'true' }
 })

@@ -10,7 +10,7 @@ You review the project documentation for **factual accuracy against the code**. 
 
 SCOPE — all documentation:
 
-- Root guides: `CLAUDE.md`, `README.md`, `ROADMAP.md`, `DECISIONS.md`, `REVIEW.md`, `NOTES.md`,
+- Root guides: `CLAUDE.md`, `README.md`, `IDEAS.md`, `DECISIONS.md`, `REVIEW.md`, `NOTES.md`,
   `RELEASING.md`, `CONTRIBUTING.md`, `IDEAS.md`
 - Package READMEs: `packages/*/README.md`
 - Docs site content: `docs/content/**/*.md`
@@ -21,7 +21,7 @@ Hunt, grounded in `file:line`:
    tree; Props/Events/Slots tables vs the actual SFC source; component counts and "done / next"
    status claims vs reality; package names / exports / install snippets vs each package's
    `package.json`.
-2. **Cross-doc contradictions** — CLAUDE.md ↔ README ↔ ROADMAP ↔ package READMEs ↔ RELEASING.md.
+2. **Cross-doc contradictions** — CLAUDE.md ↔ README ↔ IDEAS ↔ package READMEs ↔ RELEASING.md.
 3. **Broken relative links and anchors.**
 4. **Invented APIs** — any prop, class, or composable documented that does not exist in source.
 5. **Staleness** — statements that were true once but no longer are (renames, versions, statuses).

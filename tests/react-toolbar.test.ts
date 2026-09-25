@@ -303,7 +303,7 @@ describe('React useToolbarToggleGroup / useToolbarToggleItem', () => {
         expect(screen.getByTestId('italic').getAttribute('aria-pressed')).toBe('true')
     })
 
-    // ISSUES-INNER ORI-I-48: single-select was unconditionally deselectable, so a tool picker that must
+    // Single-select used to be unconditionally deselectable, so a tool picker that must
     // always have a selection was impossible. `deselectable` defaults to true (the Radix behaviour the
     // test above asserts); false pins the selection without pinning the ability to SWITCH.
     it("deselectable:false pins type='single' — re-press keeps it, switching still works", () => {

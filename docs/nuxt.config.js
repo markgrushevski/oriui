@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         domain: 'https://oriui.vercel.app',
         title: 'oriUI',
         description:
-            'A layered Vue 3 UI library: styled components (@oriui/vue), a headless behavior layer (@oriui/headless, with @oriui/headless/vue bindings), and a standalone, framework-free CSS layer (@oriui/css) woven around shared design tokens. Single-class token utilities, zero-runtime theming.',
+            'A layered Vue 3 UI library: styled components (@oriui/vue), a headless behavior layer (@oriui/headless, with Vue, Svelte and React adapters), and a standalone, framework-free CSS layer (@oriui/css) woven around shared design tokens. Single-class token utilities, zero-runtime theming.',
         full: {
             title: 'oriUI — full documentation',
             description: 'Every oriUI documentation page concatenated, for single-fetch consumption.'

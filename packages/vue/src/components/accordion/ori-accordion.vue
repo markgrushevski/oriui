@@ -24,15 +24,10 @@ export interface AccordionItem {
 // the shared name so each item opens independently. The accent (open marker + chevron) rides the shared
 // ori-color utility, read through the resolved --ori-color alias like the rest of the library.
 //
-// Panel content: a per-value named slot (`#panel-<value>`) is the primary mechanism, with the scoped
-// `#default="{ item }"` slot as the shared-template fallback — the same pair, and the same `panel-`
-// prefix rationale, as OriTabs. The per-value slots exist because the fallback renders once per ITEM
-// (ORI-I-87): a template carrying ids produced one copy per section, and in `multiple` mode two of
-// them can be open at once, where `<label for>` resolves to the first copy — visibly focusing the
-// wrong section's input. Tabs can dodge that by rendering its fallback into the active panel only; an
-// accordion has no single active item, so the answer here is the escape hatch instead. Content is NOT
-// gated on `open`: a closed <details> keeps its content in the DOM on purpose, which is what makes
-// find-in-page work, and that is half the reason this component is native in the first place.
+// Panel content: `#panel-<value>` renders into its own section; the scoped `#default="{ item }"` slot is
+// a shared template rendered into every section without one, so ids inside it repeat (see OriTabs for
+// the `panel-` prefix). Content is not gated on `open`: a closed <details> keeps it in the DOM so
+// find-in-page can reveal it.
 const {
     color = 'primary',
     items,

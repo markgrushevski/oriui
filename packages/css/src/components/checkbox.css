@@ -63,13 +63,9 @@
             border-color 0.15s ease-out,
             background-color 0.15s ease-out;
 
-        /* 60%, not the 40% this shipped with, because 40% MEASURED below the WCAG 1.4.11 3:1
-           non-text minimum: 16 of 32 readings failed across the eight skins and both themes, worst
-           2.24 (sumi, light). This edge is the boundary of a UI component, so 1.4.11 binds it. The
-           sweep: 50% still failed 2 of 32, 55% cleared everything at 3.19 — too close to the bar for a
-           derived colour a custom skin can shift — and 60% clears at 3.69. Deliberately NOT folded into
-           the shared outline tokens: this is the heaviest structural weight in the library and the
-           tokens are tuned lighter. Guarded by e2e/non-text-contrast.spec.ts. ORI-I-82. */
+        /* 60% is the lightest edge that clears WCAG 1.4.11 (3:1) in every skin and theme with a margin
+           (worst 3.69). Kept out of the shared outline tokens, which are tuned lighter.
+           Guarded by e2e/non-text-contrast.spec.ts. */
         border: 1px solid color-mix(in srgb, currentcolor 60%, transparent);
         border-radius: 0.3em;
     }
@@ -96,12 +92,9 @@
         transform: rotate(45deg) scale(1);
     }
 
-    /* Mixed (tri-state). `indeterminate` is a DOM PROPERTY, not an attribute, so it never appeared in
-       markup and the box was drawn from `:checked` alone — a control that announced "mixed" to a screen
-       reader and painted as empty to everyone else (ORI-I-89). The fill is the checked one; the glyph is
-       the same ::after pseudo-element re-cut as a horizontal bar, so there is one mark to maintain.
-       `:indeterminate` wins over `:checked` by source order — the native property makes the two mutually
-       exclusive anyway, but the order is what keeps it honest if a caller sets both. */
+    /* Mixed state. `indeterminate` is a DOM property with no attribute, so only `:indeterminate` sees
+       it: the checked fill, with the same ::after glyph re-cut as a bar. Source order makes it win over
+       `:checked` if a caller sets both. */
     .ori-checkbox__input:indeterminate ~ .ori-checkbox__box {
         border-color: var(--ori-color);
 

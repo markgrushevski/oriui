@@ -56,10 +56,8 @@ jobs:
               if: matrix.node == '22'
               run: npm run size
 
-            # publint + attw are root devDependencies pinned by package-lock.json and installed by the
-            # `npm ci` above, NOT `npx -y`: a release-time tool tree that resolves itself at run time is
-            # a supply-chain hole in a job that holds publish rights (ORI-I-31). Same local binaries,
-            # same commands, in both workflows.
+            # publint + attw are root devDependencies pinned by package-lock.json, not `npx -y`: a tool tree
+            # resolved at run time is a supply-chain hole in a job that holds publish rights.
             - name: Publish-correctness (publint — package.json exports / files / types map)
               if: matrix.node == '22'
               run: npm run check:publint
@@ -75,7 +73,7 @@ jobs:
               run: npm run check:attw
 
             # The only step that resolves the packages the way a consumer does: pack, install the
-            # tarballs into a scratch dir, import every entry through its `exports` map (ORI-I-30).
+            # tarballs into a scratch dir, import every entry through its `exports` map.
             # ORI_SMOKE_IGNORE_SCRIPTS skips the per-package `prepack` rebuild — the build step above
             # already produced the dist this packs, and it is the dist size-limit just weighed.
             - name: Consumer smoke test (pack → install → import every published entry)

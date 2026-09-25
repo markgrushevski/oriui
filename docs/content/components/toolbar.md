@@ -701,7 +701,7 @@ is JavaScript (there is no CSS-only affordance for it).
 The props, events, and slots of the **Vue** components — five of them, composed together. The
 standalone CSS layer has no component API — its surface is the [classes](#classes) above, and the
 roving-tabindex keyboard behaviour is JavaScript you would need to author yourself, or get from
-[`useToolbar`](#headless-usetoolbar) in `@oriui/headless/vue`. (Svelte bindings are planned.)
+[`useToolbar`](#headless-usetoolbar) in `@oriui/headless/vue`.
 
 ### OriToolbar
 

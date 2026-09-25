@@ -197,7 +197,7 @@ API and CSS Anchor Positioning drive open/close and placement with no state to k
 
 The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
 API — its surface is the [classes](#classes) above, and you wire `popovertarget` / `anchor-name`
-yourself. (Svelte bindings are planned.)
+yourself.
 
 ### Props
 
