@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="weave" viewBox="0 0 256 256" fill="none">
+    <g stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M64 128c0-35.346 28.654-64 64-64s64 28.654 64 64-28.654 64-64 64-64-28.654-64-64Z"/>
+      <path d="M66 92c18-24 43-28 61-10 18 18 18 46 0 64-18 18-44 18-62 0"/>
+      <path d="M190 164c-18 24-43 28-61 10-18-18-18-46 0-64 18-18 44-18 62 0"/>
+    </g>
+  </symbol>
+  <symbol id="fold" viewBox="0 0 256 256" fill="none">
+    <path d="M58 66 126 40l72 36-70 36-70-46Z" fill="currentColor" opacity=".28"/>
+    <path d="M58 66v76l70 40V106L58 66Z" fill="currentColor" opacity=".9"/>
+    <path d="m126 106 72-30v76l-72 30v-76Z" fill="currentColor" opacity=".58"/>
+    <path d="m126 106 72-30-72-36-68 26 68 40Z" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M84 122 126 146l42-18" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+  </symbol>
+  <symbol id="origin" viewBox="0 0 256 256" fill="none">
+    <path d="M128 40c48.601 0 88 39.399 88 88s-39.399 88-88 88-88-39.399-88-88 39.399-88 88-88Z" stroke="currentColor" stroke-width="20"/>
+    <path d="M104 64c22-20 58-18 76 7 18 25 11 60-14 78-24 17-58 10-74-15-16-25-10-54 12-70Z" fill="currentColor" opacity=".22"/>
+    <path d="M128 95a33 33 0 1 0 0 66 33 33 0 0 0 0-66Z" stroke="currentColor" stroke-width="14"/>
+  </symbol>
+  <symbol id="control" viewBox="0 0 256 256" fill="none">
+    <path d="m128 38 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".22" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+    <path d="m128 92 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".42" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+    <path d="m128 146 74 36-74 36-74-36 74-36Z" fill="currentColor" opacity=".75" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>
+  </symbol>
+</svg>

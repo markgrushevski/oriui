@@ -12,11 +12,12 @@ oriUI is a small monorepo of **three publishable packages** plus the docs worksp
 The three are a **fixed** lockstep group (`.changeset/config.json`) — they always bump together. While
 `.changeset/pre.json` is in pre mode, versions are `1.0.0-rc.N`.
 
-**Every version publishes to the `latest` dist-tag.** In pre mode `changeset publish` would use the `pre.json`
-tag and leave `latest` on an older line, so a plain `npm install` would get a different API from the one the
-docs describe. `scripts/publish.mjs` passes `--tag latest` to prevent that — there is no stable release yet
-for `latest` to protect. The `alpha` and `rc` dist-tags are leftovers of earlier routing, frozen at
-`1.0.0-alpha.3` and `1.0.0-rc.19`; step 6 of the 1.0 cutover repoints them.
+**Releases land on the `rc` dist-tag, and `latest` has to be moved by hand.** A plain `npm install`
+resolves `latest`, and the docs describe the current line, so after each release `latest` must point at it
+(step 4 below). It cannot be automated without a token: trusted publishing can only publish, not move tags,
+and `changeset publish` refuses a custom `--tag` in pre mode. The step disappears at 1.0, when stable
+versions publish to `latest` on their own. The `alpha` dist-tag is a leftover of earlier routing, frozen at
+`1.0.0-alpha.3`; step 6 of the 1.0 cutover repoints it.
 
 ## One-time setup
 
@@ -52,14 +53,21 @@ A trusted publisher can only be added to a package that **already exists**. All 
    and updating each `CHANGELOG.md`.
 
 3. **Merge the "Version Packages" PR.** That push runs `npm run release` (`npm run build && node
-scripts/publish.mjs`), publishing the bumped packages to `latest` via trusted publishing and tagging the
-   release commit.
+scripts/publish.mjs`), publishing the bumped packages to `rc` via trusted publishing and tagging the release
+   commit.
+
+4. **Move `latest` to the new version** — locally, logged in to npm:
+
+    ```bash
+    v=1.0.0-rc.N   # the version just published
+    for p in vue headless css; do npm dist-tag add @oriui/$p@$v latest; done
+    ```
 
 ### Local equivalents (manual fallback)
 
 ```bash
 npm run version    # changeset version + lockfile sync  (the "Version Packages" step)
-npm run release    # build + publish → latest  (needs npm login / OTP locally)
+npm run release    # build + publish → rc  (needs npm login / OTP locally)
 ```
 
 Each package also has a `prepack` hook that runs its own build, so `npm publish` and `npm pack` produce a fresh
@@ -93,7 +101,7 @@ Leaving pre mode is its own release. Run it in this order.
    under the `1.0.0` heading, although each was already reported in the prerelease that shipped it. Rewrite
    the section into a real 1.0 entry; the prerelease entries below it stay as the detailed history.
 
-4. **In the same PR, widen the internal peer ranges, add the changesets flag, and drop `--tag latest`.**
+4. **In the same PR, widen the internal peer ranges and add the changesets flag.**
    `@oriui/vue` pins `@oriui/css` and `@oriui/headless` to the exact version only because a `^` range cannot
    match a prerelease. Edit `packages/vue/package.json` so both read `^1.0.0` in **`peerDependencies` and
    `devDependencies`** (changesets keeps whichever range style it finds, so this is one-time), and add to
@@ -108,13 +116,10 @@ Leaving pre mode is its own release. Run it in this order.
     plain `minor` on `@oriui/headless` escalates `@oriui/vue` to a major and the fixed group drags all three to
     **2.0.0**. With the flag the same changeset produces `1.1.0`. Nothing warns you.
 
-    Remove `'--tag', 'latest'` from `scripts/publish.mjs` too: after 1.0, a later prerelease line
-    (`changeset pre enter beta`) must land on its own tag, not on `latest`.
-
     (None of this sticks before step 1: while pre mode is on, `changeset version` rewrites the ranges on every
     release.)
 
-5. **Merge it.** The three publish as a stable `1.0.0` on `latest`.
+5. **Merge it.** The three publish as a stable `1.0.0` on `latest`, with no manual tag step from here on.
 
 6. **Repoint the stale `alpha` and `rc` dist-tags — do not delete them.**
 
@@ -146,7 +151,7 @@ the scratch install behind to poke at.
 After the release, against npm:
 
 ```bash
-npm view @oriui/vue dist-tags    # `latest` is the new version
+npm view @oriui/vue dist-tags    # `rc` and `latest` both name the new version
 npm i @oriui/vue@<version>       # fresh-install smoke test in a scratch dir
 ```
 
