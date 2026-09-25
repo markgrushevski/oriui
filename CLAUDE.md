@@ -1,164 +1,118 @@
 # CLAUDE.md
 
-Guidance for Claude Code / contributors working in this repository.
+Guidance for anyone — human or agent — changing this repository.
 
 ## What this is
 
-**oriUI** (織り, "weaving") — a layered Vue 3 UI component library. Idea:
-_prototype fast, scale without rewriting. Three independently-consumable layers
-woven around shared design tokens.
+**oriUI** (織り, "weaving") — a layered UI library: _prototype fast, scale without rewriting_. Three packages,
+each usable alone, woven around one set of design tokens:
 
-- `@oriui/vue` (styled) — ready components: `<OriButton variant="soft" />`
-- `@oriui/headless` (behavior) — composables for focus/keyboard/ARIA
-- `@oriui/css` (style) — standalone `.ori-*` classes + tokens, works without Vue
+- `@oriui/css` — tokens, `.ori-*` classes and one stylesheet per component; no JavaScript.
+- `@oriui/headless` — a framework-agnostic behaviour core (focus, keyboard, ARIA) with Vue, Svelte and React
+  adapters behind a swappable `OriHeadless` contract.
+- `@oriui/vue` — styled Vue components: the two above, wired together.
 
-Distinctive: zero-runtime theming via CSS custom properties, no Tailwind dependency
-(standalone CSS), swappable adapters (behavior: a native-first engine behind the `OriHeadless`
-contract — a custom or per-widget Zag adapter can slot in; style: CSS ↔ optional
-Tailwind preset). Full vision and phases in [ROADMAP.md](ROADMAP.md); the candidate-component /
-class backlog in [IDEAS.md](IDEAS.md); key decisions and
-their rationale in [DECISIONS.md](DECISIONS.md); the per-change review bar in [REVIEW.md](REVIEW.md);
-non-obvious implementation gotchas in [NOTES.md](NOTES.md); the npm publish runbook in
-[RELEASING.md](RELEASING.md); the branch / commit / release workflow in [CONTRIBUTING.md](CONTRIBUTING.md).
+Theming is zero-runtime (CSS custom properties), with no Tailwind dependency.
 
-**Known problems live in two registers:** [ISSUES-INNER.md](ISSUES-INNER.md) — defects and design debts we
-fix _here_ — and [ISSUES-OUTER.md](ISSUES-OUTER.md) — problems owned by a browser, a dependency or a
-registry, each naming the local workaround that exists only because of it. The axis is **who must fix it**,
-not who found it. Read INNER before reviewing: a defect already recorded there is not a new finding, and
-re-reporting it wastes a review pass. Agents **report** issues; the orchestrator **records** them (same rule
-as NOTES.md, so parallel agents never edit the registers at once). A consumer's own `ISSUES-OUTER.md` — see
-justpaint's `docs/ISSUES-OUTER.md` — is this project's inbound queue: accept an entry by opening an
-`ORI-I-*` here that backlinks it.
+## Where things are written
 
-**Status:** foundation refactor well underway. Done — toolchain modernization, rebrand
-vueinjar → oriUI, the token/skin system, the headless layer (`useDialog` / `useDisclosure` /
-`useCombobox` / `useMenu` behind a swappable adapter, with Vue **and Svelte** adapters), the Vitest +
-axe suite, GitHub Actions CI, and **34 styled components** (e.g. Button, Card, Dialog, Combobox, Menu,
-Popover, Toast, Slider — the full list is in [IDEAS.md](IDEAS.md) "Shipped today"). Next — more
-form/overlay components, the docs-template rollout, npm publish.
+| File                               | Holds                                                    |
+| ---------------------------------- | -------------------------------------------------------- |
+| [README.md](README.md)             | install and first use, for consumers                     |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | branches, commits, versioning                            |
+| [RELEASING.md](RELEASING.md)       | the npm publish runbook                                  |
+| [REVIEW.md](REVIEW.md)             | the bar every change clears                              |
+| [DECISIONS.md](DECISIONS.md)       | why things are the way they are                          |
+| [NOTES.md](NOTES.md)               | non-obvious traps already paid for                       |
+| [IDEAS.md](IDEAS.md)               | what might be built next                                 |
+| [ISSUES-INNER.md](ISSUES-INNER.md) | open problems we fix here                                |
+| [ISSUES-OUTER.md](ISSUES-OUTER.md) | open problems owned by a browser, dependency or registry |
 
-## Working modes (solo / orchestrated)
+One fact, one home: write in the file whose question it answers, and link instead of repeating.
 
-Two ways to run, same foundation — the main session is always the orchestrator (plans, integrates,
-talks to you); modes differ in **who executes**.
+## Writing rules
 
-- **Solo (default):** one model does everything end-to-end. Best for sequential/focused work, small
-  changes, and conversation.
-- **Orchestrated (opt-in):** work fans out to role-configured subagents running in parallel via the
-  Workflow tool — faster wall-clock on _parallelizable_ work (several components/pages, an audit, a
-  multi-dimension review), at higher token cost. It does **not** speed up a single sequential task.
+- **Registers hold only live problems, newest on top.** Delete an entry in the change that fixes it; a lesson
+  worth keeping becomes one line in NOTES.md, a "won't fix" an entry in DECISIONS.md. Read ISSUES-INNER before
+  reviewing — a listed problem is not a new finding. A consumer's own `ISSUES-OUTER.md` (justpaint's
+  `docs/ISSUES-OUTER.md`) is our inbound queue: accept a report by opening an `ORI-I-*` entry naming its id.
+- **Comments say why, briefly** — the constraint and the non-obvious reason, not the story of how it was found.
+  No register ids or consumer names in code: they rot when the entry closes.
+- **Changesets are public** — they become the npm CHANGELOG. What changed, what breaks, how to migrate; no
+  internal ids, repo-doc references or process narrative.
+- **Docs speak as the project** ("we"), for other developers.
 
-**Protocol:** default to solo. Before a substantial _parallelizable_ task, **ask** which mode (with a
-rough estimate: roles, agent count, tokens). Trivial/conversational turns stay solo silently. A
-standing override ("always orchestrate" / "always solo" / "ask each time") holds until changed; the
-default is "ask each time".
+## Working modes
 
-**Roles** (`.claude/agents/`): `oriui-builder` (Opus), `oriui-test-author` (Sonnet),
-`oriui-docs-author` (Sonnet); review lenses `oriui-architect` (Opus, architecture — reviews + proposes), `oriui-reviewer` (Opus, code/contract),
-`oriui-design-reviewer` (Opus, visual/UX), `oriui-a11y-auditor` (Opus, deep a11y),
-`oriui-perf-reviewer` (Sonnet, size/zero-runtime), and `oriui-docs-reviewer` (Sonnet, docs
-accuracy/staleness). They share the bar by reading
-CLAUDE.md / DECISIONS.md / REVIEW.md / NOTES.md; agents **report** new gotchas and the orchestrator
-records them in NOTES.md (so nothing is analyzed twice). Agents touch only their own files; the
-orchestrator wires shared files (barrels, the docs plugin/sidebar) to avoid parallel-edit conflicts.
+- **Solo (default):** one model does the work end to end.
+- **Orchestrated (opt-in):** role agents from `.claude/agents/` run in parallel — builders and authors for
+  components, tests and docs pages; review lenses for architecture, code, design, a11y, performance and docs.
+  Worth it only for parallelizable work (several components, an audit, a multi-lens review). Ask first, with a
+  rough estimate of roles, agent count and tokens. Agents report; the orchestrating session records findings
+  and wires shared files (barrels, the docs sidebar), so nothing is edited in parallel.
 
 ## Commands
 
-- `npm run dev` — docs dev server (Nuxt, port 5173); alias of `docs:dev` (root `dev` runs the docs workspace)
-- `npm run build` — build the library to `dist/` (Vite → JS, then **vue-tsc** → `.d.ts`; component CSS
-  ships from `@oriui/css`); `build:watch` watches
-- `npm run types` — type-check without emit (`vue-tsc --noEmit`)
-- `npm run test` — Vitest run (`test:watch`, `test:cov` for coverage, `test:types` to type-check the suite; `test:e2e` runs the Playwright e2e in real Chromium)
-- `npm run lint:all` — prettier + stylelint + eslint (with `--fix`); `lint:ci` is the check-mode gate
-  (no `--fix`) the GitHub Actions CI runs alongside `types` / `test:types` / `test` / `build` / `size`
-- `npm run size` — `size-limit` gzip budgets (`.size-limit.json`: CSS bundle + full `@oriui/vue` + the
-  three headless entries) — assumes a prior `build`; `size:build` builds first. CI runs it after `build`
-- `npm run docs:dev` / `docs:build` / `docs:preview` — Nuxt (Nuxt Content) docs: dev server, static
-  generate (`nuxi generate`), and preview of the generated output
+- `npm run dev` — the docs site (Nuxt, port 5173); `docs:build` generates it statically, `docs:preview` serves
+  the output
+- `npm run build` — build the three packages (`size:build` builds, then checks the gzip budgets in
+  `.size-limit.json`; `size` checks an existing build)
+- `npm run types` — type-check every package; `test:types` type-checks the test suite
+- `npm run test` — Vitest (`test:watch`, `test:cov`); `test:e2e` — Playwright in real Chromium
+- `npm run lint:all` — prettier + stylelint + eslint with `--fix`; `lint:ci` is the check-only gate
+- `npm run gate` — everything CI runs, in one script (the release workflow runs it too)
 
-Type declarations come from **vue-tsc** (`tsconfig.build.json`), NOT vite-plugin-dts
-(v5 dropped `.vue` SFC support). The build fails on type errors.
-
-Tests live in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe-core), kept out of `src`
-so they never touch the lib build or `npm run types`. They assert the **behavior/a11y contracts**
-(real `disabled`, `aria-busy`, roles, focus guards), the **headless contract** (OriDialog driven by
-a fake `DialogAdapter` — no Zag), and **token contrast** (`tests/tokens.contrast.test.ts` parses the
-skin CSS and asserts every role/on-role pair meets WCAG AA). `test:types` uses `tsconfig.vitest.json`.
+Tests in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe) cover behaviour, a11y, the headless contract
+and token contrast. Anything about layout, pixels or composited colour goes to `e2e/`: happy-dom has no layout
+engine and cannot evaluate `color-mix`. Type declarations come from `vue-tsc`, and the build fails on a type
+error.
 
 ## Structure
 
 ```
 packages/
-  vue/                  @oriui/vue — styled components (the main publishable package)
-    src/index.ts        entry: re-exports types + components
-    src/types.ts        shared token/prop types (ActionSize, ThemeColor, Variant, ...)
-    src/components/<name>/   ori-<name>.vue + index.ts barrel
-  headless/             @oriui/headless — framework-agnostic engine (`.`) + Vue (`./vue`) / Svelte (`./svelte`) adapters
-    src/core/           the engine: state machines, prop-getters, the OriHeadless contract
-    src/vue/            the Vue composables (useDialog / useDisclosure / useCombobox / useMenu)
-    src/svelte/         the Svelte adapter (same composables, returning Svelte stores)
-  css/                  @oriui/css — tokens + .ori-* utilities + the component block styles (the CSS layer)
-    src/components/<name>.css   per-component block styles (@layer ori.components), imported by styles.css
-docs/                   Nuxt (Nuxt Content) site — app/ (layout, components, composables), content/ (md pages)
+  css/        @oriui/css — tokens, utilities, src/components/<name>.css (one per component)
+  headless/   @oriui/headless — src/core (engine) + src/vue, src/svelte, src/react (adapters)
+  vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/types.ts
+docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
+tests/  e2e/  unit + a11y suite; real-browser suite
 ```
-
-Components import types from `../../types` and sibling components directly (e.g.
-`../icon`) — never from the root barrel `../../`, to avoid an import cycle.
 
 ## Code conventions
 
-Tooling enforces formatting (prettier: 4-space, single quotes, NO semicolons, width 120,
-no trailing comma) and lint rules (eslint flat config; stylelint with a BEM selector
-pattern + SMACSS property order). The conventions below carry the intent tooling can't —
-each is a deliberate engineering choice, not legacy to copy blindly.
+Prettier and the linters enforce formatting (4 spaces, single quotes, no semicolons, width 120), BEM selectors
+and SMACSS property order. The rules below are the intent tooling cannot check.
 
-### Components (SFC)
+### Components
 
-- SFCs are `<script lang="ts" setup>` + `<template>` only (behavior + classes) — **no `<style>`
-  block**. A component's CSS lives in the css package — one file per component,
-  `packages/css/src/components/<name>.css`, wrapped in `@layer ori.components` and imported by
-  `styles.css` — so the CSS layer ships standalone for non-Vue consumers. Cascade safety still
-  comes from `@layer` + the `ori-` prefix. Adding a styled component means adding its stylesheet
-  there and importing it in `styles.css`.
-- Declare props with **reactive props destructure** (Vue 3.5+), not `withDefaults` —
-  defaults co-locate with the declaration and there is no `@default` JSDoc to drift:
+- An SFC is `<script lang="ts" setup>` + `<template>` — **no `<style>` block**. Its CSS lives in
+  `packages/css/src/components/<name>.css` under `@layer ori.components`, imported by `styles.css`, so the CSS
+  layer stands alone.
+- Props use **reactive props destructure**, not `withDefaults`:
     ```ts
     const { color = 'primary', size = 'md' } = defineProps<{ color?: ThemeColor; size?: ActionSize }>()
     ```
-    When a prop feeds a composable/`watch`, pass a getter to keep it reactive:
-    `useFocus(() => disabled)`, not `useFocus(disabled)` (lint: `vue/no-setup-props-reactivity-loss`).
-- Props are optional + **alphabetically ordered**; make one required only when the component
-  is incorrect without it (e.g. an accessible label for an icon-only control).
-- Imports: types from `../../types` first, then sibling components (`from '../icon'`);
-  never the root barrel `../../` (import cycle).
+    A prop feeding a composable or `watch` goes in as a getter: `useFocus(() => disabled)`.
+- Props are optional and **alphabetical**; one is required only when the component is wrong without it (an
+  accessible label on an icon-only control).
+- Import types from `../../types`, then siblings (`from '../icon'`) — never the root barrel `../../` (an import
+  cycle).
 
-### Templates & styling API
+### Styling
 
-- Structure via BEM classes: block `ori-button`, element `ori-button__icon`.
-- Variant / size / color via classes (the css layer needs class ergonomics), driven by the
-  **two-tier token pattern**: raw scale tokens in `:root` (`--ori-size-action_md: 2.75rem`) + a
-  resolved alias (`--ori-size-action`) that a class repoints; components read only the alias.
-  Keep specificity flat with `:where()` and put rules in `@layer` so consumer overrides
-  always win — avoid the specificity-stacking of `.a.a_b` selectors.
-- Dynamic **state via attributes, not classes**: real `disabled` / `aria-disabled`,
-  `aria-busy` (loading), `aria-pressed` / `data-active` (toggles), styled with attribute
-  selectors. This is the a11y-correct source of truth and matches the headless layer.
-- Derive state colors with `color-mix(in srgb, var(--ori-color), …)`; wrap hover in
-  `@media (hover: hover)` (no sticky hover on touch).
-
-### Performance
-
-- Theming is zero-runtime: switching skin/size/variant is a class or attribute toggle, no JS;
-  `var()` indirection is cheap. The cost to watch is CSS **size** (one selector per scale
-  value) — prefer shared utilities under `@layer` over per-component duplication.
-- Keep render light: don't compute in JS what a CSS variable can resolve.
+- BEM: block `ori-button`, element `ori-button__icon`.
+- Variant, size and color are classes over **two-tier tokens**: a raw scale in `:root`
+  (`--ori-size-action_md`) and an alias (`--ori-size-action`) a single class repoints; components read only the
+  alias. A prop value becomes a class name, so renaming a value renames a public class.
+- Specificity stays flat (`:where()`, `@layer`), so consumer overrides always win.
+- **State is an attribute, not a class**: real `disabled`, `aria-busy`, `aria-pressed`, `data-*`.
+- Derive state colours with `color-mix(in srgb, var(--ori-color), …)`; put hover inside `@media (hover: hover)`.
+- Zero runtime: nothing JS computes what a CSS variable can resolve. The cost to watch is CSS size.
 
 ### Commits
 
-- Conventional Commits (`feat`/`fix`/`refactor`/`build`/`docs`…; `!` for breaking).
-  **No `Co-Authored-By` trailer.** Group changes into reasonably-sized commits (avoid many
-  tiny ones). Pre-commit (husky + lint-staged) runs build + lint on staged files.
+Conventional Commits (`feat` / `fix` / `refactor` / `docs` / `build` …, `!` for breaking), reasonably sized.
+**No `Co-Authored-By` trailer.** Work on a branch and merge to `main` with `--no-ff` (CONTRIBUTING.md). The
+pre-commit hook runs the build and lint-staged.
 
-## Node
-
-Requires Node >= 22.18 (the tsdown build toolchain; Node 20 is EOL). Vite 8 / ESLint 10 also run here.
+Node ≥ 22.18.

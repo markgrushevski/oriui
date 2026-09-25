@@ -17,8 +17,8 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 ## How to apply it
 
 - **Default** — self-review the diff against the relevant sections before committing.
-- **Diff review** — `/code-review` (low→high effort) for an extra pass with `--fix`/`--comment`;
-  `/code-review ultra` (cloud, multi-agent, billed) for big milestones, not routine changes.
+- **Diff review** — an independent pass (a second reviewer, or `/code-review` in Claude Code) for anything
+  beyond a routine change.
 - A criterion that's deliberately not met is fine **if** the exception is recorded in
   [DECISIONS.md](DECISIONS.md) — otherwise it's a finding.
 

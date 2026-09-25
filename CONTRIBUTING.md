@@ -1,34 +1,26 @@
 # Contributing
 
-How work flows through oriUI — branches, commits, versioning, and releases. The _why_ behind
-these choices lives in [DECISIONS.md](DECISIONS.md); the coding conventions and commands in
-[CLAUDE.md](CLAUDE.md); the npm publish mechanics in [RELEASING.md](RELEASING.md).
+How work flows through oriUI — branches, commits, versioning and releases. Coding conventions and commands are
+in [CLAUDE.md](CLAUDE.md), the reasons behind them in [DECISIONS.md](DECISIONS.md), the publish mechanics in
+[RELEASING.md](RELEASING.md).
 
-Prerequisites: **Node ≥ 22.18** (the tsdown build toolchain; Node 20 is EOL) and npm. The repo uses **npm workspaces** —
-a single root `npm install` wires the `docs/` and `packages/*` workspaces.
+Prerequisites: **Node ≥ 22.18** and npm. The repo uses **npm workspaces** — one root `npm install` wires
+`docs/` and `packages/*`.
 
 That floor is the **build** requirement and lives only in the root (private) `package.json`. What the
-published packages ask of a consumer is a separate, looser claim: `@oriui/vue` and `@oriui/headless`
-declare `"node": ">=22"` — the supported Node line, not tsdown's patch-level minimum — and `@oriui/css`
-declares none, because a stylesheet has no runtime. `tests/packaging.test.ts` holds that distinction.
+published packages ask of a consumer is a separate, looser claim: `@oriui/vue` and `@oriui/headless` declare
+`"node": ">=22"`, and `@oriui/css` declares none, because a stylesheet has no runtime.
+`tests/packaging.test.ts` holds that distinction.
 
 ## Branching
 
-`main` is an **always-green trunk** — every commit on it is releasable, and the docs site
-deploys from it. So `main` advances whenever a coherent unit of work is done, **not only at
-releases** (a release is a separate, tagged event — see below).
+`main` is an **always-green trunk**: every commit on it is releasable, and the docs site deploys from it. It
+advances whenever a coherent unit of work is done, not only at releases.
 
-- Branch off `main` per unit of work, with a type-prefixed name that matches the commit it will
-  carry: `feat/…`, `fix/…`, `docs/…`, `refactor/…`, `build/…`, `chore/…`.
-- Keep branches **short-lived** and focused. (`refactor/oriui-foundation` was a one-off
-  foundation epic; day-to-day work should be much smaller.)
-- Integrate with a **`--no-ff` merge** so `main`'s first-parent history records each branch as a
-  single merge commit — then delete the branch. Prefer a merge commit over a fast-forward.
-- **The deciding factor is commit count, not size.** Anything that lands as **one commit** — even a
-  big self-contained feature (a new package, a broad rename) — goes **straight to `main`**: commit there
-  once the gates are green (no branch, no merge bubble). Create a branch + `--no-ff` merge **only when
-  the work is several commits** to group under one merge, or it genuinely needs PR review / CI isolation
-  before landing.
+- Branch off `main` per unit of work, named after the commit type it will carry: `feat/…`, `fix/…`, `docs/…`,
+  `refactor/…`, `build/…`, `chore/…`. Keep branches short-lived and focused.
+- Merge with **`--no-ff`**, so `main`'s first-parent history records each branch as one merge commit, then
+  delete the branch.
 
 ```bash
 git switch -c feat/my-thing main
@@ -39,55 +31,42 @@ git push origin main && git branch -d feat/my-thing
 
 ## Commits
 
-[Conventional Commits](https://www.conventionalcommits.org). See **CLAUDE.md › Commits** for the
-full rules: types (`feat` / `fix` / `refactor` / `build` / `docs` / `chore` …), `!` for breaking,
-author **Leonid**, **no `Co-Authored-By` trailer**, and grouping into reasonably-sized commits.
+[Conventional Commits](https://www.conventionalcommits.org): `feat` / `fix` / `refactor` / `build` / `docs` /
+`chore` …, with `!` for a breaking change. Group work into reasonably sized commits.
 
-A husky **pre-commit** hook runs `npm run build` + `lint-staged` on every commit, so a commit
-fails fast if the build or formatting breaks. CI (GitHub Actions) re-runs the gate on every push
-to `main` and every PR: `lint:ci → types → test:types → test → build` across Node 22 and 24, then
-`size → publint → attw → smoke → docs:build` once, plus the Playwright e2e in real Chromium.
-
-That whole list is also one script, **`npm run gate`** — which is what the Release workflow runs, so
-the publish gate cannot quietly become a subset of CI's again. `tests/packaging.test.ts` fails if a
-check reachable from `ci.yml` is not reachable from `release.yml`.
+A husky **pre-commit** hook runs `npm run build` + `lint-staged`, so a commit fails fast if the build or
+formatting breaks. CI re-runs the gate on every push to `main` and every PR: `lint:ci → types → test:types →
+test → build` on Node 22 and 24, then `size → publint → attw → smoke → docs:build` once, plus the Playwright
+e2e in real Chromium. The whole list is one script, **`npm run gate`**, which the release workflow runs too;
+`tests/packaging.test.ts` fails if a check reachable from `ci.yml` is not reachable from `release.yml`.
 
 ## Versioning
 
-oriUI follows **SemVer**. The line is currently on the **`1.0.0-alpha.*`** series — alpha, so the
-public API may shift before `1.0`.
+oriUI follows **SemVer**. The line is **`1.0.0-rc.*`**: the API is meant to be final, and a breaking change
+before `1.0.0` needs a strong reason and a migration note.
 
-The three published packages move in **lockstep**: `@oriui/vue`, `@oriui/headless`, and `@oriui/css`
-always share one version. `@oriui/vue` declares the other two as **`peerDependencies`** (plus
-`devDependencies`, so the repo build links them), not as `dependencies` — npm 7+ still auto-installs
-them, so `npm i @oriui/vue` is unchanged, but a **mismatch now fails loudly with `ERESOLVE` instead of
-silently nesting a second copy**. That matters twice over: `@oriui/headless` holds process-wide
-singletons that a duplicate breaks outright, and `@oriui/css` is a stylesheet _the app_ imports, so a
-`dependencies` entry could never have enforced the version match it looked like it was promising.
+The three packages move in **lockstep** and always share one version. `@oriui/vue` declares the other two as
+**`peerDependencies`**, not `dependencies`: npm 7+ still installs them, but a version mismatch fails loudly
+with `ERESOLVE` instead of silently nesting a second copy. That matters twice over — `@oriui/headless` holds
+process-wide singletons that a duplicate breaks outright, and `@oriui/css` is a stylesheet the app imports,
+so a `dependencies` entry could never enforce the match anyway. While the line is a prerelease those peer
+ranges pin the exact version (a `^1.0.0` range cannot match `1.0.0-rc.N`); widening them is part of the 1.0
+cutover in [RELEASING.md](RELEASING.md).
 
-Those peer ranges are pinned to the exact lockstep version while the line is a prerelease — a `^1.0.0`
-range cannot match `1.0.0-alpha.N`. Widening them to `^1.0.0` is step 4 of the 1.0 cutover in
-[RELEASING.md](RELEASING.md), which also carries the changesets flag that has to land with it. Despite pre mode, these
-prereleases publish under **`latest`**, not `alpha`: changesets falls back to `latest` while every
-published version of a package is a prerelease, so `npm install @oriui/vue` gets the current alpha. The
-`alpha` dist-tag is stale (frozen at `1.0.0-alpha.3`) — **don't pin `@alpha`, pin an exact version**.
-Both the mechanism and the 1.0 cutover that repoints the tag are in [RELEASING.md](RELEASING.md).
+Every version publishes to the **`latest`** dist-tag, so `npm install @oriui/vue` always gets the current line.
 
-## Releases & tags
+## Releases
 
-A **release is a deliberate event, separate from merging to `main`** — and it is automated with
-**[changesets](https://github.com/changesets/changesets)** (alpha pre mode). The flow:
+A release is a deliberate event, separate from merging to `main`, automated with
+**[changesets](https://github.com/changesets/changesets)** in pre mode (`rc`):
 
-1. **Add a changeset** with your change, before merging the PR: `npm run changeset` — pick the bump
-   type and write the changelog line. The three packages are a **fixed** group, so naming any one
-   bumps all three; commit the generated `.changeset/*.md`.
-2. **Merge to `main`.** The **Release** workflow (`changesets/action`) opens/updates a **"Version
-   Packages"** PR that applies the pending changesets — bumping the lockstep version + the pinned
-   internal deps and updating each `CHANGELOG.md`.
-3. **Merge the "Version Packages" PR.** That publishes the bumped packages to the **`latest`** dist-tag
-   (via OIDC Trusted Publishing — no token, provenance attached) and tags the release commit, so every `@oriui/vue@x` is
-   checkout-able.
+1. **Add a changeset** with your change: `npm run changeset`, pick the bump, write the entry. It becomes the
+   public CHANGELOG, so write it for consumers — what changed, what breaks, how to migrate. The three packages
+   are one **fixed** group, so naming any one bumps all three.
+2. **Merge to `main`.** The Release workflow opens or updates a **"Version Packages"** PR that applies the
+   pending changesets — the lockstep version, the pinned internal peers and each `CHANGELOG.md`.
+3. **Merge the "Version Packages" PR.** CI publishes over OIDC trusted publishing (no token, provenance
+   attached) and tags the release commit (`@oriui/vue@x.y.z`).
 
-Full runbook — token setup, the manual fallback (`npm run version` / `npm run release`), the
-prerelease / dist-tag rules, and the **1.0 cutover** (`changeset pre exit`) — is in
-[RELEASING.md](RELEASING.md).
+The full runbook — the manual fallback, the dist-tag rules and the **1.0 cutover** (`changeset pre exit`) —
+is in [RELEASING.md](RELEASING.md).

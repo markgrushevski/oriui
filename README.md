@@ -28,15 +28,11 @@ Astro or plain HTML, not just Vue.
 ## Install
 
 ```bash
-npm install @oriui/vue      # styled Vue components (pulls in @oriui/css + @oriui/headless)
+npm install @oriui/vue        # styled Vue components (pulls in @oriui/css + @oriui/headless)
 # or just the layer you need:
-npm install @oriui/css     # standalone CSS — no framework
-npm install @oriui/headless     # headless behavior (Vue / Svelte / React adapters)
+npm install @oriui/css        # standalone CSS — no framework
+npm install @oriui/headless   # headless behavior (Vue / Svelte / React adapters)
 ```
-
-> **Alpha.** The line is `1.0.0-alpha.*` and `npm i @oriui/vue` (the `latest` tag) works today; APIs may
-> still shift before `1.0.0`. Note that changesets' pre-mode leaves the `alpha` dist-tag lagging behind
-> `latest` — pin an exact version rather than installing `@alpha`.
 
 ## Use it — Vue
 
@@ -102,9 +98,9 @@ through CSS variables with zero runtime.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch / commit / release workflow,
-[ROADMAP.md](ROADMAP.md) for the plan, and [DECISIONS.md](DECISIONS.md) / [NOTES.md](NOTES.md) /
-[REVIEW.md](REVIEW.md) for the rationale, gotchas, and the per-change bar.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for branches, commits and releases. The conventions are in
+[CLAUDE.md](CLAUDE.md), the reasons behind them in [DECISIONS.md](DECISIONS.md), and known problems in
+[ISSUES-INNER.md](ISSUES-INNER.md).
 
 ## License
 

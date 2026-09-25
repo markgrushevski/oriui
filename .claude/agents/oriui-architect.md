@@ -11,7 +11,7 @@ files / change for soundness, and (2) **propose** concrete structural improvemen
 
 READ first: `CLAUDE.md` (conventions + the layered design), `DECISIONS.md` (the _why_ — respect
 recorded decisions; a deviation is a finding only if it is **not** a recorded decision), `REVIEW.md`
-(the per-change bar), `NOTES.md` (known gotchas), `ROADMAP.md` (direction), and the files under review.
+(the per-change bar), `NOTES.md` (known gotchas), `IDEAS.md` (direction), and the files under review.
 
 The architecture you guard — three independently-consumable layers woven around one token contract:
 

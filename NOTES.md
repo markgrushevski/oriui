@@ -1,12 +1,8 @@
 # Implementation notes
 
-A running log of **non-obvious implementation nuances and gotchas** — things that cost real time to
-work out but don't rise to an architectural decision. Read this first; **append** anything you
-discover so the next person (or agent) doesn't re-analyze it.
-
-Companion to [CLAUDE.md](CLAUDE.md) (conventions), [DECISIONS.md](DECISIONS.md) (rationale / ADRs),
-and [REVIEW.md](REVIEW.md) (the per-change bar). Architectural decisions go in DECISIONS.md; small
-practical gotchas go here.
+Non-obvious traps that cost real time to work out but are not decisions. Read this before working in an
+area; when something costs you an hour, add it under the matching heading so nobody pays twice. Decisions
+go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Class-API: single-class token utilities + block-baked defaults
 
@@ -36,27 +32,6 @@ practical gotchas go here.
   `.ori-size-gap_*` single-class (none · xs · sm · md · lg · xl), mirroring `.ori-size-radius_*`. The
   scale tokens stay in `:root` (`ori.tokens`). `OriStack`'s `gap` prop emits one `ori-size-gap_<size>`.
 
-## Verification / preview MCP
-
-- **`:focus` / `:checked` computed styles don't reflect a programmatic change** right after
-  navigation or after dispatching an event. Causes: `document.hasFocus() === false` in the preview
-  tab (so `:focus` never matches), and Vue's `v-model` re-asserts `checked` on its next render. To
-  verify a `:checked ~ …` or `:focus` style: set the property, force a reflow (`void el.offsetWidth`),
-  and re-read on a **settled** page — or just confirm the CSS rule exists + the token (`--ori-color`)
-  resolves. Do **not** dispatch a `change` event before reading (Vue resets it).
-- **Screenshots are flaky** (paint hang). Prefer `preview_eval` (DOM/`getComputedStyle`) and
-  `preview_inspect` for verification; use screenshots only as a last resort.
-- **The preview tab runs HIDDEN** (`document.visibilityState === 'hidden'`, `hasFocus() === false`, and
-  `document.body` often measures width 0). So `requestAnimationFrame`, CSS `transitionend`, and longer
-  `setTimeout`s don't fire/complete reliably: a Vue `<TransitionGroup>` **leave** node lingers in the DOM
-  (stuck with `*-leave-active`, opacity 0) because `transitionend` never arrives, and auto-dismiss timers
-  may not fire. Verify transition/timer **logic** by the applied classes (`.ori-toast-leave-active` proves
-  the leave started → the item left the reactive queue) + unit tests with fake timers — NOT by the node
-  visually disappearing. DOM-presence and class/attribute checks are reliable; visual completion, layout
-  width, and timer-elapsed checks are not.
-- Navigate with an **absolute** URL: `window.location.href = 'http://localhost:5173/...'` (a bare
-  `/path` once errored on cold boot). Get the `serverId` from `preview_list` (it changes per run).
-
 ## Docs (Nuxt Content + MDC)
 
 - A **new component in a new dir** plus a change to the global-registration plugin
@@ -71,9 +46,7 @@ practical gotchas go here.
   public `@oriui/vue` surface — tests import from `../src`, and the docs plugin imports from `@oriui/vue`),
   registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to the sidebar in
   `docs/app/layouts/default.vue`. Forgetting the barrel makes `import { OriX } from '../src'` resolve
-  to `undefined` (test-utils then throws "Invalid value used as weak map key"). When fanning components
-  out to parallel agents, the **orchestrator** owns these three shared files (agents touch only their
-  own component dir) to avoid parallel-edit conflicts.
+  to `undefined` (test-utils then throws "Invalid value used as weak map key").
 - Component doc pages follow the **Button page template** (Examples → Props → Events → Slots → CSS
   classes → Accessibility; interactive components add Anatomy + Headless + keyboard table).
 - **Bound MDC attributes (`:rows`, `:options`) must not contain quotes or apostrophes inside string
@@ -101,12 +74,8 @@ practical gotchas go here.
   reader browsing the sidebar never finds it. Wire new pages into the right section when you add them.
 - **A burst of file edits can corrupt the Nitro dev bundle** → `[nitro] ERROR ENOENT … .nuxt/dev/index.mjs`
   and then **every** route 500s (even untouched ones). It's a stale-build glitch, **not** a content bug —
-  don't go hunting the page. Fix = restart the dev server (`preview_stop` + `preview_start`), which
+  don't go hunting the page. Fix = restart the dev server, which
   rebuilds `.nuxt/dev`. Watch for it after writing several content/layout files in quick succession.
-- The docs dev server is **`npm run dev`** at the repo root (= `npm run dev --workspace docs`, a **Nuxt**
-  app on port 5173) — same as `docs:dev`. (CLAUDE.md still calls root `dev` a "Vite playground" and the
-  docs "VitePress" — both stale; the docs are Nuxt + Nuxt Content.) The preview `dev` launch config maps
-  to it, so `preview_start dev` restarts the docs server.
 - **Live demos for slotted components** (Stack / Cluster / Join / Divider-with-label) use the MDC
   **block** form inside `::example` — `::ori-join{aria-label="…"}` with inline `:ori-button{…}` lines,
   closed with `::` (mirror `stack.md`); this renders the children live. Do **not** wrap inline MDC
@@ -213,9 +182,8 @@ practical gotchas go here.
   darker `--ori-color-text`, so it clears 3:1 for pale roles too. Guard: **e2e/text-contrast.spec.ts** (real
   Chromium — Node can't evaluate `oklch(from …)`, happy-dom axe has no layout): resolves computed `oklch()` /
   `color(srgb …)` via a 1×1 canvas, composites the soft tint over surface, asserts >= 4.5:1 for every role × skin
-  × theme × text kind + the soft hover/active tint + the bare-block baked path. The quietest variant used to be
-  exempt here (`plain`, 0.5 opacity, "intentionally muted") — it is now `quiet` at 0.85, the alpha that MEASURES
-  AA, and asserted like the rest (ORI-I-91). Min observed ~4.55:1.
+  × theme × text kind + the soft hover/active tint + the bare-block baked path. `quiet` is asserted like the rest (its
+  0.85 fade is the lightest that measures AA). Min observed ~4.55:1.
 - **Runtime theme toggle leaves BAKED component colours stale — a Chromium bug, fixed in JS, not CSS.**
   Flipping the `ori-theme_dark` class at runtime changes the inherited role tokens, but Chromium MISSES the
   style invalidation for elements that BAKE a resolved alias into an element-scoped custom property consumed
@@ -497,17 +465,7 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   `safeOnDestroy`. Don't do the `SET_DISABLED` inside the `derived` callback — mutating the machine there
   re-enters the derived (machine change → `serviceVersion` bump → recompute).
 
-## Orchestration / role agents
-
-- Custom agents in `.claude/agents/*.md` load into the Agent/Workflow registry **at session start** —
-  ones created mid-session are NOT available until Claude Code reloads (the registry shows only the
-  built-ins: general-purpose, Explore, Plan, …). For a workflow in the same session, **omit
-  `agentType`** and put the role instructions in the `agent()` prompt, setting the tier via
-  `opts.model` (e.g. `model: 'sonnet'`). The committed agent files work in later sessions.
-- The orchestrator (main session) integrates: role agents write only their own files; the
-  orchestrator runs the gates, verifies live, and records findings here / in DECISIONS.md.
-
-## Slots / a11y (the slot-DX retrofit, alpha.12)
+## Slots / a11y
 
 - **A slot that renders displayable content must be reflected in DERIVED a11y state, not just the
   template.** OriField renders its error/hint `<p>` on `prop || $slots.x`, but the `isInvalid` /
@@ -526,7 +484,7 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   badges; a nested interactive control (a link in a consent label) is the caller's responsibility — the
   same limitation the native elements carry.
 
-## CSS cascade / layers (found via the justpaint FloatingToolbar migration, alpha.13)
+## CSS cascade / layers
 
 - **A component-layer rule CANNOT win a token the variant utilities set — the layer beats specificity.**
   `@layer` order is `ori.reset, ori.tokens, ori.base, ori.components, ori.utilities` (layers.css) — so
@@ -542,24 +500,8 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   Browsers don't interpolate relative-color functions in a transition — a runtime `--ori-color` swap
   makes the value STICK on the old color until a repaint. `.ori-button` dropped `color` from its
   `transition` (the role-text tokens are relative colors, and no built-in state animates text color
-  anyway), which unblocks consumers who recolor a button/icon by swapping `--ori-color` (justpaint's
-  per-tool icon tint). If a future state must animate a relative-color property, resolve it to a concrete
+  anyway), which unblocks consumers who recolor a button/icon by swapping `--ori-color`. If a future state must animate a relative-color property, resolve it to a concrete
   color first.
-
-## Git / Windows
-
-- Conventional Commits; **no `Co-Authored-By` trailer**; group into reasonably-sized commits.
-- Pre-commit (husky + lint-staged) runs `npm run build` + lint-staged on staged files.
-- `LF will be replaced by CRLF` warnings on commit are normal on Windows — harmless.
-
-## axe (happy-dom) does NOT catch duplicate ids
-
-`axe-core` 4.8+ dropped the `duplicate-id` and `duplicate-id-active` rules; only `duplicate-id-aria`
-survives (this repo runs 4.12.1). So `expectNoA11yViolations` will **not** flag two elements sharing an
-`id` unless that id is referenced by an ARIA attribute. When a change can produce id collisions — a
-field-aware control nested in `OriField`, or any composite that re-uses an id — assert uniqueness
-explicitly (`new Set([...root.querySelectorAll('[id]')].map((e) => e.id)).size === count`) instead of
-trusting the axe pass. This exact gap let a 3-way `id` collision in ColorPicker-in-Field slip through green.
 
 ## Attribute fall-through: a later explicit binding DELETES the caller's value
 
@@ -572,7 +514,7 @@ so an audit has to check `inheritAttrs` per component: with `inheritAttrs: false
 explicit binding, the COMPONENT wins and the caller's id is deleted (input / select / textarea / combobox /
 slider — fixed 2026-09-18); with default fall-through onto a root element that also binds the attribute,
 fall-through merges last, so the CALLER wins and the component's own hint/error id is deleted (radio-group,
-color-picker — still open, see ISSUES-INNER.md). `useAttrs()` reads ARE reactive inside a `computed` (the
+color-picker — ORI-I-98). `useAttrs()` reads ARE reactive inside a `computed` (the
 proxy tracks every property get), so `attrs['aria-describedby']` in a computed is the correct idiom and needs
 no getter dance — unlike props (`vue/no-setup-props-reactivity-loss`).
 
@@ -597,24 +539,11 @@ The declared layer order (`layers.css`) puts `ori.components` BEFORE `ori.utilit
 zeroes an axis cluster — the old `.ori-variant` — does not "opt a block into the system", it **overrides the
 defaults the block bakes in**: `.ori-button.ori-variant` painted transparent with a `currentColor` label,
 bypassing the AA-checked `--ori-color-on` pairing. The single-class model needs no base at all, and deleting
-one keeps legacy paired markup (`ori-variant ori-variant_fill`) rendering, because at equal specificity the
+one keeps legacy paired markup (`ori-variant ori-variant_solid`) rendering, because at equal specificity the
 value class wins on source order. Related cascade trap: `--ori-color-<role>-text` only tracks a skin because
 skins are declared as `:root[data-ori-skin='…']`, i.e. on the SAME element as the `oklch(from …)` derive — a
 custom property's `var()` substitutes where it is DECLARED, not where it is used, so a skin applied to a
 subtree would inherit the frozen `:root` tone.
-
-## changesets pre mode does NOT imply the pre dist-tag
-
-`getReleaseTag` returns `preState.tag` only when the package already has a published **non**-prerelease
-version. While every published version is a prerelease (`publishedState === 'only-pre'`) it falls back to
-`latest`. That is why `alpha` sat frozen at `1.0.0-alpha.3` while `latest` served alpha.17, and why
-`npm i @oriui/vue@alpha` handed out a fourteen-release-old build. It self-corrects once `1.0.0` ships. While
-you are in the tarball: npm's always-included set is `package.json`, `README*`, `LICENSE`/`LICENCE` and the
-`main` entry — a package-root LICENSE therefore needs no `files` entry, but **CHANGELOG.md must be listed
-explicitly** or the changelog never leaves the repo. And a `files` array only affects `npm pack`/publish,
-never local resolution: the docs app and the tests reach `packages/css/src` through filesystem paths, not the
-`@oriui/css` specifier, so narrowing what ships cannot break them. Check the specifier form, not the path
-form, before deciding a `src` tree is load-bearing.
 
 ## A guard test that scans sources can pass by scanning nothing
 
@@ -699,7 +628,7 @@ Binding `@click.capture` unconditionally on an SFC's root element stops a caller
 through `$attrs` fall-through) from ever running on a real `<button>` — even when the capture handler itself
 does nothing. It cost an afternoon to find because the failure is invisible in isolation: the test passes
 when it runs alone, and passes again if anything reads the DOM (`outerHTML`) between mount and dispatch,
-which is how the agent that wrote it saw green.
+which is how it first passed.
 
 Three things to remember:
 
@@ -729,7 +658,7 @@ empties `packages/headless/dist` while `@oriui/vue`'s `vue-tsc -p tsconfig.build
 `@oriui/headless` from exactly that directory — is reading it. Result: `TS2307` on every headless import
 and **exit code 2**, which is `DiagnosticsPresent_OutputsGenerated`, not a crash.
 
-Three things that made it expensive to diagnose (ORI-I-83, it half-published 1.0.0-rc.18):
+Three things that made it expensive to diagnose (it half-published 1.0.0-rc.18):
 
 - **npm hides the output of lifecycle scripts.** The workflow log showed the `prepack` banner, then
   `npm error code 2` and nothing in between — the diagnostics went to `~/.npm/_logs/*-debug-0.log`, which
@@ -768,7 +697,7 @@ Measured on the 1.0.0-rc.18 release: the workflow published at 17:10:30, four in
 said "not published" at 17:12–17:14, and the registry's own recorded publish time came out as 17:12:37.
 
 The consequence worth remembering is not the lag itself but what it invites: a half-published group is a
-real failure mode here (ORI-I-83), so a 404 right after a release reads as confirmation of it. Take the
+real failure mode here, so a 404 right after a release reads as confirmation of it. Take the
 workflow's own publish step as the primary evidence — `npm publish` exiting 0 inside `changeset publish`
 — and re-read the registry minutes later before concluding anything. A release gate that fails on an
 immediate registry read would fail good releases, which is why no such check exists.
@@ -778,7 +707,7 @@ immediate registry read would fail good releases, which is why no such check exi
 `opacity` is a group fade: it composites the element and everything inside it, so putting one on a wrapper
 applies it to content the component did not author — buttons, inputs, links — and it MULTIPLIES with any
 fade those carry of their own. `.ori-dialog__body { opacity: 0.85 }` met `.ori-field__hint { opacity: 0.7 }`
-and produced 0.595, taking a primary fill button to 3.35:1 and the hint to 3.95:1 (ORI-I-85).
+and produced 0.595, taking a primary solid button to 3.35:1 and the hint to 3.95:1.
 
 What makes it expensive is that it is invisible to every guard that does not rasterise:
 
@@ -801,19 +730,11 @@ nothing here.
 accessible name and **nothing inside it**: `OriButton`'s slot fallback needs `icon`, `loading` or
 `text`, and none was set.
 
-**Correction to how this was first written down here, and in the changeset:** the claim was that
-four demos on the Toolbar page and three on Surface shipped that way. They did not. Checked with
-`git log -S'ori-toolbar-button{label=' -- docs/`: that spelling first appears in the rename commit
-itself, and at the commit before it every one of those demos passed `text=`, which rendered. The
-shape was reachable and nothing would have caught it; no shipped page had it. The lesson below is
-about the shape, not about a page that broke.
-
 Nothing would have caught it, and the reasons are the part worth keeping:
 
 - **the unit tests always passed an `icon` too** — `h(OriToolbarButton, { label: 'Redo', icon: 'x' })`
   is an icon button, which is the case the prop was designed for, so every assertion was about
-  `aria-label` and none about the rendered text being non-empty. Which is also why the mistaken claim
-  above survived a read of the tests: they exercise the safe shape only;
+  `aria-label` and none about the rendered text being non-empty;
 - **axe is satisfied by an accessible name** — an empty button WITH `aria-label` passes `button-name`.
   An empty control is a visual defect, not an ARIA one;
 - **the dev-time guard had the same blind spot**: it warns when `icon` is set but nothing names it —
@@ -832,7 +753,7 @@ the accessible name is what says what the count counts ("3 unread"). Vuetify nam
 `content` too. If a third component ever needs the pair, it takes `label` + `ariaLabel` like the
 toolbar, and Badge becomes the exception to justify rather than the precedent to copy.
 
-**The corollary, learned the same day the split shipped:** once `label` renders, nothing else may
+**The corollary:** once `label` renders, nothing else may
 quietly become the accessible name. `OriToolbarButton` fell back to `aria-label: tooltip`, which was
 correct while `label` was the aria name and became a WCAG 2.5.3 Label in Name failure the moment it
 was the visible one — the button read "Save" and answered to "Write the document to disk", so voice
