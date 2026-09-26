@@ -9,12 +9,12 @@ import { useToolbar } from '@oriui/headless/vue'
 //
 // A toolbar MUST have an accessible name: pass `label` (→ aria-label) or an `aria-labelledby` attribute.
 const {
-    dir = 'ltr',
+    dir,
     label,
     loop = true,
     orientation = 'horizontal'
 } = defineProps<{
-    /** Text direction — RTL swaps the horizontal Left/Right navigation. */
+    /** Writing direction, rendered as `dir`; RTL swaps Left/Right. Inherited when omitted. */
     dir?: 'ltr' | 'rtl'
     /** Accessible name → `aria-label`. Omit only if you supply `aria-labelledby` instead. */
     label?: string

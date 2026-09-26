@@ -11,7 +11,7 @@ import {
     type ColorFormat,
     type HSVA
 } from '../core/color-picker'
-import { resolveRovingIndex, rovingIntent } from '../core'
+import { resolveRovingIndex, rovingIntent, textDirection } from '../core'
 
 /**
  * Headless color picker (Vue). Follows the compositional-helper shape (like `useToolbar`), NOT the
@@ -223,7 +223,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     function onPresetKeydown(event: KeyboardEvent): void {
         if (disabled()) return
         const list = presets()
-        const intent = rovingIntent(event.key, 'horizontal')
+        const intent = rovingIntent(event.key, 'horizontal', textDirection(event.currentTarget as HTMLElement))
         if (!intent || list.length === 0) return
         event.preventDefault()
         const to = resolveRovingIndex(intent, activePreset.value, list.length, true)

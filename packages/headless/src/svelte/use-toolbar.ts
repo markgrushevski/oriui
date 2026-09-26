@@ -6,6 +6,7 @@ import {
     resolveRovingIndex,
     resolveToolbarToggle,
     rovingIntent,
+    textDirection,
     type RovingDirection,
     type RovingOrientation,
     type ToolbarToggleType,
@@ -64,7 +65,7 @@ export interface UseToolbarOptions {
     orientation?: RovingOrientation
     /** Whether arrow navigation wraps first<->last (default true; the APG reference example wraps). */
     loop?: boolean
-    /** Text direction — RTL swaps the horizontal Left/Right mapping (default 'ltr'). */
+    /** Writing direction; RTL swaps Left/Right. Rendered as `dir`; omitted, the inherited one is read at keydown. */
     dir?: RovingDirection
     /** Accessible name → `aria-label`. A toolbar MUST be named (this or an `aria-labelledby` you pass). */
     label?: string
@@ -102,12 +103,12 @@ export function useToolbar(options: MaybeReactive<UseToolbarOptions> = {}) {
 
     function onKeydown(event: KeyboardEvent): void {
         const o = get(opts$)
-        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal', o.dir ?? 'ltr')
-        if (!intent) return
-
         const root = event.currentTarget as HTMLElement | null
         const target = event.target as HTMLElement | null
         if (!root || !target) return
+
+        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal', o.dir ?? textDirection(root))
+        if (!intent) return
 
         // Yield entirely to a control that owns arrow keys (slider/textbox/radio group placed in the bar).
         if (ownsArrowKeys(target)) return
@@ -129,6 +130,7 @@ export function useToolbar(options: MaybeReactive<UseToolbarOptions> = {}) {
         // 'horizontal' is the ARIA implicit default → emit aria-orientation only for vertical.
         'aria-orientation': (o.orientation ?? 'horizontal') === 'vertical' ? ('vertical' as const) : undefined,
         'aria-label': o.label,
+        dir: o.dir,
         onkeydown: onKeydown
     }))
 

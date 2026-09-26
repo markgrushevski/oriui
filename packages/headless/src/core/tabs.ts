@@ -1,4 +1,4 @@
-import type { RovingOrientation } from './roving'
+import type { RovingDirection, RovingOrientation } from './roving'
 
 /**
  * The one declaration of a tab, shared by the Vue / Svelte / React `useTabs` adapters.
@@ -28,6 +28,8 @@ export interface UseTabsOptions {
     value: string | number | undefined
     /** 'horizontal' (default) navigates Left/Right; 'vertical' navigates Up/Down. */
     orientation?: RovingOrientation
+    /** Writing direction; RTL swaps Left/Right. Rendered as `dir`; omitted, the inherited one is read at keydown. */
+    dir?: RovingDirection
     /** Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming the tablist). */
     label?: string
     /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */

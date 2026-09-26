@@ -1,5 +1,5 @@
 import { derived, get, type Readable } from 'svelte/store'
-import { resolveRovingIndex, rovingIntent, type TabItem, type UseTabsOptions } from '../core'
+import { resolveRovingIndex, rovingIntent, textDirection, type TabItem, type UseTabsOptions } from '../core'
 import { uid } from './id'
 import { toReadable, type MaybeReactive } from './use-store'
 
@@ -41,12 +41,12 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
     // target by live DOM order, skip disabled, wrap, then select + focus it (automatic activation).
     function onkeydown(event: KeyboardEvent): void {
         const o = get(opts$)
-        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal')
-        if (!intent) return
-
         const root = event.currentTarget as HTMLElement | null
         const target = event.target as HTMLElement | null
         if (!root || !target) return
+
+        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal', o.dir ?? textDirection(root))
+        if (!intent) return
 
         const buttons = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
         const current = target.closest<HTMLElement>('[role="tab"]')
@@ -64,6 +64,7 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
         role: 'tablist' as const,
         'aria-orientation': o.orientation ?? 'horizontal',
         'aria-label': o.label,
+        dir: o.dir,
         'aria-labelledby': o.labelledby,
         onkeydown
     }))

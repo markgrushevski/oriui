@@ -27,17 +27,6 @@ reported, fails it.
 Decide this together with an action affordance (Radix, Reka and Ark all ship one): adding an action makes
 pause-on-hover/focus mandatory. The toaster also lacks a labelled `role="region"` and a hotkey to reach it.
 
-### ORI-I-94 — Arrow keys ignore RTL on Tabs, and on Toolbar work only through a prop nobody sets
-
-`confirmed` · `packages/headless/src/core/roving.ts`, `ori-toolbar.vue`, `ori-tabs.vue` / `useTabs`
-
-`roving.ts` swaps ArrowLeft / ArrowRight when given `dir: 'rtl'`, but nothing reads the computed direction:
-Toolbar exposes a `dir` prop, Tabs and `UseTabsOptions` have none. Under `dir="rtl"` both move
-forward-in-array. An RTL app can fix the toolbar and cannot fix the tabs. `e2e/rtl.spec.ts` covers
-geometry only, not the keyboard.
-
-Fix: read the computed `direction` once and let a `dir` prop override it.
-
 ### ORI-I-87 — `OriAccordion`'s `#default` slot renders once per item
 
 `mitigated` · `packages/vue/src/components/accordion/ori-accordion.vue`

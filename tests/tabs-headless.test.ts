@@ -132,6 +132,34 @@ describe('useTabs (Vue)', () => {
         expect(document.activeElement).toBe(buttons[0])
     })
 
+    it.each([
+        ['an explicit dir', { dir: 'rtl' as const }, false],
+        ['an inherited direction', {}, true]
+    ])('RTL from %s swaps ArrowLeft / ArrowRight', (_, extra, inherited) => {
+        // happy-dom does not resolve `direction`; e2e/tabs-keyboard.spec.ts covers the real engine.
+        const spy = inherited
+            ? vi.spyOn(window, 'getComputedStyle').mockReturnValue({ direction: 'rtl' } as CSSStyleDeclaration)
+            : undefined
+        const onChange = vi.fn()
+        const { tablistProps } = useTabsVue(() => ({ tabs: TABS, value: 'a', onChange, ...extra }))
+        expect(tablistProps.value.dir).toBe(inherited ? undefined : 'rtl')
+
+        const list = document.createElement('div')
+        const buttons = TABS.map(() => {
+            const b = list.appendChild(document.createElement('button'))
+            b.setAttribute('role', 'tab')
+            return b
+        })
+        document.body.appendChild(list)
+        list.addEventListener('keydown', tablistProps.value.onKeydown as EventListener)
+
+        buttons[0].focus()
+        buttons[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }))
+        spy?.mockRestore()
+
+        expect(onChange).toHaveBeenLastCalledWith('b')
+    })
+
     // This composable used to demand `() => UseTabsOptions` while every sibling (useDisclosure /
     // useCombobox / useMenu) accepted `MaybeRefOrGetter` — a consumer who passed a plain object got a type
     // error with no hint that this one was different. All three call styles must now work.
@@ -180,6 +208,23 @@ describe('useTabs (Svelte)', () => {
 
         select(TABS[3])
         expect(get(value)).toBe('d')
+    })
+
+    it('dir="rtl" is rendered on the tablist and swaps ArrowLeft / ArrowRight', () => {
+        const onChange = vi.fn()
+        const props = get(useTabsSvelte({ tabs: TABS, value: 'a', dir: 'rtl', onChange }).tablistProps)
+        expect(props.dir).toBe('rtl')
+
+        const list = document.body.appendChild(document.createElement('div'))
+        const buttons = TABS.map(() => {
+            const b = list.appendChild(document.createElement('button'))
+            b.setAttribute('role', 'tab')
+            return b
+        })
+        list.addEventListener('keydown', props.onkeydown as EventListener)
+        buttons[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }))
+
+        expect(onChange).toHaveBeenLastCalledWith('b')
     })
 
     it('tablistProps is a store with a LOWERCASED onkeydown; getTabProps is a store of a function', () => {

@@ -101,8 +101,8 @@ leaving the bar; Tab again moves past the whole thing.
 
 Three props reshape the roving keyboard model without touching a single item component.
 `orientation` switches the arrow axis (and the flex direction) between horizontal (Left/Right) and
-vertical (Up/Down); `loop` decides whether navigation wraps at the ends; `dir` swaps which physical
-arrow key means "next" in a horizontal bar.
+vertical (Up/Down); `loop` decides whether navigation wraps at the ends; `dir` sets the writing
+direction, which decides which arrow key means "next" in a horizontal bar.
 
 ::example
 ::ori-toolbar{label="View" orientation="vertical"}
@@ -176,21 +176,23 @@ matching the WAI-ARIA APG reference toolbar. Set it to `false` to stop at the en
 
 ::
 
-`dir="rtl"` swaps which physical arrow key means "next" in a horizontal bar (`ArrowLeft` becomes
-next, `ArrowRight` becomes previous) — it is a purely JavaScript signal. Vue excludes a declared prop
-from attrs fallthrough, so `dir` never becomes a native `dir` HTML attribute on the rendered element;
-pair it with your own RTL layout (an ancestor `dir="rtl"`, or `direction: rtl` in your CSS) so the
-keyboard direction matches what is visually left and right.
+The arrow keys follow the direction the toolbar is laid out in. Inside RTL content (`dir="rtl"` on
+the page or any ancestor) the first item sits on the right, so `ArrowLeft` moves to the next item and
+`ArrowRight` to the previous one, with nothing to configure. The `dir` prop sets the direction on the
+toolbar itself: it is rendered as the element's `dir` attribute, so layout and keys flip together.
 
 ```vue
-<!-- Visual mirroring is your own HTML/CSS dir — the component prop only swaps the JS key mapping. -->
+<!-- Inherited: the toolbar reads the direction it is laid out in. -->
 <div dir="rtl">
-    <OriToolbar label="RTL toolbar" dir="rtl">
+    <OriToolbar label="RTL toolbar">
         <OriToolbarButton label="One" />
         <OriToolbarButton label="Two" />
         <OriToolbarButton label="Three" />
     </OriToolbar>
 </div>
+
+<!-- Or set it on the toolbar alone. -->
+<OriToolbar label="RTL toolbar" dir="rtl">…</OriToolbar>
 ```
 
 ## Separator
@@ -690,7 +692,7 @@ is JavaScript (there is no CSS-only affordance for it).
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Tab`                                      | Moves focus into the toolbar (landing on the roving-active item) or past it — the whole toolbar is a single stop.                                                                              |
 | `Shift+Tab`                                | Moves focus out of the toolbar, backwards, as a single stop.                                                                                                                                   |
-| `ArrowRight` / `ArrowLeft`                 | Horizontal toolbars: moves the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped under `dir="rtl"`.                                                 |
+| `ArrowRight` / `ArrowLeft`                 | Horizontal toolbars: moves the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped in RTL.                                                            |
 | `ArrowDown` / `ArrowUp`                    | Vertical toolbars: moves the roving stop to the next / previous item (wraps when `loop`).                                                                                                      |
 | `Home` / `End`                             | Moves the roving stop to the first / last item, in either orientation.                                                                                                                         |
 | `Enter` / `Space`                          | Activates the focused button (native); toggles a toggle item's selection; no-ops on an `aria-disabled` item.                                                                                   |
@@ -707,12 +709,12 @@ roving-tabindex keyboard behaviour is JavaScript you would need to author yourse
 
 **Props**
 
-| Prop          | Type                         | Default        | Description                                                                                                                                                                                      |
-| ------------- | ---------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `dir`         | `'ltr' \| 'rtl'`             | `'ltr'`        | Text direction for the horizontal arrow mapping — `rtl` swaps `ArrowLeft`/`ArrowRight`. A purely JavaScript signal; pair it with your own RTL layout (see [above](#orientation-loop-direction)). |
-| `label`       | `string`                     | —              | Accessible name → `aria-label`. **Required**, unless you supply your own `aria-labelledby` attribute instead (it falls through onto the root element) — a nameless `role="toolbar"` fails axe.   |
-| `loop`        | `boolean`                    | `true`         | Whether arrow navigation wraps first⇄last at the ends.                                                                                                                                           |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout and arrow-key axis. `horizontal` = row, Left/Right; `vertical` = column, Up/Down.                                                                                                         |
+| Prop          | Type                         | Default        | Description                                                                                                                                                                                    |
+| ------------- | ---------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dir`         | `'ltr' \| 'rtl'`             | inherited      | Writing direction, rendered as the `dir` attribute. `rtl` mirrors the layout and swaps `ArrowLeft` / `ArrowRight`. When omitted, the inherited direction is used.                              |
+| `label`       | `string`                     | —              | Accessible name → `aria-label`. **Required**, unless you supply your own `aria-labelledby` attribute instead (it falls through onto the root element) — a nameless `role="toolbar"` fails axe. |
+| `loop`        | `boolean`                    | `true`         | Whether arrow navigation wraps first⇄last at the ends.                                                                                                                                         |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout and arrow-key axis. `horizontal` = row, Left/Right; `vertical` = column, Up/Down.                                                                                                       |
 
 **Events & attributes**
 

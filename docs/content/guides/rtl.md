@@ -19,8 +19,8 @@ turn RTL on the platform way, and the layer mirrors itself:
 <section dir="rtl">…</section>
 ```
 
-There is no `dir` prop to thread through the styled components, and no JavaScript involved — with one
-exception, [keyboard direction](#what-direction-does-not-change), at the end of this page.
+There is no `dir` prop to thread through the styled components. Arrow keys follow the direction too
+(see [Keyboard and text](#keyboard-and-text)).
 
 Everything on this page is **measured**, not intended. `e2e/rtl.spec.ts` renders the same markup under
 `dir="ltr"` and `dir="rtl"` in real Chromium and asserts bounding boxes and computed values — never
@@ -90,19 +90,16 @@ pixels:
 The colour picker inherits all three through the hue and alpha sliders it composes — which is a
 separate question from its value plane above, and resolved the other way.
 
-## What direction does not change
+## Keyboard and text
 
-Keyboard direction is **not** derived from the document, and the geometry guard above does not cover
-it. The roving-tabindex core maps `ArrowRight` to "forward" unless it is told otherwise:
+Arrow keys in a horizontal row follow the layout: in RTL the first item is on the right, so
+`ArrowLeft` moves to the next one. Tabs, Toolbar and the color picker's presets read the direction
+they are laid out in when a key is pressed, so an ancestor `dir="rtl"` is all they need.
+`useTabs` and `useToolbar` also take a `dir` option (and `<OriToolbar>` a `dir` prop) that sets
+the direction on the widget itself. `e2e/rtl-keyboard.spec.ts` checks this in Chromium. Vertical
+navigation (`ArrowUp` / `ArrowDown`) and `Home` / `End` do not depend on direction.
 
-- `useToolbar` / `<OriToolbar>` take an explicit **`dir`** option (`'ltr' | 'rtl'`, default `'ltr'`)
-  that swaps the horizontal Left/Right mapping. Pass `dir="rtl"` there when the toolbar sits in
-  RTL content.
-- The other roving widgets — Tabs and the colour picker — use the LTR mapping with no way to change
-  it, so `ArrowRight` moves forward in both directions. Vertical navigation (`ArrowUp` / `ArrowDown`)
-  and `Home` / `End` are direction-independent everywhere.
-
-Neither is **text**: oriUI ships no translations and no message catalogue. Most built-in strings are
+Direction is not **text**: oriUI ships no translations and no message catalogue. Most built-in strings are
 props with English defaults you override — `OriSpinner` / `OriProgress` take `label` (`'Loading'`),
 `OriAlert` and `OriTag` take `closeLabel` (`'Dismiss'` / `'Remove'`). A few are hardcoded and cannot
 be localised today: `<OriDialog>`'s close button (`aria-label="Close"`), `<OriToast>`'s dismiss

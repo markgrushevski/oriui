@@ -39,12 +39,12 @@ four companions (`useToolbarItem`, `useToolbarOrientation`, `useToolbarToggleGro
 `useToolbar(options?)` — every option is optional and accepts a plain value, a `ref`, or a getter
 (`MaybeRefOrGetter`) so it can change reactively.
 
-| Option        | Type                         | Default        | Description                                                                                                                |
-| ------------- | ---------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Arrow-key axis: `horizontal` navigates with Left/Right, `vertical` with Up/Down. Only `vertical` emits `aria-orientation`. |
-| `loop`        | `boolean`                    | `true`         | Whether arrow navigation wraps first⇄last at the ends (the WAI-ARIA APG reference example wraps).                          |
-| `dir`         | `'ltr' \| 'rtl'`             | `'ltr'`        | Text direction — `rtl` swaps the horizontal Left/Right mapping. Vertical navigation is direction-independent.              |
-| `label`       | `string`                     | —              | Accessible name → `aria-label`. A toolbar MUST be named — via this or an `aria-labelledby` you pass through.               |
+| Option        | Type                         | Default        | Description                                                                                                                                                               |
+| ------------- | ---------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Arrow-key axis: `horizontal` navigates with Left/Right, `vertical` with Up/Down. Only `vertical` emits `aria-orientation`.                                                |
+| `loop`        | `boolean`                    | `true`         | Whether arrow navigation wraps first⇄last at the ends (the WAI-ARIA APG reference example wraps).                                                                         |
+| `dir`         | `'ltr' \| 'rtl'`             | inherited      | Writing direction. When set, it is added to `toolbarProps` as `dir`; when omitted, the direction the root is laid out in is read on each keydown. `rtl` swaps Left/Right. |
+| `label`       | `string`                     | —              | Accessible name → `aria-label`. A toolbar MUST be named — via this or an `aria-labelledby` you pass through.                                                              |
 
 ## Returns
 
@@ -334,14 +334,14 @@ the keyboard behaviour is the roving `onKeydown` on the root.
   `combobox` / `textbox`; or any element **inside an ancestor** with `role` `radiogroup` / `menu` /
   `listbox` / `grid` / `tree`. Per the APG, include at most one such control and place it last.
 
-| Key                                    | Action                                                                                                                               |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `Tab` / `Shift+Tab`                    | Move focus into the toolbar (landing on the active item) or past it — the whole toolbar is a single tab stop.                        |
-| `ArrowRight` / `ArrowLeft`             | Horizontal: move the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped under `dir="rtl"`. |
-| `ArrowDown` / `ArrowUp`                | Vertical: move the roving stop to the next / previous item (wraps when `loop`).                                                      |
-| `Home` / `End`                         | Jump the roving stop to the first / last item, in either orientation.                                                                |
-| `Enter` / `Space`                      | Activate the focused item — native for a `<button>`; a toggle item's `onClick` flips its value in the group.                         |
-| Arrow keys, focus in a composite child | Not intercepted — the focused input / composite widget keeps its own arrow-key behaviour.                                            |
+| Key                                    | Action                                                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`                    | Move focus into the toolbar (landing on the active item) or past it — the whole toolbar is a single tab stop.             |
+| `ArrowRight` / `ArrowLeft`             | Horizontal: move the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped in RTL. |
+| `ArrowDown` / `ArrowUp`                | Vertical: move the roving stop to the next / previous item (wraps when `loop`).                                           |
+| `Home` / `End`                         | Jump the roving stop to the first / last item, in either orientation.                                                     |
+| `Enter` / `Space`                      | Activate the focused item — native for a `<button>`; a toggle item's `onClick` flips its value in the group.              |
+| Arrow keys, focus in a composite child | Not intercepted — the focused input / composite widget keeps its own arrow-key behaviour.                                 |
 
 ## See also
 

@@ -11,7 +11,7 @@ import {
     type ColorFormat,
     type HSVA
 } from '../core/color-picker'
-import { resolveRovingIndex, rovingIntent } from '../core'
+import { resolveRovingIndex, rovingIntent, textDirection } from '../core'
 import { safeOnDestroy, toReadable, type MaybeReactive } from './use-store'
 
 /**
@@ -210,7 +210,7 @@ export function useColorPicker(options: MaybeReactive<UseColorPickerOptions>) {
     function onPresetKeydown(event: KeyboardEvent): void {
         if (disabled()) return
         const list = get(opts$).presets ?? []
-        const intent = rovingIntent(event.key, 'horizontal')
+        const intent = rovingIntent(event.key, 'horizontal', textDirection(event.currentTarget as HTMLElement))
         if (!intent || list.length === 0) return
         event.preventDefault()
         const to = resolveRovingIndex(intent, get(activePreset), list.length, true)
