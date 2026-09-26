@@ -5,7 +5,7 @@ title: Dialog
 # Dialog
 
 A modal dialog — the library's first genuinely **interactive** component, built on the native
-`<dialog>` element. Unlike the styled-only components, a dialog _needs behaviour_: focus trap, scroll
+`<dialog>` element. Unlike the styled-only components, a dialog _needs behavior_: focus trap, scroll
 lock, `Esc`-to-close, click-outside dismissal, and the full WAI-ARIA keyboard contract. All of it comes
 from the platform via `showModal()` — no state-machine dependency and no adapter to wire. The styled
 `OriDialog` supplies only the markup and tokens.
@@ -13,7 +13,7 @@ from the platform via `showModal()` — no state-machine dependency and no adapt
 The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is the default.
+plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`, in development); HTML is the default.
 
 ## Classes
 

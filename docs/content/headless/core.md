@@ -23,7 +23,8 @@ binding is a thin adapter from the core contract to a framework's reactivity.
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | `@oriui/headless`        | Behavior contract + native engine                                                                                                                                           | **agnostic** |
 | `@oriui/headless/vue`    | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
-| `@oriui/headless/svelte` | The same composables as Svelte stores                                                                                                                                       | Svelte       |
+| `@oriui/headless/svelte` | The same composables as Svelte stores. **In development.**                                                                                                                  | Svelte       |
+| `@oriui/headless/react`  | The same composables as React hooks. **In development.**                                                                                                                    | React        |
 
 ## The contract
 
@@ -114,8 +115,8 @@ app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox })
 The same core powers each binding, so a primitive behaves the same everywhere.
 
 - **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
-- **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behavior is re-implemented.
-- **React** — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behavior is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
+- **Svelte** (in development) — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behavior is re-implemented.
+- **React** (in development) — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behavior is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
 
 ## See also
 

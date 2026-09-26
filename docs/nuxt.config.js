@@ -63,7 +63,8 @@ export default defineNuxtConfig({
             },
             {
                 title: 'Headless',
-                description: 'The framework-agnostic behavior contract and its Vue / Svelte / React bindings.',
+                description:
+                    'The framework-agnostic behavior contract and its Vue binding (Svelte and React bindings in development).',
                 contentCollection: 'docs',
                 contentFilters: [{ field: 'path', operator: 'LIKE', value: '/headless/%' }]
             }

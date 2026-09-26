@@ -355,7 +355,7 @@ The accessibility contract holds across every layer — the standalone classes a
 render the same attributes and keyboard behavior.
 
 - Full WAI-ARIA Tabs pattern, driven by the headless [`useTabs`](/headless/use-tabs) composable (the
-  shared Vue + Svelte behavior). `role="tablist"` on the list with `aria-orientation` reflecting the
+  shared with the Svelte and React adapters). `role="tablist"` on the list with `aria-orientation` reflecting the
   `orientation` prop.
 - Each tab is a real `<button role="tab">` with a `useId()`-derived stable id, `aria-selected`
   (`"true"` / `"false"`), `aria-controls` pointing at its panel id, and a **roving tabindex**

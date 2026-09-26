@@ -22,12 +22,20 @@ const LABELS: Record<Framework, string> = {
     react: 'React'
 }
 const ORDER: Framework[] = ['html', 'js', 'ts', 'vue', 'svelte', 'react']
+// The Svelte and React adapters are in development. Their tabs say so here, once, for every page.
+const IN_DEVELOPMENT: Framework[] = ['svelte', 'react']
 
 const isFree = computed(() => NO_FRAMEWORK.some((f) => slots[f]))
 const enabled = (key: Framework): boolean => Boolean(slots[key])
 
 // Show every provided slot in canonical order — a binding tab appears only where its block ships.
-const tabs = computed(() => ORDER.filter((f) => slots[f]).map((key) => ({ key, label: LABELS[key] })))
+const tabs = computed(() =>
+    ORDER.filter((f) => slots[f]).map((key) => ({
+        key,
+        label: LABELS[key],
+        inDevelopment: IN_DEVELOPMENT.includes(key)
+    }))
+)
 // Default to the relevant group's preference; fall back to the first available tab.
 const pref = computed<Framework>(() => (isFree.value ? noFramework.value : framework.value))
 const active = computed<Framework | undefined>(() =>
@@ -54,12 +62,15 @@ function pick(key: Framework): void {
                 :data-active="active === f.key || undefined"
                 @click="pick(f.key)"
             >
-                {{ f.label }}
+                {{ f.label }}<span v-if="f.inDevelopment" class="example__soon">in development</span>
             </button>
         </div>
 
         <div class="example__code">
             <div v-for="f in tabs" v-show="active === f.key" :key="f.key">
+                <p v-if="f.inDevelopment" class="example__note">
+                    The {{ f.label }} adapter is in development: not ready for production use, and its API may change.
+                </p>
                 <slot :name="f.key" />
             </div>
         </div>
@@ -127,6 +138,19 @@ function pick(key: Framework): void {
     background: color-mix(in srgb, var(--ori-color-primary) 14%, transparent);
     color: var(--ori-color-primary);
     opacity: 1;
+}
+
+.example__soon {
+    margin-left: 6px;
+
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.example__code > div > .example__note {
+    border-bottom: 1px solid color-mix(in srgb, var(--ori-color-on-surface) 10%, transparent);
+
+    background: color-mix(in srgb, var(--ori-color-warning) 10%, var(--ori-color-surface));
 }
 
 .example__code pre {
