@@ -11,7 +11,7 @@ exclusive-accordion feature (Baseline 2024): every `<details>` shares one auto-g
 the browser closes siblings when one opens. `multiple` drops the shared `name` so each item opens
 independently.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -22,7 +22,7 @@ The accordion is a block class plus single-class token utilities — one class r
 base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the colour and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · full"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent colour when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
+:class-table{:rows='[{"class":"ori-accordion","type":"Block","description":"The accordion container — a wrapper <code>&lt;div&gt;</code> that carries the color and optional radius utilities; hairline border with clipped corners."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · full"},{"class":"ori-accordion__item","type":"Part","description":"A native <code>&lt;details&gt;</code> element, one per item. Open state is the native <code>open</code> attribute, styled via <code>details[open]</code>."},{"class":"ori-accordion__trigger","type":"Part","description":"The native <code>&lt;summary&gt;</code>; the default marker is suppressed and a custom chevron added; focus ring via <code>:focus-visible</code>."},{"class":"ori-accordion__title","type":"Part","description":"The item title text; takes the accent color when its item is open."},{"class":"ori-accordion__icon","type":"Part","description":"The decorative chevron <code>&lt;svg&gt;</code> (<code>aria-hidden</code>); rotates when its item is open."},{"class":"ori-accordion__panel","type":"Part","description":"The disclosure body wrapper that holds the panel content."},{"class":"aria-disabled + tabindex","type":"State","description":"A disabled trigger carries real <code>aria-disabled</code> and <code>tabindex=-1</code> attributes, not classes."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/accordion.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -260,7 +260,7 @@ component is built on the native element.
         <OriField label="Order number"><OriInput v-model="order" /></OriField>
     </template>
     <template #panel-warranty>
-        <p>Two years, parts and labour.</p>
+        <p>Two years, parts and labor.</p>
     </template>
 </OriAccordion>
 
@@ -341,7 +341,7 @@ Colors, radius, and rich slot content together — a common FAQ or settings patt
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - Built entirely on native `<details>`/`<summary>`: the browser supplies `role="group"` on the
   `<details>` and `role="button"` with `aria-expanded` on the `<summary>` — no ARIA reinvention.

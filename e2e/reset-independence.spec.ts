@@ -53,7 +53,7 @@ interface ElementSnapshot {
 }
 
 // Render the fixture under one foundation entry (+ every dist component file) and read the computed
-// value of each contract property for every element. Elements are labelled by their nearest data-c
+// value of each contract property for every element. Elements are labeled by their nearest data-c
 // wrapper + tag + classes (+ an occurrence counter), so a failing diff names the exact node.
 async function snapshot(page: Page, foundation: string): Promise<ElementSnapshot[]> {
     await page.setContent(`<!doctype html><html><head></head><body><main id="fixture">${FIXTURE}</main></body></html>`)

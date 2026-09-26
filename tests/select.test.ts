@@ -184,12 +184,12 @@ describe('OriSelect', () => {
     })
 
     it('hint renders below the control and is wired via aria-describedby', () => {
-        const wrapper = mount(OriSelect, { props: { hint: 'Pick your favourite' } })
+        const wrapper = mount(OriSelect, { props: { hint: 'Pick your favorite' } })
         const hint = wrapper.find('.ori-select__hint')
         const select = wrapper.find('select')
 
         expect(hint.exists()).toBe(true)
-        expect(hint.text()).toBe('Pick your favourite')
+        expect(hint.text()).toBe('Pick your favorite')
         expect(select.attributes('aria-describedby')).toBe(hint.attributes('id'))
     })
 

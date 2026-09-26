@@ -26,7 +26,7 @@ describe('core disclosure machine — SET_DISABLED', () => {
 
         service.send({ type: 'SET_DISABLED', disabled: true })
         expect(service.getState().disabled).toBe(true)
-        // Deliberately NOT the menu / combobox behaviour (they close): an expanded panel whose trigger is
+        // Deliberately NOT the menu / combobox behavior (they close): an expanded panel whose trigger is
         // disabled is the accordion idiom for "this section must stay open".
         expect(service.getState().open).toBe(true)
 
@@ -78,7 +78,7 @@ describe('Vue useDisclosure — a getter-bound `disabled` stays live', () => {
         expect(api().triggerProps.value.disabled).toBe(true)
         expect(api().triggerProps.value['data-disabled']).toBe('')
 
-        // Not just an attribute: the behaviour goes with it.
+        // Not just an attribute: the behavior goes with it.
         api().toggle()
         expect(api().open.value).toBe(false)
 

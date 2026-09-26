@@ -11,7 +11,7 @@
   `outline`) and were deliberately left alone.
 
     **Migration — values.** Every one of these is interpolated into a class name, so each is also a
-    `@oriui/css` class rename, and the colour is a public TOKEN rename:
+    `@oriui/css` class rename, and the color is a public TOKEN rename:
 
     | Before                       | After             | Also renamed                                                                                                            |
     | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -114,7 +114,7 @@
     Until now `#default` was the only panel mechanism, so distinct content per section meant branching on
     `item.value` inside one shared template, and anything carrying an `id` was duplicated once per
     section. Worse than in Tabs: `multiple` keeps two sections open at once, where `<label for>` focuses
-    the **visible** input of the wrong section. Tabs' remedy has no analogue — an accordion has no single
+    the **visible** input of the wrong section. Tabs' remedy has no analog — an accordion has no single
     active item — so the answer is the escape hatch. The fallback still fills the sections that have no
     named slot, and content is deliberately not gated on the open state: a closed `<details>` keeps its
     content in the DOM, which is what makes find-in-page expand it.
@@ -221,7 +221,7 @@
     A new card test probes **every** declared prop and fails if one changes nothing in the rendered DOM,
     so a declared-but-unrendered prop cannot be reintroduced unnoticed.
 
-- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+- 04c63bf: **The color picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
   library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
   future token with a better claim to the name) could collide with them silently. They are now
   `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
@@ -239,7 +239,7 @@
   Type-only additions: no runtime, no output and no shape changes.
 
     `TabItem` existed under one name in both packages with two different shapes — `@oriui/headless`'s
-    behaviour-only `{ value; disabled? }` and the styled component's `{ value; label; disabled? }`. They
+    behavior-only `{ value; disabled? }` and the styled component's `{ value; label; disabled? }`. They
     describe the same thing (`<OriTabs>` hands its `tabs` array straight to `useTabs`), so the styled one
     now **derives** from the headless one — `interface TabItem extends HeadlessTabItem { label: string }`
     — rather than redeclaring it. The resolved shape is identical to before; what changes is that the two
@@ -401,11 +401,11 @@
 
 - 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
-    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
-    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
-    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
-    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
-    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centered alignment
+    centers the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centers the text on the space the button leaves
+    behind, which lands visibly off-center — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centers in real Chromium, in both writing directions, with a counter-example test that
     fails if the compensation is ever removed. A leading icon deliberately stays in flow.
 
     `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
@@ -415,14 +415,14 @@
     impossible to remove.
 
     Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
-    once at your call sites). The behaviour change is visible, not silent.
+    once at your call sites). The behavior change is visible, not silent.
 
 - f36d7bd: **OriToaster** now carries the live-region semantics on its container, so polite toasts are actually
   announced. Previously the only live region in play was the toast card itself (`role="status"`, or
   `role="alert"` for `color="danger"`) — and that element is created together with its text. Assistive
   tech reports mutations _inside_ a region it was already tracking; a region that first appears already
   holding its content is not announced. `role="alert"` is the documented exception most screen readers
-  honour, which is why `error()` toasts announced and `success()` / `info()` / `warn()` / plain ones
+  honor, which is why `error()` toasts announced and `success()` / `info()` / `warn()` / plain ones
   silently did not.
 
     The `.ori-toaster` container was already rendered from mount and already empty until the first push —
@@ -451,10 +451,10 @@
     **The pressed look is no longer gated behind `.ori-toolbar`.** It moves from `toolbar.css` into
     `button.css` and is now keyed on the button alone, so any toggle gets it. It is deliberately NOT the
     flat ungate that suggests itself: a literal `background-color` on `.ori-button[aria-pressed='true']`
-    beats the variant token and repaints `fill` and `tonal` toggles with a neutral grey (measured in
+    beats the variant token and repaints `fill` and `tonal` toggles with a neutral gray (measured in
     Chromium: a pressed `fill` button went from `rgb(3, 105, 161)` to an 18% near-black tint). Instead the
     universal affordance is an inset hairline in `currentcolor` — no variant touches `box-shadow`, and the
-    button's own label colour is contrast-paired with whatever background sits under it — and the neutral
+    button's own label color is contrast-paired with whatever background sits under it — and the neutral
     tint is added only for `text` / `plain` / `outline`, the three variants whose background is
     transparent. A toolbar button (`variant="text"` by default) renders exactly the same tint it did
     before; `fill` and `tonal` toolbar toggles stop being flattened. A source-level test fails if the rule
@@ -511,12 +511,12 @@
 
 ### Minor Changes
 
-- 7e4e397: **New headless `useTabs` composable (Vue + Svelte).** The WAI-ARIA tabs behaviour — automatic-activation
+- 7e4e397: **New headless `useTabs` composable (Vue + Svelte).** The WAI-ARIA tabs behavior — automatic-activation
   roving tabindex, defensive selection resolution (recovers to the first enabled tab), and the
   tablist / tab / tabpanel ARIA prop bags — now lives in `@oriui/headless`: `useTabs` ships from both
   `@oriui/headless/vue` (returning computeds) and `@oriui/headless/svelte` (returning stores), reusing the
   shared `core/roving` index math with its skip-disabled predicate. `OriTabs` is rewritten to consume it —
-  **identical DOM, classes, and keyboard** — closing the last styled component that hand-rolled its behaviour
+  **identical DOM, classes, and keyboard** — closing the last styled component that hand-rolled its behavior
   instead of sitting on a headless core. Additive: a new optional `label` prop on `OriTabs` (and
   `label` / `labelledby` options on `useTabs`) names the tablist via `aria-label` / `aria-labelledby`, which
   WAI-ARIA recommends.
@@ -524,23 +524,23 @@
 ### Patch Changes
 
 - bbc937d: **New headless `useDismissable` (Vue + Svelte)** — the shared "close the overlay on an outside interaction"
-  layer for non-platform overlays, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardise.
+  layer for non-platform overlays, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardize.
   While `enabled`, it attaches `document` listeners and calls `onDismiss()` when an interaction lands outside the
   overlay's elements; each overlay picks its strategy — `pointerDownOutside` (a menu) or `focusOutside` (a
   combobox). Built on a new pure `isTargetOutside(target, elements)` predicate exported from `@oriui/headless`.
 
     `OriMenu` now uses it for outside-pointerdown (replacing a hand-rolled `document` listener) and `OriCombobox`
-    for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behaviour-preserving**, and it moves the dismiss glue out of
+    for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behavior-preserving**, and it moves the dismiss glue out of
     the styled SFCs into the headless layer so a Svelte consumer of `useMenu` / `useCombobox` can wire the same
-    close behaviour. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
+    close behavior. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
     the core connects.)
 
-- d1163d0: **Toast behaviour moved into `@oriui/headless` (Vue + Svelte).** `useToast` — the imperative toast queue —
+- d1163d0: **Toast behavior moved into `@oriui/headless` (Vue + Svelte).** `useToast` — the imperative toast queue —
   now ships from `@oriui/headless/vue` and, new, `@oriui/headless/svelte`, backed by a framework-agnostic core
   queue engine (`createToastQueue`; kept out of the core barrel so it never weighs on the 1 kB core budget,
   and projected into a Vue reactive array / a Svelte readable store). **Non-breaking:** the `@oriui/vue` path is
   unchanged — `import { useToast } from '@oriui/vue'` still works and shares the one queue (it re-exports the
-  Vue adapter). The change is that the behaviour is now a shared headless composable with Svelte parity,
+  Vue adapter). The change is that the behavior is now a shared headless composable with Svelte parity,
   closing the last styled component whose composable lived in the styled package. Adds a `useToast` docs page.
 - Updated dependencies [9448620]
 - Updated dependencies [bbc937d]
@@ -615,9 +615,9 @@
       (saturation = horizontal keys, brightness = vertical + `aria-orientation`), so every
       arrow keystroke changes the focused slider's own value and a screen reader announces it —
       Up/Down on the saturation slider no longer silently moves brightness. `aria-valuetext`
-      now carries the resulting colour, not just the bare axis percentage.
+      now carries the resulting color, not just the bare axis percentage.
     - The external-value echo-guard formats with the alpha flag, so with `alpha` on the working
-      colour is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
+      color is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
       ~1% grid on `rgb()`/`hsl()` output is gone.
     - A disabled picker's preset swatches are inert to the keyboard too now (a real `disabled`
       attribute plus guarded click/keydown handlers); `pointer-events: none` had only blocked
@@ -626,7 +626,7 @@
 - 080571c: OriColorPicker polish + SSR-safety:
 
     - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
-      colour changes, instead of always starting at index 0.
+      color changes, instead of always starting at index 0.
     - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
       alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
     - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
@@ -635,12 +635,12 @@
       hydration mismatch — and is sized to match the 2rem preview swatch.
     - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
       the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
-      more gap so the selected ring clears its neighbour.
+      more gap so the selected ring clears its neighbor.
     - Panel corners now read component-local radius aliases; dropped the inert `label` option from
       `useColorPicker`.
 
 - bf4b762: `OriDialog` now has a robust accessible name. The title `<h2>` renders only when a `title` prop or
-  `#title` slot is supplied — previously a titleless dialog was "labelled" by an empty heading, giving it
+  `#title` slot is supplied — previously a titleless dialog was "labeled" by an empty heading, giving it
   an empty accessible name. Stray attributes (including `aria-label`) are now forwarded to the `<dialog>`
   element (`inheritAttrs: false`), so a titleless dialog can be named with `aria-label`; the adapter's own
   a11y props are still applied verbatim. A dev-only warning fires when a dialog opens with no accessible
@@ -681,7 +681,7 @@
 - 8af0a98: ColorPicker — an accessible, dependency-free color picker.
 
     - **`@oriui/vue`**: `OriColorPicker` — an inline panel with a 2D saturation×brightness area, a hue slider (reusing OriSlider), an optional alpha slider, a hex field (reusing OriInput), optional preset swatches (a roving listbox), and an optional eyedropper. `v-model` is a lowercase color string; `format` selects `hex` / `rgb` / `hsl`; `alpha` adds a checkerboard slider + `#rrggbbaa` output; `eyedropper` shows a feature-detected pick-from-screen trigger (hidden where unsupported); `update:modelValue` streams live and `change` commits once per interaction (one undo entry), like OriSlider. Slots: `#swatch`, `#preset`. Compose it into `OriPopover` for a swatch-triggered flow.
-    - **`@oriui/headless`**: `useColorPicker` (Vue) — the compositional behaviour over a new zero-dependency sRGB color engine (`hex↔rgb↔hsv↔hsl`, loose parse of hex / `rgb()` / `hsl()` incl. alpha, WCAG-luminance ink) and 2D-area math, kept out of the core `.` budget (reachable only from `./vue`). The 2D area is two visually-hidden native `<input type="range">` (one per axis) — real `role="slider"`, focus, and value announcements, with the arrow keys routed in 2D.
+    - **`@oriui/headless`**: `useColorPicker` (Vue) — the compositional behavior over a new zero-dependency sRGB color engine (`hex↔rgb↔hsv↔hsl`, loose parse of hex / `rgb()` / `hsl()` incl. alpha, WCAG-luminance ink) and 2D-area math, kept out of the core `.` budget (reachable only from `./vue`). The 2D area is two visually-hidden native `<input type="range">` (one per axis) — real `role="slider"`, focus, and value announcements, with the arrow keys routed in 2D.
 
     Deferred to a later version (all additive): a user-facing format switcher, per-channel numeric inputs, a built-in recent-colors buffer, a color wheel, and a Svelte binding.
 
@@ -721,7 +721,7 @@
 
 ### Minor Changes
 
-- 9e7f183: OriDialog: managed open state — add `v-model:open` (a controlled `open` prop + an `update:open` emit) and a `close` emit. The dialog now drives both uncontrolled (`defaultOpen` + the `#trigger` slot — unchanged) and host-controlled, so a parent can open/close it from its own ref and react to every close (Esc, backdrop, the × button, or its own state). Backward compatible — omitting `:open` keeps the previous behaviour.
+- 9e7f183: OriDialog: managed open state — add `v-model:open` (a controlled `open` prop + an `update:open` emit) and a `close` emit. The dialog now drives both uncontrolled (`defaultOpen` + the `#trigger` slot — unchanged) and host-controlled, so a parent can open/close it from its own ref and react to every close (Esc, backdrop, the × button, or its own state). Backward compatible — omitting `:open` keeps the previous behavior.
 - 84b6559: OriSlider: add a `change` event — the committed value (a `number`), fired once when the user releases the thumb or commits a keyboard step, unlike `update:modelValue` which streams live on every drag tick. Bind `@change` to collapse a whole drag into a single undo step (or run a per-release side effect) while `v-model` keeps tracking the live value.
 
     BREAKING (pre-1.0): `@change` on `<OriSlider>` was previously an undeclared native-event `$attrs` fallthrough carrying a raw `Event`; it is now a first-class typed emit carrying the committed `number`. A consumer relying on the old raw-`Event` payload should read the committed number instead, or attach a listener to the underlying `<input>` via a template ref for the raw event.
@@ -766,9 +766,9 @@
 
 ### Patch Changes
 
-- 94e04a5: **Neutral preset skin** — pure neutral grays with a monochrome accent (ink primary on white / near-white on near-black), for tool-like apps where colour belongs to the content, not the chrome. Applied via `data-ori-skin="neutral"`. All role pairings clear WCAG AA (min 12:1).
+- 94e04a5: **Neutral preset skin** — pure neutral grays with a monochrome accent (ink primary on white / near-white on near-black), for tool-like apps where color belongs to the content, not the chrome. Applied via `data-ori-skin="neutral"`. All role pairings clear WCAG AA (min 12:1).
 
-    **Tooltip fix.** The bubble now self-pairs its colours: a dedicated neutral chip by default (`--ori-neutral-900`/`-50`, ~17:1), or a role's own `--ori-color` / `--ori-color-on` pair when a `color` is set. Previously the bubble read `var(--ori-color, …)` where `--ori-color` is globally `currentColor`, so the neutral fallback never fired and bg + text collapsed to the same colour — invisible (dark-on-dark) on ink-heavy hosts. The bubble also now floats on the shared `.ori-anchored` primitive (`position: fixed` + collision-aware flip via `position-try`), escaping clipped/overflow-hidden containers.
+    **Tooltip fix.** The bubble now self-pairs its colors: a dedicated neutral chip by default (`--ori-neutral-900`/`-50`, ~17:1), or a role's own `--ori-color` / `--ori-color-on` pair when a `color` is set. Previously the bubble read `var(--ori-color, …)` where `--ori-color` is globally `currentColor`, so the neutral fallback never fired and bg + text collapsed to the same color — invisible (dark-on-dark) on ink-heavy hosts. The bubble also now floats on the shared `.ori-anchored` primitive (`position: fixed` + collision-aware flip via `position-try`), escaping clipped/overflow-hidden containers.
 
     Standalone `@oriui/css` note: the per-side placement classes `ori-tooltip__bubble_{top,bottom,left,right}` are replaced by `ori-anchored ori-anchored_<placement>` (the same 12-value grid the popover/menu use). `@oriui/vue`'s `OriTooltip` emits the new classes automatically — no consumer change needed there.
 
@@ -820,13 +820,13 @@
   only for an icon-**only** button (`icon` set, `text` absent):
 
     - `<OriButton icon="…" aria-label="…" />` → icon-only square (unchanged).
-    - `<OriButton icon="…" text="Save" />` → normal labelled button with a leading icon (no longer a square).
+    - `<OriButton icon="…" text="Save" />` → normal labeled button with a leading icon (no longer a square).
     - `<OriButton text="Save" />` and `<OriButton>Save</OriButton>` (slot) → normal buttons (no longer forced squares).
 
     OriCard gets the same treatment: its `ori-card_icon` modifier now needs an explicit icon
     (`prependIcon` / `appendIcon`) with no `text`, instead of triggering on any card that omits `text`.
 
-    This changes existing behaviour for consumers who relied on the old text-absent icon square — pass the
+    This changes existing behavior for consumers who relied on the old text-absent icon square — pass the
     `icon` prop explicitly to keep an icon-only button.
 
 ### Patch Changes

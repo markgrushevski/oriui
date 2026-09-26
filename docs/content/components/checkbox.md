@@ -9,7 +9,7 @@ A styled, accessible checkbox built on a **real `<input type="checkbox">`** — 
 The accent color and `:focus-visible` ring are driven by the `ori-color` token; `invalid` sets
 `aria-invalid`; `disabled` is the native attribute.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -269,7 +269,7 @@ function submit() {
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - A real `<input type="checkbox">` drives all keyboard and form behavior; the visual `__box` is
   `aria-hidden="true"`.

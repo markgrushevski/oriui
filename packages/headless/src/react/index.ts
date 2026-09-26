@@ -6,7 +6,7 @@ export type { ToolbarToggleType, ToolbarToggleValue } from '../core'
 export { useDisclosure } from './use-disclosure'
 export { useDialog } from './use-dialog'
 
-// Headless behaviours built directly on the core engine (resolved through the swappable contract)
+// Headless behaviors built directly on the core engine (resolved through the swappable contract)
 export { useCombobox } from './use-combobox'
 export type { ComboboxItem } from '../core'
 export { useMenu } from './use-menu'

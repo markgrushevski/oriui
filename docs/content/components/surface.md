@@ -11,13 +11,13 @@ over content — a toolbar island, a zoom control, a side panel, a menu popout's
 **elevation** counterpart to [Card](/components/card), which is a _content_ card (padding + header /
 title / body / actions).
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component.
 
 ## Classes
 
 A block class plus two single-class axes — the elevation modifier and the shared `.ori-size-radius_*`
-utility. Bordered is a modifier; the surface colour is fixed (it's chrome).
+utility. Bordered is a modifier; the surface color is fixed (it's chrome).
 
 <!-- prettier-ignore -->
 :class-table{:rows='[{"class":"ori-surface","type":"Block","description":"Required base class. Surface background + on-surface text + lg radius; a block-level box with no padding of its own."},{"class":"ori-surface_elevation-sm | -md | -lg","type":"Modifier","description":"Shadow depth, mapped to the mode-aware --ori-shadow-{sm,md,lg} tokens (light: tinted ink; dark: deeper shadow). Default lg."},{"class":"ori-surface_bordered","type":"Modifier","description":"Adds a hairline border (a color-mix of on-surface). Present by default via the bordered prop; drop it for a shadow-only surface."},{"class":"ori-size-radius_*","type":"Radius","description":"Repoints --ori-size-radius (none · xs · sm · md · lg · xl · full). The block bakes lg as the default."}]'}
@@ -89,7 +89,7 @@ No border — shadow only
 ## Composing chrome
 
 The intended use: wrap floating chrome — a [toolbar](/components/toolbar), a control cluster — so it
-lifts off the content beneath. `OriSurface` supplies the box; the toolbar supplies the behaviour.
+lifts off the content beneath. `OriSurface` supplies the box; the toolbar supplies the behavior.
 
 ::example
 ::ori-surface{style="padding: 0.5rem; display: inline-block"}

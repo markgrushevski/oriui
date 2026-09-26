@@ -7,7 +7,7 @@ title: Badge
 A small status or count indicator. Attach it to any element as a floating pip, drop it inline next
 to text, or render it standalone — all three modes share the same class surface.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

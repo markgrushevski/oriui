@@ -5,7 +5,7 @@
  *  1. {@link applyTheme} — flip the `ori-theme_{light,dark}` class on the theme root, the way oriUI's
  *     skins expect (see `@oriui/css` `_themes-color-tokens.css`).
  *  2. work around a Chromium style-invalidation bug that {@link flushThemeInvalidation} documents:
- *     without it, styled components keep the PREVIOUS theme's colours after a runtime toggle.
+ *     without it, styled components keep the PREVIOUS theme's colors after a runtime toggle.
  *
  * {@link createThemeController} layers `auto` (follow the OS scheme) + persistence on top, reusing the
  * core {@link observeTheme} matchMedia plumbing. Every API is SSR-safe (inert without `document`) and
@@ -37,9 +37,9 @@ export interface ApplyThemeOptions {
  * WHY: Chromium misses a style invalidation when an inherited custom property changes via an ancestor
  * class toggle (the theme flip) AND descendants BAKE a resolved alias into an element-scoped custom
  * property consumed through a `var()` chain — which is exactly how every styled oriUI component reads
- * its colour (`--ori-color` / `--ori-color-text` baked on the element → `--ori-variant-*` → the
+ * its color (`--ori-color` / `--ori-color-text` baked on the element → `--ori-variant-*` → the
  * longhand). The element's cached computed style is not marked dirty, so it — and its paint — keep the
- * PREVIOUS theme's colour until the box is rebuilt. Neither a forced reflow, a repeated class toggle,
+ * PREVIOUS theme's color until the box is rebuilt. Neither a forced reflow, a repeated class toggle,
  * nor `@property` registration re-resolves it; only rebuilding the box does. A `display:none`
  * round-trip with a forced reflow between the two writes destroys and recreates the box tree (the
  * cheapest thing short of remounting the subtree), so the components re-resolve against the new theme.

@@ -11,7 +11,7 @@ const {
     /** Label of an action button, such as "Undo". The button emits `action`. */
     actionLabel?: string
     /** Where the body sits in the card. `center` also lifts the dismiss button out of the flex flow, so
-     *  the text is centred on the CARD rather than on the space the button leaves behind. */
+     *  the text is centered on the CARD rather than on the space the button leaves behind. */
     align?: 'start' | 'center'
     closable?: boolean
     color?: ThemeColor

@@ -23,7 +23,7 @@ export * from './dismiss'
 export * from './tabs'
 export * from './toolbar'
 
-// The four swappable behaviours' option shapes — one declaration, pinned to every adapter's copy by
+// The four swappable behaviors' option shapes — one declaration, pinned to every adapter's copy by
 // tests/adapter-parity.test.ts (type-only: erased at build time, so the core bundle is unchanged).
 export type { UseDisclosureOptions, UseDialogOptions, UseComboboxOptions, UseMenuOptions } from './options'
 

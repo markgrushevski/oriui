@@ -31,7 +31,7 @@ rationale as `OriTabs`:
 Until now `#default` was the only panel mechanism, so distinct content per section meant branching on
 `item.value` inside one shared template, and anything carrying an `id` was duplicated once per
 section. Worse than in Tabs: `multiple` keeps two sections open at once, where `<label for>` focuses
-the **visible** input of the wrong section. Tabs' remedy has no analogue — an accordion has no single
+the **visible** input of the wrong section. Tabs' remedy has no analog — an accordion has no single
 active item — so the answer is the escape hatch. The fallback still fills the sections that have no
 named slot, and content is deliberately not gated on the open state: a closed `<details>` keeps its
 content in the DOM, which is what makes find-in-page expand it.

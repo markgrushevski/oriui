@@ -6,9 +6,9 @@ title: Divider
 
 A horizontal (default) or vertical rule that separates content. An optional centered label turns it
 into a visual break like the classic "OR" between form sections. A pure layout/structure primitive —
-no interactive behaviour, no variants, no size scale.
+no interactive behavior, no variants, no size scale.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

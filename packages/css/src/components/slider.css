@@ -24,7 +24,7 @@
         /* Transparency-grid tones for the alpha modifier, derived from the theme so a standalone alpha
            slider gets a mid-neutral checkerboard in dark mode instead of a glaring light one. Declared
            HERE (not only on .ori-color-picker) because `.ori-slider .ori-slider_alpha` is reachable
-           without a colour picker, and a block must not read a token another block declares. The picker
+           without a color picker, and a block must not read a token another block declares. The picker
            declares the same pair for its own swatch; the values are identical, so the nested slider
            inside a picker paints the same either way. */
         --ori-checker-1: color-mix(in srgb, var(--ori-color-on-surface) 12%, var(--ori-color-surface));
@@ -241,8 +241,8 @@
         background: #ffffff;
     }
 
-    /* Hue / alpha thumbs are white over a coloured track, so the base accent color-mix focus ring can
-       vanish (on the alpha slider the track fill IS the current colour). Use a neutral white+dark ring
+    /* Hue / alpha thumbs are white over a colored track, so the base accent color-mix focus ring can
+       vanish (on the alpha slider the track fill IS the current color). Use a neutral white+dark ring
        that clears 3:1 over any track. These come after the base focus rules → equal specificity, later
        wins. */
     .ori-slider .ori-slider_hue:focus-visible::-webkit-slider-thumb,

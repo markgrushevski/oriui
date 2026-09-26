@@ -3,7 +3,7 @@
 ---
 
 **New React adapter (`@oriui/headless/react`) — first slice.** The framework-agnostic core now drives a
-third framework: React joins Vue and Svelte behind the same behaviour engine. This slice ships two
+third framework: React joins Vue and Svelte behind the same behavior engine. This slice ships two
 representative hooks proving both contract shapes — **`useDisclosure`** (machine-driven, bridged to React
 via `useSyncExternalStore`, SSR-safe) and **`useTabs`** (data-driven WAI-ARIA tabs with automatic
 activation) — plus the adapter toolchain: the `./react` export, an optional `react` peer (`^18 || ^19`),

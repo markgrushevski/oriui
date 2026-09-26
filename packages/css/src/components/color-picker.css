@@ -69,7 +69,7 @@
     }
 
     /* Focus ring on the thumb when either hidden channel input has keyboard focus. A neutral white+dark
-       double ring (not a translucent accent) so it clears WCAG 3:1 over ANY user-chosen SV colour. */
+       double ring (not a translucent accent) so it clears WCAG 3:1 over ANY user-chosen SV color. */
     .ori-color-picker__area:has(.ori-color-picker__channel:focus-visible) .ori-color-picker__area-thumb {
         box-shadow:
             0 0 0 2px #ffffff,
@@ -132,7 +132,7 @@
 
         /* No `var()` fallback on --ori-color: it is declared unconditionally at :root as `currentColor`
            (themes/_themes-color-tokens.css), so the fallback arm could never fire — and it lied about
-           what it would do. A swatch with no inline colour paints `currentcolor`, which here is the
+           what it would do. A swatch with no inline color paints `currentcolor`, which here is the
            `color` two lines down: measured white, not the black the old `var(--ori-color, #000000)`
            advertised. --ori-color-picker-ink is genuinely optional (nothing declares it globally), so ITS fallback is
            live and stays. */
@@ -167,7 +167,7 @@
         display: flex;
         flex-wrap: wrap;
         /* Full gap (not half): the selected/focus ring extends ~4px, so a tighter gap let the ring touch
-           the neighbouring chip. */
+           the neighboring chip. */
         gap: var(--ori-size-gap);
     }
 

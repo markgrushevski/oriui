@@ -2,7 +2,7 @@ import type { ComboboxItem } from './combobox'
 import type { MenuItem } from './menu'
 
 /**
- * The option shapes behind the four swappable behaviours, declared once. Every member is
+ * The option shapes behind the four swappable behaviors, declared once. Every member is
  * framework-neutral; only how an adapter wraps them differs (`MaybeRefOrGetter` in Vue, `MaybeReactive`
  * in Svelte, per render in React). `tests/adapter-parity.test.ts` pins each adapter to these at compile
  * time. Exported from `@oriui/headless` for anyone writing their own adapter.

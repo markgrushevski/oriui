@@ -6,7 +6,7 @@ import type { TabItem } from '@oriui/vue'
 // Horizontal and vertical tablists, each with one disabled tab ("Archive") so arrow keys must SKIP it.
 // The unit suite drives `trigger('keydown')` on a wrapper, which never moves real focus — happy-dom has
 // no focus management to speak of — so the roving tabindex is asserted there as an attribute and the
-// behaviour it exists for (one tab stop for the whole group, focus following the arrow keys) has never
+// behavior it exists for (one tab stop for the whole group, focus following the arrow keys) has never
 // been exercised in an engine. That is what this view is for.
 const items: TabItem[] = [
     { value: 'overview', label: 'Overview' },

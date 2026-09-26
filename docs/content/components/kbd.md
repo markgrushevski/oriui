@@ -7,7 +7,7 @@ title: Kbd
 A keyboard-key chip — a semantic `<kbd>` element styled as a monospace bordered chip. Use it to
 represent individual keys, modifier keys, or multi-key shortcuts inline in prose or UI hints.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

@@ -41,7 +41,7 @@ type ToolbarTestProps = {
     orientation?: 'horizontal' | 'vertical'
 }
 
-/** Mounts a toolbar of `count` plain icon buttons (labelled A, B, C, …), attached to the document. */
+/** Mounts a toolbar of `count` plain icon buttons (labeled A, B, C, …), attached to the document. */
 function mountToolbar(props: ToolbarTestProps = {}, count = 3) {
     return mount(OriToolbar, {
         props: { label: 'Bar', ...props },
@@ -856,7 +856,7 @@ describe('OriToolbarToggleItem — slot (custom icon content)', () => {
 })
 
 describe('OriToolbar — axe', () => {
-    it('has no axe violations for a labelled toolbar of buttons + a separator', async () => {
+    it('has no axe violations for a labeled toolbar of buttons + a separator', async () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Formatting' },
             slots: {
@@ -873,7 +873,7 @@ describe('OriToolbar — axe', () => {
         wrapper.unmount()
     })
 
-    it('has no axe violations for a labelled vertical toolbar', async () => {
+    it('has no axe violations for a labeled vertical toolbar', async () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Formatting', orientation: 'vertical' },
             slots: {
@@ -916,7 +916,7 @@ describe('OriToolbar — axe', () => {
         wrapper.unmount()
     })
 
-    it('has no axe violations for a labelled toolbar including a toggle group', async () => {
+    it('has no axe violations for a labeled toolbar including a toggle group', async () => {
         const value = ref<string | undefined>('left')
         const Host = defineComponent({
             components: {

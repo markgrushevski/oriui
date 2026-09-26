@@ -522,7 +522,7 @@ describe.each(WIDGETS)('$name — one surface across Vue, Svelte and React', (wi
 
 // ── the option surface, pinned at compile time ─────────────────────────────────────────────────
 // The table above proves the OUTPUT matches. This proves the INPUT does. The shapes are declared ONCE
-// in core — `core/options.ts` for the four swappable behaviours, `core/tabs.ts` for tabs — and every
+// in core — `core/options.ts` for the four swappable behaviors, `core/tabs.ts` for tabs — and every
 // adapter is pinned to that declaration here, in BOTH directions:
 //
 //   - key parity catches a member present on one side only (mutual assignability does NOT: an extra
@@ -531,7 +531,7 @@ describe.each(WIDGETS)('$name — one surface across Vue, Svelte and React', (wi
 //
 // `npm run test:types` fails on the offending line, naming the adapter and the core shape. The `useTabs`
 // rows are the finished state — those three adapters re-export the core declaration, so the row is a
-// tautology today and goes red the moment someone re-declares the interface locally. The four behaviour
+// tautology today and goes red the moment someone re-declares the interface locally. The four behavior
 // rows still compare three separate declarations in `{vue,svelte,react}/contract.ts` against core; once
 // those re-export from core too, they become tautologies in the same way.
 type KeyGap<A, B> = Exclude<keyof A, keyof B> | Exclude<keyof B, keyof A>

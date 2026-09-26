@@ -8,7 +8,7 @@ A styled, accessible button. Dynamic state is expressed through real attributes 
 a true `disabled` (or `aria-disabled` for link buttons), `loading` sets `aria-busy`, and it ships a
 visible `:focus-visible` ring.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -307,7 +307,7 @@ A confirm / cancel pair and an icon toolbar — the everyday compositions.
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - Renders a real `<button type="button">` by default; `as="a"` (or a router link) switches the tag
   and uses `aria-disabled` + `tabindex="-1"` instead of the boolean `disabled`.
@@ -329,7 +329,7 @@ component API — its surface is the [classes](#classes) above.
 
 | Prop           | Type                                                  | Default     | Description                                                                                                     |
 | -------------- | ----------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
-| `label`        | `string`                                              | —           | Visible button text. A labelled (or slotted) button is a normal button, never an icon square.                   |
+| `label`        | `string`                                              | —           | Visible button text. A labeled (or slotted) button is a normal button, never an icon square.                    |
 | `variant`      | `'solid' \| 'soft' \| 'outline' \| 'text' \| 'quiet'` | `'solid'`   | Visual style.                                                                                                   |
 | `color`        | `ThemeColor`                                          | `'primary'` | Semantic role: primary · secondary · success · warning · danger · info · surface.                               |
 | `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                                                              |

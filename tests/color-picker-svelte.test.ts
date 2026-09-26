@@ -37,7 +37,7 @@ describe('useColorPicker (Svelte) — state', () => {
         expect(get(cp.swatchColor)).toBe('#3366ff')
     })
 
-    it('value honours the emitted format', () => {
+    it('value honors the emitted format', () => {
         expect(get(pick({ value: '#3366ff', format: 'rgb' }).cp.value)).toBe('rgb(51, 102, 255)')
     })
 
@@ -76,7 +76,7 @@ describe('useColorPicker (Svelte) — state', () => {
         cp.setSaturationValue(0.5, 0.5)
         const emitted = get(cp.value)
         expect(emitted).toMatch(/^#[0-9a-f]{8}$/)
-        expect(get(cp.hex)).toBe(emitted) // the guard recognised its own emit → no re-parse
+        expect(get(cp.hex)).toBe(emitted) // the guard recognized its own emit → no re-parse
     })
 
     it('a non-value option change (disabled) does NOT reset an uncontrolled drag', () => {

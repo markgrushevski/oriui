@@ -15,7 +15,7 @@ const _toastColorMatchesThemeColor: Mutual<ToastColor, ThemeColor> = true
 void _toastColorMatchesThemeColor
 
 // The toast queue moved into @oriui/headless: a framework-agnostic engine (`createToastQueue`) projected
-// into a Vue reactive array and a Svelte readable store. The Vue *behaviour* is covered by tests/toast.test.ts
+// into a Vue reactive array and a Svelte readable store. The Vue *behavior* is covered by tests/toast.test.ts
 // (which imports from @oriui/vue → the re-exported Vue adapter). This file covers the NEW surface: the core
 // engine directly, the Svelte adapter, and that the @oriui/vue re-export shares one singleton with the
 // @oriui/headless/vue path.

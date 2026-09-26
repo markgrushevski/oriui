@@ -6,7 +6,7 @@
  *
  * The internal working model is **HSVA** (h∈[0,360), s/v/a∈[0,1]): the picker keeps its own HSVA object
  * across interaction, so the hue is preserved when saturation or value hits 0 (a hex round-trip would
- * lose it — grey has no hue — making the hue jump when you drag the area into a corner and back).
+ * lose it — gray has no hue — making the hue jump when you drag the area into a corner and back).
  * The colorspace is fixed sRGB for v1, but the shapes are parameter-free so a v2 wide-gamut/CSS-Color-4
  * pass can add a `space` field without a rewrite.
  */

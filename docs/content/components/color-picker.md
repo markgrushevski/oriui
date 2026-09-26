@@ -6,7 +6,7 @@ title: Color picker
 
 An accessible color picker: a 2D **saturation × brightness** area, a **hue** slider, a **hex** field, and
 optional **preset** swatches — an inline panel you compose into an [OriPopover](/components/popover) for a
-swatch-triggered flow. Behaviour lives in the framework-agnostic `useColorPicker` (a zero-dependency sRGB +
+swatch-triggered flow. Behavior lives in the framework-agnostic `useColorPicker` (a zero-dependency sRGB +
 2D-area engine, no adapter or machine); the styled component reuses [OriSlider](/components/slider) for the
 hue channel and [OriInput](/components/input) for the hex field. `v-model` carries a lowercase color
 **string**; the internal working model is HSVA, so the hue survives when you drag into a corner and back.
@@ -187,7 +187,7 @@ hidden input with a `<form>` by id when the picker sits outside it.
 
 ## Framework API
 
-The props, events, and slots of the **Vue** component. Behaviour comes from `useColorPicker`
+The props, events, and slots of the **Vue** component. Behavior comes from `useColorPicker`
 (`@oriui/headless/vue`); the standalone CSS layer renders the panel statically from the
 [classes](#classes) (interactivity is JS).
 

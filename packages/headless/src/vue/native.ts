@@ -56,7 +56,7 @@ export const nativeDisclosure = (options: MaybeRefOrGetter<UseDisclosureOptions>
  * Native oriUI Dialog adapter — zero dependencies, built on the platform `<dialog>` element. It owns
  * only the open state and the ARIA prop bags; the consuming component renders the `<dialog>` and calls
  * `showModal()` / `close()` from `open` (see `OriDialog`), so the focus trap, `Esc`, `::backdrop`,
- * top-layer and `inert`-on-rest come from the browser — the hard behaviour that previously justified a
+ * top-layer and `inert`-on-rest come from the browser — the hard behavior that previously justified a
  * Zag adapter. This is the default behind `useDialog`; the `OriHeadless` contract still lets an app
  * swap in a custom (e.g. Zag-backed) dialog adapter per project.
  */

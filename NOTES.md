@@ -171,9 +171,9 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
   ink, NOT a role derive: a `var(--ori-color)` at `:root` freezes to `:root`'s currentColor (a custom property's
   `var()` substitutes where DECLARED, not where used), so it can't track a block-baked `--ori-color` — hence baked
   blocks repoint `--ori-color-text` themselves. The per-role token is a DARKER/LIGHTER SHADE of the role via
-  relative colour that clamps ONLY lightness: `oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` (light) /
+  relative color that clamps ONLY lightness: `oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` (light) /
   `max(l, 0.86)` (dark) — keeps the role's hue + chroma, so the text (and the outline BORDER, which reads the same
-  token) is the same colour as the fill, only darker/lighter ("one hue, only lightness varies") — not the muddy
+  token) is the same color as the fill, only darker/lighter ("one hue, only lightness varies") — not the muddy
   off-hue a `color-mix` toward the neutral ink gave (the first cut, replaced). Declared IN EACH theme block
   (`:root` / light + `.ori-theme_dark`), NOT only `:root`, so it re-resolves for a SUBTREE theme and under a
   consumer's UNLAYERED `--ori-color` override too (a `:root`-only derive froze to the page value, breaking a real
@@ -184,15 +184,15 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
   `color(srgb …)` via a 1×1 canvas, composites the soft tint over surface, asserts >= 4.5:1 for every role × skin
   × theme × text kind + the soft hover/active tint + the bare-block baked path. `quiet` is asserted like the rest (its
   0.85 fade is the lightest that measures AA). Min observed ~4.55:1.
-- **Runtime theme toggle leaves BAKED component colours stale — a Chromium bug, fixed in JS, not CSS.**
+- **Runtime theme toggle leaves BAKED component colors stale — a Chromium bug, fixed in JS, not CSS.**
   Flipping the `ori-theme_dark` class at runtime changes the inherited role tokens, but Chromium MISSES the
   style invalidation for elements that BAKE a resolved alias into an element-scoped custom property consumed
   through a `var()` chain — i.e. **every styled component** (`--ori-color` / `--ori-color-text` baked on the
   element → `--ori-variant-*` → the longhand). The element's cached computed style is never marked dirty, so it
-  AND its paint keep the PREVIOUS theme's colour until the box is rebuilt. Confirmed real in Chromium **148 and
+  AND its paint keep the PREVIOUS theme's color until the box is rebuilt. Confirmed real in Chromium **148 and
   149** (not a version artifact / not fixed upstream yet). Scope is broad: solid/soft BACKGROUNDS and the role
   text all stale; a bare direct read (`color: var(--ori-color-primary)`, no element-level bake) flips fine — the
-  baking + shadowing is the trigger. NOT caused by the relative-colour `-text` tone (a literal reproduces it),
+  baking + shadowing is the trigger. NOT caused by the relative-color `-text` tone (a literal reproduces it),
   NOT alpha-9-specific; emergent in the FULL cascade WITH a consumer's unlayered brand override (a bare
   default-skin page does not reproduce). **What does NOT fix it:** `@property` registration (source token, full
   chain, or every flipping alias — all tested), literal per-theme tones, a plain reflow, re-toggling the class, or
@@ -423,9 +423,9 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   typing / ArrowDown / trigger-click, **not** focus or input-click alone. Menu: the SFC calls `.focus()`
   on `[data-highlighted]`, so assert `toBeFocused()`. Don't cross-assert the two models.
 - **`.ori-anchored` placement is the 12-value `<side>[-start|-end]` grid.** A **bare side centers** on the
-  cross axis (`_bottom` = below-centre); `-start` / `-end` align to the trigger's start / end edge. So
+  cross axis (`_bottom` = below-center); `-start` / `-end` align to the trigger's start / end edge. So
   OriPopover / OriMenu / Combobox default to **`bottom-start`** (below, start-aligned) — a plain `bottom`
-  would centre. The 12 `position-area` mappings are Playwright-verified (`e2e/placement-grid.spec.ts`);
+  would center. The 12 `position-area` mappings are Playwright-verified (`e2e/placement-grid.spec.ts`);
   the shared prop type is `AnchoredPlacement` (`packages/vue/src/types.ts`).
 - **happy-dom does NOT support `var()` fallbacks** — `var(--missing, sentinel)` computes to `''`, so
   unresolvable-token detection can't use a fallback argument; the token bridge wraps its probe in a
@@ -555,7 +555,7 @@ prop, not "is it mentioned in the template?".
 A negative test of the shape "omit the roving `tabindex` and assert focus does NOT move" passes in a real
 browser and FAILS here: happy-dom will happily focus a non-focusable element, so the assertion cannot be
 falsified. Pin such a requirement by ATTRIBUTE in the unit suite (exactly one item carries `tabindex="0"`,
-the rest `-1`) and put the actual focus behaviour in the Playwright e2e, which runs real Chromium. The same
+the rest `-1`) and put the actual focus behavior in the Playwright e2e, which runs real Chromium. The same
 caveat applies to anything else that depends on the focusability rules rather than on the DOM shape.
 
 ## The Svelte `onDestroy` leg of any composable is DEAD in the vitest suite
@@ -573,17 +573,17 @@ deleting the explicit escape hatch just because no test covers it.
 The working tree is CRLF (git converts on checkout). A throwaway script that does
 `src.replace('foo\nbar', …)` matches nothing, writes the file back unchanged, and the "negative control"
 that was supposed to go red passes instead — a FALSE PASS that looks like the code was already correct.
-Normalise first (`raw.includes('\r\n') ? raw.replace(/\r\n/g, '\n') : raw`), edit, then write back in the
+Normalize first (`raw.includes('\r\n') ? raw.replace(/\r\n/g, '\n') : raw`), edit, then write back in the
 original ending. Better: use the Write/Edit tools rather than heredoc-driven scripts — a quoted bash
 heredoc also collapses one level of backslashes, which silently breaks regexes and string literals written
 that way.
 
-## A contrast probe must pair its surface background with a text colour
+## A contrast probe must pair its surface background with a text color
 
 The Chromium contrast guard built its probe surface with a background and no `color`, so any cell that did
-not set its own colour was measured against the UA default foreground — pure black in light, pure white
+not set its own color was measured against the UA default foreground — pure black in light, pure white
 under `color-scheme: dark`. That is the most flattering foreground that exists, and it hid nothing for
-years only because every original cell set its own colour. The first inherited-text cells (form labels,
+years only because every original cell set its own color. The first inherited-text cells (form labels,
 hints, control values) exposed it: the hint's true worst reading is 4.87:1, not the 7.43:1 the unpaired
 probe reported. Every real surface block in the library declares both (card, dialog, menu, popover, the
 combobox listbox), so the probe must too. **Rule: a test surface that stands in for a component surface has
@@ -601,8 +601,8 @@ variant: the border measured `0,82,136` (dark blue on a dark surface, apparently
 real value after a clean load is 12.17:1. Measure after a page load with the theme already applied, which
 is exactly what the e2e specs do and why they are the authority for theme-dependent numbers.
 
-Also note `getComputedStyle` returns `oklch(...)` / `oklab(...)` for relative-colour declarations, and
-`color-mix()` values come back uncomposited. To get a true sRGB triple, paint the colour on a 1×1 canvas
+Also note `getComputedStyle` returns `oklch(...)` / `oklab(...)` for relative-color declarations, and
+`color-mix()` values come back uncomposited. To get a true sRGB triple, paint the color on a 1×1 canvas
 over the real backdrop and read the pixel — a parser that assumes `rgb()` silently produces nonsense
 (computing luminance from `oklch(0.86 0.19 27.5)` as if it were RGB yields a 1.1:1 "failure" that is not
 real).
@@ -630,15 +630,15 @@ Three things to remember:
 - **Bind the guard only where it is needed.** `:onClickCapture="as === 'button' ? undefined : onClickCapture"`
   — a real `<button>` is stopped at the source by its `disabled` attribute and must not carry the listener.
 - **The camelCase spelling is load-bearing.** `:on-click-capture` does NOT compile to a capture listener
-  (Vue only recognises the camelCase DOM prop here), so `vue/attribute-hyphenation` is configured to ignore
+  (Vue only recognizes the camelCase DOM prop here), so `vue/attribute-hyphenation` is configured to ignore
   `onClickCapture` in `eslint.config.mjs` rather than "fixed". Auto-fixing that warning silently removes the
   guard while leaving a binding that looks right.
 - **`@click.capture` cannot be made conditional**, which is why the explicit prop binding exists at all.
 
-## Resolving a computed colour: canvas, not a colour library
+## Resolving a computed color: canvas, not a color library
 
-`getComputedStyle` returns `oklch(…)` / `oklab(…)` for relative-colour declarations and serialises
-`color-mix()` as `color(srgb r g b / a)`. colord cannot parse that serialisation — it silently returns
+`getComputedStyle` returns `oklch(…)` / `oklab(…)` for relative-color declarations and serializes
+`color-mix()` as `color(srgb r g b / a)`. colord cannot parse that serialization — it silently returns
 opaque black, which made a 2.1:1 switch thumb measure 21:1 and look perfect. Paint the value on a 1×1
 canvas over the real backdrop and read the pixel instead; that also composites translucent layers, which a
 parser cannot do at all. (Pair this with the entry above about runtime theme toggling: measure after a
@@ -664,7 +664,7 @@ Three things that made it expensive to diagnose (it half-published 1.0.0-rc.18):
 - **The gate does not cover it.** Everything ahead of the publish built, measured and smoke-installed a
   `dist`; `prepack` then threw that away and rebuilt, so the published bytes were never the measured
   bytes. Publishing with `npm_config_ignore_scripts=true` after one ordered build fixes both problems at
-  once — the artifact ships as gated, and nothing rebuilds under a neighbour's feet.
+  once — the artifact ships as gated, and nothing rebuilds under a neighbor's feet.
 
 ## Widening a `vi.waitFor` window past the test's own budget does nothing
 
@@ -675,7 +675,7 @@ the clock. A waitFor window is only real if the test states a budget comfortably
 (`it(name, fn, 20_000)`).
 
 Worth knowing alongside it: a suite that is green in isolation and flaky in the full run is usually
-saying the budget is too tight, not that the behaviour is wrong. `tests/token.test.ts` waits on
+saying the budget is too tight, not that the behavior is wrong. `tests/token.test.ts` waits on
 happy-dom MutationObserver deliveries, which are macrotasks — 20 runs of the file alone never flake,
 while 65 files across parallel workers can starve a worker for seconds. Raise the budget on the tests
 that genuinely wait; raising `testTimeout` globally hides real hangs everywhere else.
@@ -708,7 +708,7 @@ What makes it expensive is that it is invisible to every guard that does not ras
 
 - the **token test** walks role/on-role PAIRS and never renders — the button's pair measured 5.43:1 and was
   telling the truth;
-- **axe** reads declared colours, so it sees the same honest pair;
+- **axe** reads declared colors, so it sees the same honest pair;
 - the **e2e contrast probe** did rasterise, but no probe had an opacity ANCESTOR — it only ever carried its
   own fade. A defect class the fixture cannot express is a defect class the suite cannot catch.
 

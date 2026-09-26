@@ -12,6 +12,6 @@
 - **Action.** `toast({ text, action: { label: 'Undo', onClick } })` renders an action button. Pressing it
   runs `onClick` and dismisses the toast. `OriToast` gains an `actionLabel` prop and an `action` event,
   and `@oriui/css` an `.ori-toast__action` part.
-- **Reachable by keyboard.** The toaster is now a labelled region, "Notifications (F8)" by default, and
+- **Reachable by keyboard.** The toaster is now a labeled region, "Notifications (F8)" by default, and
   `F8` moves focus to it. Both are props: `label` and `hotkey` (`''` turns the hotkey off).
 - `@oriui/css`'s `toast.css` now imports `button.css`, so the entry stays self-contained.

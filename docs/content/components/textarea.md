@@ -4,13 +4,13 @@ title: Textarea
 
 # Textarea
 
-A labelled, accessible multiline text field with `v-model`. State is expressed through real
+A labeled, accessible multiline text field with `v-model`. State is expressed through real
 attributes — the native `disabled`, `aria-invalid` when there is an error, and an `aria-describedby`
 that points at the rendered hint or error. The label is wired to the field with `for`/`id`
 (auto-generated via `useId` when you don't pass one). Unlike a single-line input the field has no
 fixed height — it grows from a `rows`-based min-height and stays user-resizable.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

@@ -13,7 +13,7 @@ export interface RadioOption {
 // OriRadioGroup — a "choose one" control. A role="radiogroup" container names the set via
 // aria-labelledby; each option is a real <input type="radio"> sharing one `name` (so the browser
 // enforces single-select + native form submission), visually hidden over a styled circle. v-model
-// holds the selected value. Unlabelled groups can pass aria-label, which falls through to the root.
+// holds the selected value. Unlabeled groups can pass aria-label, which falls through to the root.
 defineOptions({ inheritAttrs: false })
 
 const {
@@ -39,7 +39,7 @@ const {
 const model = defineModel<string | number>()
 
 // When nested in an OriField, the field owns the group's name + a11y wiring; standalone the group
-// wires its own (behaviour unchanged). A radiogroup names itself via aria-labelledby, so it points at
+// wires its own (behavior unchanged). A radiogroup names itself via aria-labelledby, so it points at
 // the field's label id rather than a `<label for>`.
 const field = useOriField()
 const inField = Boolean(field)

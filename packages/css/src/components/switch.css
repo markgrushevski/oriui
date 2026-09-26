@@ -65,12 +65,12 @@
     }
 
     /* The thumb is the STATE indicator, so WCAG 1.4.11 wants it >= 3:1 against the track it sits in —
-       and the track changes colour between states, so no single thumb colour can clear both. (Measured:
+       and the track changes color between states, so no single thumb color can clear both. (Measured:
        a fixed white thumb is 1.85-2.15:1 on the off track in light, and 1.13-2.98:1 on the on track in
        dark, across the eight skins.) Each state therefore pairs the thumb with its own track:
 
          off — the track is `currentcolor 30%`, so the ink at full strength is a structural 70%
-               separation from it, in any theme, skin or ambient colour. 6.3:1 or better everywhere.
+               separation from it, in any theme, skin or ambient color. 6.3:1 or better everywhere.
          on  — the track is `var(--ori-color)`, whose contrast-checked partner is `var(--ori-color-on)`.
                That pairing is >= 4.5:1 by construction and is what tests/tokens.contrast.test.ts
                already measures for every role x skin x theme.

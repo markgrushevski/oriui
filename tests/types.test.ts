@@ -22,7 +22,7 @@ import {
  *      a test, not the docs. They are gone; the `@ts-expect-error` block below fails if one comes back
  *      (either by being re-added, or by a barrel change re-exposing it).
  *   2. WHAT each surviving name means. Each was an `interface` whose keys were read back out with
- *      `keyof` — a record whose VALUES nothing ever used, modelling a set the long way round. They are
+ *      `keyof` — a record whose VALUES nothing ever used, modeling a set the long way round. They are
  *      plain string-literal unions now, and the assertions below pin every member, so the flattening
  *      cannot have quietly dropped a scale step.
  *

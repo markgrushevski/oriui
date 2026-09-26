@@ -29,7 +29,7 @@ describe('color — hsvToRgb', () => {
         expect(hsvToRgb(60, 1, 1)).toEqual({ r: 255, g: 255, b: 0 }) // yellow
     })
 
-    it('value 0 is black, saturation 0 is a grey at value', () => {
+    it('value 0 is black, saturation 0 is a gray at value', () => {
         expect(hsvToRgb(200, 1, 0)).toEqual({ r: 0, g: 0, b: 0 })
         expect(hsvToRgb(200, 0, 1)).toEqual({ r: 255, g: 255, b: 255 })
         expect(hsvToRgb(200, 0, 0.5)).toEqual({ r: 128, g: 128, b: 128 })
@@ -46,7 +46,7 @@ describe('color — rgbToHsv (+ hue preservation)', () => {
     })
 
     it('preserves the previous hue for a grayscale input (chroma 0 has no hue)', () => {
-        // Dragging the area to a grey must NOT reset the hue slider.
+        // Dragging the area to a gray must NOT reset the hue slider.
         expect(rgbToHsv({ r: 128, g: 128, b: 128 }, 210).h).toBe(210)
         expect(rgbToHsv({ r: 0, g: 0, b: 0 }, 42).h).toBe(42)
     })

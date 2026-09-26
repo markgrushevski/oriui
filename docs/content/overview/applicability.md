@@ -6,7 +6,7 @@ title: Applicability
 
 oriUI is three independently-consumable layers woven around one token contract. The promise is
 **prototype fast, scale without rewriting**: reach for the styled Vue components first, drop to the
-headless behaviour when you need control, or drop to the standalone CSS when you leave Vue entirely —
+headless behavior when you need control, or drop to the standalone CSS when you leave Vue entirely —
 without changing your design tokens. This page maps each layer to where it runs.
 
 ## Layer × environment
@@ -27,7 +27,7 @@ without changing your design tokens. This page maps each layer to where it runs.
    parity; the core itself imports no framework, and each framework is an **optional** peer dependency.
 2. The core is framework-agnostic building blocks (state machine + prop-getters), so it runs anywhere
    JavaScript does — but you wire the DOM binding yourself. There is no no-framework / htmx adapter yet;
-   use the `.ori-*` classes for the look and hand-roll the small amount of behaviour.
+   use the `.ori-*` classes for the look and hand-roll the small amount of behavior.
 3. Inside an [Astro island](https://docs.astro.build/en/guides/framework-components/) for that framework
    (`client:load` / `client:visible`); Astro renders the Vue, Svelte or React component as usual.
 

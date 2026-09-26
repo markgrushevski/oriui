@@ -7,10 +7,10 @@ title: Slider
 A styled, accessible range control built on a native `<input type="range">`. Because the
 underlying element is real HTML, the browser supplies `role="slider"`, the full keyboard contract
 (arrow keys, Home/End, PageUp/PageDown), and screen-reader value announcements for free — no
-JavaScript bridge needed. Colour and the filled-track portion are driven by CSS custom properties;
+JavaScript bridge needed. Color and the filled-track portion are driven by CSS custom properties;
 `v-model` carries a `number`.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -241,7 +241,7 @@ browser settles the value on every keystroke.
 
 ## Common patterns
 
-A settings panel with labelled sliders — the most common real-world composition.
+A settings panel with labeled sliders — the most common real-world composition.
 
 ::example
 :ori-slider{:model-value="75" label="Volume" :show-value="true"}
@@ -282,7 +282,7 @@ A settings panel with labelled sliders — the most common real-world compositio
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - Renders a real `<input type="range">`, so the browser supplies `role="slider"`, the accessible
   value (`aria-valuenow`, `aria-valuemin`, `aria-valuemax`), and value announcements to screen
@@ -293,7 +293,7 @@ render the same attributes and keyboard behaviour.
   `showValue` is a visual supplement, not a name source — pair it with `label` or `aria-label`.
 - `disabled` is the real native attribute; the wrapper receives `data-disabled` for CSS only.
 - The focus ring appears on the thumb (`:focus-visible`) and uses `--ori-color`, so it always
-  matches the active colour role.
+  matches the active color role.
 - For the HTML layer, set `--ori-slider-pct` inline to `((value - min) / (max - min)) * 100%` so
   the WebKit gradient fill reflects the current value; Firefox reads `::-moz-range-progress`
   directly from the element value and needs no custom property.

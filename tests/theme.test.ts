@@ -77,7 +77,7 @@ describe('applyTheme (core)', () => {
         expect(document.body.style.display).toBe('flex')
     })
 
-    it('honours a custom root and classPrefix', () => {
+    it('honors a custom root and classPrefix', () => {
         const root = document.createElement('div')
         document.body.appendChild(root)
         applyTheme('dark', { root, classPrefix: 'theme-', flushTarget: null })

@@ -20,7 +20,7 @@ export interface DisclosureControl {
 }
 
 /**
- * A headless behaviour implementation. Swap the engine — our native `../core` one, a Zag-backed one, or a
+ * A headless behavior implementation. Swap the engine — our native `../core` one, a Zag-backed one, or a
  * user-supplied one — without changing component markup. Choose it ONCE at the app root: in React the
  * resolved adapter runs hooks, so it must be stable for a component's lifetime, not a per-render toggle
  * (see plugin.ts + DECISIONS.md).
@@ -124,9 +124,9 @@ export interface MenuControl {
 export type MenuAdapter = (options: UseMenuOptions) => MenuControl
 
 /**
- * The set of behaviours a React app can swap. Every entry is optional — an omitted one falls back to the
+ * The set of behaviors a React app can swap. Every entry is optional — an omitted one falls back to the
  * built-in native (`../core`) adapter, so a component works with no configuration and an app can replace one
- * behaviour (a Zag-backed or custom engine) without touching component markup. (React constraint: the
+ * behavior (a Zag-backed or custom engine) without touching component markup. (React constraint: the
  * chosen adapter is resolved once and must be stable for a component's lifetime — see DECISIONS.md.)
  */
 export interface HeadlessAdapters {

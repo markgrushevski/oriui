@@ -2,7 +2,7 @@
 '@oriui/css': patch
 ---
 
-**Colour correctness sweep** — four defects where a colour could not reach the theme it was rendered
+**Color correctness sweep** — four defects where a color could not reach the theme it was rendered
 in. Every ratio below is a computed-style measurement in real Chromium over the full cascade, eight
 skins × both themes, compositing each translucent layer onto what it actually sits on.
 
@@ -18,14 +18,14 @@ the dark block, and the elevation shadows gained the same light selector. One bl
 copies of twenty lines — the duplication is what let the two halves drift apart in the first place.
 All eighteen readings across page / dark-subtree / light-subtree now pass at 7.61:1 or better.
 
-**Three blocks baked literal colours no theme could reach.** The tooltip chip was the neutral ramp, so
+**Three blocks baked literal colors no theme could reach.** The tooltip chip was the neutral ramp, so
 it measured **1.04–1.11:1** against the dark page it floated over — a chip invisible against its own
 backdrop, contradicting the comment above it. It now reads the page inverted (`--ori-color-on-background`
 on `--ori-color-background`), which is a contrast-checked pairing by construction: **13.89:1**. The
 avatar's `#00000018` tint was a black veil that vanished on a dark page; it derives from the ambient ink
 like every other structural neutral. The switch thumb was `#ffffff`: **1.85–2.15:1** against the off
 track in light, and **1.13–2.98:1** against the on track in dark. The thumb is the state indicator and
-the track changes colour between states, so no single thumb colour can clear WCAG 1.4.11's 3:1 bar for
+the track changes color between states, so no single thumb color can clear WCAG 1.4.11's 3:1 bar for
 both — it now pairs with its own track (the ink when off, `--ori-color-on` when on, which is the
 contrast-checked partner of the `--ori-color` the track paints). Worst reading is now 4.91:1.
 
@@ -42,11 +42,11 @@ outline variant already set. Worst reading is now 6.53:1.
 `currentcolor`. Surface now matches them. It renders byte-identically today (verified across all
 sixteen skin/theme combinations) — the point is that one job stops having two answers, and the hairline
 follows a `color` the consumer sets. No new public token: naming a neutral/structural token is an API
-decision, and `currentcolor` already adapts to theme, skin and ambient colour without one.
+decision, and `currentcolor` already adapts to theme, skin and ambient color without one.
 
 Three new guards in the unit suite keep these closed, each with a self-check so a guard that stopped
 seeing anything cannot pass silently: a theme-shared status role may not be painted as a border,
-outline or focus ring (the four per-theme roles still may, so the colour picker's primary outline stays
+outline or focus ring (the four per-theme roles still may, so the color picker's primary outline stays
 legitimate); whatever the dark theme rule declares, the light rule declares too; and a token deriving
 from a theme-varying token must itself be theme-scoped. "Theme-varying" is discovered from the
 stylesheet, never hand-listed. Against the pre-fix files the guards report 3 failures and 6 offending

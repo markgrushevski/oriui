@@ -41,16 +41,16 @@ Pass an options object (or a getter returning one, to stay reactive):
 A `DialogControl` — the open state plus the prop bags you bind to each part. Every `*Props` value is a
 `ComputedRef`; bind it with `v-bind`.
 
-| Property            | Type                      | Description                                                                                                                             |
-| ------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `open`              | `ComputedRef<boolean>`    | Current open state.                                                                                                                     |
-| `setOpen(open)`     | `(open: boolean) => void` | Open / close imperatively.                                                                                                              |
-| `toggle()`          | `() => void`              | Flip the open state.                                                                                                                    |
-| `triggerProps`      | `ComputedRef<object>`     | The control that opens the dialog.                                                                                                      |
-| `dialogProps`       | `ComputedRef<object>`     | The `<dialog>` element: `role`, `aria-modal`, labelling, and the `close` / `cancel` / backdrop-click handlers that keep `open` in sync. |
-| `titleProps`        | `ComputedRef<object>`     | Wires the accessible name (`aria-labelledby`).                                                                                          |
-| `descriptionProps`  | `ComputedRef<object>`     | Wires the accessible description (`aria-describedby`).                                                                                  |
-| `closeTriggerProps` | `ComputedRef<object>`     | The close control.                                                                                                                      |
+| Property            | Type                      | Description                                                                                                                            |
+| ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`              | `ComputedRef<boolean>`    | Current open state.                                                                                                                    |
+| `setOpen(open)`     | `(open: boolean) => void` | Open / close imperatively.                                                                                                             |
+| `toggle()`          | `() => void`              | Flip the open state.                                                                                                                   |
+| `triggerProps`      | `ComputedRef<object>`     | The control that opens the dialog.                                                                                                     |
+| `dialogProps`       | `ComputedRef<object>`     | The `<dialog>` element: `role`, `aria-modal`, labeling, and the `close` / `cancel` / backdrop-click handlers that keep `open` in sync. |
+| `titleProps`        | `ComputedRef<object>`     | Wires the accessible name (`aria-labelledby`).                                                                                         |
+| `descriptionProps`  | `ComputedRef<object>`     | Wires the accessible description (`aria-describedby`).                                                                                 |
+| `closeTriggerProps` | `ComputedRef<object>`     | The close control.                                                                                                                     |
 
 ## Usage
 
@@ -189,7 +189,7 @@ The native `<dialog>` carries the WAI-ARIA dialog contract; the prop bags comple
 - `triggerProps` carry the `aria-*` attributes the open control needs.
 - `closeTriggerProps` carry the close control's wiring; give it an accessible name (e.g.
   `aria-label="Close"`).
-- The live behaviour — focus trap, scroll lock, returning focus to the trigger on close — comes from
+- The live behavior — focus trap, scroll lock, returning focus to the trigger on close — comes from
   `showModal()`. A non-modal `show()` (`modal: false`) does not trap focus or block the page.
 
 | Key         | Action                                                                     |

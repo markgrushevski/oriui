@@ -98,7 +98,7 @@ describe('React normalizeProps vs. the events the core actually emits', () => {
 
             render(createElement('div', { ...normalized, 'data-testid': 'probe' }))
 
-            // The core spells handlers `on` + the native event name, capitalised (`onPointermove` ->
+            // The core spells handlers `on` + the native event name, capitalized (`onPointermove` ->
             // `pointermove`), so the event to dispatch is derived too — no second hand-written table.
             const nativeEvent = key.slice(2).toLowerCase()
             screen.getByTestId('probe').dispatchEvent(new Event(nativeEvent, { bubbles: true }))

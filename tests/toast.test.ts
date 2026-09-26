@@ -11,7 +11,7 @@ afterEach(() => {
 })
 
 // ---------------------------------------------------------------------------
-// useToast() — store behaviour
+// useToast() — store behavior
 // ---------------------------------------------------------------------------
 
 describe('useToast() store', () => {
@@ -489,7 +489,7 @@ describe('OriToaster component', () => {
         wrapper.unmount()
     })
 
-    it('is a labelled region that names its hotkey and can take focus', async () => {
+    it('is a labeled region that names its hotkey and can take focus', async () => {
         const wrapper = mount(OriToaster, { props: { label: 'Alerts', hotkey: 'F6' }, attachTo: document.body })
         await nextTick()
         const region = document.body.querySelector('.ori-toaster')

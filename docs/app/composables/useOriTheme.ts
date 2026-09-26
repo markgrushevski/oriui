@@ -58,7 +58,7 @@ export function useOriTheme() {
         theme.value = value
         localStorage.setItem('ori-theme', value)
         applyTheme(value)
-        // Runtime theme change: re-resolve baked component colours (Chromium invalidation fix).
+        // Runtime theme change: re-resolve baked component colors (Chromium invalidation fix).
         // Not needed in init() — that runs against a fresh render (theme already set pre-paint).
         flushThemeInvalidation(document.body)
     }

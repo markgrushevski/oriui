@@ -4,7 +4,7 @@ import type { MaybeReactive } from './use-store'
 
 // The Svelte adapter mirrors the Vue contract (packages/headless/src/vue/contract.ts) but returns
 // Svelte stores (`Readable`) instead of Vue `ComputedRef`s, and takes plain options (no
-// `MaybeRefOrGetter`). The behaviour lives in the shared `../core` engine — only the reactive wrapper
+// `MaybeRefOrGetter`). The behavior lives in the shared `../core` engine — only the reactive wrapper
 // differs per framework.
 
 export interface UseDisclosureOptions {

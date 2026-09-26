@@ -5,7 +5,7 @@
    Layer: ori.tokens
    ============================================================ */
 @layer ori.tokens {
-    /* The LIGHT set. Scoped to the same three selectors as the derived colour tones in
+    /* The LIGHT set. Scoped to the same three selectors as the derived color tones in
        _themes-color-tokens.css, not to a bare `:root`: a shadow declared only at the root inherits
        into a `.ori-theme_light` subtree unchanged, so a light region inside a dark page kept the
        dark theme's heavy shadows. */

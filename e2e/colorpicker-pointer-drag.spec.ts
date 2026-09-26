@@ -28,10 +28,10 @@ test.describe('OriColorPicker — pointer drag on the SV area (real Chromium)', 
         // …but the commit fired exactly once for the whole drag (a single undo entry).
         await expect(page.getByTestId('cp-changes')).toHaveText('1')
 
-        // The color moved away from the initial grey toward a bright, saturated color (top-right corner).
+        // The color moved away from the initial gray toward a bright, saturated color (top-right corner).
         expect(await page.getByTestId('cp-model').textContent()).not.toBe('#808080')
 
-        // The area thumb followed the pointer: left (saturation) is now high, up from 0% at the grey start.
+        // The area thumb followed the pointer: left (saturation) is now high, up from 0% at the gray start.
         const style = (await page.locator('.ori-color-picker__area-thumb').getAttribute('style')) ?? ''
         const left = Number(style.match(/left:\s*([\d.]+)%/)?.[1])
         expect(left).toBeGreaterThan(50)

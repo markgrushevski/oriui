@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest'
 
 /**
  * Published-tarball guard for the three packages. npm builds a tarball from `files` PLUS a small
- * always-included set — `package.json`, `README*`, `LICENSE`/`LICENCE`, and the `main` entry.
+ * always-included set — `package.json`, `README*`, `LICENSE`/`LICENSE`, and the `main` entry.
  * `CHANGELOG.md` is NOT in that set. Two consequences this file pins down:
  *
  *  - a LICENSE has to physically sit in the package directory (no `files` entry needed, npm adds it)

@@ -8,7 +8,7 @@ An accessible loading indicator — renders `role="status"` with an `aria-label`
 so assistive technology announces the busy state without any extra work. Use it standalone for a
 page-level or section-level loader, or embed it inline inside a button or label.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -146,12 +146,12 @@ A full-page loader and a button-level spinner — the everyday compositions.
 #vue
 
 ```vue
-<!-- page-level loader, centred by the parent -->
+<!-- page-level loader, centered by the parent -->
 <div style="display: flex; justify-content: center; padding: 2rem">
     <OriSpinner size="xl" color="primary" label="Loading page" />
 </div>
 
-<!-- spinner hidden inside a labelled button (parent owns the announcement) -->
+<!-- spinner hidden inside a labeled button (parent owns the announcement) -->
 <button class="ori-button …" aria-busy="true">
     <OriSpinner :inline="true" size="sm" aria-hidden="true" />
     <span>Saving</span>

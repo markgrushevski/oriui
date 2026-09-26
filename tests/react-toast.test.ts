@@ -123,7 +123,7 @@ describe('React useToast', () => {
         expect(result.current.toasts).toHaveLength(1)
         for (const key of keys) expect(Object.is(result.current[key], first[key])).toBe(true)
 
-        // Module scope, not per-component memoisation: a second caller gets the very same functions.
+        // Module scope, not per-component memoization: a second caller gets the very same functions.
         const other = renderHook(() => useToast())
         for (const key of keys) expect(Object.is(other.result.current[key], first[key])).toBe(true)
     })

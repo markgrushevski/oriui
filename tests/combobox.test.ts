@@ -70,7 +70,7 @@ describe('combobox machine', () => {
 })
 
 // ---------------------------------------------------------------------------
-// Styled OriCombobox (behaviour + a11y through the real composable + DOM)
+// Styled OriCombobox (behavior + a11y through the real composable + DOM)
 // ---------------------------------------------------------------------------
 describe('OriCombobox', () => {
     const mountCb = (props = {}) => mount(OriCombobox, { props: { options: OPTIONS, label: 'Fruit', ...props } })
@@ -116,7 +116,7 @@ describe('OriCombobox', () => {
 
         expect(label.find('.rich-label').exists()).toBe(true)
         expect(label.attributes('for')).toBe(wrapper.find('input').attributes('id'))
-        // the listbox stays labelled by the (slotted) label
+        // the listbox stays labeled by the (slotted) label
         expect(listbox.attributes('aria-labelledby')).toBe(label.attributes('id'))
     })
 
@@ -246,7 +246,7 @@ describe('OriCombobox', () => {
 
     it('a pointerdown on a blank (non-focusable) outside area closes the open listbox', async () => {
         // A click on empty page space blurs the input to <body> and fires no focusin, so focus-out alone
-        // would miss it — pointerDownOutside covers this (the behaviour the old @blur had).
+        // would miss it — pointerDownOutside covers this (the behavior the old @blur had).
         const outside = document.createElement('div') // non-focusable
         document.body.appendChild(outside)
         const wrapper = mount(OriCombobox, { props: { options: OPTIONS, label: 'Fruit' }, attachTo: document.body })
@@ -425,7 +425,7 @@ describe('OriCombobox', () => {
 
         // mergeProps chained the caller's listener onto the headless one rather than dropping it
         expect(onInput).toHaveBeenCalled()
-        // and the headless filter/open behaviour still runs
+        // and the headless filter/open behavior still runs
         expect(wrapper.find('input').attributes('aria-expanded')).toBe('true')
         expect(wrapper.findAll('[role="option"]').map((o) => o.text())).toEqual(['Apple', 'Grape'])
     })
@@ -454,7 +454,7 @@ describe('OriCombobox', () => {
         expect(wrapper.find('.custom-option').exists()).toBe(false)
     })
 
-    it('has no axe violations (labelled, with a hint)', async () => {
+    it('has no axe violations (labeled, with a hint)', async () => {
         const wrapper = mount(OriCombobox, {
             props: { options: OPTIONS, label: 'Fruit', hint: 'Pick a fruit' },
             attachTo: document.body

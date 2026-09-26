@@ -33,7 +33,7 @@
         --ori-color-on-background-dark: #f4f1de;
     }
 
-    /* Indigo — calm confident indigo on cool grey (oriUI's previous default). */
+    /* Indigo — calm confident indigo on cool gray (oriUI's previous default). */
     :root[data-ori-skin='indigo'] {
         --ori-color-primary-light: #4f46e5;
         --ori-color-on-primary-light: #ffffff;

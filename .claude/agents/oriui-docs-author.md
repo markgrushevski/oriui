@@ -14,7 +14,7 @@ READ first: `docs/content/components/button.md` (the template exemplar), the com
 Page skeleton (mirror Button):
 
 1. Frontmatter `title` → intro + the "live, switchable Vue/HTML" note.
-2. **Examples** — dense, DaisyUI-style: every variant / colour / size / state + meaningful
+2. **Examples** — dense, DaisyUI-style: every variant / color / size / state + meaningful
    combinations + a real-world recipe. Each is an `::example` block with `#vue` and `#html` tabs.
 3. **Props** table (`type` · `default` · `description`) — read straight from the SFC; do **not**
    invent props.

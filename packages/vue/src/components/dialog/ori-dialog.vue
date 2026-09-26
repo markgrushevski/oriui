@@ -86,7 +86,7 @@ watchPostEffect(() => {
 })
 
 // Accessible name. The adapter's `aria-labelledby` points at the <h2>, but that <h2> would be EMPTY
-// when no `title` / `#title` is given — a dialog "labelled" by an empty node (an AT announces an empty
+// when no `title` / `#title` is given — a dialog "labeled" by an empty node (an AT announces an empty
 // name). So render the <h2> only when there IS a title; without one the labelledby becomes a dangling
 // reference the browser ignores, and a consumer `aria-label` (merged from $attrs) names the dialog
 // instead. The adapter's props are still applied verbatim (adapter transparency), just merged after

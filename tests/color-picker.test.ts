@@ -18,7 +18,7 @@ const press = (el: Element, key: string): boolean =>
     el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }))
 
 describe('OriColorPicker — structure & model', () => {
-    it('renders the area (2 hidden range channels), a hue slider, a hex field, and a labelled group', () => {
+    it('renders the area (2 hidden range channels), a hue slider, a hex field, and a labeled group', () => {
         const wrapper = mount(OriColorPicker, { props: { modelValue: '#3366ff', label: 'Stroke color' } })
 
         expect(wrapper.attributes('role')).toBe('group')
@@ -88,7 +88,7 @@ describe('OriColorPicker — area keyboard (each hidden range owns one axis)', (
 
         expect(channels(wrapper)[0].attributes('aria-orientation')).toBeUndefined() // saturation: horizontal
         expect(channels(wrapper)[1].attributes('aria-orientation')).toBe('vertical')
-        // aria-valuetext carries the axis % plus the settled hex (so the colour is spoken, not just "40%")
+        // aria-valuetext carries the axis % plus the settled hex (so the color is spoken, not just "40%")
         expect(channels(wrapper)[0].attributes('aria-valuetext')).toMatch(/%,\s*#[0-9a-f]{6}/)
     })
 
@@ -252,7 +252,7 @@ describe('OriColorPicker — controlled re-sync', () => {
         await wrapper.setProps({ modelValue: emitted }) // parent echoes it back
         await wrapper.vm.$nextTick()
 
-        // the field shows exactly the echoed value — the guard recognised its own emit and left hsva alone
+        // the field shows exactly the echoed value — the guard recognized its own emit and left hsva alone
         expect((hexInput(wrapper).element as HTMLInputElement).value).toBe(emitted)
     })
 })
@@ -370,7 +370,7 @@ describe('OriColorPicker — disabled & axe', () => {
         expect(wrapper.emitted('change')).toBeFalsy()
     })
 
-    it('has no axe violations (labelled, with presets)', async () => {
+    it('has no axe violations (labeled, with presets)', async () => {
         const wrapper = mount(OriColorPicker, {
             props: { modelValue: '#3366ff', label: 'Stroke color', presets: ['#ff0000', '#00ff00'] },
             attachTo: document.body

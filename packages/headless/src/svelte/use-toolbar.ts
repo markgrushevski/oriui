@@ -197,7 +197,7 @@ export interface UseToolbarToggleGroupOptions {
     value: ToolbarToggleValue
     /**
      * Whether pressing the already-selected item clears it (default `true`, Radix's `type="single"`
-     * behaviour). `false` guarantees a non-empty selection — the tool-picker case: a paint app's
+     * behavior). `false` guarantees a non-empty selection — the tool-picker case: a paint app's
      * brush/eraser bar must always have exactly one tool. Under 'multiple' it pins the last value.
      */
     deselectable?: boolean

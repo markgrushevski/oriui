@@ -118,7 +118,7 @@ inverts the pairing.
 
 This works because the active alias `--ori-color-primary` is declared **and resolved at `:root`** — it
 reads `var(--ori-color-primary-light)` there (see
-[`_themes-color-tokens.css`](/guides/design-tokens#colour-three-tiers)). Override the source at `:root`
+[`_themes-color-tokens.css`](/guides/design-tokens#color-three-tiers)). Override the source at `:root`
 and the alias re-resolves, inheriting your value into every component. Overriding all four skinnable
 roles (plus their `on-` pairs, per mode) is the same move at scale — at that point consider
 [authoring a named skin](/guides/theming#authoring-a-custom-skin) instead.
@@ -129,7 +129,7 @@ A role's hue above is engineered as a **fill background** — a component paints
 non-fill button variants, the selected tab, alert, tag) through a separate, dedicated token,
 `--ori-color-<role>-text`, so that a light or saturated role never has to double as body text. It
 already derives an AA-safe tone automatically — a **relative color** that keeps the role's hue and
-chroma and clamps only its lightness, so the text reads as the same colour as the fill, just darker
+chroma and clamps only its lightness, so the text reads as the same color as the fill, just darker
 (light theme) or lighter (dark theme):
 
 ```css

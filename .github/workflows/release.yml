@@ -5,7 +5,7 @@ name: Release
 # (changeset publish) to publish the bumped packages to npm.
 #
 # Auth is npm **Trusted Publishing (OIDC)** — no token to store or rotate. One-time setup: on npmjs,
-# per package (Settings -> Trusted Publishers -> GitHub Actions), authorise this repo + the workflow
+# per package (Settings -> Trusted Publishers -> GitHub Actions), authorize this repo + the workflow
 # `release.yml`. The job requests an OIDC token via `id-token: write`; npm exchanges it for publish
 # rights and adds provenance automatically. Requires npm >= 11.5.1 (installed below).
 #

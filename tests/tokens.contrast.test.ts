@@ -5,7 +5,7 @@ import { colord, extend } from 'colord'
 import a11yPlugin from 'colord/plugins/a11y'
 
 /**
- * Design-token contrast guard. oriUI promises that every colour role ships a contrast-checked
+ * Design-token contrast guard. oriUI promises that every color role ships a contrast-checked
  * `--ori-color-on-*` pair, across light/dark and every preset skin. This test makes that promise
  * executable: it reads the token CSS, resolves `var(--ori-neutral-*)` references, and asserts the
  * WCAG contrast ratio of each role/on-role pairing meets AA for body text (>= 4.5:1). A failed
@@ -30,8 +30,8 @@ for (const [, name, hex] of baseCss.matchAll(/(--ori-neutral-\d+)\s*:\s*(#[0-9a-
     neutrals[name] = hex
 }
 
-// A colour value is usable if it's a literal hex, a literal hsl(), or a var() pointing at the neutral
-// ramp; `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colours).
+// A color value is usable if it's a literal hex, a literal hsl(), or a var() pointing at the neutral
+// ramp; `var(--ori-color-*)` alias references resolve elsewhere and are skipped (not source colors).
 function resolveValue(raw: string): string | null {
     const v = raw.trim().replace(/;$/, '')
     if (/^#[0-9a-fA-F]{3,8}$/.test(v)) return v
@@ -135,7 +135,7 @@ describe('Design-token contrast (WCAG AA for body text, >= 4.5:1)', () => {
  * its subjects FROM the stylesheets instead of a hand-kept list: it reads every CSS source in the css
  * package and fails on any `color` (or downstream text custom property) fed a raw role token. The AA
  * arithmetic for the correct `--ori-color-<role>-text` tone stays in e2e/text-contrast.spec.ts — the tone
- * is relative colour (`oklch(from … )`), which only a real engine can resolve — so what belongs here is
+ * is relative color (`oklch(from … )`), which only a real engine can resolve — so what belongs here is
  * the structural rule: a raw role is a fill BACKGROUND, never a foreground.
  */
 const ROLE_TOKEN = String.raw`--ori-color-(?:primary|secondary|success|warning|danger|info)(?:-light|-dark)?`
@@ -217,8 +217,8 @@ describe('Role tokens are never painted as foreground text', () => {
  * minimum for a UI-component boundary. The `-text` tone is the same hue with its lightness clamped per
  * theme, which is what the outline variant already reads for its border.
  *
- * The four ROLE colours (primary / secondary / surface / background) are deliberately NOT in this rule:
- * each has a per-theme source pair, so a raw role on a boundary can be theme-correct — the colour picker's
+ * The four ROLE colors (primary / secondary / surface / background) are deliberately NOT in this rule:
+ * each has a per-theme source pair, so a raw role on a boundary can be theme-correct — the color picker's
  * `outline: 2px solid var(--ori-color-primary)` is legitimate and must stay passing.
  */
 const STATUS_TOKEN = String.raw`--ori-color-(?:success|warning|danger|info)`

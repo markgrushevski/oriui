@@ -80,7 +80,7 @@ function pick(key: Framework): void {
     box-shadow: var(--ori-shadow-md);
 }
 
-/* The live preview is a canvas on the page background, so surface-coloured
+/* The live preview is a canvas on the page background, so surface-colored
    components (cards) elevate on it — a faint dot grid signals "playground". */
 .example__preview {
     display: flex;

@@ -30,7 +30,7 @@ test.describe('OriDialog — native <dialog> focus trap (real Chromium)', () => 
             return el.tagName.toLowerCase()
         })
 
-    test('opening moves focus into the dialog; aria-modal + labelling are wired', async ({ page }) => {
+    test('opening moves focus into the dialog; aria-modal + labeling are wired', async ({ page }) => {
         const trigger = page.getByTestId('open')
         await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
         await expect(trigger).toHaveAttribute('aria-expanded', 'false')

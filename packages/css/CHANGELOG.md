@@ -11,7 +11,7 @@
   `outline`) and were deliberately left alone.
 
     **Migration — values.** Every one of these is interpolated into a class name, so each is also a
-    `@oriui/css` class rename, and the colour is a public TOKEN rename:
+    `@oriui/css` class rename, and the color is a public TOKEN rename:
 
     | Before                       | After             | Also renamed                                                                                                            |
     | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -67,7 +67,7 @@
   but its boundary.
 
     It is now 60%, chosen from a sweep rather than picked: 50% still failed 2 of 32, 55% cleared
-    everything at 3.19 — too close to the bar for a colour derived from the ambient ink, which a custom
+    everything at 3.19 — too close to the bar for a color derived from the ambient ink, which a custom
     skin can move — and 60% clears at **3.69**. The edge stays out of the shared outline tokens on
     purpose; those are tuned lighter, and this is the heaviest structural weight in the library.
 
@@ -172,7 +172,7 @@
     a group fade over someone else's content. Worst reading inside a dialog is now 4.87:1.
 
     Neither existing guard could see this by construction — the Node token test reads token PAIRS and never
-    renders, and an axe pass reads declared colours, not composited pixels. `e2e/text-contrast.spec.ts` gains a
+    renders, and an axe pass reads declared colors, not composited pixels. `e2e/text-contrast.spec.ts` gains a
     third test that measures a composited dialog body (128 readings) so an ancestor fade cannot return unseen.
 
 ## 1.0.0-rc.18
@@ -186,7 +186,7 @@
 
     Two weights, because there are two structural jobs: the resting hairline that separates surfaces (panels,
     menus, dividers, list rows) and the heavier edge that marks an interactive control (text fields, key caps,
-    colour swatches). Both derive from `currentcolor`, so a hairline follows the text it accompanies and a
+    color swatches). Both derive from `currentcolor`, so a hairline follows the text it accompanies and a
     themed subtree needs no per-theme re-declaration.
 
     Visible change: the hairlines that were 14% are now 12%, and the chip edges that were 20% / 25% are now
@@ -200,7 +200,7 @@
 
 ### Patch Changes
 
-- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+- 04c63bf: **The color picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
   library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
   future token with a better claim to the name) could collide with them silently. They are now
   `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
@@ -210,7 +210,7 @@
     stylesheet, and forwarded by the styled SFC — a partial rename would have left the area painting its
     fallback red.
 
-- 793b2e1: **Colour correctness sweep** — four defects where a colour could not reach the theme it was rendered
+- 793b2e1: **Color correctness sweep** — four defects where a color could not reach the theme it was rendered
   in. Every ratio below is a computed-style measurement in real Chromium over the full cascade, eight
   skins × both themes, compositing each translucent layer onto what it actually sits on.
 
@@ -226,14 +226,14 @@
     copies of twenty lines — the duplication is what let the two halves drift apart in the first place.
     All eighteen readings across page / dark-subtree / light-subtree now pass at 7.61:1 or better.
 
-    **Three blocks baked literal colours no theme could reach.** The tooltip chip was the neutral ramp, so
+    **Three blocks baked literal colors no theme could reach.** The tooltip chip was the neutral ramp, so
     it measured **1.04–1.11:1** against the dark page it floated over — a chip invisible against its own
     backdrop, contradicting the comment above it. It now reads the page inverted (`--ori-color-on-background`
     on `--ori-color-background`), which is a contrast-checked pairing by construction: **13.89:1**. The
     avatar's `#00000018` tint was a black veil that vanished on a dark page; it derives from the ambient ink
     like every other structural neutral. The switch thumb was `#ffffff`: **1.85–2.15:1** against the off
     track in light, and **1.13–2.98:1** against the on track in dark. The thumb is the state indicator and
-    the track changes colour between states, so no single thumb colour can clear WCAG 1.4.11's 3:1 bar for
+    the track changes color between states, so no single thumb color can clear WCAG 1.4.11's 3:1 bar for
     both — it now pairs with its own track (the ink when off, `--ori-color-on` when on, which is the
     contrast-checked partner of the `--ori-color` the track paints). Worst reading is now 4.91:1.
 
@@ -250,11 +250,11 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     `currentcolor`. Surface now matches them. It renders byte-identically today (verified across all
     sixteen skin/theme combinations) — the point is that one job stops having two answers, and the hairline
     follows a `color` the consumer sets. No new public token: naming a neutral/structural token is an API
-    decision, and `currentcolor` already adapts to theme, skin and ambient colour without one.
+    decision, and `currentcolor` already adapts to theme, skin and ambient color without one.
 
     Three new guards in the unit suite keep these closed, each with a self-check so a guard that stopped
     seeing anything cannot pass silently: a theme-shared status role may not be painted as a border,
-    outline or focus ring (the four per-theme roles still may, so the colour picker's primary outline stays
+    outline or focus ring (the four per-theme roles still may, so the color picker's primary outline stays
     legitimate); whatever the dark theme rule declares, the light rule declares too; and a token deriving
     from a theme-varying token must itself be theme-scoped. "Theme-varying" is discovered from the
     stylesheet, never hand-listed. Against the pre-fix files the guards report 3 failures and 6 offending
@@ -284,7 +284,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     `.ori-size-action_*` utilities it was written to mirror, and the modifiers still win on **specificity**
     rather than on source order.
 
-    **This is a behavioural change for one audience, and it is deliberate.** Every modifier selector drops
+    **This is a behavioral change for one audience, and it is deliberate.** Every modifier selector drops
     from (0,2,0) to (0,1,0), so a rule you wrote to beat one needs one less class. Nothing changes for the
     common case — an unlayered consumer stylesheet still outranks the whole library by layer order, and
     `@oriui/vue` emits exactly the same class names — but an override that lives _inside_ `@layer` and was
@@ -315,7 +315,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     into a block file could never win.
 
     **Eleven more dead `var(--ori-color, …)` fallbacks are gone** — from `accordion`, `menu`, `popover` and
-    `tabs`, finishing the sweep the slider and colour-picker blocks started. `--ori-color`, `--ori-color-on`
+    `tabs`, finishing the sweep the slider and color-picker blocks started. `--ori-color`, `--ori-color-on`
     and `--ori-color-text` are all declared unconditionally at `:root`, so the fallback arm can never fire.
     Eight of the eleven were also misleading: `accordion` and `tabs` bake the primary accent in their own
     block, so the `currentcolor` those arms advertised was never what would resolve — measured, the
@@ -348,7 +348,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     toast in from the right whatever the corner and whatever the direction. The offset comes from
     `--ori-toast-enter-x`, which each corner modifier sets physically — the corner names a _screen_ corner
     and deliberately does not mirror — so left corners enter from the left, right corners from the right,
-    and a centred toaster does not slide sideways at all. Only a corner-less `.ori-toaster` has no edge to
+    and a centered toaster does not slide sideways at all. Only a corner-less `.ori-toaster` has no edge to
     follow, so that one case reads the writing direction.
 
     **`--ori-card-padding`** joins the local-token idiom (`--ori-tooltip-radius`, `--ori-color-picker-radius`).
@@ -357,14 +357,14 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     the whole gap scale. Same computed default (16px), one knob.
 
     **`--ori-checker-1` / `--ori-checker-2` are now declared on `.ori-slider` as well**, not only inside
-    `.ori-color-picker`. `.ori-slider .ori-slider_alpha` is reachable without a colour picker, and a block
+    `.ori-color-picker`. `.ori-slider .ori-slider_alpha` is reachable without a color picker, and a block
     must not read a token another block owns: a standalone alpha slider fell through to the hardcoded
     `#c8c8c8`/`#fff` grid, which is glaring on a dark page. It now gets the same theme-derived mid-neutrals
     the picker does. Nested inside a picker nothing changes.
 
-    **Dead `var(--ori-color, …)` fallbacks are gone** from the slider and colour-picker blocks.
+    **Dead `var(--ori-color, …)` fallbacks are gone** from the slider and color-picker blocks.
     `--ori-color` is declared unconditionally at `:root` as `currentColor`, so the fallback arm could never
-    fire — and the ones that named a colour were also misleading: an alpha track with no inline colour
+    fire — and the ones that named a color were also misleading: an alpha track with no inline color
     paints the **primary accent**, and an unset swatch paints **`currentcolor`** (white here, via the
     swatch's own `color`), never the `#000000` the fallback advertised. `--ori-ink` and `--ori-hue` keep
     their fallbacks: nothing declares those globally, so those arms are live.
@@ -451,11 +451,11 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 
 - 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
-    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
-    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
-    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
-    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
-    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centered alignment
+    centers the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centers the text on the space the button leaves
+    behind, which lands visibly off-center — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centers in real Chromium, in both writing directions, with a counter-example test that
     fails if the compensation is ever removed. A leading icon deliberately stays in flow.
 
     `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
@@ -465,7 +465,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     impossible to remove.
 
     Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
-    once at your call sites). The behaviour change is visible, not silent.
+    once at your call sites). The behavior change is visible, not silent.
 
 - 793b2e1: **The toggle-button contract, and three states that only looked real.**
 
@@ -479,10 +479,10 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
     **The pressed look is no longer gated behind `.ori-toolbar`.** It moves from `toolbar.css` into
     `button.css` and is now keyed on the button alone, so any toggle gets it. It is deliberately NOT the
     flat ungate that suggests itself: a literal `background-color` on `.ori-button[aria-pressed='true']`
-    beats the variant token and repaints `fill` and `tonal` toggles with a neutral grey (measured in
+    beats the variant token and repaints `fill` and `tonal` toggles with a neutral gray (measured in
     Chromium: a pressed `fill` button went from `rgb(3, 105, 161)` to an 18% near-black tint). Instead the
     universal affordance is an inset hairline in `currentcolor` — no variant touches `box-shadow`, and the
-    button's own label colour is contrast-paired with whatever background sits under it — and the neutral
+    button's own label color is contrast-paired with whatever background sits under it — and the neutral
     tint is added only for `text` / `plain` / `outline`, the three variants whose background is
     transparent. A toolbar button (`variant="text"` by default) renders exactly the same tint it did
     before; `fill` and `tonal` toolbar toggles stop being flattened. A source-level test fails if the rule
@@ -537,7 +537,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 - 080571c: OriColorPicker polish + SSR-safety:
 
     - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
-      colour changes, instead of always starting at index 0.
+      color changes, instead of always starting at index 0.
     - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
       alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
     - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
@@ -546,7 +546,7 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
       hydration mismatch — and is sized to match the 2rem preview swatch.
     - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
       the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
-      more gap so the selected ring clears its neighbour.
+      more gap so the selected ring clears its neighbor.
     - Panel corners now read component-local radius aliases; dropped the inert `label` option from
       `useColorPicker`.
 
@@ -571,14 +571,14 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 
 - db83609: **Role-as-text is now the same hue as the fill — a darker/lighter shade, not a muddy off-hue.** The
   `--ori-color-<role>-text` tone (used by the non-fill button variants, the selected tab, alert, tag, link and the
-  selected combobox option) is now derived by **relative colour that keeps the role's hue + saturation and clamps
+  selected combobox option) is now derived by **relative color that keeps the role's hue + saturation and clamps
   only lightness** — `oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` in light, `max(l, 0.86)` in dark —
-  instead of the previous `color-mix` toward the neutral ink, which desaturated it into a muddy, off-hue colour that
-  no longer matched the role's fill and border. Text / outline / tonal now read as the same colour as the fill, only
+  instead of the previous `color-mix` toward the neutral ink, which desaturated it into a muddy, off-hue color that
+  no longer matched the role's fill and border. Text / outline / tonal now read as the same color as the fill, only
   darker (light theme) or lighter (dark theme): one hue, only lightness varies.
 
     The **outline** variant's border now uses that same text tone (was the raw role), so an outline button is one
-    colour (border = label) and the border clears the 3:1 non-text bar for pale roles too.
+    color (border = label) and the border clears the 3:1 non-text bar for pale roles too.
 
     Still WCAG AA (>= 4.5:1) for every role across all skins, both themes, and every text kind including the tonal
     hover/active tint (min ~4.55:1), and still fully overridable via `--ori-color-<role>-text`. The tone tokens are
@@ -589,17 +589,17 @@ var(--ori-color-danger)` on `[aria-invalid="true"]` in input / select / textarea
 
 ### Minor Changes
 
-- e0444e6: **Role colours are now AA-safe as text.** The non-fill button variants (`text` / `outline` / `tonal`), the selected tab, alert, tag, link, and the selected combobox option previously painted the raw role colour as their label — where a saturated or light role (amber `warn` ≈ 2.14:1, the pale `secondary`) failed WCAG AA 4.5:1 on the surface. They now read a new derived on-surface tone, `--ori-color-<role>-text` (exposed to components as `--ori-color-text`), guaranteed ≥ 4.5:1 for every role across all skins and both themes — verified in real Chromium (`e2e/text-contrast.spec.ts`).
+- e0444e6: **Role colors are now AA-safe as text.** The non-fill button variants (`text` / `outline` / `tonal`), the selected tab, alert, tag, link, and the selected combobox option previously painted the raw role color as their label — where a saturated or light role (amber `warn` ≈ 2.14:1, the pale `secondary`) failed WCAG AA 4.5:1 on the surface. They now read a new derived on-surface tone, `--ori-color-<role>-text` (exposed to components as `--ori-color-text`), guaranteed ≥ 4.5:1 for every role across all skins and both themes — verified in real Chromium (`e2e/text-contrast.spec.ts`).
 
-    The tone derives from the role via `color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)`, so a custom skin or brand override gets an AA text tone automatically, and it stays fully overridable (at `:root`, per skin, or per instance) — the sanctioned replacement for the `.ori-button { --ori-color: … }` workaround. Fills are unchanged (dark on-colour ink on the solid fill). The tonal hover/active tint was softened (35% → 30%) so its text stays AA.
+    The tone derives from the role via `color-mix(in oklch, var(--ori-color-<role>), var(--ori-color-on-surface) 65%)`, so a custom skin or brand override gets an AA text tone automatically, and it stays fully overridable (at `:root`, per skin, or per instance) — the sanctioned replacement for the `.ori-button { --ori-color: … }` workaround. Fills are unchanged (dark on-color ink on the solid fill). The tonal hover/active tint was softened (35% → 30%) so its text stays AA.
 
 ## 1.0.0-alpha.7
 
 ### Minor Changes
 
-- 94e04a5: **Neutral preset skin** — pure neutral grays with a monochrome accent (ink primary on white / near-white on near-black), for tool-like apps where colour belongs to the content, not the chrome. Applied via `data-ori-skin="neutral"`. All role pairings clear WCAG AA (min 12:1).
+- 94e04a5: **Neutral preset skin** — pure neutral grays with a monochrome accent (ink primary on white / near-white on near-black), for tool-like apps where color belongs to the content, not the chrome. Applied via `data-ori-skin="neutral"`. All role pairings clear WCAG AA (min 12:1).
 
-    **Tooltip fix.** The bubble now self-pairs its colours: a dedicated neutral chip by default (`--ori-neutral-900`/`-50`, ~17:1), or a role's own `--ori-color` / `--ori-color-on` pair when a `color` is set. Previously the bubble read `var(--ori-color, …)` where `--ori-color` is globally `currentColor`, so the neutral fallback never fired and bg + text collapsed to the same colour — invisible (dark-on-dark) on ink-heavy hosts. The bubble also now floats on the shared `.ori-anchored` primitive (`position: fixed` + collision-aware flip via `position-try`), escaping clipped/overflow-hidden containers.
+    **Tooltip fix.** The bubble now self-pairs its colors: a dedicated neutral chip by default (`--ori-neutral-900`/`-50`, ~17:1), or a role's own `--ori-color` / `--ori-color-on` pair when a `color` is set. Previously the bubble read `var(--ori-color, …)` where `--ori-color` is globally `currentColor`, so the neutral fallback never fired and bg + text collapsed to the same color — invisible (dark-on-dark) on ink-heavy hosts. The bubble also now floats on the shared `.ori-anchored` primitive (`position: fixed` + collision-aware flip via `position-try`), escaping clipped/overflow-hidden containers.
 
     Standalone `@oriui/css` note: the per-side placement classes `ori-tooltip__bubble_{top,bottom,left,right}` are replaced by `ori-anchored ori-anchored_<placement>` (the same 12-value grid the popover/menu use). `@oriui/vue`'s `OriTooltip` emits the new classes automatically — no consumer change needed there.
 

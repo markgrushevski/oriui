@@ -9,7 +9,7 @@ the collapsible sidebar groups on this very site. It owns the open state, the WA
 toggle handler; **you own the markup and the styles**.
 
 This is the **Vue** binding of the headless layer; the framework-agnostic contract lives in
-[@oriui/headless](/headless/core). Behaviour is swappable per primitive through the `OriHeadless` adapter,
+[@oriui/headless](/headless/core). Behavior is swappable per primitive through the `OriHeadless` adapter,
 and a zero-dependency native engine ships as the default — so it works with no setup.
 
 ## Import
@@ -46,7 +46,7 @@ your markup, and imperative handlers.
 
 ## Usage
 
-Spread the prop bags onto your own elements — the primitive supplies the behaviour, you supply the
+Spread the prop bags onto your own elements — the primitive supplies the behavior, you supply the
 look:
 
 ::example
@@ -109,7 +109,7 @@ function Details() {
 
 ## Adapter
 
-The behaviour resolves through the `OriHeadless` contract. With nothing wired, `useDisclosure` falls
+The behavior resolves through the `OriHeadless` contract. With nothing wired, `useDisclosure` falls
 back to the **native** `@oriui/headless` engine — zero dependencies, no setup. To swap in a different
 engine (Zag, or your own), provide a `disclosure` adapter once at the app root:
 
@@ -135,7 +135,7 @@ them:
 - **`contentProps`** sets `role="region"`, `aria-labelledby` back to the trigger (so the region takes
   its accessible name from the toggle), and a real `hidden` attribute while collapsed — the content is
   removed from the accessibility tree and tab order when closed.
-- Clicking the trigger toggles the state; activation is the native button behaviour, so `Enter` and
+- Clicking the trigger toggles the state; activation is the native button behavior, so `Enter` and
   `Space` both work with no extra handlers.
 - `rootProps`, `triggerProps`, and `contentProps` each expose a `data-state` of `open` / `closed` as a
   styling hook for transitions.
@@ -148,5 +148,5 @@ them:
 ## See also
 
 - [@oriui/headless](/headless/core) — the framework-agnostic contract and the native engine behind this binding.
-- [useDialog](/headless/use-dialog) — the modal counterpart; the hard-behaviour case delegated to an adapter.
+- [useDialog](/headless/use-dialog) — the modal counterpart; the hard-behavior case delegated to an adapter.
 - [CSS layer](/guides/css) — standalone `.ori-*` classes for styling the markup you bind these props to.

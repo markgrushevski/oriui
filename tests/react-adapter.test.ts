@@ -104,7 +104,7 @@ describe('React useDisclosure', () => {
 
     it('resolves a provided adapter over the native default; falls back to native with no provider', () => {
         // A fake adapter proving the swap seam (OriHeadlessProvider → useHeadless → useDisclosure), the
-        // React analogue of tests/headless-adapter-swap for Vue. It emits marker props the native one never
+        // React analog of tests/headless-adapter-swap for Vue. It emits marker props the native one never
         // would; it runs no hooks, so it is a stable adapter (rules of hooks — chosen once at the root).
         const control: DisclosureControl = {
             open: true,

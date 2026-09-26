@@ -311,7 +311,7 @@ function ToggleItem({ value, children }: { value: string; children: ReactNode })
 ## Accessibility
 
 The prop bags carry the WAI-ARIA [Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) pattern;
-the keyboard behaviour is the roving `onKeydown` on the root.
+the keyboard behavior is the roving `onKeydown` on the root.
 
 - `toolbarProps` set `role="toolbar"`, `aria-orientation` (emitted only for `vertical` — `horizontal`
   is the ARIA implicit default), `aria-label` (from `label`), and the roving `onKeydown`. A
@@ -341,7 +341,7 @@ the keyboard behaviour is the roving `onKeydown` on the root.
 | `ArrowDown` / `ArrowUp`                | Vertical: move the roving stop to the next / previous item (wraps when `loop`).                                           |
 | `Home` / `End`                         | Jump the roving stop to the first / last item, in either orientation.                                                     |
 | `Enter` / `Space`                      | Activate the focused item — native for a `<button>`; a toggle item's `onClick` flips its value in the group.              |
-| Arrow keys, focus in a composite child | Not intercepted — the focused input / composite widget keeps its own arrow-key behaviour.                                 |
+| Arrow keys, focus in a composite child | Not intercepted — the focused input / composite widget keeps its own arrow-key behavior.                                  |
 
 ## See also
 

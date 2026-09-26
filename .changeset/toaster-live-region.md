@@ -7,7 +7,7 @@ announced. Previously the only live region in play was the toast card itself (`r
 `role="alert"` for `color="danger"`) — and that element is created together with its text. Assistive
 tech reports mutations _inside_ a region it was already tracking; a region that first appears already
 holding its content is not announced. `role="alert"` is the documented exception most screen readers
-honour, which is why `error()` toasts announced and `success()` / `info()` / `warn()` / plain ones
+honor, which is why `error()` toasts announced and `success()` / `info()` / `warn()` / plain ones
 silently did not.
 
 The `.ori-toaster` container was already rendered from mount and already empty until the first push —

@@ -17,10 +17,10 @@ If you just want the mechanics, start with the [Introduction](/overview/introduc
 **It is:**
 
 - A **token-first** system: the design tokens are the theming API, shared identically by every layer.
-- **Three depths of one stack** — `@oriui/vue` (styled) · `@oriui/headless` (behaviour) · `@oriui/css`
+- **Three depths of one stack** — `@oriui/vue` (styled) · `@oriui/headless` (behavior) · `@oriui/css`
   (standalone classes) — each usable alone or composed.
 - **Zero-runtime**: skins, light/dark, size, and variant are CSS custom-property toggles — never JS.
-- **Multi-framework at the behaviour layer**: one framework-agnostic core, thin Vue **and** Svelte
+- **Multi-framework at the behavior layer**: one framework-agnostic core, thin Vue **and** Svelte
   adapters.
 
 **It isn't:**
@@ -56,8 +56,8 @@ deepen without a rewrite.
 
 ### Headless libraries — Ark UI (+ Zag), Reka, Radix, Headless UI
 
-The closest neighbours to oriUI's behaviour layer, and the ones it borrows the most from: the
-`useMachine → connect(service, normalize) → spread prop-getters` seam is modelled on **Zag** / **Ark
+The closest neighbors to oriUI's behavior layer, and the ones it borrows the most from: the
+`useMachine → connect(service, normalize) → spread prop-getters` seam is modeled on **Zag** / **Ark
 UI** (verified against their source). The difference is scope: for oriUI, headless is _one depth of a
 stack_, not the whole product — stay styled, drop to headless, or drop to CSS, all on the same tokens.
 oriUI's core stays hand-rolled and tiny (a reducer + prop-getters), with the contract deliberately

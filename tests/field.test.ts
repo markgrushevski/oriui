@@ -230,7 +230,7 @@ describe('OriField', () => {
         expect(textarea.attributes('aria-describedby')).toBe(wrapper.find('.ori-field__hint').attributes('id'))
     })
 
-    it('wires a nested OriCombobox (shared id, listbox labelled by the field, no duplicate label)', () => {
+    it('wires a nested OriCombobox (shared id, listbox labeled by the field, no duplicate label)', () => {
         const wrapper = mount(
             {
                 components: { OriField, OriCombobox },
@@ -444,7 +444,7 @@ describe('OriField', () => {
         expect(wrapper.find('.ori-input__hint').exists()).toBe(true)
     })
 
-    it('has no axe violations (field + input, labelled with a hint)', async () => {
+    it('has no axe violations (field + input, labeled with a hint)', async () => {
         const wrapper = mount(
             {
                 components: { OriField, OriInput },

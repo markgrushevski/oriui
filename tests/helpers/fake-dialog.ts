@@ -7,7 +7,7 @@ import type { DialogControl, UseDialogOptions } from '@oriui/headless/vue'
  * It emits the same accessible prop shape (role="dialog", aria-modal, aria-labelledby wired to the
  * title id, open/close handlers) but with a FIXED base id, so a test can tell the swapped adapter —
  * not the native default — produced the props. The component still owns the `<dialog>` element and
- * drives showModal()/close() from `open`, so this fake needs no DOM behaviour of its own.
+ * drives showModal()/close() from `open`, so this fake needs no DOM behavior of its own.
  */
 export function fakeDialog(options?: MaybeRefOrGetter<UseDialogOptions>): DialogControl {
     const opts = computed(() => toValue(options) ?? {})
