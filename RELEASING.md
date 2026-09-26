@@ -17,7 +17,7 @@ resolves `latest`, and the docs describe the current line, so after each release
 (step 4 below). It cannot be automated without a token: trusted publishing can only publish, not move tags,
 and `changeset publish` refuses a custom `--tag` in pre mode. The step disappears at 1.0, when stable
 versions publish to `latest` on their own. The `alpha` dist-tag is a leftover of earlier routing, frozen at
-`1.0.0-alpha.3`; step 6 of the 1.0 cutover repoints it.
+`1.0.0-alpha.17`; step 6 of the 1.0 cutover repoints it.
 
 ## One-time setup
 
