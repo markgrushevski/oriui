@@ -15,16 +15,4 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
 
 ---
 
-### ORI-I-87 — `OriAccordion`'s `#default` slot renders once per item
-
-`mitigated` · `packages/vue/src/components/accordion/ori-accordion.vue`
-
-A `#default` template renders into every section, so an `id` inside it repeats; in `multiple` mode two
-sections can be open at once, and a `<label for>` in the second focuses the input in the first.
-`tests/accordion.test.ts` pins this.
-
-Mitigated by `#panel-<value>`, which renders into its own section only; the docs point at it, and a DEV
-warning names a `#panel-*` slot that matches no item. Content is deliberately not gated on `open`: a
-closed `<details>` keeps it in the DOM so find-in-page can reveal it. Closing this means either documenting
-the fan-out as the contract or finding a remedy that survives two open sections — Tabs' remedy (render the
-fallback into the active panel only) has no analogue when several sections are open.
+Nothing is open right now.
