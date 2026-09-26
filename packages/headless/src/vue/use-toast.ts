@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { createToastActions, createToastQueue, type ToastItem } from '../core/toast'
 
-export type { ToastColor, ToastItem, ToastOptions } from '../core/toast'
+export type { ToastAction, ToastColor, ToastItem, ToastOptions } from '../core/toast'
 
 // One module-level queue (the client-side singleton) projected into ONE Vue reactive array. Every
 // useToast() caller shares this same `toasts` array — the module singleton the old Vue-only queue was —

@@ -15,18 +15,6 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
 
 ---
 
-### ORI-I-95 — Toasts auto-dismiss after 4 s with no way to pause, extend or disable it
-
-`confirmed` · `packages/headless/src/core/toast/queue.ts`, `packages/vue/src/components/toast/ori-toaster.vue`
-
-The binding criterion is WCAG 2.2.1 Timing Adjustable (Level A); the 2.2.3 / 2.2.4 that APG cites are AAA.
-Today's toasts are probably compliant only because they carry no action: 2.2.1 exempts timed content that
-is also available another way. A toast with an Undo button, or one that is the only place an error is
-reported, fails it.
-
-Decide this together with an action affordance (Radix, Reka and Ark all ship one): adding an action makes
-pause-on-hover/focus mandatory. The toaster also lacks a labelled `role="region"` and a hotkey to reach it.
-
 ### ORI-I-87 — `OriAccordion`'s `#default` slot renders once per item
 
 `mitigated` · `packages/vue/src/components/accordion/ori-accordion.vue`

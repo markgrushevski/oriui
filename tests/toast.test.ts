@@ -489,6 +489,85 @@ describe('OriToaster component', () => {
         wrapper.unmount()
     })
 
+    it('is a labelled region that names its hotkey and can take focus', async () => {
+        const wrapper = mount(OriToaster, { props: { label: 'Alerts', hotkey: 'F6' }, attachTo: document.body })
+        await nextTick()
+        const region = document.body.querySelector('.ori-toaster')
+
+        expect(region?.getAttribute('role')).toBe('region')
+        expect(region?.getAttribute('aria-label')).toBe('Alerts (F6)')
+        expect(region?.getAttribute('tabindex')).toBe('-1')
+        wrapper.unmount()
+    })
+
+    it('the hotkey moves focus to the region only while it holds toasts', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+        const region = document.body.querySelector<HTMLElement>('.ori-toaster')
+        const press = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'F8' }))
+
+        press()
+        expect(document.activeElement).not.toBe(region)
+
+        useToast().toast('Saved')
+        await nextTick()
+        press()
+        expect(document.activeElement).toBe(region)
+        wrapper.unmount()
+    })
+
+    it.each([
+        ['the pointer', 'pointerenter', 'pointerleave'],
+        ['focus', 'focusin', 'focusout']
+    ])('%s on the stack pauses the countdown until it leaves', async (_, enter, leave) => {
+        vi.useFakeTimers()
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+        const region = document.body.querySelector('.ori-toaster')!
+        const { toast, toasts } = useToast()
+
+        toast({ text: 'Read me', duration: 1000 })
+        await nextTick()
+        region.dispatchEvent(new Event(enter, { bubbles: true }))
+        vi.advanceTimersByTime(5000)
+        expect(toasts).toHaveLength(1)
+
+        region.dispatchEvent(new FocusEvent(leave, { bubbles: true, relatedTarget: document.body }))
+        vi.advanceTimersByTime(1000)
+        expect(toasts).toHaveLength(0)
+
+        wrapper.unmount()
+        vi.useRealTimers()
+    })
+
+    it('an action runs its callback and dismisses the toast', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+        const onClick = vi.fn()
+
+        useToast().toast({ text: 'Deleted', action: { label: 'Undo', onClick } })
+        await nextTick()
+        const button = document.body.querySelector<HTMLButtonElement>('.ori-toast__action')
+        expect(button?.textContent?.trim()).toBe('Undo')
+
+        button?.click()
+        await nextTick()
+        expect(onClick).toHaveBeenCalledOnce()
+        expect(document.body.querySelector('.ori-toast')).toBeNull()
+        wrapper.unmount()
+    })
+
+    it('has no axe violations with an action toast', async () => {
+        const wrapper = mount(OriToaster, { attachTo: document.body })
+        await nextTick()
+
+        useToast().toast({ text: 'Deleted', action: { label: 'Undo', onClick: () => {} }, closable: true })
+        await nextTick()
+
+        await expectNoA11yViolations(document.body)
+        wrapper.unmount()
+    })
+
     it('position values map to their css class (all 6 positions)', async () => {
         const positions = [
             'top-left',

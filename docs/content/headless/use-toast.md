@@ -30,14 +30,15 @@ shares the one queue).
 `toast(options)` (and the severity shortcuts) take either a **string** (its text) or a `ToastOptions`
 object:
 
-| Option     | Type         | Default | Description                                                                                                                                                                                |
-| ---------- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `text`     | `string`     | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)                                                                                                                    |
-| `title`    | `string`     | —       | Optional bold heading above the text.                                                                                                                                                      |
-| `color`    | `ToastColor` | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`.                                                                                                         |
-| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.                                                                                                                       |
-| `closable` | `boolean`    | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
-| `icon`     | `string`     | —       | SVG path for a leading icon.                                                                                                                                                               |
+| Option     | Type                                     | Default | Description                                                                                                                                                                                |
+| ---------- | ---------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `text`     | `string`                                 | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)                                                                                                                    |
+| `title`    | `string`                                 | —       | Optional bold heading above the text.                                                                                                                                                      |
+| `color`    | `ToastColor`                             | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`.                                                                                                         |
+| `duration` | `number`                                 | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.                                                                                                                       |
+| `closable` | `boolean`                                | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
+| `action`   | `{ label: string; onClick: () => void }` | —       | One action button, such as Undo. Your renderer runs `onClick` and then `dismiss(id)`.                                                                                                      |
+| `icon`     | `string`                                 | —       | SVG path for a leading icon.                                                                                                                                                               |
 
 `ToastColor` is `'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'`.
 
@@ -50,6 +51,7 @@ object:
 | `success` / `error` / `warning` / `info` | `(options: ToastOptions \| string) => number`          | Severity shortcuts — set `color` to `success` / `danger` / `warning` / `info` (an explicit `color` in the options still wins). |
 | `dismiss(id)`                            | `(id: number) => void`                                 | Remove a toast (and cancel its timer); a no-op for an unknown id.                                                              |
 | `clear()`                                | `() => void`                                           | Empty the queue and cancel every timer.                                                                                        |
+| `pause()` / `resume()`                   | `() => void`                                           | Stop every countdown, then restart each with the time it had left. Call them from your renderer (see below).                   |
 
 ## Usage
 
@@ -148,11 +150,16 @@ function SaveButton() {
 
 ## Accessibility
 
-- The queue itself carries no roles — the **styled** [`OriToast`](/components/toast) is the live region:
-  `role="alert"` for `color="danger"` (assertive), `role="status"` otherwise (polite). If you render your
-  own, put the same roles on each toast so a screen reader announces it.
-- Auto-dismiss is timer-based; keep `duration` generous (or `0` for important messages) so a screen-reader
-  user has time to read it, and always offer `closable` for manual dismissal.
+The queue carries no markup, so a renderer of your own has to do what [`OriToaster`](/components/toast)
+does:
+
+- Render the container empty on mount with `aria-live="polite"` and insert toasts into it; give each
+  toast `role="alert"` for `color="danger"` and `role="status"` otherwise.
+- Call `pause()` while the pointer or focus is inside the container or the page is hidden, and
+  `resume()` when none of these holds any more (WCAG 2.2.1). Without it a toast can vanish while
+  someone reads it or tabs to its action.
+- Make the container a labelled `role="region"` with `tabindex="-1"` and a hotkey that focuses it, so
+  keyboard users can reach the buttons.
 
 ## See also
 

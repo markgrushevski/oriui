@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { createToastActions, createToastQueue, type ToastItem } from '../core/toast'
 
-export type { ToastColor, ToastItem, ToastOptions } from '../core/toast'
+export type { ToastAction, ToastColor, ToastItem, ToastOptions } from '../core/toast'
 
 // One module-level queue — the client-side singleton — projected into React with `useSyncExternalStore`.
 // Every useToast() caller, in any component, shares this one queue (and its one renderer), so a push from

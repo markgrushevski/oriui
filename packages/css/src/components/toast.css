@@ -208,6 +208,17 @@
         opacity: 1;
     }
 
+    .ori-toast .ori-toast__action {
+        flex-shrink: 0;
+        align-self: center;
+    }
+
+    /* The toaster takes focus from its hotkey; the ring shows where the keyboard landed. */
+    .ori-toaster:focus-visible {
+        outline: 2px solid var(--ori-color-primary);
+        outline-offset: -2px;
+    }
+
     /* TransitionGroup enter/leave — slide in off the toaster's own screen edge + fade; the leaving item
        is taken out of flow so the rest slide up smoothly. The offset comes from --ori-toast-enter-x,
        which the toaster sets (see the corner rules above): a left-pinned toaster no longer flies in from

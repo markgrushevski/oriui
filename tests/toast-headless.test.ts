@@ -105,6 +105,49 @@ describe('createToastQueue (core engine)', () => {
         expect(q.getToasts()).toHaveLength(0)
         vi.useRealTimers()
     })
+
+    it('pause stops every countdown; resume restarts each with the time it had left', () => {
+        vi.useFakeTimers()
+        const q = createToastQueue()
+        const texts = () => q.getToasts().map((t) => t.text)
+
+        q.push({ text: 'a', duration: 1000 })
+        vi.advanceTimersByTime(600)
+        q.pause()
+        q.push({ text: 'b', duration: 1000 }) // pushed while paused: waits as well
+        vi.advanceTimersByTime(10_000)
+        expect(texts()).toEqual(['a', 'b'])
+
+        q.resume()
+        vi.advanceTimersByTime(399)
+        expect(texts()).toEqual(['a', 'b'])
+        vi.advanceTimersByTime(1) // a had 400 ms left
+        expect(texts()).toEqual(['b'])
+        vi.advanceTimersByTime(600) // b had its full 1000 ms
+        expect(texts()).toEqual([])
+        vi.useRealTimers()
+    })
+
+    it('pause and resume are idempotent', () => {
+        vi.useFakeTimers()
+        const q = createToastQueue()
+        q.push({ text: 'a', duration: 1000 })
+
+        q.pause()
+        q.pause()
+        q.resume()
+        q.resume()
+        vi.advanceTimersByTime(1000)
+        expect(q.getToasts()).toHaveLength(0)
+        vi.useRealTimers()
+    })
+
+    it('keeps an action on the item', () => {
+        const q = createToastQueue()
+        const onClick = vi.fn()
+        q.push({ text: 'Deleted', action: { label: 'Undo', onClick } })
+        expect(q.getToasts()[0]?.action).toEqual({ label: 'Undo', onClick })
+    })
 })
 
 describe('useToast (Svelte adapter)', () => {

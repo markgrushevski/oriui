@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ThemeColor } from '../../types'
+import { OriButton } from '../button'
 import { OriIcon } from '../icon'
 
 const {
@@ -7,6 +8,8 @@ const {
     closable = false,
     color = 'surface'
 } = defineProps<{
+    /** Label of an action button, such as "Undo". The button emits `action`. */
+    actionLabel?: string
     /** Where the body sits in the card. `center` also lifts the dismiss button out of the flex flow, so
      *  the text is centred on the CARD rather than on the space the button leaves behind. */
     align?: 'start' | 'center'
@@ -17,7 +20,7 @@ const {
     title?: string
 }>()
 
-defineEmits<{ close: [] }>()
+defineEmits<{ action: []; close: [] }>()
 </script>
 
 <template>
@@ -37,6 +40,15 @@ defineEmits<{ close: [] }>()
                 <slot>{{ text }}</slot>
             </div>
         </div>
+
+        <ori-button
+            v-if="actionLabel"
+            class="ori-toast__action"
+            :label="actionLabel"
+            size="sm"
+            variant="soft"
+            @click="$emit('action')"
+        />
 
         <button
             v-if="closable"

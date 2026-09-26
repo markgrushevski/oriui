@@ -33,5 +33,10 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
             label="Sticky"
             @click="toast({ text: 'I stay until you dismiss me.', duration: 0, closable: true })"
         />
+        <OriButton
+            variant="outline"
+            label="With action"
+            @click="toast({ text: 'Message archived.', action: { label: 'Undo', onClick: () => info('Restored.') } })"
+        />
     </div>
 </template>
