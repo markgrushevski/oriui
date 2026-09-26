@@ -1,5 +1,5 @@
 import { useCallback, useId, type KeyboardEvent } from 'react'
-import { resolveRovingIndex, rovingIntent, type TabItem, type UseTabsOptions } from '../core'
+import { resolveRovingIndex, rovingIntent, textDirection, type TabItem, type UseTabsOptions } from '../core'
 
 /**
  * Headless WAI-ARIA Tabs (https://www.w3.org/WAI/ARIA/apg/patterns/tabs/, **automatic activation**) — the
@@ -19,7 +19,7 @@ import { resolveRovingIndex, rovingIntent, type TabItem, type UseTabsOptions } f
 export type { TabItem, UseTabsOptions }
 
 export function useTabs(options: UseTabsOptions) {
-    const { tabs, value, orientation = 'horizontal', label, labelledby, idBase, onChange } = options
+    const { tabs, value, orientation = 'horizontal', dir, label, labelledby, idBase, onChange } = options
 
     // `useId()` is SSR-stable; strip the colons React wraps ids in so the derived ids stay valid selectors.
     const autoId = useId().replace(/:/g, '')
@@ -42,10 +42,10 @@ export function useTabs(options: UseTabsOptions) {
     // the target by live DOM order, skip disabled, wrap, then select + focus it (automatic activation).
     const onKeyDown = useCallback(
         (event: KeyboardEvent<HTMLElement>): void => {
-            const intent = rovingIntent(event.key, orientation)
+            const root = event.currentTarget
+            const intent = rovingIntent(event.key, orientation, dir ?? (() => textDirection(root)))
             if (!intent) return
 
-            const root = event.currentTarget
             const target = event.target as HTMLElement
             const buttons = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
             const currentTab = target.closest<HTMLElement>('[role="tab"]')
@@ -58,13 +58,14 @@ export function useTabs(options: UseTabsOptions) {
             select(tab) // automatic activation
             buttons[to]?.focus()
         },
-        [orientation, tabs, select]
+        [orientation, dir, tabs, select]
     )
 
     const tablistProps = {
         role: 'tablist' as const,
         'aria-orientation': orientation,
         'aria-label': label,
+        dir,
         'aria-labelledby': labelledby,
         onKeyDown
     }

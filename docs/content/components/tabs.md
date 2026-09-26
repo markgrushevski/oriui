@@ -370,14 +370,14 @@ render the same attributes and keyboard behaviour.
   `var(--ori-color, currentcolor)` so the ring colour matches the active indicator.
 - Tab/panel id pairs are SSR-safe via `useId()`.
 
-| Key                        | Action                                                                   |
-| -------------------------- | ------------------------------------------------------------------------ |
-| `Tab`                      | Moves focus into the tablist (to the selected tab) or past it.           |
-| `Shift+Tab`                | Moves focus out of the tablist (or from the panel back before the list). |
-| `ArrowRight` / `ArrowLeft` | Horizontal: selects and focuses the next / previous non-disabled tab.    |
-| `ArrowDown` / `ArrowUp`    | Vertical: selects and focuses the next / previous non-disabled tab.      |
-| `Home`                     | Selects and focuses the first non-disabled tab.                          |
-| `End`                      | Selects and focuses the last non-disabled tab.                           |
+| Key                        | Action                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| `Tab`                      | Moves focus into the tablist (to the selected tab) or past it.                        |
+| `Shift+Tab`                | Moves focus out of the tablist (or from the panel back before the list).              |
+| `ArrowRight` / `ArrowLeft` | Horizontal: selects and focuses the next / previous non-disabled tab. Swapped in RTL. |
+| `ArrowDown` / `ArrowUp`    | Vertical: selects and focuses the next / previous non-disabled tab.                   |
+| `Home`                     | Selects and focuses the first non-disabled tab.                                       |
+| `End`                      | Selects and focuses the last non-disabled tab.                                        |
 
 ## Framework API
 

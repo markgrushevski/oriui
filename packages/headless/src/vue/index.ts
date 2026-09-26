@@ -29,7 +29,7 @@ export {
 export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs'
 
 // Headless toast queue — a framework-agnostic singleton projected into a Vue reactive array
-export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
+export { useToast, type ToastAction, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
 
 // Headless dismiss layer — outside-pointerdown / focus-out close for non-platform overlays (Menu/Combobox)
 export { useDismissable, type UseDismissableOptions } from './use-dismissable'

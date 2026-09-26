@@ -18,6 +18,7 @@ import {
     resolveRovingIndex,
     resolveToolbarToggle,
     rovingIntent,
+    textDirection,
     type RovingDirection,
     type RovingOrientation,
     type ToolbarToggleType,
@@ -62,7 +63,7 @@ export interface UseToolbarOptions {
     orientation?: RovingOrientation
     /** Whether arrow navigation wraps first<->last (default true; the APG reference example wraps). */
     loop?: boolean
-    /** Text direction — RTL swaps the horizontal Left/Right mapping (default 'ltr'). */
+    /** Writing direction; RTL swaps Left/Right. Rendered as `dir`; omitted, the inherited one is read at keydown. */
     dir?: RovingDirection
     /** Accessible name → `aria-label`. A toolbar MUST be named (this or an `aria-labelledby` you pass). */
     label?: string
@@ -71,7 +72,7 @@ export interface UseToolbarOptions {
 export function useToolbar(options: UseToolbarOptions = {}) {
     const orientation = options.orientation ?? 'horizontal'
     const loop = options.loop ?? true
-    const dir = options.dir ?? 'ltr'
+    const dir = options.dir
 
     // Registered item ids in mount order; the single tabbable item defaults to the first registered.
     const [registered, setRegistered] = useState<string[]>([])
@@ -113,10 +114,10 @@ export function useToolbar(options: UseToolbarOptions = {}) {
     // by live DOM order, yielding entirely to a composite child that owns the arrow keys.
     const onKeyDown = useCallback(
         (event: KeyboardEvent<HTMLElement>): void => {
-            const intent = rovingIntent(event.key, orientation, dir)
+            const root = event.currentTarget
+            const intent = rovingIntent(event.key, orientation, dir ?? (() => textDirection(root)))
             if (!intent) return
 
-            const root = event.currentTarget
             const target = event.target as HTMLElement
             // Yield entirely to a control that owns arrow keys (slider/textbox/radio group placed in the bar).
             if (ownsArrowKeys(target)) return
@@ -140,6 +141,7 @@ export function useToolbar(options: UseToolbarOptions = {}) {
         // 'horizontal' is the ARIA implicit default → emit aria-orientation only for vertical.
         'aria-orientation': orientation === 'vertical' ? ('vertical' as const) : undefined,
         'aria-label': options.label,
+        dir,
         onKeyDown
     }
 

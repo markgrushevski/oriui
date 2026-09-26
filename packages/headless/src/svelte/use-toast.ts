@@ -1,7 +1,7 @@
 import { readable, type Readable } from 'svelte/store'
 import { createToastActions, createToastQueue, type ToastItem } from '../core/toast'
 
-export type { ToastColor, ToastItem, ToastOptions } from '../core/toast'
+export type { ToastAction, ToastColor, ToastItem, ToastOptions } from '../core/toast'
 
 // One module-level queue (the client-side singleton) projected into a single `readable` store. The store's
 // start fn subscribes to the queue on the first component subscriber and unsubscribes when the last leaves,

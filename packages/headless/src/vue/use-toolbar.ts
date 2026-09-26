@@ -15,6 +15,7 @@ import {
     resolveRovingIndex,
     resolveToolbarToggle,
     rovingIntent,
+    textDirection,
     type RovingDirection,
     type RovingOrientation,
     type ToolbarToggleType,
@@ -53,7 +54,7 @@ export interface UseToolbarOptions {
     orientation?: MaybeRefOrGetter<RovingOrientation | undefined>
     /** Whether arrow navigation wraps first<->last (default true; the APG reference example wraps). */
     loop?: MaybeRefOrGetter<boolean | undefined>
-    /** Text direction — RTL swaps the horizontal Left/Right mapping (default 'ltr'). */
+    /** Writing direction; RTL swaps Left/Right. Rendered as `dir`; omitted, the inherited one is read at keydown. */
     dir?: MaybeRefOrGetter<RovingDirection | undefined>
     /** Accessible name → `aria-label`. A toolbar MUST be named (this or an `aria-labelledby` you pass). */
     label?: MaybeRefOrGetter<string | undefined>
@@ -62,7 +63,7 @@ export interface UseToolbarOptions {
 export function useToolbar(options: UseToolbarOptions = {}) {
     const orientation = () => toValue(options.orientation) ?? 'horizontal'
     const loop = () => toValue(options.loop) ?? true
-    const dir = () => toValue(options.dir) ?? 'ltr'
+    const dir = () => toValue(options.dir)
 
     // Registered item ids in mount order; the single tabbable item defaults to the first registered.
     const registered = ref<string[]>([])
@@ -85,14 +86,14 @@ export function useToolbar(options: UseToolbarOptions = {}) {
     })
 
     function onKeydown(event: KeyboardEvent): void {
-        const intent = rovingIntent(event.key, orientation(), dir())
-        if (!intent) return
-
         // The keydown is bound only on the toolbar root (toolbarProps.onKeydown), so currentTarget IS
         // the root — no template ref needed (matches the Svelte twin; drops a "forgot the ref" footgun).
         const root = event.currentTarget as HTMLElement | null
         const target = event.target as HTMLElement | null
         if (!root || !target) return
+
+        const intent = rovingIntent(event.key, orientation(), dir() ?? (() => textDirection(root)))
+        if (!intent) return
 
         // Yield entirely to a control that owns arrow keys (slider/textbox/radio group placed in the bar).
         if (ownsArrowKeys(target)) return
@@ -114,6 +115,7 @@ export function useToolbar(options: UseToolbarOptions = {}) {
         // 'horizontal' is the ARIA implicit default → emit aria-orientation only for vertical.
         'aria-orientation': orientation() === 'vertical' ? ('vertical' as const) : undefined,
         'aria-label': toValue(options.label),
+        dir: dir(),
         onKeydown
     }))
 

@@ -29,15 +29,16 @@ import { useTabs } from '@oriui/headless/vue'
 [`useColorPicker`](/headless/use-color-picker) / [`useCombobox`](/headless/use-combobox) — so `tabs` /
 `value` / `orientation` stay reactive.
 
-| Option        | Type                                | Default        | Description                                                                                            |
-| ------------- | ----------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------ |
-| `tabs`        | `TabItem[]`                         | —              | The set of tabs, in order. `TabItem` is `{ value: string \| number; disabled?: boolean }` (behaviour). |
-| `value`       | `string \| number \| undefined`     | —              | The controlled selection (bind to `v-model`). Resolves to the first enabled tab when unset.            |
-| `orientation` | `'horizontal' \| 'vertical'`        | `'horizontal'` | Arrow-key axis: `horizontal` navigates Left/Right, `vertical` Up/Down.                                 |
-| `label`       | `string`                            | —              | Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming a tablist).                 |
-| `labelledby`  | `string`                            | —              | Accessible name by element id → `aria-labelledby` (use instead of `label`).                            |
-| `idBase`      | `string`                            | `useId()`      | SSR-stable base for the derived `${base}-tab-${i}` / `-panel-${i}` ids.                                |
-| `onChange`    | `(value: string \| number) => void` | —              | Commit the next selected value (wire to your `v-model`).                                               |
+| Option        | Type                                | Default        | Description                                                                                                                                                                  |
+| ------------- | ----------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tabs`        | `TabItem[]`                         | —              | The set of tabs, in order. `TabItem` is `{ value: string \| number; disabled?: boolean }` (behaviour).                                                                       |
+| `value`       | `string \| number \| undefined`     | —              | The controlled selection (bind to `v-model`). Resolves to the first enabled tab when unset.                                                                                  |
+| `orientation` | `'horizontal' \| 'vertical'`        | `'horizontal'` | Arrow-key axis: `horizontal` navigates Left/Right, `vertical` Up/Down.                                                                                                       |
+| `dir`         | `'ltr' \| 'rtl'`                    | inherited      | Writing direction. When set, it is added to `tablistProps` as `dir`; when omitted, the direction the tablist is laid out in is read on each keydown. `rtl` swaps Left/Right. |
+| `label`       | `string`                            | —              | Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming a tablist).                                                                                       |
+| `labelledby`  | `string`                            | —              | Accessible name by element id → `aria-labelledby` (use instead of `label`).                                                                                                  |
+| `idBase`      | `string`                            | `useId()`      | SSR-stable base for the derived `${base}-tab-${i}` / `-panel-${i}` ids.                                                                                                      |
+| `onChange`    | `(value: string \| number) => void` | —              | Commit the next selected value (wire to your `v-model`).                                                                                                                     |
 
 ## Returns
 
@@ -184,12 +185,12 @@ roving `onKeydown` on the tablist.
   steps **over** it (the core `resolveRovingIndex` skip predicate — "the Tabs model") and `selectedValue`
   recovers to the first enabled tab if a disabled/missing value is bound.
 
-| Key                        | Action                                                                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| `Tab` / `Shift+Tab`        | Move focus onto the selected tab, or past the tablist to the panel — the tablist is one tab stop. |
-| `ArrowRight` / `ArrowLeft` | Horizontal: select + focus the next / previous enabled tab (wraps first⇄last, skipping disabled). |
-| `ArrowDown` / `ArrowUp`    | Vertical (`orientation="vertical"`): select + focus the next / previous enabled tab.              |
-| `Home` / `End`             | Select + focus the first / last enabled tab.                                                      |
+| Key                        | Action                                                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`        | Move focus onto the selected tab, or past the tablist to the panel — the tablist is one tab stop.                 |
+| `ArrowRight` / `ArrowLeft` | Horizontal: select + focus the next / previous enabled tab (wraps first⇄last, skipping disabled). Swapped in RTL. |
+| `ArrowDown` / `ArrowUp`    | Vertical (`orientation="vertical"`): select + focus the next / previous enabled tab.                              |
+| `Home` / `End`             | Select + focus the first / last enabled tab.                                                                      |
 
 ## See also
 

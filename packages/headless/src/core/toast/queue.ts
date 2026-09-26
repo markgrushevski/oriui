@@ -4,7 +4,7 @@
  * (their `use-toast` adapters import it directly); it is NOT re-exported from the core `.` barrel, so it
  * never lands in the 1 kB core budget (the same trick as `core/color-picker`).
  *
- * The engine owns a plain array + a `Set` of no-arg listeners + a `Map` of auto-dismiss timers. Each adapter
+ * The engine owns a plain array + a `Set` of no-arg listeners + a `Map` of auto-dismiss countdowns. Each adapter
  * subscribes and PROJECTS the snapshot into its framework's reactivity (Vue: a `reactive` mirror; Svelte: a
  * `readable`). Toasts are only ever pushed from client interaction (`<OriToaster>` renders client-only), so
  * the server never populates the queue — see NOTES.md.
@@ -14,7 +14,15 @@
  *  dependency graph (vue → headless), so this small, stable union is duplicated here. */
 export type ToastColor = 'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'
 
+/** A button on the toast. Pressing it runs `onClick` and dismisses the toast. */
+export interface ToastAction {
+    label: string
+    onClick: () => void
+}
+
 export interface ToastOptions {
+    /** One action button, such as Undo. */
+    action?: ToastAction
     /** Show a dismiss button on the toast. */
     closable?: boolean
     /** Semantic color role — drives the accent and the live-region assertiveness. */
@@ -42,24 +50,49 @@ export interface ToastQueue {
     dismiss(id: number): void
     /** Empty the queue and cancel every timer. */
     clear(): void
+    /** Stop every auto-dismiss countdown, e.g. while the pointer or focus is on the toasts. */
+    pause(): void
+    /** Restart the countdowns with the time each one had left. */
+    resume(): void
     /** Subscribe to any change (no-arg listener); returns an unsubscribe. */
     subscribe(listener: () => void): () => void
 }
 
 export function createToastQueue(): ToastQueue {
     const items: ToastItem[] = []
-    const timers = new Map<number, ReturnType<typeof setTimeout>>()
+    // An auto-dismissing toast's countdown: `left` is the time it has, `due` when a running one expires.
+    const countdowns = new Map<number, { left: number; due: number; timer?: ReturnType<typeof setTimeout> }>()
     const listeners = new Set<() => void>()
     let seq = 0
+    let paused = false
 
     const notify = (): void => listeners.forEach((listener) => listener())
 
+    function start(id: number): void {
+        const countdown = countdowns.get(id)
+        if (!countdown) return
+        countdown.due = Date.now() + countdown.left
+        countdown.timer = setTimeout(() => dismiss(id), countdown.left)
+    }
+
+    function pause(): void {
+        if (paused) return
+        paused = true
+        countdowns.forEach((countdown) => {
+            clearTimeout(countdown.timer)
+            countdown.left = Math.max(0, countdown.due - Date.now())
+        })
+    }
+
+    function resume(): void {
+        if (!paused) return
+        paused = false
+        countdowns.forEach((_, id) => start(id))
+    }
+
     function dismiss(id: number): void {
-        const timer = timers.get(id)
-        if (timer !== undefined) {
-            clearTimeout(timer)
-            timers.delete(id)
-        }
+        clearTimeout(countdowns.get(id)?.timer)
+        countdowns.delete(id)
         const index = items.findIndex((t) => t.id === id)
         if (index !== -1) {
             items.splice(index, 1)
@@ -68,8 +101,8 @@ export function createToastQueue(): ToastQueue {
     }
 
     function clear(): void {
-        timers.forEach((timer) => clearTimeout(timer))
-        timers.clear()
+        countdowns.forEach((countdown) => clearTimeout(countdown.timer))
+        countdowns.clear()
         if (items.length > 0) {
             items.splice(0)
             notify()
@@ -96,10 +129,8 @@ export function createToastQueue(): ToastQueue {
 
         items.push(item)
         if (item.duration && item.duration > 0) {
-            timers.set(
-                id,
-                setTimeout(() => dismiss(id), item.duration)
-            )
+            countdowns.set(id, { left: item.duration, due: 0 })
+            if (!paused) start(id)
         }
         notify()
         return id
@@ -110,6 +141,8 @@ export function createToastQueue(): ToastQueue {
         push,
         dismiss,
         clear,
+        pause,
+        resume,
         subscribe(listener) {
             listeners.add(listener)
             return () => {
@@ -132,6 +165,8 @@ export function createToastActions(queue: ToastQueue) {
         warning: (options: ToastOptions | string) => queue.push(options, 'warning'),
         info: (options: ToastOptions | string) => queue.push(options, 'info'),
         dismiss: (id: number) => queue.dismiss(id),
-        clear: () => queue.clear()
+        clear: () => queue.clear(),
+        pause: () => queue.pause(),
+        resume: () => queue.resume()
     }
 }

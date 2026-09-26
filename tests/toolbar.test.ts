@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
@@ -280,6 +280,25 @@ describe('OriToolbar — RTL (dir="rtl") swaps the horizontal arrow keys', () =>
         await nextTick()
 
         expect(document.activeElement).toBe(items[0])
+    })
+
+    it('renders `dir` on the root only when it is passed', () => {
+        expect(mountToolbar({ dir: 'rtl' }).attributes('dir')).toBe('rtl')
+        expect(mountToolbar().attributes('dir')).toBeUndefined()
+    })
+
+    it('follows an inherited RTL direction when `dir` is omitted', async () => {
+        // happy-dom does not resolve `direction`; e2e/rtl-keyboard.spec.ts covers the real engine.
+        const spy = vi.spyOn(window, 'getComputedStyle').mockReturnValue({ direction: 'rtl' } as CSSStyleDeclaration)
+        mountToolbar()
+        const [a, b] = buttons()
+
+        a.focus()
+        a.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))
+        await nextTick()
+        spy.mockRestore()
+
+        expect(document.activeElement).toBe(b)
     })
 })
 

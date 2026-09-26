@@ -16,6 +16,17 @@ describe('rovingIntent', () => {
         expect(rovingIntent('ArrowUp', 'horizontal')).toBeNull()
     })
 
+    it('reads a direction getter only for Left/Right in a horizontal widget', () => {
+        let reads = 0
+        const dir = () => (reads++, 'rtl' as const)
+        expect(rovingIntent('Home', 'horizontal', dir)).toBe('first')
+        expect(rovingIntent('a', 'horizontal', dir)).toBeNull()
+        expect(rovingIntent('ArrowDown', 'vertical', dir)).toBe('next')
+        expect(reads).toBe(0)
+        expect(rovingIntent('ArrowLeft', 'horizontal', dir)).toBe('next')
+        expect(reads).toBe(1)
+    })
+
     it('maps vertical keys (direction-independent)', () => {
         expect(rovingIntent('ArrowDown', 'vertical')).toBe('next')
         expect(rovingIntent('ArrowUp', 'vertical')).toBe('prev')

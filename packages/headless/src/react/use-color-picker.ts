@@ -11,7 +11,7 @@ import {
     wrapHue
 } from '../core/color-picker'
 import type { ColorFormat, HSVA } from '../core/color-picker'
-import { resolveRovingIndex, rovingIntent } from '../core'
+import { resolveRovingIndex, rovingIntent, textDirection } from '../core'
 
 // Re-export the color types so `@oriui/headless/react` consumers can annotate their state / props.
 export type { ColorFormat, HSVA } from '../core/color-picker'
@@ -276,7 +276,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
         (event: ReactKeyboardEvent<HTMLElement>): void => {
             if (optsRef.current.disabled ?? false) return
             const list = optsRef.current.presets ?? []
-            const intent = rovingIntent(event.key, 'horizontal')
+            const intent = rovingIntent(event.key, 'horizontal', () => textDirection(event.currentTarget))
             if (!intent || list.length === 0) return
             event.preventDefault()
             const to = resolveRovingIndex(intent, activePresetRef.current, list.length, true)

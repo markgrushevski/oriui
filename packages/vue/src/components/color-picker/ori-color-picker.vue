@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, provide, ref, watch } from 'vue'
+import { computed, provide, ref, useAttrs, watch } from 'vue'
 import { useColorPicker } from '@oriui/headless/vue'
 import type { ColorFormat } from '@oriui/headless/vue'
 import { OriSlider } from '../slider'
@@ -13,6 +13,8 @@ import { oriFieldKey, useOriField } from '../field/context'
 // framework-agnostic `useColorPicker` (sRGB + 2D-area math, no adapter/machine); this SFC renders the
 // parts and reuses OriSlider (hue/alpha) and OriInput (hex). v-model is a lowercase color STRING;
 // `change` commits once per interaction (one undo).
+defineOptions({ inheritAttrs: false })
+
 const {
     alpha = false,
     disabled = false,
@@ -50,7 +52,13 @@ const field = useOriField()
 const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
 const isInvalid = computed(() => field?.invalid.value ?? false)
 const labelledBy = computed(() => field?.labelId.value)
-const describedBy = computed(() => field?.describedBy.value)
+// A caller's aria-describedby joins the field's hint instead of replacing it. The template binds `$attrs`
+// just before it, so every other attribute still goes to the caller, as plain fall-through would.
+const attrs = useAttrs()
+const describedBy = computed(() => {
+    const ids = [field?.describedBy.value, attrs['aria-describedby'] as string | undefined].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+})
 // Keep the own aria-label unless the field actually supplies a labelledby (a label-less field must not
 // blank the picker's name).
 const ariaLabel = computed(() => (labelledBy.value ? undefined : label))
@@ -104,9 +112,10 @@ function commitHex(): void {
         role="group"
         :aria-label="ariaLabel"
         :aria-labelledby="labelledBy"
-        :aria-describedby="describedBy"
         :aria-invalid="isInvalid ? 'true' : undefined"
         :data-disabled="isDisabled ? '' : undefined"
+        v-bind="$attrs"
+        :aria-describedby="describedBy"
     >
         <!-- 2D saturation × value area. The two visually-hidden range inputs are the a11y surface: each
              owns one axis (saturation = horizontal keys, brightness = vertical), so every keystroke

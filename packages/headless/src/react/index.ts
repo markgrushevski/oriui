@@ -27,7 +27,7 @@ export {
 export { useTabs, type UseTabsOptions, type TabItem } from './use-tabs'
 
 // Headless toast queue — a framework-agnostic singleton projected into React via useSyncExternalStore
-export { useToast, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
+export { useToast, type ToastAction, type ToastColor, type ToastItem, type ToastOptions } from './use-toast'
 
 // Headless color picker — compositional sRGB + 2D-area helpers (not a machine); React binding
 export { useColorPicker, type UseColorPickerOptions } from './use-color-picker'

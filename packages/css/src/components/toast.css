@@ -1,4 +1,6 @@
-/* The toast renders a status icon — inlined so this entry is self-contained (deduped in the full bundle). */
+/* The toast renders a status icon and an action button — inlined so this entry is self-contained (deduped in
+   the full bundle). */
+@import './button.css';
 @import './icon.css';
 
 @layer ori.components {
@@ -206,6 +208,17 @@
         outline-offset: 1px;
 
         opacity: 1;
+    }
+
+    .ori-toast .ori-toast__action {
+        flex-shrink: 0;
+        align-self: center;
+    }
+
+    /* The toaster takes focus from its hotkey; the ring shows where the keyboard landed. */
+    .ori-toaster:focus-visible {
+        outline: 2px solid var(--ori-color-primary);
+        outline-offset: -2px;
     }
 
     /* TransitionGroup enter/leave — slide in off the toaster's own screen edge + fade; the leaving item

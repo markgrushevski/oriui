@@ -3,6 +3,18 @@
 Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
 argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
 
+## Accordion's `#default` slot is a per-item template
+
+**Date:** 2026-09-26.
+
+`#default="{ item }"` renders once per section with that section's item in scope, like the body of a
+`v-for`. A template that ignores `item` is repeated in every section, ids included, and in `multiple`
+mode two open sections can hold the same id. We keep it that way. Content that needs its own ids goes
+in `#panel-<value>`, which renders into one section only; ids inside `#default` are derived from
+`item.value`. The remedy Tabs uses, rendering the fallback into the active panel only, has no
+equivalent when several sections are open, and rendering content only while a section is open would
+hide it from find-in-page. A DEV warning names a `#panel-*` slot that matches no item.
+
 ## Tabs stays array-driven — the compound shape, prototyped and priced
 
 **Date:** 2026-09-21. **Prototype:** branch `poc/compound-tabs` (not merged); every number below is

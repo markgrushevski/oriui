@@ -328,6 +328,32 @@ describe('OriField', () => {
         expect(radio.required).toBe(true)
     })
 
+    it.each([
+        ['OriRadioGroup', `<OriRadioGroup aria-describedby="mine" :options="[{ label: 'S', value: 's' }]" />`],
+        ['OriColorPicker', `<OriColorPicker aria-describedby="mine" model-value="#3366ff" />`]
+    ])('a caller aria-describedby on a nested %s joins the field hint', (_, control) => {
+        const wrapper = mount({
+            components: { OriField, OriRadioGroup, OriColorPicker },
+            template: `<OriField label="Pick" hint="A hint">${control}</OriField>`
+        })
+        const hintId = wrapper.find('.ori-field__hint').attributes('id')
+        const group = wrapper.find('.ori-radio-group, .ori-color-picker')
+
+        expect(group.attributes('aria-describedby')).toBe(`${hintId} mine`)
+    })
+
+    it('OriRadioGroup still passes a caller aria-label and class to its root', () => {
+        const wrapper = mount({
+            components: { OriRadioGroup },
+            template: `<OriRadioGroup aria-label="Size" class="mine" :options="[{ label: 'S', value: 's' }]" />`
+        })
+        const group = wrapper.find('[role="radiogroup"]')
+
+        expect(group.attributes('aria-label')).toBe('Size')
+        expect(group.classes()).toContain('mine')
+        expect(group.classes()).toContain('ori-radio-group')
+    })
+
     it('wires a nested OriColorPicker (group named by the field, drops its own aria-label)', async () => {
         const wrapper = mount(
             {

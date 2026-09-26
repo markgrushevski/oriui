@@ -1,9 +1,17 @@
 /**
- * DOM-reading roving helper shared by the Vue and Svelte `useToolbar` adapters. Kept out of `roving.ts`
- * (which is pure index/key math) because it inspects a real element — but it stays framework-agnostic: a
- * pure predicate over a PASSED element and its ancestors (`closest`), never querying `document` or
- * mutating. One source of truth for the WAI-ARIA "yield arrows to a composite child" rule.
+ * DOM-reading roving helpers shared by the adapters. Kept out of `roving.ts` (pure index/key math) because
+ * they inspect a real element, but still framework-agnostic: they read a PASSED element, never `document`.
  */
+
+import type { RovingDirection } from './roving'
+
+/**
+ * The direction `el` is laid out in, as the browser resolved it: `dir` on the element or any ancestor, or
+ * CSS `direction`. Read at keydown, so a direction that changes at runtime is followed.
+ */
+export function textDirection(el: Element): RovingDirection {
+    return getComputedStyle(el).direction === 'rtl' ? 'rtl' : 'ltr'
+}
 
 /**
  * Whether a focused element OWNS the arrow keys a toolbar would otherwise use for navigation, so the

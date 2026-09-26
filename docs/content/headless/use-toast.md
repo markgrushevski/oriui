@@ -30,14 +30,15 @@ shares the one queue).
 `toast(options)` (and the severity shortcuts) take either a **string** (its text) or a `ToastOptions`
 object:
 
-| Option     | Type         | Default | Description                                                                                                                                                                                |
-| ---------- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `text`     | `string`     | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)                                                                                                                    |
-| `title`    | `string`     | —       | Optional bold heading above the text.                                                                                                                                                      |
-| `color`    | `ToastColor` | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`.                                                                                                         |
-| `duration` | `number`     | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.                                                                                                                       |
-| `closable` | `boolean`    | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
-| `icon`     | `string`     | —       | SVG path for a leading icon.                                                                                                                                                               |
+| Option     | Type                                     | Default | Description                                                                                                                                                                                |
+| ---------- | ---------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `text`     | `string`                                 | —       | Body message. (`toast('hi')` is shorthand for `toast({ text: 'hi' })`.)                                                                                                                    |
+| `title`    | `string`                                 | —       | Optional bold heading above the text.                                                                                                                                                      |
+| `color`    | `ToastColor`                             | —       | Semantic role — drives the accent and the live-region assertiveness on `OriToast`.                                                                                                         |
+| `duration` | `number`                                 | `4000`  | Auto-dismiss delay in ms; `0` keeps the toast until it is dismissed.                                                                                                                       |
+| `closable` | `boolean`                                | —       | Show a dismiss button. Left unset by the queue, so the renderer's own default applies — except for a toast with `duration: 0`, which opts itself in because nothing else could dismiss it. |
+| `action`   | `{ label: string; onClick: () => void }` | —       | One action button, such as Undo. Your renderer runs `onClick` and then `dismiss(id)`.                                                                                                      |
+| `icon`     | `string`                                 | —       | SVG path for a leading icon.                                                                                                                                                               |
 
 `ToastColor` is `'primary' | 'secondary' | 'surface' | 'background' | 'success' | 'warning' | 'danger' | 'info'`.
 
@@ -50,6 +51,7 @@ object:
 | `success` / `error` / `warning` / `info` | `(options: ToastOptions \| string) => number`          | Severity shortcuts — set `color` to `success` / `danger` / `warning` / `info` (an explicit `color` in the options still wins). |
 | `dismiss(id)`                            | `(id: number) => void`                                 | Remove a toast (and cancel its timer); a no-op for an unknown id.                                                              |
 | `clear()`                                | `() => void`                                           | Empty the queue and cancel every timer.                                                                                        |
+| `pause()` / `resume()`                   | `() => void`                                           | Stop every countdown, then restart each with the time it had left. Call them from your renderer (see below).                   |
 
 ## Usage
 
@@ -65,13 +67,15 @@ Call `toast()` from anywhere, and render the queue once. The styled
 <script setup lang="ts">
 import { useToast } from '@oriui/headless/vue'
 
-const { toasts, dismiss } = useToast()
+const { toasts, dismiss, pause, resume } = useToast()
 </script>
 
 <template>
-    <div class="my-toaster">
-        <div v-for="t in toasts" :key="t.id" role="status">
+    <!-- A live region from mount. OriToaster also pauses for focus and a hidden page. -->
+    <div class="my-toaster" aria-live="polite" @pointerenter="pause" @pointerleave="resume">
+        <div v-for="t in toasts" :key="t.id" :role="t.color === 'danger' ? 'alert' : 'status'">
             {{ t.text }}
+            <button v-if="t.action" @click="(dismiss(t.id), t.action.onClick())">{{ t.action.label }}</button>
             <button v-if="t.closable" @click="dismiss(t.id)">×</button>
         </div>
     </div>
@@ -96,15 +100,20 @@ The **Svelte** binding is the same imperative API; `toasts` is a `readable` stor
 <script>
     import { useToast } from '@oriui/headless/svelte';
 
-    const { toasts, dismiss } = useToast();
+    const { toasts, dismiss, pause, resume } = useToast();
 </script>
 
-{#each $toasts as t (t.id)}
-    <div role="status">
-        {t.text}
-        {#if t.closable}<button on:click={() => dismiss(t.id)}>×</button>{/if}
-    </div>
-{/each}
+<div aria-live="polite" on:pointerenter={pause} on:pointerleave={resume}>
+    {#each $toasts as t (t.id)}
+        <div role={t.color === 'danger' ? 'alert' : 'status'}>
+            {t.text}
+            {#if t.action}
+                <button on:click={() => (dismiss(t.id), t.action.onClick())}>{t.action.label}</button>
+            {/if}
+            {#if t.closable}<button on:click={() => dismiss(t.id)}>×</button>{/if}
+        </div>
+    {/each}
+</div>
 ```
 
 #react
@@ -119,13 +128,14 @@ import { useToast } from '@oriui/headless/react'
 
 // Render the queue once near the app root.
 function MyToaster() {
-    const { toasts, dismiss } = useToast()
+    const { toasts, dismiss, pause, resume } = useToast()
 
     return (
-        <div className="my-toaster">
+        <div className="my-toaster" aria-live="polite" onPointerEnter={pause} onPointerLeave={resume}>
             {toasts.map((t) => (
-                <div key={t.id} role="status">
+                <div key={t.id} role={t.color === 'danger' ? 'alert' : 'status'}>
                     {t.text}
+                    {t.action && <button onClick={() => (dismiss(t.id), t.action!.onClick())}>{t.action.label}</button>}
                     {t.closable && <button onClick={() => dismiss(t.id)}>×</button>}
                 </div>
             ))}
@@ -148,11 +158,16 @@ function SaveButton() {
 
 ## Accessibility
 
-- The queue itself carries no roles — the **styled** [`OriToast`](/components/toast) is the live region:
-  `role="alert"` for `color="danger"` (assertive), `role="status"` otherwise (polite). If you render your
-  own, put the same roles on each toast so a screen reader announces it.
-- Auto-dismiss is timer-based; keep `duration` generous (or `0` for important messages) so a screen-reader
-  user has time to read it, and always offer `closable` for manual dismissal.
+The queue carries no markup, so a renderer of your own has to do what [`OriToaster`](/components/toast)
+does:
+
+- Render the container empty on mount with `aria-live="polite"` and insert toasts into it; give each
+  toast `role="alert"` for `color="danger"` and `role="status"` otherwise.
+- Call `pause()` while the pointer or focus is inside the container or the page is hidden, and
+  `resume()` when none of these holds any more (WCAG 2.2.1). Without it a toast can vanish while
+  someone reads it or tabs to its action.
+- Make the container a labelled `role="region"` with `tabindex="-1"` and a hotkey that focuses it, so
+  keyboard users can reach the buttons.
 
 ## See also
 

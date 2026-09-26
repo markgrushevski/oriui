@@ -1,5 +1,12 @@
 import { computed, toValue, useId, type MaybeRefOrGetter } from 'vue'
-import { resolveRovingIndex, rovingIntent, type RovingOrientation, type TabItem, type UseTabsOptions } from '../core'
+import {
+    resolveRovingIndex,
+    rovingIntent,
+    textDirection,
+    type RovingOrientation,
+    type TabItem,
+    type UseTabsOptions
+} from '../core'
 
 // Fallback id source when `useId()` is unavailable (called outside an app context); the composable is
 // intended for component setup, where useId() always resolves.
@@ -52,12 +59,12 @@ export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
     // Bound once on the tablist (tablistProps.onKeydown) → currentTarget IS the tablist; the focused tab is
     // event.target. Resolve the target by live DOM order, skip disabled, wrap, then select + focus it.
     function onKeydown(event: KeyboardEvent): void {
-        const intent = rovingIntent(event.key, orientation())
-        if (!intent) return
-
         const root = event.currentTarget as HTMLElement | null
         const target = event.target as HTMLElement | null
         if (!root || !target) return
+
+        const intent = rovingIntent(event.key, orientation(), opts().dir ?? (() => textDirection(root)))
+        if (!intent) return
 
         const list = tabs()
         const buttons = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
@@ -76,6 +83,7 @@ export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
         role: 'tablist' as const,
         'aria-orientation': orientation(),
         'aria-label': opts().label,
+        dir: opts().dir,
         'aria-labelledby': opts().labelledby,
         onKeydown
     }))

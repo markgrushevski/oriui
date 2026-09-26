@@ -216,6 +216,25 @@ describe('React useTabs', () => {
         expect(onChange).toHaveBeenLastCalledWith('a')
     })
 
+    it('dir="rtl" is rendered on the tablist and swaps ArrowLeft / ArrowRight', () => {
+        const onChange = vi.fn()
+        const { result } = renderHook(() => useTabs({ tabs: TABS, value: 'a', dir: 'rtl', onChange }))
+        expect(result.current.tablistProps.dir).toBe('rtl')
+
+        const root = document.createElement('div')
+        const a = root.appendChild(document.createElement('button'))
+        a.setAttribute('role', 'tab')
+        root.appendChild(document.createElement('button')).setAttribute('role', 'tab')
+        result.current.tablistProps.onKeyDown({
+            key: 'ArrowLeft',
+            currentTarget: root,
+            target: a,
+            preventDefault: () => {}
+        } as unknown as ReactKeyboardEvent<HTMLElement>)
+
+        expect(onChange).toHaveBeenLastCalledWith('b')
+    })
+
     it('reacts to a changed controlled value on rerender', () => {
         const { result, rerender } = renderHook(
             (props: { value: string }) => useTabs({ tabs: TABS, value: props.value }),

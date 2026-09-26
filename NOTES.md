@@ -503,20 +503,15 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   anyway), which unblocks consumers who recolor a button/icon by swapping `--ori-color`. If a future state must animate a relative-color property, resolve it to a concrete
   color first.
 
-## Attribute fall-through: a later explicit binding DELETES the caller's value
+## Attribute fall-through: whichever binding comes later wins
 
-`v-bind="$attrs"` followed by `:aria-describedby="x"` compiles to Vue's `mergeProps`, which **assigns
-unconditionally** — when `x` is `undefined` it does not fall back to the `$attrs` value, it removes it. So
-any component with `inheritAttrs: false` that both promises attribute fall-through AND binds an `aria-*`
-attribute itself must **fold** the inherited value into its own computation. Reordering the bindings is not
-a fix; it only flips which side gets clobbered. The two modes produce opposite bugs for the same attribute,
-so an audit has to check `inheritAttrs` per component: with `inheritAttrs: false` + `$attrs` bound before an
-explicit binding, the COMPONENT wins and the caller's id is deleted (input / select / textarea / combobox /
-slider — fixed 2026-09-18); with default fall-through onto a root element that also binds the attribute,
-fall-through merges last, so the CALLER wins and the component's own hint/error id is deleted (radio-group,
-color-picker — ORI-I-98). `useAttrs()` reads ARE reactive inside a `computed` (the
-proxy tracks every property get), so `attrs['aria-describedby']` in a computed is the correct idiom and needs
-no getter dance — unlike props (`vue/no-setup-props-reactivity-loss`).
+Vue merges bindings with `mergeProps`, and a later value **replaces** an earlier one, even when it is
+`undefined`. With `v-bind="$attrs"` before `:aria-describedby="x"`, the component's `x` deletes the
+caller's id. With default fall-through onto a root that binds the attribute itself, fall-through merges
+last, and the caller's id deletes the component's hint. Reordering only flips which side loses. A
+component that binds an id-list attribute (`aria-describedby`) and accepts fall-through must **join** the
+inherited value into its own list. `useAttrs()` reads are tracked inside a `computed`, so
+`attrs['aria-describedby']` there needs no getter, unlike props.
 
 ## A live region has to exist BEFORE its content
 
