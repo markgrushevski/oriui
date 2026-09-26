@@ -8,7 +8,13 @@ const { toast } = useToast()
 const undone = ref(0)
 
 function push(): void {
-    toast({ text: 'File deleted', duration: 1500, action: { label: 'Undo', onClick: () => undone.value++ } })
+    toast({ text: 'File deleted', duration: 1500, action: { label: 'Undo', onClick: undo } })
+}
+
+// Like the docs demo: the action pushes a follow-up toast while focus is still on the stack.
+function undo(): void {
+    undone.value++
+    toast({ text: 'Restored', duration: 1500 })
 }
 </script>
 

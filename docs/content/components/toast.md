@@ -329,8 +329,8 @@ Toasts are announced without moving focus.
 - **Nothing disappears while in use (WCAG 2.2.1).** Countdowns stop while the pointer or focus is on the
   toasts, or the page is hidden. A toast that is the only place an error is reported should still be
   sticky (`duration: 0`).
-- Toasts are non-modal: they never trap focus. When a focused toast is removed, focus stays on the
-  toaster instead of falling to `<body>`.
+- Toasts are non-modal: they never trap focus. When a toast's own button removes it, a keyboard user
+  stays on the toaster while other toasts remain, and otherwise returns to where the hotkey was pressed.
 - The dismiss button carries `aria-label="Dismiss notification"`.
 - With `prefers-reduced-motion`, the slide is dropped and only the fade remains.
 
@@ -392,7 +392,7 @@ and is gated behind an `onMounted` check so SSR markup stays stable.
 | Prop       | Type                                                                                              | Default           | Description                                                                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `align`    | `'start' \| 'center'`                                                                             | `'start'`         | Alignment of every toast in the stack — forwarded to each `OriToast`. Pairs with a `top-center` / `bottom-center` position. |
-| `hotkey`   | `string`                                                                                          | `'F8'`            | The key (`KeyboardEvent.key`) that moves focus to the toasts.                                                               |
+| `hotkey`   | `string`                                                                                          | `'F8'`            | The key (`KeyboardEvent.key`) that moves focus to the toasts. Pick one that types no text; `''` turns it off.               |
 | `label`    | `string`                                                                                          | `'Notifications'` | Accessible name of the toast region; the hotkey is appended to it.                                                          |
 | `position` | `'top-left' \| 'top-right' \| 'top-center' \| 'bottom-left' \| 'bottom-right' \| 'bottom-center'` | `'top-right'`     | Screen corner for the stack.                                                                                                |
 

@@ -12,7 +12,7 @@ const {
     /** Body alignment for every toast in the stack — a look of the stack, like `position`. A centred
      *  stack usually pairs with `top-center` / `bottom-center` and one-line status messages. */
     align?: 'start' | 'center'
-    /** The key (a `KeyboardEvent.key`) that moves focus to the toasts. */
+    /** The key (a `KeyboardEvent.key` that types no text) that moves focus to the toasts; `''` turns it off. */
     hotkey?: string
     /** Accessible name of the toast region; the hotkey is appended to it. */
     label?: string
@@ -21,6 +21,9 @@ const {
 
 const { toasts, dismiss, pause, resume } = useToast()
 const stack = ref<ComponentPublicInstance>()
+const stackEl = (): HTMLElement | undefined => stack.value?.$el
+// Where the hotkey was pressed, to return to once the last toast is gone.
+let returnTo: HTMLElement | null = null
 
 // WCAG 2.2.1: a toast must not disappear while someone is reading or using it, so the countdowns stop
 // while the pointer or focus is on the stack, or the page is hidden.
@@ -33,25 +36,48 @@ function hold(reason: string, on: boolean): void {
 }
 
 function onFocusOut(event: FocusEvent): void {
-    if (!stack.value?.$el.contains(event.relatedTarget as Node | null)) hold('focus', false)
+    if (stackEl()?.contains(event.relatedTarget as Node | null)) return
+    returnTo = null
+    hold('focus', false)
 }
 
 function onKeydown(event: KeyboardEvent): void {
-    if (event.key === hotkey && toasts.length) stack.value?.$el.focus()
+    if (!hotkey || event.key !== hotkey || event.defaultPrevented) return
+    if (event.ctrlKey || event.altKey || event.metaKey) return
+    const el = stackEl()
+    if (!el || !toasts.length) return
+    if (!el.contains(document.activeElement)) returnTo = document.activeElement as HTMLElement | null
+    el.focus()
 }
 
 const onVisibility = (): void => hold('hidden', document.hidden)
 
-// Focus inside a toast that is about to go would drop to <body> without a focusout, leaving the stack paused.
+// A toast's own button disappears with it. A keyboard user stays in the stack while toasts remain and
+// otherwise goes back to where the hotkey was pressed; after a mouse click, focus is let go.
 function remove(id: number): void {
-    const el = stack.value?.$el as HTMLElement | undefined
-    if (el?.contains(document.activeElement)) el.focus()
+    const el = stackEl()
+    const active = document.activeElement as HTMLElement | null
+    if (el && active && el.contains(active)) {
+        if (active.matches(':focus-visible') && toasts.length > 1) el.focus()
+        else {
+            if (returnTo?.isConnected) returnTo.focus()
+            else active.blur()
+            returnTo = null
+            hold('focus', false)
+        }
+    }
     dismiss(id)
 }
 
+// Remove first, so a toast the action pushes does not keep focus in the stack.
 function onAction(id: number, run: () => void): void {
-    run()
     remove(id)
+    run()
+}
+
+// App code can also dismiss the focused toast. Chromium then fires a focusout, Firefox does not.
+function onAfterLeave(): void {
+    if (!stackEl()?.contains(document.activeElement)) hold('focus', false)
 }
 
 // The library can't use Nuxt <ClientOnly>; gate the Teleport on mount so SSR markup stays stable.
@@ -60,6 +86,7 @@ onMounted(() => {
     mounted.value = true
     document.addEventListener('keydown', onKeydown)
     document.addEventListener('visibilitychange', onVisibility)
+    onVisibility()
 })
 onBeforeUnmount(() => {
     document.removeEventListener('keydown', onKeydown)
@@ -82,7 +109,7 @@ onBeforeUnmount(() => {
             name="ori-toast"
             :class="['ori-toaster', `ori-toaster_${position}`]"
             role="region"
-            :aria-label="`${label} (${hotkey})`"
+            :aria-label="hotkey ? `${label} (${hotkey})` : label"
             aria-live="polite"
             aria-atomic="false"
             tabindex="-1"
@@ -90,6 +117,7 @@ onBeforeUnmount(() => {
             @pointerleave="hold('pointer', false)"
             @focusin="hold('focus', true)"
             @focusout="onFocusOut"
+            @after-leave="onAfterLeave"
         >
             <ori-toast
                 v-for="t in toasts"

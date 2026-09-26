@@ -1,4 +1,6 @@
-/* The toast renders a status icon — inlined so this entry is self-contained (deduped in the full bundle). */
+/* The toast renders a status icon and an action button — inlined so this entry is self-contained (deduped in
+   the full bundle). */
+@import './button.css';
 @import './icon.css';
 
 @layer ori.components {

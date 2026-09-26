@@ -45,7 +45,7 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
         const target = event.target as HTMLElement | null
         if (!root || !target) return
 
-        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal', o.dir ?? textDirection(root))
+        const intent = rovingIntent(event.key, o.orientation ?? 'horizontal', o.dir ?? (() => textDirection(root)))
         if (!intent) return
 
         const buttons = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))

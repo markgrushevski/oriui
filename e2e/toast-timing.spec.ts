@@ -30,7 +30,25 @@ test.describe('OriToaster — countdowns pause for the pointer and focus (real C
 
         await page.keyboard.press('Enter')
         await expect(page.getByTestId('undone')).toHaveText('1')
-        await expect(page.locator('.ori-toast')).toHaveCount(0)
+        await expect(page.getByText('File deleted')).toHaveCount(0)
+    })
+
+    test('after a mouse click on the action, the next toast still leaves on time', async ({ page }) => {
+        await page.getByRole('button', { name: 'Undo' }).click()
+        await page.mouse.move(0, 0)
+        await expect(page.getByText('Restored')).toBeVisible()
+        await expect(page.locator('.ori-toast')).toHaveCount(0, { timeout: 3000 })
+    })
+
+    test('closing the last toast from the keyboard returns focus to where the hotkey was pressed', async ({ page }) => {
+        await page.mouse.move(0, 0)
+        await page.getByTestId('push').focus()
+        await page.keyboard.press('F8')
+        await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
+
+        await expect(page.getByTestId('push')).toBeFocused()
+        await expect(page.locator('.ori-toast')).toHaveCount(0, { timeout: 3000 }) // Restored leaves on time
     })
 
     test('without the pointer or focus, the toast leaves on time', async ({ page }) => {

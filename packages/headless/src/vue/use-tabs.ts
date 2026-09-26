@@ -63,7 +63,7 @@ export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
         const target = event.target as HTMLElement | null
         if (!root || !target) return
 
-        const intent = rovingIntent(event.key, orientation(), opts().dir ?? textDirection(root))
+        const intent = rovingIntent(event.key, orientation(), opts().dir ?? (() => textDirection(root)))
         if (!intent) return
 
         const list = tabs()

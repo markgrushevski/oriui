@@ -288,7 +288,7 @@ describe('OriToolbar — RTL (dir="rtl") swaps the horizontal arrow keys', () =>
     })
 
     it('follows an inherited RTL direction when `dir` is omitted', async () => {
-        // happy-dom does not resolve `direction`; e2e/toolbar.spec.ts covers the real engine.
+        // happy-dom does not resolve `direction`; e2e/rtl-keyboard.spec.ts covers the real engine.
         const spy = vi.spyOn(window, 'getComputedStyle').mockReturnValue({ direction: 'rtl' } as CSSStyleDeclaration)
         mountToolbar()
         const [a, b] = buttons()

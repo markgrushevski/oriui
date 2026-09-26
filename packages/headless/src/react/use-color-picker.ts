@@ -276,7 +276,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
         (event: ReactKeyboardEvent<HTMLElement>): void => {
             if (optsRef.current.disabled ?? false) return
             const list = optsRef.current.presets ?? []
-            const intent = rovingIntent(event.key, 'horizontal', textDirection(event.currentTarget))
+            const intent = rovingIntent(event.key, 'horizontal', () => textDirection(event.currentTarget))
             if (!intent || list.length === 0) return
             event.preventDefault()
             const to = resolveRovingIndex(intent, activePresetRef.current, list.length, true)

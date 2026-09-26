@@ -67,13 +67,15 @@ Call `toast()` from anywhere, and render the queue once. The styled
 <script setup lang="ts">
 import { useToast } from '@oriui/headless/vue'
 
-const { toasts, dismiss } = useToast()
+const { toasts, dismiss, pause, resume } = useToast()
 </script>
 
 <template>
-    <div class="my-toaster">
-        <div v-for="t in toasts" :key="t.id" role="status">
+    <!-- A live region from mount. OriToaster also pauses for focus and a hidden page. -->
+    <div class="my-toaster" aria-live="polite" @pointerenter="pause" @pointerleave="resume">
+        <div v-for="t in toasts" :key="t.id" :role="t.color === 'danger' ? 'alert' : 'status'">
             {{ t.text }}
+            <button v-if="t.action" @click="(dismiss(t.id), t.action.onClick())">{{ t.action.label }}</button>
             <button v-if="t.closable" @click="dismiss(t.id)">×</button>
         </div>
     </div>
@@ -98,15 +100,20 @@ The **Svelte** binding is the same imperative API; `toasts` is a `readable` stor
 <script>
     import { useToast } from '@oriui/headless/svelte';
 
-    const { toasts, dismiss } = useToast();
+    const { toasts, dismiss, pause, resume } = useToast();
 </script>
 
-{#each $toasts as t (t.id)}
-    <div role="status">
-        {t.text}
-        {#if t.closable}<button on:click={() => dismiss(t.id)}>×</button>{/if}
-    </div>
-{/each}
+<div aria-live="polite" on:pointerenter={pause} on:pointerleave={resume}>
+    {#each $toasts as t (t.id)}
+        <div role={t.color === 'danger' ? 'alert' : 'status'}>
+            {t.text}
+            {#if t.action}
+                <button on:click={() => (dismiss(t.id), t.action.onClick())}>{t.action.label}</button>
+            {/if}
+            {#if t.closable}<button on:click={() => dismiss(t.id)}>×</button>{/if}
+        </div>
+    {/each}
+</div>
 ```
 
 #react
@@ -121,13 +128,14 @@ import { useToast } from '@oriui/headless/react'
 
 // Render the queue once near the app root.
 function MyToaster() {
-    const { toasts, dismiss } = useToast()
+    const { toasts, dismiss, pause, resume } = useToast()
 
     return (
-        <div className="my-toaster">
+        <div className="my-toaster" aria-live="polite" onPointerEnter={pause} onPointerLeave={resume}>
             {toasts.map((t) => (
-                <div key={t.id} role="status">
+                <div key={t.id} role={t.color === 'danger' ? 'alert' : 'status'}>
                     {t.text}
+                    {t.action && <button onClick={() => (dismiss(t.id), t.action!.onClick())}>{t.action.label}</button>}
                     {t.closable && <button onClick={() => dismiss(t.id)}>×</button>}
                 </div>
             ))}

@@ -15,12 +15,13 @@ export type RovingIntent = 'next' | 'prev' | 'first' | 'last'
 /**
  * Map a keyboard key to a roving intent for the given orientation + text direction, or `null` when the
  * key is not a navigation key. Horizontal toolbars navigate with Left/Right (swapped under RTL);
- * vertical toolbars with Up/Down (direction-independent). Home/End jump to the ends in both.
+ * vertical toolbars with Up/Down (direction-independent). Home/End jump to the ends in both. `dir` may be
+ * a getter: it is called only for Left/Right in a horizontal widget, so a style read is not paid per key.
  */
 export function rovingIntent(
     key: string,
     orientation: RovingOrientation = 'horizontal',
-    dir: RovingDirection = 'ltr'
+    dir: RovingDirection | (() => RovingDirection) = 'ltr'
 ): RovingIntent | null {
     if (key === 'Home') return 'first'
     if (key === 'End') return 'last'
@@ -32,11 +33,9 @@ export function rovingIntent(
     }
 
     // Horizontal: RTL swaps the visual meaning of Left/Right.
-    const forward = dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-    const backward = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-    if (key === forward) return 'next'
-    if (key === backward) return 'prev'
-    return null
+    if (key !== 'ArrowLeft' && key !== 'ArrowRight') return null
+    const rtl = (typeof dir === 'function' ? dir() : dir) === 'rtl'
+    return (key === 'ArrowRight') !== rtl ? 'next' : 'prev'
 }
 
 /**

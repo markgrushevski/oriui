@@ -92,7 +92,7 @@ export function useToolbar(options: UseToolbarOptions = {}) {
         const target = event.target as HTMLElement | null
         if (!root || !target) return
 
-        const intent = rovingIntent(event.key, orientation(), dir() ?? textDirection(root))
+        const intent = rovingIntent(event.key, orientation(), dir() ?? (() => textDirection(root)))
         if (!intent) return
 
         // Yield entirely to a control that owns arrow keys (slider/textbox/radio group placed in the bar).

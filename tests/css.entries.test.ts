@@ -130,7 +130,7 @@ describe('@oriui/css à-la-carte entry points', () => {
             // OriInput); (c) the shared `.ori-anchored` placement primitive, which has no component
             // of its own so no name hints at it.
             const deps = new Set<string>()
-            for (const m of source.matchAll(/from\s+'\.\.\/([a-z0-9-]+)';/g)) deps.add(m[1])
+            for (const m of source.matchAll(/from\s+'\.\.\/([a-z0-9-]+)'/g)) deps.add(m[1])
             for (const m of source.matchAll(/['"`]ori-([a-z][a-z-]*)/g)) if (names.includes(m[1])) deps.add(m[1])
             if (/['"`]ori-anchored/.test(source)) deps.add('anchored')
             deps.delete(name)

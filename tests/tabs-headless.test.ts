@@ -136,7 +136,7 @@ describe('useTabs (Vue)', () => {
         ['an explicit dir', { dir: 'rtl' as const }, false],
         ['an inherited direction', {}, true]
     ])('RTL from %s swaps ArrowLeft / ArrowRight', (_, extra, inherited) => {
-        // happy-dom does not resolve `direction`; e2e/tabs-keyboard.spec.ts covers the real engine.
+        // happy-dom does not resolve `direction`; e2e/rtl-keyboard.spec.ts covers the real engine.
         const spy = inherited
             ? vi.spyOn(window, 'getComputedStyle').mockReturnValue({ direction: 'rtl' } as CSSStyleDeclaration)
             : undefined

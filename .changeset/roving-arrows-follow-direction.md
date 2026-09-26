@@ -13,5 +13,8 @@ flipped only when you passed `dir="rtl"` to it.
 - `useTabs` gains a `dir` option, like `useToolbar`.
 - When `dir` is passed to `useTabs`, `useToolbar` or `<OriToolbar>`, it is also rendered as the `dir`
   attribute, so the layout and the keys flip together.
-- `<OriToolbar>`'s `dir` no longer defaults to `'ltr'`: when omitted, the toolbar uses the inherited
-  direction. If you relied on LTR keys inside RTL content, pass `dir="ltr"`.
+- The `dir` of `<OriToolbar>` and of `useToolbar` (Vue, Svelte and React) no longer defaults to
+  `'ltr'`: when omitted, the inherited direction is used. If you relied on LTR keys inside RTL content,
+  pass `dir="ltr"`.
+- `@oriui/headless` exports `textDirection(el)`, and `rovingIntent` accepts a getter for its `dir`
+  argument, called only for Left/Right in a horizontal widget.

@@ -43,7 +43,7 @@ export function useTabs(options: UseTabsOptions) {
     const onKeyDown = useCallback(
         (event: KeyboardEvent<HTMLElement>): void => {
             const root = event.currentTarget
-            const intent = rovingIntent(event.key, orientation, dir ?? textDirection(root))
+            const intent = rovingIntent(event.key, orientation, dir ?? (() => textDirection(root)))
             if (!intent) return
 
             const target = event.target as HTMLElement
