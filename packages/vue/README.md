@@ -3,10 +3,9 @@
 [![npm](https://img.shields.io/npm/v/@oriui/vue?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/vue)
 [![license](https://img.shields.io/npm/l/@oriui/vue?color=blue)](https://github.com/markgrushevski/oriui/blob/main/LICENSE)
 
-Styled **Vue 3** components for [oriUI](https://oriui.vercel.app) (織り) — ready `<Ori*>` components
-composed from the headless behavior ([`@oriui/headless`](https://npmjs.com/package/@oriui/headless)) +
-standalone CSS ([`@oriui/css`](https://npmjs.com/package/@oriui/css)) layers. This is the
-batteries-included **styled** layer: _prototype fast, scale without rewriting_.
+Accessible Vue 3 components for [oriUI](https://oriui.vercel.app) (織り), a design system in plain CSS.
+Each component renders the [`@oriui/css`](https://npmjs.com/package/@oriui/css) classes and gets its
+keyboard, focus and ARIA behavior from [`@oriui/headless`](https://npmjs.com/package/@oriui/headless).
 
 ## Install
 
@@ -14,7 +13,7 @@ batteries-included **styled** layer: _prototype fast, scale without rewriting_.
 npm install @oriui/vue
 ```
 
-Pulls in `@oriui/css` + `@oriui/headless` automatically; `vue ^3` is a peer dependency.
+`@oriui/css`, `@oriui/headless` and `vue ^3.5` are peer dependencies; npm installs them for you.
 
 ## Use
 
@@ -31,7 +30,7 @@ import { OriButton } from '@oriui/vue'
 
 Dynamic state is driven by real **attributes** (`disabled`, `aria-busy`), never classes — the
 a11y-correct source of truth. Theme + skin are attributes on `<html>` (`class="dark"`,
-`data-ori-skin="…"`), reskinning everything through CSS variables with zero runtime.
+`data-ori-skin="…"`), reskinning everything through CSS variables.
 
 ## Make it yours
 
@@ -55,14 +54,13 @@ tokens are the stable public API; internal component styles can change between v
 [Theming & skins](https://oriui.vercel.app/guides/theming) ·
 [Design tokens](https://oriui.vercel.app/guides/design-tokens)
 
-## Layers
+## Without the components
 
-Start here; drop a layer when you need more control, without rewriting — the token contract is shared:
+Both halves also work on their own, with the same tokens:
 
-- [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) — behavior only (focus / keyboard /
-  ARIA), your own markup.
-- [`@oriui/css`](https://npmjs.com/package/@oriui/css) — standalone `.ori-*` classes + tokens, no
-  framework.
+- [`@oriui/css`](https://npmjs.com/package/@oriui/css) — the classes and tokens, with no framework.
+- [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) — the behavior (focus, keyboard,
+  ARIA) for your own markup.
 
 **[Full docs → oriui.vercel.app](https://oriui.vercel.app)** — a page per component with live demos,
 props, and a11y notes.

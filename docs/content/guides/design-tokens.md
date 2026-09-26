@@ -4,7 +4,7 @@ title: Design tokens
 
 # Design tokens
 
-oriUI is three independent layers woven around **one set of design tokens**. This page is the
+Every oriUI package reads **one set of design tokens**. This page is the
 catalog — every token, and the resolution model that turns a raw value into the color a component
 paints. The chain is short and deliberate: **a primitive feeds a semantic role, a role feeds a
 per-instance alias, and components read only the alias.** That indirection is what lets a single
@@ -406,8 +406,7 @@ alias** — so the whole catalog is repointed by a class or attribute toggle, ne
 zero-runtime mechanics that ride on that — flipping mode, switching skins, and one-off overrides —
 live in [Theming](/guides/theming) and [Customization](/guides/customization). The same tokens feed
 the styled Vue components, the standalone [CSS layer](/guides/css), and the
-[headless core](/headless/core), so you can move between layers, or reskin all of them, without a
-rewrite.
+[headless core](/headless/core), so one reskin reaches all of them.
 
 ## See also
 

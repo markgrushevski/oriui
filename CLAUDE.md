@@ -4,15 +4,8 @@ Guidance for anyone — human or agent — changing this repository.
 
 ## What this is
 
-**oriUI** (織り, "weaving") — a layered UI library: _prototype fast, scale without rewriting_. Three packages,
-each usable alone, woven around one set of design tokens:
-
-- `@oriui/css` — tokens, `.ori-*` classes and one stylesheet per component; no JavaScript.
-- `@oriui/headless` — a framework-agnostic behavior core (focus, keyboard, ARIA) with Vue, Svelte and React
-  adapters behind a swappable `OriHeadless` contract.
-- `@oriui/vue` — styled Vue components: the two above, wired together.
-
-Theming is zero-runtime (CSS custom properties), with no Tailwind dependency.
+**oriUI** (織り): what it is and who it is for is in [README.md](README.md); this file is how to change it.
+The packages are listed under [Structure](#structure).
 
 ## Where things are written
 
@@ -73,7 +66,7 @@ error.
 ```
 packages/
   css/        @oriui/css — tokens, utilities, src/components/<name>.css (one per component)
-  headless/   @oriui/headless — src/core (engine) + src/vue, src/svelte, src/react (adapters)
+  headless/   @oriui/headless — src/core (engine) + src/vue (adapter); src/svelte, src/react (in development)
   vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/types.ts
 docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
 tests/  e2e/  unit + a11y suite; real-browser suite

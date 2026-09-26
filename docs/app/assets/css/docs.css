@@ -438,12 +438,62 @@ a:not(:where(.ori-button)) {
 .home__cta {
     display: flex;
     gap: 12px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
+}
+
+/* Where it runs: one card per stack, saying what oriUI offers there. */
+.home__frameworks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 0 0 40px;
+    padding: 0;
+
+    list-style: none;
+}
+
+.home__framework {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-content: start;
+    align-items: center;
+    gap: 2px 10px;
+    padding: 12px 14px;
+
+    border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 10%, transparent);
+    border-radius: 12px;
+
+    background: var(--ori-color-surface);
+    color: var(--ori-color-on-surface);
+}
+
+.home__logo {
+    grid-row: span 2;
+
+    width: 26px;
+    height: 26px;
+
+    fill: currentcolor;
+}
+
+.home__framework-name {
+    font-weight: 700;
+}
+
+.home__framework-what {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+.home__framework .ori-badge {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 8px;
 }
 
 .home__features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
     gap: 16px;
 }
 

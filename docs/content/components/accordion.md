@@ -59,7 +59,7 @@ the shared `name` attribute, no JavaScript required.
     ]"
 >
     <template #default="{ item }">
-        <p v-if="item.value === 'one'">oriUI is a layered Vue 3 component library.</p>
+        <p v-if="item.value === 'one'">oriUI is a design system in plain CSS, with Vue components built on it.</p>
         <p v-else-if="item.value === 'two'">Run <code>npm i @oriui/vue</code>.</p>
         <p v-else>Yes — import <code>@oriui/css</code> and use the ori-* classes anywhere.</p>
     </template>
@@ -79,7 +79,7 @@ the shared `name` attribute, no JavaScript required.
             </svg>
         </summary>
         <div class="ori-accordion__panel">
-            <p>oriUI is a layered Vue 3 component library.</p>
+            <p>oriUI is a design system in plain CSS, with Vue components built on it.</p>
         </div>
     </details>
     <!-- repeat for each item, same name="faq" -->

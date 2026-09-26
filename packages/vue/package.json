@@ -1,6 +1,6 @@
 {
     "name": "@oriui/vue",
-    "description": "Styled Vue 3 components for oriUI — ready <Ori*> components composed from the headless behavior (@oriui/headless) + standalone CSS (@oriui/css) layers (織り)",
+    "description": "Accessible Vue 3 components for oriUI.",
     "license": "MIT",
     "version": "1.0.0-rc.19",
     "type": "module",

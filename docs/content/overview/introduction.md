@@ -4,68 +4,53 @@ title: Introduction
 
 # Introduction
 
-**oriUI** (織り, _ori_ — "weaving") is a layered Vue 3 UI library. The idea in one line:
-**prototype fast, scale without rewriting.** Start with ready-made styled components; when you need
-more control, drop down to the behavior or the raw CSS — without throwing away your work, because
-every layer is woven around the **same design tokens**.
+**oriUI** (織り, _ori_, "weaving") is a design system in plain CSS, with accessible Vue 3 components built
+on it. It is made for our own apps first, so a component is added when one of them needs it.
 
-## Three layers, one token contract
+## The packages
 
-oriUI ships as three independently consumable layers. Use just one, or compose them:
+| Package           | What it gives you                                                                                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@oriui/css`      | Design tokens and a stylesheet per component: `.ori-*` classes, eight skins, light and dark. No JavaScript and no build step.                                   |
+| `@oriui/vue`      | 34 Vue 3 components, such as `<OriButton variant="soft" />`. Each renders the CSS classes and adds keyboard, focus, ARIA and form behavior.                     |
+| `@oriui/headless` | That behavior without markup: composables that return state and prop bags for your own elements. The Vue adapter is ready; Svelte and React are in development. |
 
-| Layer        | Package               | What it gives you                                                                 |
-| ------------ | --------------------- | --------------------------------------------------------------------------------- |
-| **Styled**   | `@oriui/vue`          | Ready components — `<OriButton variant="soft" />`. Behavior + style composed.     |
-| **Headless** | `@oriui/headless/vue` | Behavior only — composables for state, keyboard, focus, and ARIA. You own markup. |
-| **CSS**      | `@oriui/css`          | Standalone `.ori-*` classes + tokens. No Vue, no build step, no Tailwind.         |
+The CSS is the foundation, and the other two build on it. `OriButton` is the `.ori-button` classes plus a
+few props; `OriDialog` is `useDialog` from `@oriui/headless` plus markup that uses the same classes. So you
+can use the CSS without Vue, use the composables with your own markup, or mix all three on one page, and
+everything shares the same tokens.
 
-These are not three separate products — they are **three depths of one system**. A styled `OriButton`
-is the CSS layer's `.ori-button` classes plus token theming; a styled `OriDialog` is the headless
-`useDialog` plus markup plus those same classes. Reach for the depth a screen needs, and the tokens
-keep everything visually consistent.
+## How it is built
 
-## What makes it different
+- **Theming is CSS.** Skins, dark mode, sizes and variants are custom properties, switched by a class or
+  an attribute on `<html>`. No colors are computed in JavaScript, and there is no Tailwind dependency.
+  See [Theming](/guides/theming).
+- **State is real attributes.** `disabled`, `aria-pressed`, `aria-expanded`, `aria-invalid`: the CSS reads
+  the same state whether Vue, another framework or hand-written HTML sets it.
+- **The platform comes first.** Dialogs use the native `<dialog>`, popovers the Popover API and CSS anchor
+  positioning, the accordion `<details>`. JavaScript fills in only what the platform lacks.
+- **Accessibility is tested.** axe runs against every component, every color pair passes WCAG AA
+  contrast in every skin, and keyboard behavior is exercised in real Chromium. See
+  [Accessibility](/overview/accessibility).
+- **The engine is replaceable.** Disclosure, dialog, combobox and menu run through the `OriHeadless`
+  contract. The default engine has no dependencies; you can register another one for a single widget,
+  for example your own wrapper around a library such as Zag, without changing its markup. See
+  [@oriui/headless](/headless/core).
 
-- **Zero-runtime theming.** Skins, light/dark, sizes, and variants are CSS custom properties —
-  switching them is a class or attribute toggle, never JavaScript. See [Design tokens](/guides/design-tokens).
-- **No Tailwind dependency.** The CSS layer is plain, prefixed, `@layer`-scoped classes you can ship to
-  htmx, Astro, or hand-written HTML. Tailwind is an _optional_ preset, not a requirement.
-- **Swappable behavior.** The headless layer runs on a tiny zero-dependency native engine by default,
-  and you can swap in a battle-tested one (Zag) per primitive behind one contract — without touching
-  your markup. See [@oriui/headless](/headless/core).
-- **Accessibility is structural.** State lives in real attributes (`disabled`, `aria-busy`,
-  `aria-expanded`), color pairs are contrast-checked in CI, and focus rings ride `:focus-visible`.
-  See [Accessibility](/overview/accessibility).
+## Where it runs
 
-## How it compares
-
-oriUI deliberately sits between the usual categories:
-
-- **vs. Tailwind component kits (DaisyUI, …)** — the same "just classes" ergonomics for the CSS layer,
-  but **without** a Tailwind build dependency, and with a real Vue component layer on top when you want
-  it.
-- **vs. headless libraries (Radix / Reka, Headless UI)** — oriUI has a headless layer too, but it is
-  one depth of a stack, not the whole story: stay styled, go headless, or drop to CSS — all reusing the
-  same tokens.
-- **vs. full component libraries (Vuetify, PrimeVue)** — lighter and unopinionated about styling: the
-  token contract _is_ the theming API, so customization is CSS, not a framework-specific config object.
-
-For a deeper, library-by-library take, see [Idea & comparisons](/overview/comparisons).
-
-## Where each layer fits
-
-The CSS layer works **everywhere**; the styled layer is Vue, and the headless layer ships **Vue, Svelte
-and React** adapters over one core. See the full [Applicability matrix](/overview/applicability) for the
-per-environment breakdown (Vue / Svelte / React / Astro / htmx, plus the Nuxt / Next.js / SvelteKit /
-Capacitor / Electron shells).
+The CSS works in any stack: plain HTML, htmx, Astro, or any framework. The components are Vue 3. The
+headless composables have a Vue adapter, and the Svelte and React adapters are in development. See
+[Applicability](/overview/applicability) for each environment.
 
 ## Status
 
-oriUI is a **release candidate** (the `1.0.0-rc.*` line): the public API is meant to be final, and the
-catalog grows as real screens need new components.
+oriUI is a **release candidate** (`1.0.0-rc.*`): the public API is meant to be final. Open problems are
+listed in [ISSUES-INNER.md](https://github.com/markgrushevski/oriui/blob/main/ISSUES-INNER.md).
 
 ## Next
 
-- [Get started](/overview/get-started) — a styled component on screen in a minute.
-- [Installation](/overview/installation) — install each layer, for each target.
-- [Accessibility](/overview/accessibility) — the a11y guarantees, and where they come from.
+- [Get started](/overview/get-started): a component on screen in a minute.
+- [Installation](/overview/installation): each package, for each target.
+- [Comparisons](/overview/comparisons): how oriUI differs from other libraries.
+- [Accessibility](/overview/accessibility): what is guaranteed, and how it is checked.

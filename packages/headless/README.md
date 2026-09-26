@@ -3,9 +3,9 @@
 [![npm](https://img.shields.io/npm/v/@oriui/headless?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/headless)
 [![license](https://img.shields.io/npm/l/@oriui/headless?color=blue)](https://github.com/markgrushevski/oriui/blob/main/LICENSE)
 
-Framework-agnostic **headless behavior** for [oriUI](https://oriui.vercel.app) (織り) — tiny state
-machines + prop-getters behind a swappable contract. This is the **behavior** layer: focus, keyboard,
-and ARIA wiring with no styles and no framework lock-in.
+The behavior behind [oriUI](https://oriui.vercel.app)'s (織り) Vue components, without markup or
+styles: focus, keyboard and ARIA as small state machines and prop-getters, behind a contract that lets
+you swap the engine for one widget.
 
 - **`@oriui/headless`** — the framework-agnostic engine: state machines, prop-getters, anatomy, and the
   `OriHeadless` contract. Components are exposed namespaced, mirroring Zag (`disclosure`, `combobox`).

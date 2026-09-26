@@ -7,8 +7,8 @@ title: Customization
 Make it yours — without authoring a whole skin. Most products need one thing: _their_ brand color and
 _their_ corner radius on top of accessible, ready-made components. oriUI lets you do that by repointing
 a handful of design tokens — a few CSS custom properties in your own stylesheet, no rewrite, no fork.
-This is the **prototype fast, scale without rewriting** payoff: the same `<OriButton>` you shipped on
-day one becomes _on-brand_ by the time you ship to users, and nothing about the component changes.
+The same `<OriButton>` you shipped on day one becomes _on-brand_ by the time you ship to users, and
+nothing about the component changes.
 
 For **color** there are exactly three levels, ordered from safest to most manual: the **props**
 (semantic roles with a contrast guarantee — the recommended default), a **global brand override**
@@ -387,8 +387,7 @@ light **and** dark — and it stays accessible, because state is real attributes
 carries the contrast. The radius change reaches every control on a **derived** step (cards, panels,
 inputs); controls pinned to another step (buttons default to `full`) keep theirs until you set their
 `radius` prop / `ori-size-radius_md` class to `md`. No component was edited, no class was added, nothing
-was forked. Start with the defaults to prototype; drop in this block when you're ready to ship — that's
-_scale without rewriting_.
+was forked. Start with the defaults, and add this block when you are ready to ship.
 
 ## Icons follow the text color
 
