@@ -1,5 +1,37 @@
 # @oriui/headless
 
+## 1.0.0-rc.20
+
+### Minor Changes
+
+- [`96e85df`](https://github.com/markgrushevski/oriui/commit/96e85dff2ae5c27a72947b58bff15c8265ce3f05): **Arrow keys in Tabs, Toolbar and the color picker's presets now follow the writing direction.**
+
+    In RTL content the first item sits on the right, so `ArrowLeft` now moves to the next item and
+    `ArrowRight` to the previous one. The direction is read from the element when a key is pressed, so an
+    ancestor `dir="rtl"` is enough. Before, Tabs and the presets always used the LTR mapping, and Toolbar
+    flipped only when you passed `dir="rtl"` to it.
+
+    - `useTabs` gains a `dir` option, like `useToolbar`.
+    - When `dir` is passed to `useTabs`, `useToolbar` or `<OriToolbar>`, it is also rendered as the `dir`
+      attribute, so the layout and the keys flip together.
+    - The `dir` of `<OriToolbar>` and of `useToolbar` (Vue, Svelte and React) no longer defaults to
+      `'ltr'`: when omitted, the inherited direction is used. If you relied on LTR keys inside RTL content,
+      pass `dir="ltr"`.
+    - `@oriui/headless` exports `textDirection(el)`, and `rovingIntent` accepts a getter for its `dir`
+      argument, called only for Left/Right in a horizontal widget.
+
+- [`83c885c`](https://github.com/markgrushevski/oriui/commit/83c885c57d7462986c57012353df648d3068f0ce): **Toasts no longer disappear while someone is reading or using them, and a toast can carry an action.**
+
+    - **Pause.** `<OriToaster>` stops every countdown while the pointer or keyboard focus is on the toasts,
+      or while the page is hidden, and then continues with the time that was left (WCAG 2.2.1). `useToast()`
+      gains `pause()` and `resume()` for a renderer of your own.
+    - **Action.** `toast({ text, action: { label: 'Undo', onClick } })` renders an action button. Pressing it
+      runs `onClick` and dismisses the toast. `OriToast` gains an `actionLabel` prop and an `action` event,
+      and `@oriui/css` an `.ori-toast__action` part.
+    - **Reachable by keyboard.** The toaster is now a labelled region, "Notifications (F8)" by default, and
+      `F8` moves focus to it. Both are props: `label` and `hotkey` (`''` turns the hotkey off).
+    - `@oriui/css`'s `toast.css` now imports `button.css`, so the entry stays self-contained.
+
 ## 1.0.0-rc.19
 
 ### Minor Changes
