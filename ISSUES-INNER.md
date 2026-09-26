@@ -15,16 +15,6 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
 
 ---
 
-### ORI-I-98 — A caller's `aria-describedby` drops the field hint on RadioGroup and ColorPicker
-
-`confirmed` · `ori-radio-group.vue`, `ori-color-picker.vue`
-
-Inside an `OriField` with a `hint`, `<OriRadioGroup aria-describedby="mine">` renders
-`aria-describedby="mine"` and loses the hint's id; `OriColorPicker` does the same. Both bind the field's
-`describedBy` on a root that also receives fall-through attributes, and fall-through merges last, so the
-caller wins and the hint is no longer announced. The four text controls had the mirror-image bug and now
-join both lists; these two need the same (`inheritAttrs: false` plus an explicit merge).
-
 ### ORI-I-95 — Toasts auto-dismiss after 4 s with no way to pause, extend or disable it
 
 `confirmed` · `packages/headless/src/core/toast/queue.ts`, `packages/vue/src/components/toast/ori-toaster.vue`

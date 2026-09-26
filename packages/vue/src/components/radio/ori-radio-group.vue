@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useId } from 'vue'
+import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
@@ -14,6 +14,8 @@ export interface RadioOption {
 // aria-labelledby; each option is a real <input type="radio"> sharing one `name` (so the browser
 // enforces single-select + native form submission), visually hidden over a styled circle. v-model
 // holds the selected value. Unlabelled groups can pass aria-label, which falls through to the root.
+defineOptions({ inheritAttrs: false })
+
 const {
     color = 'primary',
     disabled = false,
@@ -46,7 +48,13 @@ const uid = useId()
 const groupName = computed(() => name ?? uid)
 const ownLabelId = computed(() => `${uid}-label`)
 const labelledBy = computed(() => (field ? field.labelId.value : label ? ownLabelId.value : undefined))
-const describedBy = computed(() => field?.describedBy.value)
+// A caller's aria-describedby joins the field's hint instead of replacing it. The template binds `$attrs`
+// just before it, so every other attribute still goes to the caller, as plain fall-through would.
+const attrs = useAttrs()
+const describedBy = computed(() => {
+    const ids = [field?.describedBy.value, attrs['aria-describedby'] as string | undefined].filter(Boolean)
+    return ids.length ? ids.join(' ') : undefined
+})
 const isInvalid = computed(() => field?.invalid.value ?? false)
 const isRequired = computed(() => required || (field?.required.value ?? false))
 const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
@@ -63,9 +71,10 @@ const groupSize = computed(() => field?.size.value ?? size)
         ]"
         role="radiogroup"
         :aria-labelledby="labelledBy"
-        :aria-describedby="describedBy"
         :aria-invalid="isInvalid ? 'true' : undefined"
         :aria-required="isRequired ? 'true' : undefined"
+        v-bind="$attrs"
+        :aria-describedby="describedBy"
     >
         <div v-if="label && !inField" :id="ownLabelId" class="ori-radio-group__label">{{ label }}</div>
 
