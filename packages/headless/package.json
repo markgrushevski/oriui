@@ -1,6 +1,6 @@
 {
     "name": "@oriui/headless",
-    "version": "1.0.0-rc.19",
+    "version": "1.0.0-rc.20",
     "description": "Headless behavior for oriUI: focus, keyboard and ARIA. Vue adapter; Svelte and React adapters in development.",
     "license": "MIT",
     "repository": {
