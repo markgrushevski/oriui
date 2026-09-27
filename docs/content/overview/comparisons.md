@@ -41,10 +41,10 @@ Open Props is the closest sibling on the token side: design tokens as plain cust
 copies React and Tailwind components into your project, and Panda generates CSS at build time. oriUI
 ships one stylesheet instead, and a skin or dark mode is one attribute on `<html>`.
 
-## Full component libraries: Vuetify, PrimeVue, Element Plus
+## Full component libraries: Vuetify, PrimeVue
 
-These have far more components. Their themes are configured in JavaScript; oriUI's theme is the set of
-CSS custom properties, so you customize it in your own stylesheet. See [Customization](/guides/customization).
+These have far more components, and their themes are configured in JavaScript. oriUI's theme is the set
+of CSS custom properties, so you customize it in your own stylesheet. See [Customization](/guides/customization).
 
 ## Positioning: Floating UI
 

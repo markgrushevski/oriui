@@ -387,7 +387,7 @@ rule (the native-`<dialog>` / native-Popover thesis). The 2D coordinate + arrow-
 Up/Down → value) because a single native range can't span two axes.
 
 **2. The color engine is hand-rolled (~180 lines, zero-dependency), NOT colord.** `@oriui/headless` has
-**no runtime dependencies** (a portfolio signal) and its core `.` entry has a 1 kB budget. The lossy
+**no runtime dependencies** and its core `.` entry has a 1 kB budget. The lossy
 grayscale round-trips colord guards against are avoided by design — the picker keeps its own **HSVA** object
 across interaction, so hue survives when saturation/value hit 0. **Guardrail:** `core/color-picker/*` is
 imported ONLY by the `./vue` composable and is **never re-exported from the core `.` barrel**, so it stays
@@ -756,15 +756,15 @@ want a small positioning helper (floating-ui-style) — still **not** Zag. This 
 "`useDialog` has no native default / fails loud without Zag" design. Removed the prototype `zagDialog`
 adapter and the `@zag-js/*` docs dependencies; `@oriui/headless` + the agnostic contract remain the hedge.
 
-## Scope: a portfolio piece and a design system for real apps, not a market competitor
+## Scope: a design system for our own apps, not a market competitor
 
-oriUI has two goals: a portfolio piece that shows library engineering, and the design system behind my
-own Vue apps (justpaint, mtp-shop). It does **not** compete with Ark UI, Panda or Reka on reach,
-framework breadth or catalog size. Consequences:
+oriUI is the design system behind our own Vue apps (justpaint, mtp-shop), built to the standard of a
+public library. It does **not** compete with Ark UI, Panda or Reka on reach, framework breadth or catalog
+size. Consequences:
 
-- **No multi-framework race for the styled layer.** Styled components stay Vue-only; `@oriui/css` and
-  `@oriui/headless` (Vue, Svelte, React) are what travels between frameworks. Styled wrappers for other
-  frameworks come only with real adoption.
+- **No multi-framework race for the styled layer.** Styled components stay Vue-only; `@oriui/css` travels
+  to any stack, and the Svelte and React headless adapters stay in development until an app uses them.
+  Styled wrappers for other frameworks come only with real adoption.
 - **No catalog-breadth race.** A component is built when a real screen needs it, not to match a count.
 - **Native first, Zag optional.** The platform now covers what used to justify Zag (see "`OriDialog`
   defaults to the native `<dialog>`"); the swappable contract stays, so a genuinely hard widget can take a
@@ -991,7 +991,7 @@ server to introspect the app) is a nice DX extra — optional, deferred. `nuxt-s
 
 ## Docs = a dogfooded Nuxt app built with oriUI (replaces VitePress)
 
-The docs site is the project's portfolio centerpiece, so it is built **with oriUI itself** —
+The docs site is the first thing a reader sees, so it is built **with oriUI itself** —
 the way Nuxt UI / PrimeVue / Vuetify dogfood their own libraries — rather than on VitePress's
 own design-system theme (which you fight to override). Decision: a **Nuxt 4 + Nuxt Content 3**
 app provides the undifferentiated plumbing (routing, markdown→Vue via MDC, SSG, search) while
@@ -1006,7 +1006,7 @@ yet an ori component is the next thing to build.
   inline head script applies the saved theme/skin before paint (no flash).
 - **Trade-off accepted:** more non-ori scaffolding up front
   (shell starts as plain markup, replaced by ori components as they land) in exchange for the
-  "this is a real app built on my library" signal sooner. Rejected: staged VitePress-theme
+  proof sooner that a real app runs on the library. Rejected: staged VitePress-theme
   dogfooding (cheaper, but VitePress's shell never becomes truly ours).
 
 ## CSS tokens: `@layer` + two-tier aliases + numeric neutral ramp as single source

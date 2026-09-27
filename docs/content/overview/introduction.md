@@ -22,8 +22,9 @@ everything shares the same tokens.
 
 ## How it is built
 
-- **Theming is CSS.** Skins, dark mode, sizes and variants are custom properties, switched by a class or
-  an attribute on `<html>`. No colors are computed in JavaScript, and there is no Tailwind dependency.
+- **Theming is CSS.** A skin or dark mode is set on `<html>` (`data-ori-skin`, `class="dark"`); a size or
+  variant is one class on the element. All of them repoint CSS custom properties: no colors are computed in JavaScript, and there
+  is no Tailwind dependency.
   See [Theming](/guides/theming).
 - **State is real attributes.** `disabled`, `aria-pressed`, `aria-expanded`, `aria-invalid`: the CSS reads
   the same state whether Vue, another framework or hand-written HTML sets it.

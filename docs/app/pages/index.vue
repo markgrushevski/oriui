@@ -34,7 +34,7 @@ const features = [
     },
     {
         title: 'Theming without JavaScript',
-        text: 'Eight skins, dark mode, sizes and variants are CSS custom properties, switched by a class or an attribute on <html>.'
+        text: 'Eight skins and dark mode are set on <html>; sizes and variants are single classes. All of it is CSS custom properties.'
     },
     {
         title: 'Accessibility that is tested',
