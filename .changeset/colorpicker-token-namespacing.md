@@ -4,7 +4,7 @@
 '@oriui/vue': patch
 ---
 
-**The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+**The color picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
 library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
 future token with a better claim to the name) could collide with them silently. They are now
 `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.

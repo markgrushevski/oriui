@@ -11,7 +11,7 @@ against the API of thirteen libraries, and only the outliers moved. Ten concepts
 `outline`) and were deliberately left alone.
 
 **Migration — values.** Every one of these is interpolated into a class name, so each is also a
-`@oriui/css` class rename, and the colour is a public TOKEN rename:
+`@oriui/css` class rename, and the color is a public TOKEN rename:
 
 | Before                       | After             | Also renamed                                                                                                            |
 | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |

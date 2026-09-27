@@ -33,7 +33,7 @@ engine.
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Vertical tabs           | The tab list leads on the inline-start side, its 1px rule faces the panel, and the selected-tab indicator lands on that **same** edge.                       |
 | Vertical divider        | The rule is drawn strictly between its two siblings, whichever way round they run.                                                                           |
-| Floating badge          | The badge centres on the anchor's inline-**end** top corner and overhangs outward — physically right in LTR, physically left in RTL. It never folds back in. |
+| Floating badge          | The badge centers on the anchor's inline-**end** top corner and overhangs outward — physically right in LTR, physically left in RTL. It never folds back in. |
 | Anchored panels         | The whole `.ori-anchored_*` grid is logical. See [placement names](#placement-names-read-physical-behave-logical) below.                                     |
 | Toolbar                 | Children run in the inline direction; the separator stays between them with a symmetric `margin-inline` gap.                                                 |
 | Select / combobox field | The chevron and the padding reserved for it land on the same inline-end side, so the value text never runs under it.                                         |
@@ -50,7 +50,7 @@ same suite asserts they stay that way so a future "helpful" logical swap has to 
   enter animation follows the corner it is pinned to, sliding in off that physical edge. A toaster
   with **no** corner modifier is the one case with no physical edge to follow — it enters from the
   inline-end side, so that one does read the direction.
-- **The colour-picker value plane.** The saturation × brightness area is a value plane, not text: its
+- **The color-picker value plane.** The saturation × brightness area is a value plane, not text: its
   gradient runs to the physical right, `useColorPicker` places the thumb with a physical `left`
   percentage, and the pointer handler measures `clientX - rect.left`. All three are physical and must
   stay consistent with one another, so full saturation is the physical right edge in both directions.
@@ -61,7 +61,7 @@ same suite asserts they stay that way so a future "helpful" logical swap has to 
 ## Placement names read physical, behave logical
 
 The placement modifiers on `.ori-anchored` — shared by Popover, Menu, Tooltip and Combobox — have
-physical-sounding names and **logical** behaviour, because `position-area` is a logical property:
+physical-sounding names and **logical** behavior, because `position-area` is a logical property:
 
 | Class                        | Resolves to                   | LTR                      | RTL                          |
 | ---------------------------- | ----------------------------- | ------------------------ | ---------------------------- |
@@ -69,17 +69,17 @@ physical-sounding names and **logical** behaviour, because `position-area` is a 
 | `.ori-anchored_right`        | `position-area: inline-end`   | right of the trigger     | **left** of the trigger      |
 | `.ori-anchored_bottom-start` | `block-end span-inline-end`   | aligns to the left edge  | aligns to the **right** edge |
 | `.ori-anchored_bottom-end`   | `block-end span-inline-start` | aligns to the right edge | aligns to the **left** edge  |
-| `.ori-anchored_bottom`       | `block-end`                   | centred on the trigger   | centred on the trigger       |
+| `.ori-anchored_bottom`       | `block-end`                   | centered on the trigger  | centered on the trigger      |
 
 So `placement="left"` means **inline-start**, and reads as "before the trigger in reading order". The
-bare sides stay centred on the trigger in both directions, and the gap is a `margin-inline-*`, so it
+bare sides stay centered on the trigger in both directions, and the gap is a `margin-inline-*`, so it
 opens on the correct side too.
 
 ## The slider family follows the engine
 
 A native `<input type="range">` reverses itself under `dir="rtl"` in Chromium: click a quarter of the
 way in from the physical left and the control resolves a value **above** the midpoint, because the
-engine now treats the right edge as the minimum. That is the platform's behaviour, not oriUI's — so
+engine now treats the right edge as the minimum. That is the platform's behavior, not oriUI's — so
 the paint oriUI draws over the control follows it rather than arguing with it. Measured from the real
 pixels:
 
@@ -87,7 +87,7 @@ pixels:
 - the **hue** spectrum runs along the engine's own axis;
 - the **alpha** ramp is opaque at the end the engine treats as the maximum.
 
-The colour picker inherits all three through the hue and alpha sliders it composes — which is a
+The color picker inherits all three through the hue and alpha sliders it composes — which is a
 separate question from its value plane above, and resolved the other way.
 
 ## Keyboard and text
@@ -99,11 +99,11 @@ they are laid out in when a key is pressed, so an ancestor `dir="rtl"` is all th
 the direction on the widget itself. `e2e/rtl-keyboard.spec.ts` checks this in Chromium. Vertical
 navigation (`ArrowUp` / `ArrowDown`) and `Home` / `End` do not depend on direction.
 
-Direction is not **text**: oriUI ships no translations and no message catalogue. Most built-in strings are
+Direction is not **text**: oriUI ships no translations and no message catalog. Most built-in strings are
 props with English defaults you override — `OriSpinner` / `OriProgress` take `label` (`'Loading'`),
 `OriAlert` and `OriTag` take `closeLabel` (`'Dismiss'` / `'Remove'`). A few are hardcoded and cannot
-be localised today: `<OriDialog>`'s close button (`aria-label="Close"`), `<OriToast>`'s dismiss
-button, and the colour picker's channel labels.
+be localized today: `<OriDialog>`'s close button (`aria-label="Close"`), `<OriToast>`'s dismiss
+button, and the color picker's channel labels.
 
 ## See also
 

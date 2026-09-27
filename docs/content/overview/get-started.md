@@ -4,7 +4,7 @@ title: Get started
 
 # Get started
 
-oriUI is a layered Vue 3 UI library. Install it and import only what you need.
+Install oriUI and put a component on screen. Use only the packages you need.
 
 ## Install
 

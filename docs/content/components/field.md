@@ -120,7 +120,7 @@ The same shell wraps a [Select](/components/select) or [Textarea](/components/te
 its own label and helper and reads the field's wiring instead.
 
 ::example
-::ori-field{label="Favourite fruit" hint="Pick one."}
+::ori-field{label="Favorite fruit" hint="Pick one."}
 :ori-select{:options='[{"label":"Apple","value":"apple"},{"label":"Banana","value":"banana"}]' placeholder="Choose…"}
 ::
 
@@ -131,7 +131,7 @@ its own label and helper and reads the field's wiring instead.
 #vue
 
 ```vue
-<OriField label="Favourite fruit" hint="Pick one.">
+<OriField label="Favorite fruit" hint="Pick one.">
     <OriSelect v-model="fruit" :options="options" placeholder="Choose…" />
 </OriField>
 

@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'node:path'
 
-// OriTooltip geometry + colour contracts that happy-dom can't verify: the .ori-anchored retrofit
+// OriTooltip geometry + color contracts that happy-dom can't verify: the .ori-anchored retrofit
 // (collision flip at the viewport edge, anchor-center shift on the inline axis, the shared default
 // anchor-name pairing each bubble with ITS OWN trigger) and the bg/text pairing fix (the bubble's
 // dedicated neutral defaults vs. the globally-defined --ori-color/--ori-color-on aliases, which a
@@ -29,9 +29,9 @@ async function setup(page: Page, body: string): Promise<void> {
     await page.addStyleTag({ path: CSS })
 }
 
-test.describe('OriTooltip — anchored placement + colour pairing (real Chromium)', () => {
+test.describe('OriTooltip — anchored placement + color pairing (real Chromium)', () => {
     test('default bubble pairs its own neutral bg + text even when the ambient ink is near-black', async ({ page }) => {
-        // The regression: with body colour ≈ neutral-900 the old var(--ori-color)/var(--ori-color-on)
+        // The regression: with body color ≈ neutral-900 the old var(--ori-color)/var(--ori-color-on)
         // reads resolved BOTH to currentColor — a dark chip with dark (invisible) text.
         await setup(page, `<div style="color: #0f172a; padding: 100px;">${tooltip('t')}</div>`)
         const bubble = page.locator('#t-bubble')
@@ -44,7 +44,7 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         expect(colors.bg).not.toBe(colors.text)
     })
 
-    test('a colour role class repoints bg + text as a pair from that role', async ({ page }) => {
+    test('a color role class repoints bg + text as a pair from that role', async ({ page }) => {
         await setup(page, `<div style="padding: 100px;">${tooltip('t', { extra: 'ori-color_primary' })}</div>`)
         const colors = await page.locator('#t-bubble').evaluate((el) => {
             const s = getComputedStyle(el)
@@ -64,19 +64,19 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         expect(b.y).toBeGreaterThanOrEqual(t.y + t.height - 1) // flipped BELOW the trigger
     })
 
-    test('placement="top" with room renders above, centred on the trigger', async ({ page }) => {
+    test('placement="top" with room renders above, centered on the trigger', async ({ page }) => {
         await page.setViewportSize({ width: 800, height: 600 })
         await setup(page, `<div style="position:absolute;top:300px;left:300px;">${tooltip('t')}</div>`)
         await page.hover('#t')
         const t = (await page.locator('#t .ori-tooltip__trigger').boundingBox())!
         const b = (await page.locator('#t-bubble').boundingBox())!
         expect(b.y + b.height).toBeLessThanOrEqual(t.y + 1) // above
-        expect(Math.abs(b.x + b.width / 2 - (t.x + t.width / 2))).toBeLessThan(2) // centred
+        expect(Math.abs(b.x + b.width / 2 - (t.x + t.width / 2))).toBeLessThan(2) // centered
     })
 
     test('anchor-center shifts the bubble back into view at the inline viewport edge', async ({ page }) => {
         await page.setViewportSize({ width: 800, height: 600 })
-        // Trigger hugs the left edge; a centred wide bubble would start off-screen negative.
+        // Trigger hugs the left edge; a centered wide bubble would start off-screen negative.
         await setup(
             page,
             `<div style="position:absolute;top:300px;left:0;">${tooltip('t', {
@@ -88,7 +88,7 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         const t = (await page.locator('#t .ori-tooltip__trigger').boundingBox())!
         const b = (await page.locator('#t-bubble').boundingBox())!
         expect(b.width).toBeGreaterThan(t.width) // genuinely wider than the trigger (no column squeeze)
-        expect(b.x).toBeGreaterThanOrEqual(0) // shifted into view, not centred off-screen
+        expect(b.x).toBeGreaterThanOrEqual(0) // shifted into view, not centered off-screen
     })
 
     test('the shared default anchor-name pairs each bubble with its own trigger', async ({ page }) => {
@@ -121,7 +121,7 @@ test.describe('OriTooltip — anchored placement + colour pairing (real Chromium
         expect(arrow.top).toBeGreaterThan(arrow.height / 2) // sits in the bottom half, pointing down
     })
     // WCAG 1.4.13 Content on Hover or Focus (AA). Two of its three bullets are geometry and pointer
-    // behaviour, so they can only be checked in a real engine.
+    // behavior, so they can only be checked in a real engine.
 
     test('Hoverable: the pointer can travel from the trigger onto the bubble without crossing dead space', async ({
         page

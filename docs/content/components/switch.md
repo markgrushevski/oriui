@@ -10,7 +10,7 @@ assistive technology announces it as a switch. `v-model` is a boolean. The "on" 
 `:focus-visible` ring both come from the `ori-color` token; the track and thumb scale with
 `ori-font-size` so size is a single prop.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -229,7 +229,7 @@ A settings row — switch on the right aligned to a description — is the most 
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - Renders a real `<input type="checkbox" role="switch">` so keyboard interaction, form submission,
   and screen-reader announcements work without any JavaScript bridges.

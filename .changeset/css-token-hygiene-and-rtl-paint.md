@@ -24,7 +24,7 @@ assertion, and the hue and alpha tracks are pinned alongside it.
 toast in from the right whatever the corner and whatever the direction. The offset comes from
 `--ori-toast-enter-x`, which each corner modifier sets physically — the corner names a _screen_ corner
 and deliberately does not mirror — so left corners enter from the left, right corners from the right,
-and a centred toaster does not slide sideways at all. Only a corner-less `.ori-toaster` has no edge to
+and a centered toaster does not slide sideways at all. Only a corner-less `.ori-toaster` has no edge to
 follow, so that one case reads the writing direction.
 
 **`--ori-card-padding`** joins the local-token idiom (`--ori-tooltip-radius`, `--ori-color-picker-radius`).
@@ -33,14 +33,14 @@ the `--ori-size-gap` alias for its own rows, so the card's inset could not be re
 the whole gap scale. Same computed default (16px), one knob.
 
 **`--ori-checker-1` / `--ori-checker-2` are now declared on `.ori-slider` as well**, not only inside
-`.ori-color-picker`. `.ori-slider .ori-slider_alpha` is reachable without a colour picker, and a block
+`.ori-color-picker`. `.ori-slider .ori-slider_alpha` is reachable without a color picker, and a block
 must not read a token another block owns: a standalone alpha slider fell through to the hardcoded
 `#c8c8c8`/`#fff` grid, which is glaring on a dark page. It now gets the same theme-derived mid-neutrals
 the picker does. Nested inside a picker nothing changes.
 
-**Dead `var(--ori-color, …)` fallbacks are gone** from the slider and colour-picker blocks.
+**Dead `var(--ori-color, …)` fallbacks are gone** from the slider and color-picker blocks.
 `--ori-color` is declared unconditionally at `:root` as `currentColor`, so the fallback arm could never
-fire — and the ones that named a colour were also misleading: an alpha track with no inline colour
+fire — and the ones that named a color were also misleading: an alpha track with no inline color
 paints the **primary accent**, and an unset swatch paints **`currentcolor`** (white here, via the
 swatch's own `color`), never the `#000000` the fallback advertised. `--ori-ink` and `--ori-hue` keep
 their fallbacks: nothing declares those globally, so those arms are live.

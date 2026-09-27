@@ -3,7 +3,7 @@
 ---
 
 **React adapter — full hook parity (`@oriui/headless/react`).** Completes the React adapter begun by the
-first slice: the remaining behaviour hooks now ship for React, so `@oriui/headless/react` reaches parity
+first slice: the remaining behavior hooks now ship for React, so `@oriui/headless/react` reaches parity
 with `./vue` and `./svelte`. Added:
 
 - **Machine-adapter hooks** (bridged to React via `useSyncExternalStore`, resolved through

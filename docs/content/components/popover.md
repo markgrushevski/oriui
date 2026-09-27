@@ -12,7 +12,7 @@ trigger. It runs entirely on the platform: the trigger opens the panel through t
 graceful degradation: an older engine still opens the panel and places it, just without the
 collision-aware flip.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -170,7 +170,7 @@ A filter panel opened from a toolbar button — a typical non-modal popover use 
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes. The interactive behaviour, however, comes from the platform: the Popover
+render the same attributes. The interactive behavior, however, comes from the platform: the Popover
 API and CSS Anchor Positioning drive open/close and placement with no state to keep in sync.
 
 - **The trigger MUST be a real `<button>`** (or a component that renders one, e.g. `OriButton`) — the

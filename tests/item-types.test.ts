@@ -147,7 +147,7 @@ describe('collection item types', () => {
         // One direction only: a styled tab is a valid headless tab (what `useTabs` is handed) …
         expectTypeOf<TabItem>().toExtend<HeadlessTabItem>()
         expectTypeOf<TabItem>().toHaveProperty('label').toEqualTypeOf<string>()
-        // … while the behaviour-only base has no label, so it is not a drop-in for the styled prop.
+        // … while the behavior-only base has no label, so it is not a drop-in for the styled prop.
         expectTypeOf<HeadlessTabItem>().not.toExtend<TabItem>()
 
         const asHeadless: HeadlessTabItem[] = TABS

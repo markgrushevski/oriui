@@ -9,7 +9,7 @@ A "choose one" compound control. A `role="radiogroup"` container names the set v
 browser enforces single-select and native form submission — visually hidden behind a styled circle.
 Pass the options as an array; per-option `disabled` is supported.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -311,7 +311,7 @@ Color, size, inline layout, and per-option disabled in a compact panel.
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - The root element carries `role="radiogroup"`. When `label` is provided, `aria-labelledby` points
   at the rendered label element; without a `label`, pass `aria-label` as a fallthrough attribute.
@@ -368,7 +368,7 @@ the component emits `update:modelValue` when the user picks another option. The 
 shared across all native inputs; omit it to let the component auto-generate a unique id via `useId`.
 
 The component does **not** set `inheritAttrs: false`, so extra attributes (e.g. `aria-label`,
-`class`, `data-*`) fall through to the root `div.ori-radio-group`. An unlabelled group should
+`class`, `data-*`) fall through to the root `div.ori-radio-group`. An unlabeled group should
 pass `aria-label` this way:
 
 ```vue
@@ -379,4 +379,4 @@ pass `aria-label` this way:
 
 | Slot     | Props        | Description                                                                                                                                                                            |
 | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `option` | `{ option }` | Scoped, rendered once per option to customise its label markup — card-style or leading-icon radios. `option` is the `{ label, value, disabled? }` entry; falls back to `option.label`. |
+| `option` | `{ option }` | Scoped, rendered once per option to customize its label markup — card-style or leading-icon radios. `option` is the `{ label, value, disabled? }` entry; falls back to `option.label`. |

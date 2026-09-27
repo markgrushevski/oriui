@@ -3,16 +3,19 @@
 [![npm](https://img.shields.io/npm/v/@oriui/headless?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/headless)
 [![license](https://img.shields.io/npm/l/@oriui/headless?color=blue)](https://github.com/markgrushevski/oriui/blob/main/LICENSE)
 
-Framework-agnostic **headless behavior** for [oriUI](https://oriui.vercel.app) (織り) — tiny state
-machines + prop-getters behind a swappable contract. This is the **behavior** layer: focus, keyboard,
-and ARIA wiring with no styles and no framework lock-in.
+The behavior behind [oriUI](https://oriui.vercel.app)'s (織り) Vue components, without markup or
+styles: focus, keyboard and ARIA as small state machines and prop-getters, behind a contract that lets
+you swap the engine for one widget.
 
 - **`@oriui/headless`** — the framework-agnostic engine: state machines, prop-getters, anatomy, and the
   `OriHeadless` contract. Components are exposed namespaced, mirroring Zag (`disclosure`, `combobox`).
 - **`@oriui/headless/vue`** — the Vue 3 composables (return Vue `ComputedRef`s).
-- **`@oriui/headless/svelte`** — the Svelte 5 composables (return Svelte stores).
+- **`@oriui/headless/svelte`** — the Svelte 5 composables (return Svelte stores). **In development.**
 - **`@oriui/headless/react`** — the React 18/19 hooks (return plain values, re-rendered through
-  `useSyncExternalStore`). Same engine, same behavior; only the reactive wrapper differs per framework.
+  `useSyncExternalStore`). **In development.**
+
+The Svelte and React adapters run the same engine and have their own tests, but no app uses them yet and
+their API may still change. Use them to try oriUI outside Vue, not in production.
 
 ## Install
 
@@ -37,11 +40,11 @@ const d = useDisclosure()
 
 Also ships `useDialog` (native `<dialog>`: focus-trap, `Esc`, `::backdrop`, top-layer), `useCombobox`,
 `useMenu`, `useToolbar`, and `useColorPicker`, plus the `useToken` / `useTheme` bridges. The
-machine-based behaviours (Disclosure / Dialog / Combobox / Menu) each take a swappable engine
+machine-based behaviors (Disclosure / Dialog / Combobox / Menu) each take a swappable engine
 (Zag / custom) through `provideHeadless()` / the `OriHeadless` plugin — the component markup never
 changes. (`useToolbar` / `useColorPicker` are compositional helpers, not adapter-backed.)
 
-## Use — Svelte
+## Use — Svelte (in development)
 
 ```ts
 import { useDisclosure } from '@oriui/headless/svelte'
@@ -62,7 +65,7 @@ store of a function — `$getOptionProps(item, i)`. `useCombobox` / `useMenu` ta
 callable outside component init, so it falls back to a module counter. Under SSR, pass an explicit `id`
 to the composable so the server and client markup match.
 
-## Use — React
+## Use — React (in development)
 
 ```tsx
 import { useDisclosure } from '@oriui/headless/react'

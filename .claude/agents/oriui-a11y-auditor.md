@@ -20,8 +20,8 @@ Audit:
   (`:focus-visible`); correct focus order / trap / return; no keyboard traps; Escape / arrow
   semantics where the pattern calls for them.
 - **State as real attributes** — native `disabled` / `required`, not classes.
-- **Contrast** — text and on-colour pairs; focus-ring visibility.
-- **Test coverage** — the suite actually asserts the contract and runs axe; flag any a11y behaviour
+- **Contrast** — text and on-color pairs; focus-ring visibility.
+- **Test coverage** — the suite actually asserts the contract and runs axe; flag any a11y behavior
   left uncovered.
 
 You may run `npm run test` (axe) to ground findings. Output: per-area **PASS/FAIL** grounded in

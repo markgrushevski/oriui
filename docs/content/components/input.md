@@ -4,7 +4,7 @@ title: Input
 
 # Input
 
-A labelled, accessible text field with `v-model`. State is expressed through real attributes — the
+A labeled, accessible text field with `v-model`. State is expressed through real attributes — the
 native `disabled`, `aria-invalid` when there is an error, and an `aria-describedby` that points at
 the rendered hint or error. The label is wired to the field with `for`/`id` (auto-generated via
 `useId` when you don't pass one), and arbitrary native attributes (`name`, `autocomplete`,
@@ -13,7 +13,7 @@ the rendered hint or error. The label is wired to the field with `for`/`id` (aut
 This page is laid out by **layer**. The live demos are the **`@oriui/css`** layer — their code
 defaults to **HTML** (the standalone classes, also your htmx / Astro / Svelte / plain-HTML usage),
 with **Vue** one tab away; the [Framework API](#framework-api) documents the
-**`@oriui/vue`** component. Input is pure CSS — there is no behaviour layer in between.
+**`@oriui/vue`** component. Input is pure CSS — there is no behavior layer in between.
 
 ## Classes
 

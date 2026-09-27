@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'node:path'
 
-// Behaviours the placement-grid spec doesn't cover: the `position-try` collision flip and the combobox
+// Behaviors the placement-grid spec doesn't cover: the `position-try` collision flip and the combobox
 // listbox retrofit. The full 12-value placement geometry lives in placement-grid.spec.ts.
 const CSS = path.resolve('packages/css/dist/styles.css')
 

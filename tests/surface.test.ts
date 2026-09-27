@@ -44,7 +44,7 @@ describe('OriSurface', () => {
         expect(wrapper.text()).toContain('Panel body')
     })
 
-    it('has no axe violations (as a labelled region)', async () => {
+    it('has no axe violations (as a labeled region)', async () => {
         const wrapper = mount(OriSurface, {
             attrs: { role: 'region', 'aria-label': 'Tools' },
             slots: { default: () => 'content' },

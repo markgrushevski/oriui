@@ -37,7 +37,7 @@ export default /** @type {import('eslint').Linter.Config[]} */ [
         rules: {
             'vue/require-default-prop': 'off',
             'vue/no-setup-props-reactivity-loss': 'error',
-            // `onClickCapture` is a DOM prop, not a component prop: Vue only recognises the camelCase
+            // `onClickCapture` is a DOM prop, not a component prop: Vue only recognizes the camelCase
             // spelling, so the hyphenated form the rule wants silently stops being a capture listener.
             // It is spelled out rather than disabled per-file because the next conditional capture
             // binding will hit the same wall.

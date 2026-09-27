@@ -9,7 +9,7 @@ sumi light. A control's visual boundary is exactly what 1.4.11 binds, and an unc
 but its boundary.
 
 It is now 60%, chosen from a sweep rather than picked: 50% still failed 2 of 32, 55% cleared
-everything at 3.19 — too close to the bar for a colour derived from the ambient ink, which a custom
+everything at 3.19 — too close to the bar for a color derived from the ambient ink, which a custom
 skin can move — and 60% clears at **3.69**. The edge stays out of the shared outline tokens on
 purpose; those are tuned lighter, and this is the heaviest structural weight in the library.
 

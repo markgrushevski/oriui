@@ -17,7 +17,7 @@ reading its own value — and every modifier is now a single class: `.ori-input_
 `.ori-size-action_*` utilities it was written to mirror, and the modifiers still win on **specificity**
 rather than on source order.
 
-**This is a behavioural change for one audience, and it is deliberate.** Every modifier selector drops
+**This is a behavioral change for one audience, and it is deliberate.** Every modifier selector drops
 from (0,2,0) to (0,1,0), so a rule you wrote to beat one needs one less class. Nothing changes for the
 common case — an unlayered consumer stylesheet still outranks the whole library by layer order, and
 `@oriui/vue` emits exactly the same class names — but an override that lives _inside_ `@layer` and was
@@ -48,7 +48,7 @@ they move `--ori-variant-bg-color`, and that layer outranks `ori.components`, so
 into a block file could never win.
 
 **Eleven more dead `var(--ori-color, …)` fallbacks are gone** — from `accordion`, `menu`, `popover` and
-`tabs`, finishing the sweep the slider and colour-picker blocks started. `--ori-color`, `--ori-color-on`
+`tabs`, finishing the sweep the slider and color-picker blocks started. `--ori-color`, `--ori-color-on`
 and `--ori-color-text` are all declared unconditionally at `:root`, so the fallback arm can never fire.
 Eight of the eleven were also misleading: `accordion` and `tabs` bake the primary accent in their own
 block, so the `currentcolor` those arms advertised was never what would resolve — measured, the

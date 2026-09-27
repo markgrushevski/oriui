@@ -64,7 +64,7 @@ describe('OriDialog (native <dialog> engine)', () => {
         })
         await nextTick()
 
-        // No empty <h2> to be "labelled" by, and the consumer aria-label reaches the <dialog> (inheritAttrs:false).
+        // No empty <h2> to be "labeled" by, and the consumer aria-label reaches the <dialog> (inheritAttrs:false).
         expect(document.querySelector('.ori-dialog__title')).toBeNull()
         expect(dialogEl()?.getAttribute('aria-label')).toBe('Settings')
         wrapper.unmount()

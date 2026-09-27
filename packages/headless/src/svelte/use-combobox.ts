@@ -8,7 +8,7 @@ export type { UseComboboxOptions } from './contract'
 /**
  * Resolve the active Combobox behavior (Svelte) — the twin of the Vue `useCombobox`. Returns whichever
  * adapter the app registered via `provideHeadless()`, falling back to the native `../core` state-machine
- * adapter; behaviour is identical when unwired, so a swap is optional and per-widget. Returns Svelte
+ * adapter; behavior is identical when unwired, so a swap is optional and per-widget. Returns Svelte
  * stores of the ready-to-spread prop bags plus the visible (filtered) items; item prop-getters are stores
  * of a function (`$getOptionProps(item, i)`).
  *

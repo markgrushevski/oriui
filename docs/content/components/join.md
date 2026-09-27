@@ -6,9 +6,9 @@ title: Join
 
 A thin wrapper that collapses the shared radii and borders of adjacent controls so they read as one
 segmented unit — button groups, input+button combos, segmented toolbars. No visual styling of its
-own: all colour, size, and variant tokens live on the children.
+own: all color, size, and variant tokens live on the children.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -123,13 +123,13 @@ between the field and the button merges into one line.
 
 ## Common patterns
 
-A tonal colour swatch group and a quantity stepper — two everyday compositions showing how variant
+A tonal color swatch group and a quantity stepper — two everyday compositions showing how variant
 and color on the children drive all the visual weight.
 
-### Colour swatch group
+### Color swatch group
 
 ::example
-::ori-join{aria-label="Highlight colour"}
+::ori-join{aria-label="Highlight color"}
 :ori-button{variant="soft" color="danger" label="Red"}
 :ori-button{variant="soft" color="warning" label="Amber"}
 :ori-button{variant="soft" color="success" label="Green"}
@@ -139,8 +139,8 @@ and color on the children drive all the visual weight.
 #vue
 
 ```vue
-<!-- Colour swatch toolbar — soft buttons, each its own semantic colour -->
-<OriJoin aria-label="Highlight colour">
+<!-- Color swatch toolbar — soft buttons, each its own semantic color -->
+<OriJoin aria-label="Highlight color">
     <OriButton variant="soft" color="danger" label="Red" />
     <OriButton variant="soft" color="warning" label="Amber" />
     <OriButton variant="soft" color="success" label="Green" />
@@ -151,7 +151,7 @@ and color on the children drive all the visual weight.
 #html
 
 ```html
-<div class="ori-join" role="group" aria-label="Highlight colour">
+<div class="ori-join" role="group" aria-label="Highlight color">
     <button class="ori-button ori-variant_soft ori-color_danger">Red</button>
     <button class="ori-button ori-variant_soft ori-color_warning">Amber</button>
     <button class="ori-button ori-variant_soft ori-color_success">Green</button>
@@ -208,7 +208,7 @@ render the same markup.
   have an accessible name so screen readers announce its purpose. Pass `aria-label` (or
   `aria-labelledby` referencing a visible heading) directly on `<OriJoin>` — it falls through to the
   root element unchanged.
-- Children keep their own roles, labels, and keyboard behaviour. The join wrapper adds no tab stop
+- Children keep their own roles, labels, and keyboard behavior. The join wrapper adds no tab stop
   and intercepts no keys.
 - When a child is focused or hovered its `z-index` is raised to `1` so its full `:focus-visible`
   ring is not clipped by the adjacent collapsed border.

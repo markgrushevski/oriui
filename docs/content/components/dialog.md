@@ -5,22 +5,22 @@ title: Dialog
 # Dialog
 
 A modal dialog — the library's first genuinely **interactive** component, built on the native
-`<dialog>` element. Unlike the styled-only components, a dialog _needs behaviour_: focus trap, scroll
+`<dialog>` element. Unlike the styled-only components, a dialog _needs behavior_: focus trap, scroll
 lock, `Esc`-to-close, click-outside dismissal, and the full WAI-ARIA keyboard contract. All of it comes
 from the platform via `showModal()` — no state-machine dependency and no adapter to wire. The styled
 `OriDialog` supplies only the markup and tokens.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is the default.
+plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`, in development); HTML is the default.
 
 ## Classes
 
 A dialog is a set of part classes hung on a native `<dialog>` element — there is no single block class
 that drives variant tokens. Each part class maps to a structural element produced by the component.
 
-:class-table{:rows='[{"class":"ori-dialog","type":"Block","description":"The native <code>&lt;dialog&gt;</code> panel: max-width 460 px, rounded, surface-coloured. Its <code>::backdrop</code> pseudo-element is the dimmed overlay."},{"class":"ori-dialog__content","type":"Layout","description":"Padding wrapper inside the dialog that holds the header and body."},{"class":"ori-dialog__header","type":"Part","description":"Flex row — title on the left, close button on the right."},{"class":"ori-dialog__title","type":"Part","description":"<code>h2</code> heading; its <code>id</code> is wired to <code>aria-labelledby</code> on the dialog."},{"class":"ori-dialog__close","type":"Part","description":"Bare close button (<code>aria-label=Close</code>); styled via opacity."},{"class":"ori-dialog__body","type":"Part","description":"Body copy region below the header."}]'}
+:class-table{:rows='[{"class":"ori-dialog","type":"Block","description":"The native <code>&lt;dialog&gt;</code> panel: max-width 460 px, rounded, surface-colored. Its <code>::backdrop</code> pseudo-element is the dimmed overlay."},{"class":"ori-dialog__content","type":"Layout","description":"Padding wrapper inside the dialog that holds the header and body."},{"class":"ori-dialog__header","type":"Part","description":"Flex row — title on the left, close button on the right."},{"class":"ori-dialog__title","type":"Part","description":"<code>h2</code> heading; its <code>id</code> is wired to <code>aria-labelledby</code> on the dialog."},{"class":"ori-dialog__close","type":"Part","description":"Bare close button (<code>aria-label=Close</code>); styled via opacity."},{"class":"ori-dialog__body","type":"Part","description":"Body copy region below the header."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/dialog.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -290,15 +290,15 @@ A confirm / cancel pair inside a dialog, wired to an async action.
 ## Accessibility
 
 The accessibility contract holds across both layers — the classes and the Vue component render the
-same attributes. The interactive behaviour, however, must be driven by JavaScript: a static HTML
+same attributes. The interactive behavior, however, must be driven by JavaScript: a static HTML
 `<dialog>` is markup only until `showModal()` opens it.
 
-- The `<dialog>` is `role="dialog"`, `aria-modal="true"` (modal mode), and labelled by the title
+- The `<dialog>` is `role="dialog"`, `aria-modal="true"` (modal mode), and labeled by the title
   element via `aria-labelledby`.
 - The close button has `aria-label="Close"`.
 - The `#trigger` slot's `props` object includes the `aria-*` attributes for the trigger element; bind
   them with `v-bind="props"`.
-- `showModal()` provides the live behaviour — focus trap, scroll lock, `::backdrop`, and returning focus
+- `showModal()` provides the live behavior — focus trap, scroll lock, `::backdrop`, and returning focus
   to the trigger on close — straight from the platform.
 
 | Key         | Action                                                                  |
@@ -310,7 +310,7 @@ same attributes. The interactive behaviour, however, must be driven by JavaScrip
 ## Framework API
 
 The props, events, slots, and headless wiring of the **Vue** component. The standalone CSS layer has
-no component API — its surface is the [classes](#classes) above, and the behaviour is yours to wire.
+no component API — its surface is the [classes](#classes) above, and the behavior is yours to wire.
 
 ### Props
 

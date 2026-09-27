@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-// Docs-only: a DaisyUI-style class reference table with a coloured "type" chip per row.
+// Docs-only: a DaisyUI-style class reference table with a colored "type" chip per row.
 // Used in markdown via MDC: :class-table{:rows='[{"class":"ori-button","type":"Block","description":"…"}]'}
 // MDC hands us `rows` as a parsed array — but if the attribute value contains a character it can't
-// parse (a stray quote/apostrophe in a description), it passes the raw string instead. Normalise and
+// parse (a stray quote/apostrophe in a description), it passes the raw string instead. Normalize and
 // guard so a malformed table degrades to empty rather than 500-ing the whole page.
 interface ClassRow {
     class: string

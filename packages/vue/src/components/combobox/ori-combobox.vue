@@ -6,7 +6,7 @@ import { useOriField } from '../field/context'
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
-// owns behaviour (open/close, filter, highlight, selection, Arrow/Home/End/Enter/Escape); this SFC
+// owns behavior (open/close, filter, highlight, selection, Arrow/Home/End/Enter/Escape); this SFC
 // renders the styled shell and layers the form contract (label/hint/error/required + aria) on top of
 // the headless prop bags. State lives on real elements/attributes (role=combobox, aria-expanded,
 // aria-activedescendant, aria-selected) so it stays a11y-correct and zero-runtime to theme. Arbitrary
@@ -68,7 +68,7 @@ const model = defineModel<string | null>()
 const anchorName = `--ori-combobox-${useId()}`
 
 // When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
-// label / hint / error; standalone the control wires its own (behaviour unchanged). `isDisabled` is
+// label / hint / error; standalone the control wires its own (behavior unchanged). `isDisabled` is
 // read by the composable below, so it is declared before useCombobox.
 const field = useOriField()
 const inField = Boolean(field)

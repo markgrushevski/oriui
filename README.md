@@ -7,37 +7,34 @@
 [![codecov](https://codecov.io/gh/markgrushevski/oriui/branch/main/graph/badge.svg)](https://codecov.io/gh/markgrushevski/oriui)
 [![license](https://img.shields.io/npm/l/@oriui/vue?color=blue)](LICENSE)
 
-A layered **Vue 3** UI library — _prototype fast, scale without rewriting_. Three independently
-consumable layers woven around shared design tokens, so you can start with styled components and drop
-to headless behavior or raw CSS when you need control, without rewriting.
+A design system in plain CSS, with accessible Vue components built on it.
 
-| Package                                                        | Layer    | What you get                                                         |
-| -------------------------------------------------------------- | -------- | -------------------------------------------------------------------- |
-| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | styled   | Ready Vue components — `<OriButton variant="soft" />`                |
-| [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | behavior | Headless behavior for focus / keyboard / ARIA — Vue · Svelte · React |
-| [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | style    | Standalone `.ori-*` classes + design tokens — **no framework**       |
+| Package                                                        | What it is                                                                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | Design tokens and a stylesheet per component. No JavaScript, no build step; works in any stack.                          |
+| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | 34 Vue 3 components that render those classes and handle keyboard, focus, ARIA and forms.                                |
+| [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | The components' behavior on its own, for your own markup. The Vue adapter is ready; React and Svelte are in development. |
 
-Zero-runtime theming via CSS custom properties · no Tailwind dependency · **34 components** · WCAG-AA
-token contrast (executably tested) · fully typed · htmx / Astro / plain-HTML friendly through the CSS
-layer.
-
-The behavior layer ships **Vue, Svelte and React** adapters over one framework-agnostic core, and the
-CSS layer needs no framework at all — so oriUI's tokens and behavior travel to React / Next, SvelteKit,
-Astro or plain HTML, not just Vue.
+- **Theming is CSS.** Skins, dark mode, sizes and variants are custom properties switched by a class or
+  an attribute. No colors are computed in JavaScript, and there is no Tailwind dependency.
+- **State is real attributes** — `disabled`, `aria-pressed`, `aria-invalid` — so the CSS reads the same
+  state with or without the Vue components.
+- **Accessibility is tested.** axe runs against every component, every color pair passes WCAG AA contrast
+  in every skin, and keyboard behavior is exercised in real Chromium.
+- **Behavior is replaceable.** Dialog, disclosure, combobox and menu run through a contract, so you can
+  plug in another engine for one widget without changing its markup.
 
 ## Install
 
 ```bash
-npm install @oriui/vue        # styled Vue components (pulls in @oriui/css + @oriui/headless)
-# or just the layer you need:
-npm install @oriui/css        # standalone CSS — no framework
-npm install @oriui/headless   # headless behavior (Vue / Svelte / React adapters)
+npm install @oriui/vue   # the components; @oriui/css and @oriui/headless come as peers
+npm install @oriui/css   # or only the CSS
 ```
 
-## Use it — Vue
+## Use with Vue
 
 ```ts
-import '@oriui/css' // the stylesheet, once (e.g. in your entry file)
+import '@oriui/css' // once, in your entry file
 import { OriButton } from '@oriui/vue'
 ```
 
@@ -45,45 +42,19 @@ import { OriButton } from '@oriui/vue'
 <OriButton label="Save" variant="soft" color="primary" size="lg" />
 ```
 
-## Use it — React / Svelte (the behavior layer)
-
-The behavior is framework-agnostic at the core, with one thin adapter per framework — same state
-machines, same keyboard handling, same ARIA wiring; only the reactive wrapper differs.
-
-```tsx
-// React 18 / 19 — add 'use client' in the Next.js app router
-import { useDisclosure } from '@oriui/headless/react'
-
-const { open, triggerProps, contentProps } = useDisclosure()
-// <button {...triggerProps}>Toggle</button>
-// <div {...contentProps}>Panel</div>
-```
-
-Swap `/react` for `/svelte` to get the same surface back as Svelte stores. Style either one with the
-`.ori-*` classes below: `@oriui/css` is a plain stylesheet, so the whole design system works in a React
-or Next app today — no Vue anywhere in the tree.
-
-## Use it — standalone CSS (React / Next · htmx / Astro / Svelte / plain HTML)
+## Use the CSS anywhere
 
 ```html
-<!-- same tokens, no Vue — one class repoints one token -->
+<link rel="stylesheet" href="https://unpkg.com/@oriui/css/dist/styles.css" />
+
 <button class="ori-button ori-button_lg ori-variant_soft ori-color_primary">Save</button>
 ```
 
-## Documentation
-
-- **[oriui.vercel.app](https://oriui.vercel.app)** — full docs, a page per component (live demos,
-  props, a11y), guides, and the headless contract.
-- **[Cheat sheet](https://oriui.vercel.app/overview/cheat-sheet)** — install + the class model + every
-  component on one page.
-- Machine-readable for AI consumers: **[`/llms.txt`](https://oriui.vercel.app/llms.txt)** (index) and
-  **[`/llms-full.txt`](https://oriui.vercel.app/llms-full.txt)** (every page concatenated).
-
 ## The class model
 
-A **block class** plus **single-class token utilities** — one class repoints one token, no paired base
-class. The block bakes sensible defaults, so a bare block is valid; add a class only to override an
-axis. Dynamic state is real **attributes** (`disabled`, `aria-busy`), never classes.
+A **block class** plus **single-class token utilities**: one class repoints one token. The block has
+defaults, so a bare block is valid; add a class only to change an axis. Dynamic state is an
+**attribute** (`disabled`, `aria-busy`), never a class.
 
 | Axis    | Class               | Values                                                                  |
 | ------- | ------------------- | ----------------------------------------------------------------------- |
@@ -92,9 +63,18 @@ axis. Dynamic state is real **attributes** (`disabled`, `aria-busy`), never clas
 | Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
 | Radius  | `ori-size-radius_*` | `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`                      |
 
-`color` is the **role**, `variant` is the **mapping** — so there is no separate `bg-color`. Theme and
-skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="cyber"`), reskinning everything
-through CSS variables with zero runtime.
+`color` is the **role** and `variant` the **mapping**, so there is no separate background color. Theme
+and skin are set on `<html>` (`class="dark"`, `data-ori-skin="cyber"`) and reskin everything through CSS
+variables.
+
+## Documentation
+
+- **[oriui.vercel.app](https://oriui.vercel.app)** — a page per component with live demos, props and
+  accessibility notes, plus guides and the headless API.
+- **[Cheat sheet](https://oriui.vercel.app/overview/cheat-sheet)** — install, the class model and every
+  component on one page.
+- For AI tools: **[`/llms.txt`](https://oriui.vercel.app/llms.txt)** (index) and
+  **[`/llms-full.txt`](https://oriui.vercel.app/llms-full.txt)** (every page in one file).
 
 ## Contributing
 

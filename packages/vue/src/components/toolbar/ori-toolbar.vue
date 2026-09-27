@@ -3,7 +3,7 @@ import { useAttrs } from 'vue'
 import { useToolbar } from '@oriui/headless/vue'
 
 // OriToolbar — a styled WAI-ARIA toolbar: a set of controls behind a SINGLE tab stop, navigated with
-// arrow keys (roving tabindex, real DOM focus). All the behaviour comes from the headless `useToolbar`
+// arrow keys (roving tabindex, real DOM focus). All the behavior comes from the headless `useToolbar`
 // (compositional roving context) — this SFC adds the box styling. Items are slotted OriToolbarButton /
 // OriToolbarToggleGroup / OriToolbarSeparator; they register themselves with the context.
 //

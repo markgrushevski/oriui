@@ -4,9 +4,9 @@ title: Core
 
 # @oriui/headless
 
-The framework-agnostic heart of the headless layer: a **behaviour contract** plus a zero-dependency
+The framework-agnostic heart of the headless layer: a **behavior contract** plus a zero-dependency
 **native engine**, written in vanilla TypeScript. Every framework binding consumes the same contract,
-so a primitive behaves identically wherever it runs — and the behaviour stays swappable per primitive,
+so a primitive behaves identically wherever it runs — and the behavior stays swappable per primitive,
 without touching markup.
 
 This is the **agnostic** layer. It has no Vue, no Svelte, no CSS. For the concrete composable API, see
@@ -16,14 +16,15 @@ see the [CSS guide](/guides/css).
 
 ## The layered idea
 
-The headless layer is split along a framework axis. The behaviour lives once, in the core; each
+The headless layer is split along a framework axis. The behavior lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
 | Package                  | What it is                                                                                                                                                                  | Framework    |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `@oriui/headless`        | Behaviour contract + native engine                                                                                                                                          | **agnostic** |
+| `@oriui/headless`        | Behavior contract + native engine                                                                                                                                           | **agnostic** |
 | `@oriui/headless/vue`    | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
-| `@oriui/headless/svelte` | The same composables as Svelte stores                                                                                                                                       | Svelte       |
+| `@oriui/headless/svelte` | The same composables as Svelte stores. **In development.**                                                                                                                  | Svelte       |
+| `@oriui/headless/react`  | The same composables as React hooks. **In development.**                                                                                                                    | React        |
 
 ## The contract
 
@@ -68,7 +69,7 @@ Three small building blocks back every primitive:
 
 ## The core toolkit
 
-Beyond the disclosure engine above, `@oriui/headless` ships the behaviour every binding composes —
+Beyond the disclosure engine above, `@oriui/headless` ships the behavior every binding composes —
 state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue,
 Svelte and React adapters consume them without re-implementing anything.
 
@@ -87,7 +88,7 @@ and react to the DOM cascade rather than projecting reducer state.
 
 ## Adapters
 
-Behaviour is chosen per primitive — provided once at the app root, never threaded through markup.
+Behavior is chosen per primitive — provided once at the app root, never threaded through markup.
 
 - **Disclosure** — a native, zero-dependency engine ships from `@oriui/headless` as the default. Nothing
   to wire; it just works.
@@ -114,8 +115,8 @@ app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox })
 The same core powers each binding, so a primitive behaves the same everywhere.
 
 - **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
-- **Svelte** — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behaviour is re-implemented.
-- **React** — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behaviour is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
+- **Svelte** (in development) — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behavior is re-implemented.
+- **React** (in development) — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behavior is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
 
 ## See also
 

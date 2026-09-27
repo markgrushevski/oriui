@@ -9,7 +9,7 @@ import { oriFieldKey, useOriField } from '../field/context'
 
 // OriColorPicker — an INLINE saturation/value + hue (+ optional alpha) + hex + presets panel. It is
 // open-state-agnostic: to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger
-// (the widget and the overlay are separate — the OriPopover ADR). Behaviour lives in the
+// (the widget and the overlay are separate — the OriPopover ADR). Behavior lives in the
 // framework-agnostic `useColorPicker` (sRGB + 2D-area math, no adapter/machine); this SFC renders the
 // parts and reuses OriSlider (hue/alpha) and OriInput (hex). v-model is a lowercase color STRING;
 // `change` commits once per interaction (one undo).

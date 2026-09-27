@@ -5,7 +5,7 @@ import type { AccordionItem } from '@oriui/vue'
 // Two accordions side by side so one navigation proves both modes. The single-open one relies on the
 // PLATFORM exclusive-accordion feature (every <details> shares a `name`, Baseline 2024) — the unit
 // suite can only assert that the attribute is there, because happy-dom does not implement the
-// behaviour the attribute asks for. "Archive" is disabled in both so the guard is testable by pointer
+// behavior the attribute asks for. "Archive" is disabled in both so the guard is testable by pointer
 // and by keyboard.
 const items: AccordionItem[] = [
     { value: 'shipping', label: 'Shipping' },

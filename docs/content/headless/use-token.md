@@ -167,7 +167,7 @@ resolve many tokens in a render loop. See [`@oriui/headless`](/headless/core).
 There is no interactive surface here — the value the bridge hands a painter is where accessibility lives.
 
 - It re-resolves on skin / style toggles **and** OS `prefers-color-scheme` flips (`observeTheme` listens
-  to `matchMedia`), so a canvas / chart honours the user's live light / dark preference and explicit theme
+  to `matchMedia`), so a canvas / chart honors the user's live light / dark preference and explicit theme
   choice exactly like CSS-cascade content — no stale colors after a theme switch.
 - Resolving the role tokens (`useThemeColor('primary')`, its `on-` partner) inherits oriUI's
   contrast-checked pairing rather than a hand-picked color; the WCAG-AA guarantee that the

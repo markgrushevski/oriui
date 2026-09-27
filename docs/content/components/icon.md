@@ -8,7 +8,7 @@ A styled, accessible SVG icon. Decorative by default — renders with `aria-hidd
 role. Pass a `label` to expose it to assistive technology as an image: the icon switches to
 `role="img"` + `aria-label` automatically.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -167,7 +167,7 @@ when the icon floats in open space rather than inside a button or label.
 
 ::
 
-## Accessible (labelled)
+## Accessible (labeled)
 
 Pass `label` to make the icon meaningful. The component sets `role="img"` and `aria-label`
 automatically and removes `aria-hidden`.
@@ -272,11 +272,11 @@ The accessibility contract holds across every layer — the standalone classes a
 render the same attributes.
 
 - **Decorative by default**: renders `<i aria-hidden="true">` with no role. Use this mode when the
-  icon sits beside visible text that already communicates its meaning (status rows, labelled buttons,
+  icon sits beside visible text that already communicates its meaning (status rows, labeled buttons,
   list items with text).
 - **Meaningful icon**: pass `label` — the component adds `role="img"` and `aria-label` and removes
   `aria-hidden`. Use this mode for standalone icons that carry meaning not expressed in nearby text
-  (e.g. a lone star meaning "favourited").
+  (e.g. a lone star meaning "favorited").
 - When used inside an `OriButton` (or any control with its own accessible name), the icon is always
   decorative — let the button's own label or `aria-label` carry the name.
 - `:focus-visible` is not applicable — OriIcon is a presentational element, not interactive.

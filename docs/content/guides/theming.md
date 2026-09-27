@@ -61,7 +61,7 @@ attribute is present. Seven presets ship alongside it:
 | --------------- | ------- | ------------------------------------------------------------ |
 | _(omitted)_     | Ori     | Luminous azure on ink and cool white — the default.          |
 | `sumi`          | Sumi    | Graphite ink on warm washi paper (墨). Strict WCAG AA.       |
-| `indigo`        | Indigo  | Calm indigo on cool grey — oriUI's previous default.         |
+| `indigo`        | Indigo  | Calm indigo on cool gray — oriUI's previous default.         |
 | `tech`          | Tech    | Cool cyan on slate — SaaS / developer-tool register.         |
 | `health`        | Health  | Calm emerald on mint — medical / wellness.                   |
 | `luxury`        | Luxury  | Deep gold on warm paper / charcoal — editorial / premium.    |
@@ -153,7 +153,7 @@ the `useTheme` composable on top). **Prefer them over a bare `classList.toggle`*
 class _and_ work around a browser quirk:
 
 > **Why not just toggle the class?** In current Chromium, changing the theme class at runtime can leave
-> already-rendered components painting the **previous** theme's colours until they next re-render — the
+> already-rendered components painting the **previous** theme's colors until they next re-render — the
 > engine misses a style invalidation for the element-scoped custom properties every oriUI component
 > bakes. `applyTheme` forces the affected subtree to re-resolve in the same tick, so the switch is
 > correct immediately. (Setting the theme before first paint — server or the inline script above — never
@@ -194,7 +194,7 @@ import { applyTheme } from '@oriui/headless'
 applyTheme(isDark ? 'dark' : 'light')
 ```
 
-The same invalidation applies to **any** runtime change of an inherited colour token: if you switch
+The same invalidation applies to **any** runtime change of an inherited color token: if you switch
 `data-ori-skin` at runtime, call `flushThemeInvalidation(document.body)` (also from `@oriui/headless`)
 right after the attribute write, for the same reason. Changing the skin **before** render never needs
 it.

@@ -4,10 +4,9 @@ title: Using the CSS layer
 
 # Using the CSS layer
 
-oriUI is three independent layers woven around one set of design tokens. The **`@oriui/css`** layer is
-just standalone `.ori-*` classes plus the token theming — **no Vue, no build step, no Tailwind**. You
+The **`@oriui/css`** package is oriUI's foundation: standalone `.ori-*` classes plus the token theming — **no Vue, no build step, no Tailwind**. You
 ship the stylesheet and write classes. This is how oriUI works with **htmx, Astro, or plain HTML** —
-the DaisyUI niche, minus Tailwind.
+the daisyUI niche, minus Tailwind.
 
 The live previews below are rendered from **raw HTML** (no Vue component) — flip to the **HTML** tab to
 see the exact markup.
@@ -127,7 +126,7 @@ per request. With **htmx**, fragments you swap in are already themed — CSS tra
 
 The **CSS layer works everywhere** — that's the whole point. Vue and the headless layer need a JS
 framework; the classes don't. Only complex behavior (focus traps, menus, comboboxes) needs the
-headless layer, which has Vue, Svelte and React adapters. For the full cross-layer breakdown
+headless layer, which has a Vue adapter (Svelte and React adapters are in development). For the full cross-layer breakdown
 (Vue / Svelte / React / htmx / Astro / plain HTML / Capacitor),
 see the [applicability matrix](/overview/introduction#where-each-layer-fits) in the Introduction.
 

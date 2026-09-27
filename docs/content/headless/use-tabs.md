@@ -31,7 +31,7 @@ import { useTabs } from '@oriui/headless/vue'
 
 | Option        | Type                                | Default        | Description                                                                                                                                                                  |
 | ------------- | ----------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tabs`        | `TabItem[]`                         | —              | The set of tabs, in order. `TabItem` is `{ value: string \| number; disabled?: boolean }` (behaviour).                                                                       |
+| `tabs`        | `TabItem[]`                         | —              | The set of tabs, in order. `TabItem` is `{ value: string \| number; disabled?: boolean }` (behavior).                                                                        |
 | `value`       | `string \| number \| undefined`     | —              | The controlled selection (bind to `v-model`). Resolves to the first enabled tab when unset.                                                                                  |
 | `orientation` | `'horizontal' \| 'vertical'`        | `'horizontal'` | Arrow-key axis: `horizontal` navigates Left/Right, `vertical` Up/Down.                                                                                                       |
 | `dir`         | `'ltr' \| 'rtl'`                    | inherited      | Writing direction. When set, it is added to `tablistProps` as `dir`; when omitted, the direction the tablist is laid out in is read on each keydown. `rtl` swaps Left/Right. |
@@ -168,7 +168,7 @@ function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boo
 ## Accessibility
 
 The prop bags carry the WAI-ARIA [Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) pattern with
-**automatic activation** (arrows move focus and select in one step); the keyboard behaviour is the
+**automatic activation** (arrows move focus and select in one step); the keyboard behavior is the
 roving `onKeydown` on the tablist.
 
 - `tablistProps` set `role="tablist"` + `aria-orientation`, plus `aria-label` / `aria-labelledby` from the

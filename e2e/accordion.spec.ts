@@ -4,7 +4,7 @@ import { test, expect, type Page } from '@playwright/test'
  * `OriAccordion` is native `<details>`/`<summary>`, and its single-open mode is the PLATFORM
  * exclusive-accordion feature: every `<details>` carries the same `name`, and the browser closes the
  * siblings. The unit suite can only assert that the attribute is present and shared — happy-dom does
- * not implement the behaviour that attribute asks for, so "opening one closes the others" has never
+ * not implement the behavior that attribute asks for, so "opening one closes the others" has never
  * been exercised in an engine. Betting a documented mode on an untested platform feature is the gap
  * this file closes; the `multiple` half is the counter-example that keeps the first half honest.
  *

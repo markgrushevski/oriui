@@ -56,7 +56,7 @@ const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 // A MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (65 files,
 // parallel workers) a short waitFor window is a wall-clock race rather than a statement about
-// behaviour. Two numbers, and the relationship between them is the whole point: widening the window
+// behavior. Two numbers, and the relationship between them is the whole point: widening the window
 // alone does NOTHING, because vitest's own per-test budget (5s by default) expires first and reports
 // the test — not the wait — as timed out. So every test that waits on the observer states a budget
 // that the window fits comfortably inside. Raising `testTimeout` globally would buy the same thing by

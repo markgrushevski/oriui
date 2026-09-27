@@ -6,10 +6,10 @@ title: Combobox
 
 A filterable single-select listbox — type to filter, navigate with the keyboard, pick one. It is the
 first component driven end-to-end by **`@oriui/headless`**: the state machine + prop-getters own the
-behaviour (open/close, filtering, the active-descendant highlight, selection, and the full
+behavior (open/close, filtering, the active-descendant highlight, selection, and the full
 WAI-ARIA keyboard), and `OriCombobox` renders the styled shell on top. Unlike the pure-CSS
-components, the behaviour needs JavaScript — the standalone classes give you the look, and
-[`useCombobox`](#headless-usecombobox) gives you the behaviour for any UI.
+components, the behavior needs JavaScript — the standalone classes give you the look, and
+[`useCombobox`](#headless-usecombobox) gives you the behavior for any UI.
 
 State is expressed on real elements: `role="combobox"` with `aria-expanded` / `aria-controls` /
 `aria-activedescendant` on the input, `role="listbox"` + `role="option"` + `aria-selected` on the
@@ -17,7 +17,7 @@ popup. `v-model` holds the selected option's `value`.
 
 ## Classes
 
-The block is a labelled control wrapping a positioned listbox popup. The input reuses
+The block is a labeled control wrapping a positioned listbox popup. The input reuses
 [`.ori-input__field`](/components/input) for its box, so the field look stays in one place.
 
 <!-- prettier-ignore -->
@@ -161,7 +161,7 @@ navigation and can't be selected.
 
 ## Headless (`useCombobox`)
 
-The behaviour ships separately in `@oriui/headless`, so you can build a fully custom combobox UI on
+The behavior ships separately in `@oriui/headless`, so you can build a fully custom combobox UI on
 the same state machine + ARIA contract. `useCombobox` returns ready-to-`v-bind` prop bags and the
 visible (filtered) items.
 
@@ -194,7 +194,7 @@ const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useC
 </template>
 ```
 
-The same behaviour in Svelte 5 via `@oriui/headless/svelte` — the composable returns stores (auto-subscribe
+The same behavior in Svelte 5 via `@oriui/headless/svelte` — the composable returns stores (auto-subscribe
 with `$`), and the item prop-getters are a store of a function (`$getOptionProps(item, i)`):
 
 ```svelte
@@ -234,7 +234,7 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
 - The input is `role="combobox"` with `aria-autocomplete="list"`, `aria-expanded`, and
   `aria-controls` pointing at the listbox; the highlighted option is referenced by
   `aria-activedescendant` (focus stays on the input — no roving tabindex needed).
-- Options are `role="option"` with `aria-selected`; the popup is `role="listbox"` labelled by the
+- Options are `role="option"` with `aria-selected`; the popup is `role="listbox"` labeled by the
   field label. A disabled option carries `aria-disabled` and is skipped by navigation.
 - `hint` / `error` are wired through `aria-describedby` (error supersedes hint); `error` also sets
   `aria-invalid="true"` and `role="alert"`. `required` sets `aria-required` and blocks submission until a value is selected.

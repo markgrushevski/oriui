@@ -12,7 +12,7 @@ const { skin, theme, setSkin, toggleTheme } = useOriTheme()
 const INTENT: Record<SkinId, string> = {
     ori: 'Luminous azure & cyan — the default.',
     sumi: '墨 graphite ink on warm washi paper — the 織り reading.',
-    indigo: 'Calm, confident indigo on cool grey.',
+    indigo: 'Calm, confident indigo on cool gray.',
     tech: 'Cool, product-UI teal.',
     health: 'Fresh medical green.',
     luxury: 'Warm gold on cream.',

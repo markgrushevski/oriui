@@ -5,7 +5,7 @@ title: useToast
 # useToast
 
 A headless **toast queue** — an imperative notification store you call from anywhere (`toast('Saved')`)
-and render once near the app root. The behaviour is a framework-agnostic engine (a plain array + a `Set`
+and render once near the app root. The behavior is a framework-agnostic engine (a plain array + a `Set`
 of listeners + auto-dismiss timers) projected into the host framework's reactivity: a Vue **reactive
 array** and a Svelte **readable store**. It is a client-side **singleton** — every `useToast()` call
 shares the one queue, so a push from anywhere reaches the single renderer.
@@ -166,7 +166,7 @@ does:
 - Call `pause()` while the pointer or focus is inside the container or the page is hidden, and
   `resume()` when none of these holds any more (WCAG 2.2.1). Without it a toast can vanish while
   someone reads it or tabs to its action.
-- Make the container a labelled `role="region"` with `tabindex="-1"` and a hotkey that focuses it, so
+- Make the container a labeled `role="region"` with `tabindex="-1"` and a hotkey that focuses it, so
   keyboard users can reach the buttons.
 
 ## See also

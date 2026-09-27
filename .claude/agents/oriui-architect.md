@@ -53,5 +53,5 @@ leverage and note the rough migration cost of each.
 
 Stay out of the mechanical gate (lint / types / test / build — CI's job), pure visual/UX (the design
 lens), and deep a11y (the a11y lens) **except** where the issue is architectural (e.g. the a11y
-contract living in the wrong layer, or state modelled as a class instead of an attribute). Report any
+contract living in the wrong layer, or state modeled as a class instead of an attribute). Report any
 new gotcha for the orchestrator to log in `NOTES.md`. Do not edit any file.

@@ -11,7 +11,7 @@
   `outline`) and were deliberately left alone.
 
     **Migration — values.** Every one of these is interpolated into a class name, so each is also a
-    `@oriui/css` class rename, and the colour is a public TOKEN rename:
+    `@oriui/css` class rename, and the color is a public TOKEN rename:
 
     | Before                       | After             | Also renamed                                                                                                            |
     | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -125,7 +125,7 @@
 
 ### Patch Changes
 
-- 04c63bf: **The colour picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
+- 04c63bf: **The color picker's two public custom properties are namespaced.** `--ori-hue` and `--ori-ink` sat in the
   library's shared `--ori-*` namespace while meaning something only inside one component — so a consumer (or a
   future token with a better claim to the name) could collide with them silently. They are now
   `--ori-color-picker-hue` and `--ori-color-picker-ink`, matching `--ori-color-picker-size` beside them.
@@ -198,7 +198,7 @@
     **`useToolbarToggleGroup` gains `deselectable`.** `type: 'single'` was unconditionally
     deselectable — pressing the active item always cleared it — so a tool picker that must always have a
     tool was impossible, and its only consumer guarded it by hand. `deselectable` defaults to `true`, which
-    is exactly today's behaviour and the Radix default the JSDoc always claimed; `false` guarantees a
+    is exactly today's behavior and the Radix default the JSDoc always claimed; `false` guarantees a
     non-empty selection and means the same thing under `type: 'multiple'` (the last remaining value cannot
     be removed), so it is never a silently-ignored prop. A refused press now fires no `onChange` at all,
     rather than re-committing the value the group already holds. Available in all three adapters; the
@@ -236,7 +236,7 @@
     dropped with no error. A new test derives the event list from the core's own `connect()` bags (open and
     closed, item getters included), pushes each through the real normalizer onto a real React element and
     dispatches the matching native event — so it asserts React actually calls the handler, not merely that
-    a key is in a table. No behaviour change; the map was complete.
+    a key is in a table. No behavior change; the map was complete.
 
 - 9c3cf30: Fix what the published tarballs actually contain:
 
@@ -273,11 +273,11 @@
   `info` / `dismiss` / `clear` were rebuilt by a `createToastActions(queue)` call inside the hook body, so
   every render handed consumers brand-new function references — even though the queue they close over is a
   module-level singleton that never changes. Anything that listed one in a dependency array
-  (`useEffect`, `useCallback`, `useMemo`, a memoised child's props) re-ran on every single render.
+  (`useEffect`, `useCallback`, `useMemo`, a memoized child's props) re-ran on every single render.
 
     The actions are now built once at module scope, beside the queue: the identities are stable for the
-    process, so they are safe to depend on and need no memoisation on the consumer's side. The values are
-    unchanged — same functions, same behaviour, same shared queue — so this only removes spurious work.
+    process, so they are safe to depend on and need no memoization on the consumer's side. The values are
+    unchanged — same functions, same behavior, same shared queue — so this only removes spurious work.
     Worth fixing before 1.0, since identity stability is part of a hook's frozen public contract.
 
     A test pins it: after a bare re-render, after a real queue change, and across two separate `useToast()`
@@ -304,11 +304,11 @@
 
 - 13e6fd2: **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
-    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
-    centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
-    room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
-    behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
-    measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+    `OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centered alignment
+    centers the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+    room on both sides. Done naively, `text-align: center` centers the text on the space the button leaves
+    behind, which lands visibly off-center — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+    measures the rendered centers in real Chromium, in both writing directions, with a counter-example test that
     fails if the compensation is ever removed. A leading icon deliberately stays in flow.
 
     `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
@@ -318,14 +318,14 @@
     impossible to remove.
 
     Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
-    once at your call sites). The behaviour change is visible, not silent.
+    once at your call sites). The behavior change is visible, not silent.
 
 ## 1.0.0-alpha.17
 
 ### Minor Changes
 
 - f6d1016: **React adapter — full hook parity (`@oriui/headless/react`).** Completes the React adapter begun by the
-  first slice: the remaining behaviour hooks now ship for React, so `@oriui/headless/react` reaches parity
+  first slice: the remaining behavior hooks now ship for React, so `@oriui/headless/react` reaches parity
   with `./vue` and `./svelte`. Added:
 
     - **Machine-adapter hooks** (bridged to React via `useSyncExternalStore`, resolved through
@@ -344,7 +344,7 @@
     provider, unlike Vue `provide` / Svelte `setContext`). Vue and Svelte are unchanged.
 
 - d79d76d: **New React adapter (`@oriui/headless/react`) — first slice.** The framework-agnostic core now drives a
-  third framework: React joins Vue and Svelte behind the same behaviour engine. This slice ships two
+  third framework: React joins Vue and Svelte behind the same behavior engine. This slice ships two
   representative hooks proving both contract shapes — **`useDisclosure`** (machine-driven, bridged to React
   via `useSyncExternalStore`, SSR-safe) and **`useTabs`** (data-driven WAI-ARIA tabs with automatic
   activation) — plus the adapter toolchain: the `./react` export, an optional `react` peer (`^18 || ^19`),
@@ -357,39 +357,39 @@
 
 ### Minor Changes
 
-- 9448620: **`useColorPicker` now ships a Svelte twin** (`@oriui/headless/svelte`) — the last behaviour composable
+- 9448620: **`useColorPicker` now ships a Svelte twin** (`@oriui/headless/svelte`) — the last behavior composable
   without one. It mirrors the Vue contract 1:1 over the same zero-dependency `core/color-picker` engine
   (sRGB + 2D-area math), returning Svelte stores: `Readable` prop-bags, stores-of-functions for
   `getChannelInputProps` / `getPresetProps`, lowercased event handlers, the internal HSVA in a `writable`
-  with the same echo-guard, and `eyedropperSupported` as an SSR-safe `readable`. Every headless behaviour is
+  with the same echo-guard, and `eyedropperSupported` as an SSR-safe `readable`. Every headless behavior is
   now available for **both Vue and Svelte**.
 - bbc937d: **New headless `useDismissable` (Vue + Svelte)** — the shared "close the overlay on an outside interaction"
-  layer for non-platform overlays, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardise.
+  layer for non-platform overlays, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardize.
   While `enabled`, it attaches `document` listeners and calls `onDismiss()` when an interaction lands outside the
   overlay's elements; each overlay picks its strategy — `pointerDownOutside` (a menu) or `focusOutside` (a
   combobox). Built on a new pure `isTargetOutside(target, elements)` predicate exported from `@oriui/headless`.
 
     `OriMenu` now uses it for outside-pointerdown (replacing a hand-rolled `document` listener) and `OriCombobox`
-    for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behaviour-preserving**, and it moves the dismiss glue out of
+    for outside-pointerdown + focus-out (replacing the input's `@blur`) — **behavior-preserving**, and it moves the dismiss glue out of
     the styled SFCs into the headless layer so a Svelte consumer of `useMenu` / `useCombobox` can wire the same
-    close behaviour. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
+    close behavior. (Popover / Dialog dismiss via the native `[popover]` / `<dialog>` top-layer; Escape stays in
     the core connects.)
 
-- 7e4e397: **New headless `useTabs` composable (Vue + Svelte).** The WAI-ARIA tabs behaviour — automatic-activation
+- 7e4e397: **New headless `useTabs` composable (Vue + Svelte).** The WAI-ARIA tabs behavior — automatic-activation
   roving tabindex, defensive selection resolution (recovers to the first enabled tab), and the
   tablist / tab / tabpanel ARIA prop bags — now lives in `@oriui/headless`: `useTabs` ships from both
   `@oriui/headless/vue` (returning computeds) and `@oriui/headless/svelte` (returning stores), reusing the
   shared `core/roving` index math with its skip-disabled predicate. `OriTabs` is rewritten to consume it —
-  **identical DOM, classes, and keyboard** — closing the last styled component that hand-rolled its behaviour
+  **identical DOM, classes, and keyboard** — closing the last styled component that hand-rolled its behavior
   instead of sitting on a headless core. Additive: a new optional `label` prop on `OriTabs` (and
   `label` / `labelledby` options on `useTabs`) names the tablist via `aria-label` / `aria-labelledby`, which
   WAI-ARIA recommends.
-- d1163d0: **Toast behaviour moved into `@oriui/headless` (Vue + Svelte).** `useToast` — the imperative toast queue —
+- d1163d0: **Toast behavior moved into `@oriui/headless` (Vue + Svelte).** `useToast` — the imperative toast queue —
   now ships from `@oriui/headless/vue` and, new, `@oriui/headless/svelte`, backed by a framework-agnostic core
   queue engine (`createToastQueue`; kept out of the core barrel so it never weighs on the 1 kB core budget,
   and projected into a Vue reactive array / a Svelte readable store). **Non-breaking:** the `@oriui/vue` path is
   unchanged — `import { useToast } from '@oriui/vue'` still works and shares the one queue (it re-exports the
-  Vue adapter). The change is that the behaviour is now a shared headless composable with Svelte parity,
+  Vue adapter). The change is that the behavior is now a shared headless composable with Svelte parity,
   closing the last styled component whose composable lived in the styled package. Adds a `useToast` docs page.
 
 ## 1.0.0-alpha.15
@@ -440,9 +440,9 @@
       (saturation = horizontal keys, brightness = vertical + `aria-orientation`), so every
       arrow keystroke changes the focused slider's own value and a screen reader announces it —
       Up/Down on the saturation slider no longer silently moves brightness. `aria-valuetext`
-      now carries the resulting colour, not just the bare axis percentage.
+      now carries the resulting color, not just the bare axis percentage.
     - The external-value echo-guard formats with the alpha flag, so with `alpha` on the working
-      colour is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
+      color is no longer re-parsed (re-quantised through 8-bit RGB) on every tick — the visible
       ~1% grid on `rgb()`/`hsl()` output is gone.
     - A disabled picker's preset swatches are inert to the keyboard too now (a real `disabled`
       attribute plus guarded click/keydown handlers); `pointer-events: none` had only blocked
@@ -451,7 +451,7 @@
 - 080571c: OriColorPicker polish + SSR-safety:
 
     - The preset listbox seeds its roving Tab stop onto the **selected** swatch (APG) and follows external
-      colour changes, instead of always starting at index 0.
+      color changes, instead of always starting at index 0.
     - The hue slider caps at **359** so dragging to the end no longer wraps the thumb back to 0; the hue and
       alpha sliders announce a self-describing `aria-valuetext` (`225°` / `50%`).
     - An invalid hex entry surfaces an **accessible error** (`role="alert"` + `aria-describedby`), not just a
@@ -460,7 +460,7 @@
       hydration mismatch — and is sized to match the 2rem preview swatch.
     - The alpha **checkerboard is theme-aware** (a mid-neutral in dark mode rather than a glaring light grid),
       the area / hue / alpha focus rings use a neutral high-contrast double ring, and the preset chips get
-      more gap so the selected ring clears its neighbour.
+      more gap so the selected ring clears its neighbor.
     - Panel corners now read component-local radius aliases; dropped the inert `label` option from
       `useColorPicker`.
 
@@ -471,7 +471,7 @@
 - 8af0a98: ColorPicker — an accessible, dependency-free color picker.
 
     - **`@oriui/vue`**: `OriColorPicker` — an inline panel with a 2D saturation×brightness area, a hue slider (reusing OriSlider), an optional alpha slider, a hex field (reusing OriInput), optional preset swatches (a roving listbox), and an optional eyedropper. `v-model` is a lowercase color string; `format` selects `hex` / `rgb` / `hsl`; `alpha` adds a checkerboard slider + `#rrggbbaa` output; `eyedropper` shows a feature-detected pick-from-screen trigger (hidden where unsupported); `update:modelValue` streams live and `change` commits once per interaction (one undo entry), like OriSlider. Slots: `#swatch`, `#preset`. Compose it into `OriPopover` for a swatch-triggered flow.
-    - **`@oriui/headless`**: `useColorPicker` (Vue) — the compositional behaviour over a new zero-dependency sRGB color engine (`hex↔rgb↔hsv↔hsl`, loose parse of hex / `rgb()` / `hsl()` incl. alpha, WCAG-luminance ink) and 2D-area math, kept out of the core `.` budget (reachable only from `./vue`). The 2D area is two visually-hidden native `<input type="range">` (one per axis) — real `role="slider"`, focus, and value announcements, with the arrow keys routed in 2D.
+    - **`@oriui/headless`**: `useColorPicker` (Vue) — the compositional behavior over a new zero-dependency sRGB color engine (`hex↔rgb↔hsv↔hsl`, loose parse of hex / `rgb()` / `hsl()` incl. alpha, WCAG-luminance ink) and 2D-area math, kept out of the core `.` budget (reachable only from `./vue`). The 2D area is two visually-hidden native `<input type="range">` (one per axis) — real `role="slider"`, focus, and value announcements, with the arrow keys routed in 2D.
 
     Deferred to a later version (all additive): a user-facing format switcher, per-channel numeric inputs, a built-in recent-colors buffer, a color wheel, and a Svelte binding.
 
@@ -497,10 +497,10 @@
     They exist because toggling the `ori-theme_dark` class at runtime hits a Chromium style-invalidation bug: every
     styled component bakes a resolved role alias into an element-scoped custom property and reads it through a `var()`
     chain, and Chromium can fail to re-resolve that chain when the inherited token changes via an ancestor class
-    toggle — so components keep the PREVIOUS theme's colours (fill/tonal backgrounds and role text) until they
+    toggle — so components keep the PREVIOUS theme's colors (fill/tonal backgrounds and role text) until they
     re-render. It is not fixable in CSS (`@property`, literal tones, and reflows were all ineffective). `applyTheme`
     flips the `ori-theme_{light,dark}` class and force-restyles the subtree in the same task (a `display:none`
-    round-trip on `document.body`, exposed as `flushThemeInvalidation`), which reliably re-resolves the colours.
+    round-trip on `document.body`, exposed as `flushThemeInvalidation`), which reliably re-resolves the colors.
 
     ```ts
     // Vue

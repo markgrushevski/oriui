@@ -4,13 +4,13 @@ title: Design tokens
 
 # Design tokens
 
-oriUI is three independent layers woven around **one set of design tokens**. This page is the
-catalog — every token, and the resolution model that turns a raw value into the colour a component
+Every oriUI package reads **one set of design tokens**. This page is the
+catalog — every token, and the resolution model that turns a raw value into the color a component
 paints. The chain is short and deliberate: **a primitive feeds a semantic role, a role feeds a
 per-instance alias, and components read only the alias.** That indirection is what lets a single
 class repoint a single token — the whole zero-runtime theming story rests on it.
 
-Two axes resolve slightly differently. **Colour is three-tier** (primitive → role → alias);
+Two axes resolve slightly differently. **Color is three-tier** (primitive → role → alias);
 **size, radius, gap, and font-size are two-tier** (raw scale → alias). Everything here is plain CSS
 custom properties under `@layer` — no JavaScript, no build step.
 
@@ -37,7 +37,7 @@ contest, is what decides the cascade.
 The contract for components is one line: **read the resolved alias, never a raw scale token, never a
 hardcoded hex.**
 
-## Colour — three tiers
+## Color — three tiers
 
 ### Tier 1 — primitives: the neutral ramp
 
@@ -61,7 +61,7 @@ reference it instead of duplicating hex, so one neutral lives in exactly one pla
 ### Tier 2 — semantic role tokens (light/dark-aware)
 
 Each role ships **four source tokens** — a light and dark value, each paired with a contrast-checked
-`on-` colour (the legible foreground for text on that surface). The `on-` pairing is not decorative:
+`on-` color (the legible foreground for text on that surface). The `on-` pairing is not decorative:
 it is asserted by an executable WCAG-AA contrast test, so a filled surface always has readable text.
 Values below are the default **Ori** skin.
 
@@ -88,7 +88,7 @@ component reading the alias never changes. _(How to flip mode and skin →
 
 ### Status tokens — shared, own hues
 
-Status colours carry their own meaning across every theme. They are **not** repointed by mode and
+Status colors carry their own meaning across every theme. They are **not** repointed by mode and
 **not** overridden by skins — `success` is green everywhere.
 
 | Token                    | Value                    |
@@ -136,8 +136,8 @@ three aliases at once:
 | `.ori-color_danger`     | `var(--ori-color-danger)`     | `var(--ori-color-on-danger)`     | `var(--ori-color-danger-text)`    |
 | `.ori-color_info`       | `var(--ori-color-info)`       | `var(--ori-color-on-info)`       | `var(--ori-color-info-text)`      |
 
-So the full colour chain reads: **neutral ramp / role source → active alias → `--ori-color` /
-`--ori-color-text` → the component.** Switching a colour is one class swap — `ori-color_primary` →
+So the full color chain reads: **neutral ramp / role source → active alias → `--ori-color` /
+`--ori-color-text` → the component.** Switching a color is one class swap — `ori-color_primary` →
 `ori-color_danger` — and every layer above resolves through `var()` with nothing recomputed.
 
 All eight role pairs resolving live — each swatch is the same `.ori-color_*` utility, only the role
@@ -162,8 +162,8 @@ way round — as **text sitting on the surrounding surface** (the non-fill butto
 selected tab, alert, tag) — a light or saturated role can drop below the WCAG AA 4.5:1 body-text bar
 (amber `warning` is the worst case). `--ori-color-<role>-text` is the dedicated on-surface tone for
 exactly that — a **relative color** that keeps the role's own hue and chroma and clamps only its
-lightness, so the text reads as the _same_ colour as the fill, just darker (light theme) or lighter
-(dark theme) — one hue, only lightness varies, not the muddier, different-looking colour a mix toward
+lightness, so the text reads as the _same_ color as the fill, just darker (light theme) or lighter
+(dark theme) — one hue, only lightness varies, not the muddier, different-looking color a mix toward
 a neutral ink would give:
 
 | Role      | `--ori-color-<role>-text` — light default                 | `--ori-color-<role>-text` — dark override                 |
@@ -194,13 +194,13 @@ gets an AA-safe text tone for free, no extra work required. _(To override it —
 per instance — see [Customization](/guides/customization).)_
 
 The `.ori-variant_outline` border (below) reads this same `-text` tone instead of the raw role, so an
-outline button's border and label read as one colour.
+outline button's border and label read as one color.
 
 ## Variants
 
 A variant is a small token group — border, opacity, background, text — set from the resolved
 `--ori-color` / `--ori-color-on` / `--ori-color-text` triplet. Because variants read the alias,
-**colour and variant compose freely**: any colour × any variant, no extra rules.
+**color and variant compose freely**: any color × any variant, no extra rules.
 
 There is no paired `.ori-variant` base class — each `.ori-variant_*` sets the whole group on its own,
 and a block without one keeps the defaults it bakes in. Each `.ori-variant_*` repoints the group:
@@ -217,11 +217,11 @@ and a block without one keeps the defaults it bakes in. Each `.ori-variant_*` re
 instead reads `--ori-color-text` for its label, the AA-safe on-surface tone from
 [Text — the on-surface foreground](#text-the-on-surface-foreground) above, because at those
 opacities/borders the role is painted as **text on the page**, not as a fill. `outline`'s border reads
-that same tone instead of the raw `--ori-color`, so the ring and the label read as one colour, and it
+that same tone instead of the raw `--ori-color`, so the ring and the label read as one color, and it
 clears the WCAG 1.4.11 non-text 3:1 minimum for pale roles too.
 
 Interaction state is derived from these same tokens, not stored — hover and `[data-active]` deepen
-the `color-mix` per variant. (See the live behaviour on [Button](/components/button).)
+the `color-mix` per variant. (See the live behavior on [Button](/components/button).)
 
 ::example
 :ori-button{label="Solid" variant="solid"}
@@ -343,7 +343,7 @@ font-size setting (16px by default — at which the scales compute to their hist
 
 ## Structure — outline tokens
 
-Borders, dividers and control edges are not a colour ROLE — they are structure, and they used to be
+Borders, dividers and control edges are not a color ROLE — they are structure, and they used to be
 invented per component: forty-odd ad-hoc `color-mix` percentages, so a consumer who wanted one consistent
 hairline had nothing to read and had to guess our numbers.
 
@@ -355,7 +355,7 @@ There are exactly two weights, because the library has exactly two structural jo
 | `--ori-color-outline-strong` | `color-mix(in srgb, currentcolor 28%, transparent)` | The control edge that says "this is interactive": text fields, key caps |
 
 Both derive from **`currentcolor`**, and that is the whole trick: a custom property substitutes where the
-`var()` is **used**, not where it is declared, so a hairline takes the colour of the text it accompanies and
+`var()` is **used**, not where it is declared, so a hairline takes the color of the text it accompanies and
 a themed subtree gets the right value with no per-theme re-declaration.
 
 Repoint them like any other token — one line, no override fight:
@@ -406,8 +406,7 @@ alias** — so the whole catalog is repointed by a class or attribute toggle, ne
 zero-runtime mechanics that ride on that — flipping mode, switching skins, and one-off overrides —
 live in [Theming](/guides/theming) and [Customization](/guides/customization). The same tokens feed
 the styled Vue components, the standalone [CSS layer](/guides/css), and the
-[headless core](/headless/core), so you can move between layers, or reskin all of them, without a
-rewrite.
+[headless core](/headless/core), so one reskin reaches all of them.
 
 ## See also
 

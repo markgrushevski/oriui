@@ -7,8 +7,8 @@ title: Customization
 Make it yours — without authoring a whole skin. Most products need one thing: _their_ brand color and
 _their_ corner radius on top of accessible, ready-made components. oriUI lets you do that by repointing
 a handful of design tokens — a few CSS custom properties in your own stylesheet, no rewrite, no fork.
-This is the **prototype fast, scale without rewriting** payoff: the same `<OriButton>` you shipped on
-day one becomes _on-brand_ by the time you ship to users, and nothing about the component changes.
+The same `<OriButton>` you shipped on day one becomes _on-brand_ by the time you ship to users, and
+nothing about the component changes.
 
 For **color** there are exactly three levels, ordered from safest to most manual: the **props**
 (semantic roles with a contrast guarantee — the recommended default), a **global brand override**
@@ -118,7 +118,7 @@ inverts the pairing.
 
 This works because the active alias `--ori-color-primary` is declared **and resolved at `:root`** — it
 reads `var(--ori-color-primary-light)` there (see
-[`_themes-color-tokens.css`](/guides/design-tokens#colour-three-tiers)). Override the source at `:root`
+[`_themes-color-tokens.css`](/guides/design-tokens#color-three-tiers)). Override the source at `:root`
 and the alias re-resolves, inheriting your value into every component. Overriding all four skinnable
 roles (plus their `on-` pairs, per mode) is the same move at scale — at that point consider
 [authoring a named skin](/guides/theming#authoring-a-custom-skin) instead.
@@ -129,7 +129,7 @@ A role's hue above is engineered as a **fill background** — a component paints
 non-fill button variants, the selected tab, alert, tag) through a separate, dedicated token,
 `--ori-color-<role>-text`, so that a light or saturated role never has to double as body text. It
 already derives an AA-safe tone automatically — a **relative color** that keeps the role's hue and
-chroma and clamps only its lightness, so the text reads as the same colour as the fill, just darker
+chroma and clamps only its lightness, so the text reads as the same color as the fill, just darker
 (light theme) or lighter (dark theme):
 
 ```css
@@ -387,8 +387,7 @@ light **and** dark — and it stays accessible, because state is real attributes
 carries the contrast. The radius change reaches every control on a **derived** step (cards, panels,
 inputs); controls pinned to another step (buttons default to `full`) keep theirs until you set their
 `radius` prop / `ori-size-radius_md` class to `md`. No component was edited, no class was added, nothing
-was forked. Start with the defaults to prototype; drop in this block when you're ready to ship — that's
-_scale without rewriting_.
+was forked. Start with the defaults, and add this block when you are ready to ship.
 
 ## Icons follow the text color
 

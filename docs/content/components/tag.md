@@ -4,11 +4,11 @@ title: Tag
 
 # Tag
 
-A compact label for categorising, filtering, or annotating content — status chips, keyword
+A compact label for categorizing, filtering, or annotating content — status chips, keyword
 badges, and removable filter pills. State is expressed through real attributes: `aria-disabled`
 disables the tag and its close button without removing it from the DOM.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

@@ -3,9 +3,9 @@
 [![npm](https://img.shields.io/npm/v/@oriui/css?logo=npm&color=cb3837)](https://www.npmjs.com/package/@oriui/css)
 [![license](https://img.shields.io/npm/l/@oriui/css?color=blue)](https://github.com/markgrushevski/oriui/blob/main/LICENSE)
 
-Standalone CSS design tokens + `.ori-*` utility classes for [oriUI](https://oriui.vercel.app) (織り).
-**No framework, no build step** — just classes and zero-runtime theming through CSS custom properties.
-Works with plain HTML, htmx, Astro, Svelte, or any framework. This is the **style** layer.
+Design tokens and component classes for [oriUI](https://oriui.vercel.app) (織り), a design system in
+plain CSS. **No framework, no build step:** classes, and theming through CSS custom properties. Works
+with plain HTML, htmx, Astro or any framework.
 
 ## Install
 
@@ -85,7 +85,7 @@ class. A bare block is valid; add a class only to override an axis. Dynamic stat
 | Size    | `ori-<name>_<size>` | `xs` · `sm` · `md` · `lg` · `xl` · `xxl`                                |
 
 Theme + skin are attributes on `<html>` (`class="dark"`, `data-ori-skin="…"`), reskinning everything
-through CSS variables with zero runtime.
+through CSS variables, with no colors computed in JavaScript.
 
 **Make it yours** — rebrand by repointing a few tokens in your own `:root` (unlayered, so it wins with
 no `!important`); reach for a token or class rather than overriding `.ori-*` rules, which keeps you

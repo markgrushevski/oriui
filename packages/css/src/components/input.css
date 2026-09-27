@@ -123,7 +123,7 @@
     }
 
     /* The danger TONE, not the raw role. Status roles are shared by both themes (one hue, no -dark
-       variant), so the raw #b91c1c fill colour is only ever tuned for the light surface: as a border it
+       variant), so the raw #b91c1c fill color is only ever tuned for the light surface: as a border it
        measured 2.08-2.85:1 on the dark surfaces, under the 3:1 WCAG 1.4.11 bar for a UI boundary. The
        -text tone is the same hue with its lightness clamped per theme, which is the precedent the
        outline variant already set at _themes-variant.css (`--ori-variant-border-color`). */

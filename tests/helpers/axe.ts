@@ -5,7 +5,7 @@ import { expect } from 'vitest'
  * Run axe-core against a mounted component's root element and assert zero violations.
  *
  * Component-scope testing: page-level rules (landmarks, a single <main>, a single <h1>) are
- * disabled — they target whole documents, not an isolated widget. Colour contrast is left to
+ * disabled — they target whole documents, not an isolated widget. Color contrast is left to
  * tests/tokens.contrast.test.ts, which checks the token math deterministically; happy-dom has
  * no layout engine, so axe cannot measure rendered contrast here anyway.
  */

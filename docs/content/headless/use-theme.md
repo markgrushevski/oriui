@@ -8,7 +8,7 @@ A headless **light / dark theme controller** — it owns the mode setting, resol
 scheme live, persists the choice, and applies it to the DOM. It applies through `applyTheme`, which sets
 the `ori-theme_{light,dark}` class (removing the opposite — exactly one is on at a time) **and** works
 around a bug in current Chromium where a runtime theme toggle otherwise leaves styled components
-painting the previous theme's colours until they re-render.
+painting the previous theme's colors until they re-render.
 
 This is the **Vue** binding; the framework-agnostic core (`createThemeController`, `applyTheme`) lives
 in [`@oriui/headless`](/headless/core), and a Svelte store twin ships at `@oriui/headless/svelte`.
@@ -139,7 +139,7 @@ applyTheme(isDark ? 'dark' : 'light')
 
 `createThemeController(options)` is the vanilla engine behind `useTheme` (same options →
 `{ get, resolved, set, toggle, cycle, subscribe, destroy }`), and `flushThemeInvalidation(el)` is the
-bare workaround — call it after any runtime change of an inherited colour token you apply yourself (e.g.
+bare workaround — call it after any runtime change of an inherited color token you apply yourself (e.g.
 switching `data-ori-skin`). See [`@oriui/headless`](/headless/core).
 
 ## SSR & the initial theme

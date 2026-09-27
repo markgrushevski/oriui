@@ -10,10 +10,10 @@ machine** in JavaScript, not the Popover API — so the panel is not top-layer a
 panel is still placed with the same **CSS Anchor Positioning** primitive as the Popover (`ori-anchored`),
 zero positioning JS.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
-plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`); HTML is the default.
+plain-HTML usage), **Vue**, and **Svelte** (`@oriui/headless/svelte`, in development); HTML is the default.
 
 ## Classes
 
@@ -320,7 +320,7 @@ A toolbar "more actions" button — a typical menu-button use case.
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes. Unlike the Popover, the interactive behaviour here is **not** free from the
+render the same attributes. Unlike the Popover, the interactive behavior here is **not** free from the
 platform: open/close, focus movement, and dismissal are driven by the `@oriui/headless` menu machine in
 JavaScript.
 
@@ -354,7 +354,7 @@ JavaScript.
 
 The props, events, and slots of the **Vue** component. The standalone CSS layer has no component
 API — its surface is the [classes](#classes) above; the roving-tabindex keyboard and open/close
-behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/headless/core) in
+behavior is JavaScript you'd need to author yourself, or get from [`useMenu`](/headless/core) in
 `@oriui/headless/vue`.
 
 ### Props
@@ -365,7 +365,7 @@ behaviour is JavaScript you'd need to author yourself, or get from [`useMenu`](/
 | `disabled`  | `boolean`                                                              | `false`          | Disables the trigger and blocks opening the menu.                                  |
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier. |
 
-`MenuItem` is the behaviour layer's own type, re-exported unchanged — import it from either entry to
+`MenuItem` is the behavior layer's own type, re-exported unchanged — import it from either entry to
 annotate your array:
 
 ```ts

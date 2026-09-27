@@ -4,7 +4,7 @@ import { useTabs, type TabItem as HeadlessTabItem } from '@oriui/headless/vue'
 import type { ThemeColor } from '../../types'
 
 /**
- * A tab in `<OriTabs>` — the headless `TabItem` (behaviour: identity + disabled) plus the display
+ * A tab in `<OriTabs>` — the headless `TabItem` (behavior: identity + disabled) plus the display
  * string this styled shell renders. Deriving rather than redeclaring keeps the two layers one type:
  * `tabs` is handed straight to `useTabs` below, so the assignability was always load-bearing.
  */

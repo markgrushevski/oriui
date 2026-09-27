@@ -17,5 +17,5 @@ library, where secondary text is always a leaf class with its own tone (`__subti
 a group fade over someone else's content. Worst reading inside a dialog is now 4.87:1.
 
 Neither existing guard could see this by construction — the Node token test reads token PAIRS and never
-renders, and an axe pass reads declared colours, not composited pixels. `e2e/text-contrast.spec.ts` gains a
+renders, and an axe pass reads declared colors, not composited pixels. `e2e/text-contrast.spec.ts` gains a
 third test that measures a composited dialog body (128 readings) so an ancestor fade cannot return unseen.

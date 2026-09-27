@@ -30,7 +30,7 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
       on a non-`<button>`), `aria-busy` while loading, `aria-pressed` / `data-active` for toggles,
       `aria-invalid` for errors.
 - [ ] Every control has an accessible name (visible `<label>` tied by `for`/`id`, `aria-label`, or text);
-      decorative graphics (icons, spinners inside a labelled control) are `aria-hidden="true"`.
+      decorative graphics (icons, spinners inside a labeled control) are `aria-hidden="true"`.
 - [ ] Focus is always visible — `:focus-visible` (buttons/links) or `:focus` (fields); never
       `outline: none` without an equivalent ring.
 - [ ] Helper / error text is wired via `aria-describedby` that references **only rendered** elements
@@ -41,7 +41,7 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 
 - [ ] Reads the resolved **aliases** (`--ori-size-action`, `--ori-color`, `--ori-shadow-*`), never raw
       scale tokens (`--ori-size-action_md`) directly.
-- [ ] No hardcoded hex in a component — colour comes from role tokens; any new role/on-role pair is
+- [ ] No hardcoded hex in a component — color comes from role tokens; any new role/on-role pair is
       WCAG AA (and therefore caught by `tests/tokens.contrast.test.ts`).
 - [ ] Theming stays **zero-runtime** — switching skin/size/variant is a class or attribute toggle, no JS.
 
@@ -59,11 +59,11 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 
 ### CSS & cascade
 
-- [ ] Structure via BEM classes; variant / size / colour ride the shared utilities + the two-tier token
+- [ ] Structure via BEM classes; variant / size / color ride the shared utilities + the two-tier token
       pattern (a class repoints one alias).
 - [ ] Specificity stays flat — `:where()`, no `.a.a_b` stacking; dynamic state via **attribute selectors**,
       not extra classes.
-- [ ] Hover is wrapped in `@media (hover: hover)`; state colours derive via `color-mix(in srgb, …)`.
+- [ ] Hover is wrapped in `@media (hover: hover)`; state colors derive via `color-mix(in srgb, …)`.
 - [ ] The SFC ships **no `<style>` block at all** — the component's CSS is a new
       `packages/css/src/components/<name>.css`, wrapped in `@layer ori.components` and imported by
       `styles.css`, so the markup works as standalone `.ori-*` and the css layer ships without Vue.
@@ -75,7 +75,7 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
 
 ### Tests
 
-- [ ] A `tests/<name>.test.ts` covers the **behaviour + a11y contracts** (real attributes, roles, focus
+- [ ] A `tests/<name>.test.ts` covers the **behavior + a11y contracts** (real attributes, roles, focus
       guards) and runs axe; form controls also assert `v-model` and attribute passthrough.
 - [ ] Token changes are reflected in the contrast test.
 

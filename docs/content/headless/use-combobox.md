@@ -6,7 +6,7 @@ title: useCombobox
 
 A headless **combobox** primitive — an editable text input paired with a popup listbox — implementing
 the WAI-ARIA _combobox with listbox popup_ pattern: type to filter, navigate with the keyboard via
-active-descendant, and pick a single option. It owns the behaviour (open/close, filtering, the
+active-descendant, and pick a single option. It owns the behavior (open/close, filtering, the
 highlight, selection, and the full keyboard) and the ARIA wiring as ready-to-bind prop bags; **you own
 the markup and styles**.
 

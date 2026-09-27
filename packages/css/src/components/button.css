@@ -117,7 +117,7 @@
 
        Hence the split below. The inset hairline is UNIVERSAL: no variant touches `box-shadow`, so it
        layers over `solid` / `soft` without erasing them, and drawing it in `currentcolor` means it is
-       always the button's own label colour — AA-paired with whatever background sits under it by
+       always the button's own label color — AA-paired with whatever background sits under it by
        construction, in every skin.
 
        The tint is added ONLY for the three variants whose background is `transparent`. It has to be a
@@ -126,7 +126,7 @@
        regardless of specificity, so a token routed through the variant is unreachable from here. The
        literal beats `.ori-button`'s own `background-color: var(--ori-variant-bg-color)` on
        specificity inside this layer — which is exactly why it must NOT reach `solid` / `soft`: it
-       would flatten their role colour to a neutral grey and make every pressed button look alike.
+       would flatten their role color to a neutral gray and make every pressed button look alike.
        (These rules used to live in toolbar.css, gated behind `.ori-toolbar`, which is why a toggle
        button anywhere else had no pressed look at all.) */
     .ori-button[aria-pressed='true'] {

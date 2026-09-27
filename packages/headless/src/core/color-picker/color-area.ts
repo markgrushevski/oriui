@@ -6,7 +6,7 @@
  *
  * Position is `{ x, y }` with both in [0, 1]: x = saturation (0 left → 1 right), y = value/brightness
  * (0 bottom → 1 top). y is stored top-up so it maps directly to a CSS `--y` where the thumb sits higher
- * for a brighter colour; the pointer helper flips the raw DOM y (which grows downward) for you.
+ * for a brighter color; the pointer helper flips the raw DOM y (which grows downward) for you.
  */
 
 export interface AreaPosition {

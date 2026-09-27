@@ -17,7 +17,7 @@ registry. We can only work around them, so each entry names the workaround, to k
 `accepted` · npm registry typosquatting filter
 
 - **What:** npm's similarity filter rejects `oriui` as too close to `cliui` — a hard 403 on first publish.
-  Names that normalise to the same token (`ori-ui`) are blocked too; scoped names bypass the filter.
+  Names that normalize to the same token (`ori-ui`) are blocked too; scoped names bypass the filter.
 - **Consequence:** there is no `npx oriui …`. Any CLI this project ships is `npx @oriui/cli …`.
 
 ## ORI-O-03 — attw reports `cjs-resolves-to-esm` for packages that have no CJS build
@@ -40,12 +40,12 @@ registry. We can only work around them, so each entry names the workaround, to k
   (`new Set([...root.querySelectorAll('[id]')].map((e) => e.id)).size === count`). Those assertions are
   not redundant with axe.
 
-## ORI-O-01 — Chromium leaves baked component colours stale after a runtime theme toggle
+## ORI-O-01 — Chromium leaves baked component colors stale after a runtime theme toggle
 
 `mitigated` · Chromium 148–149
 
 - **What:** flipping `ori-theme_dark` at runtime changes the inherited role tokens, but Chromium does not
-  re-resolve a colour an element has baked into a local custom property until its box is rebuilt. A bare
+  re-resolve a color an element has baked into a local custom property until its box is rebuilt. A bare
   `color: var(--ori-color-primary)` flips correctly, which makes it look like a token bug.
 - **Reproduces only** in a real browser over HTTP with the full cascade — not in happy-dom, not from
   `file://`, not with a trimmed stylesheet.

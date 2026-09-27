@@ -172,7 +172,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
             disabled: disabled() || undefined,
             'aria-label': channel === 'saturation' ? 'Saturation' : 'Brightness',
             'aria-orientation': channel === 'value' ? ('vertical' as const) : undefined,
-            // Announce the axis value AND the resulting opaque color, so the settled colour is spoken too.
+            // Announce the axis value AND the resulting opaque color, so the settled color is spoken too.
             'aria-valuetext': `${pct}%, ${opaqueColor.value}`,
             onKeydown: (event: KeyboardEvent): void => {
                 if (disabled() || !keys.includes(event.key)) return
@@ -202,7 +202,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
     const selectedIndex = computed(() => presets().findIndex((color) => isPresetSelected(color)))
 
     // The single roving Tab stop. APG: it should sit on the SELECTED swatch — seed it on mount and let
-    // it follow external colour changes. No focus-guard is needed: the selection only changes via a
+    // it follow external color changes. No focus-guard is needed: the selection only changes via a
     // preset click (which sets `activePreset` itself) or via the area/hue/hex (focus is outside the
     // listbox) — never while arrowing within it, so `activePreset` is never yanked from under the user.
     const activePreset = ref(0)
@@ -289,7 +289,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         rgb,
         hex,
         // The canonical current color in the EMITTED format — the value a form submits, and the next
-        // onInput/onChange payload. Unlike `hex` (always hex) or `swatchColor`, it honours the `format` +
+        // onInput/onChange payload. Unlike `hex` (always hex) or `swatchColor`, it honors the `format` +
         // `alpha` options; it is never empty (a color control always has a value), so before the first emit
         // it can differ from an initial `value` supplied in a different format (or an undefined one).
         value: computed(() => formatColor(hsva.value, fmt(), alphaOn())),

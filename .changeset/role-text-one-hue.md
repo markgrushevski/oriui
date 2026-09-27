@@ -4,14 +4,14 @@
 
 **Role-as-text is now the same hue as the fill — a darker/lighter shade, not a muddy off-hue.** The
 `--ori-color-<role>-text` tone (used by the non-fill button variants, the selected tab, alert, tag, link and the
-selected combobox option) is now derived by **relative colour that keeps the role's hue + saturation and clamps
+selected combobox option) is now derived by **relative color that keeps the role's hue + saturation and clamps
 only lightness** — `oklch(from var(--ori-color-<role>) min(l, 0.42) c h)` in light, `max(l, 0.86)` in dark —
-instead of the previous `color-mix` toward the neutral ink, which desaturated it into a muddy, off-hue colour that
-no longer matched the role's fill and border. Text / outline / soft now read as the same colour as the fill, only
+instead of the previous `color-mix` toward the neutral ink, which desaturated it into a muddy, off-hue color that
+no longer matched the role's fill and border. Text / outline / soft now read as the same color as the fill, only
 darker (light theme) or lighter (dark theme): one hue, only lightness varies.
 
 The **outline** variant's border now uses that same text tone (was the raw role), so an outline button is one
-colour (border = label) and the border clears the 3:1 non-text bar for pale roles too.
+color (border = label) and the border clears the 3:1 non-text bar for pale roles too.
 
 Still WCAG AA (>= 4.5:1) for every role across all skins, both themes, and every text kind including the soft
 hover/active tint (min ~4.55:1), and still fully overridable via `--ori-color-<role>-text`. The tone tokens are

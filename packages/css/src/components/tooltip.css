@@ -104,7 +104,7 @@
     }
 
     /* The arrow — a rotated square sharing the bubble's fill, sat on the bubble edge that faces the
-       trigger and centred on the cross axis. It's keyed on the .ori-anchored side class, NOT anchor():
+       trigger and centered on the cross axis. It's keyed on the .ori-anchored side class, NOT anchor():
        a pseudo-element's containing block is the bubble, and the trigger is the bubble's SIBLING (not a
        descendant of that containing block), so the trigger is not an acceptable anchor for the ::after —
        an anchor() reference would be invalid and collapse the arrow into a corner. A pure-CSS arrow also

@@ -3,7 +3,7 @@ import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 
-// OriTextarea — the multiline sibling of OriInput: a labelled, tokenized text field with real a11y
+// OriTextarea — the multiline sibling of OriInput: a labeled, tokenized text field with real a11y
 // wiring (label/for, aria-invalid, aria-describedby tied to the hint/error) and v-model via
 // defineModel. State lives on the native element (real `disabled`, `aria-invalid`) and is styled with
 // attribute selectors, matching the rest of oriUI. Arbitrary native attributes (name, maxlength,
@@ -50,7 +50,7 @@ const {
 const model = defineModel<string>()
 
 // When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
-// label / hint / error; standalone the control wires its own (behaviour unchanged).
+// label / hint / error; standalone the control wires its own (behavior unchanged).
 const field = useOriField()
 const inField = Boolean(field)
 

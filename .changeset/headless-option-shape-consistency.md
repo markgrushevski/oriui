@@ -8,7 +8,7 @@ the toggle group's missing `deselectable`.
 **`useToolbarToggleGroup` gains `deselectable`.** `type: 'single'` was unconditionally
 deselectable — pressing the active item always cleared it — so a tool picker that must always have a
 tool was impossible, and its only consumer guarded it by hand. `deselectable` defaults to `true`, which
-is exactly today's behaviour and the Radix default the JSDoc always claimed; `false` guarantees a
+is exactly today's behavior and the Radix default the JSDoc always claimed; `false` guarantees a
 non-empty selection and means the same thing under `type: 'multiple'` (the last remaining value cannot
 be removed), so it is never a silently-ignored prop. A refused press now fires no `onChange` at all,
 rather than re-committing the value the group already holds. Available in all three adapters; the
@@ -46,4 +46,4 @@ failed silently: an event the core emits that the map does not know reaches Reac
 dropped with no error. A new test derives the event list from the core's own `connect()` bags (open and
 closed, item getters included), pushes each through the real normalizer onto a real React element and
 dispatches the matching native event — so it asserts React actually calls the handler, not merely that
-a key is in a table. No behaviour change; the map was complete.
+a key is in a table. No behavior change; the map was complete.

@@ -8,7 +8,7 @@ import a11yPlugin from 'colord/plugins/a11y'
  * tuned as fill BACKGROUNDS; the non-fill variants (text / outline / soft), the selected tab, alert +
  * tag paint the role as FOREGROUND text via --ori-color-<role>-text (an on-surface tone derived from the
  * role by color-mix, with explicit AA overrides where the derivation misses). color-mix(in oklch, …)
- * only resolves to a concrete colour in a real engine, so this must run in Chromium — happy-dom axe has
+ * only resolves to a concrete color in a real engine, so this must run in Chromium — happy-dom axe has
  * no layout engine and the Node token guard can't evaluate color-mix. Every role × surface-text kind is
  * measured across every skin and both themes; the effective background composites a tonal tint over the
  * opaque surface. Anything below WCAG AA (4.5:1 body text) is collected and reported at once.
@@ -69,7 +69,7 @@ function markup(): string {
 // The probe's backdrop. It declares the on-surface TEXT tone alongside the surface background, the way
 // every real surface block does (card / dialog / menu / popover / the combobox listbox all pair the two).
 // Without the `color`, inherited text falls back to the UA default — pure black, or pure white under the
-// theme's `color-scheme: dark` — so every cell that does NOT set its own colour (all the form labels,
+// theme's `color-scheme: dark` — so every cell that does NOT set its own color (all the form labels,
 // hints and control values) would be measured against the most flattering foreground that exists rather
 // than the one oriUI actually paints. The role cells set their own `color`, so they are unaffected.
 function surface(body: string): string {
@@ -78,7 +78,7 @@ function surface(body: string): string {
 
 // The open listbox — role-tinted highlight and the role-toned selected label, on the popup's own opaque
 // surface (NOT the page surface: `.ori-combobox__listbox` repaints `--ori-color-surface` under itself).
-// Rendered without `.ori-anchored`, so it lays out in flow; only its colours are read.
+// Rendered without `.ori-anchored`, so it lays out in flow; only its colors are read.
 function listbox(role: string): string {
     return `<ul class="ori-combobox__listbox">
             <li class="ori-combobox__option" data-highlighted data-role="${role}" data-kind="combobox-option-highlighted">Option</li>
@@ -93,7 +93,7 @@ function control(block: string, invalid: boolean): string {
     const flag = invalid ? 'aria-invalid="true"' : `data-role="form" data-kind="${block}-value"`
     switch (block) {
         case 'field':
-            // The composite case: a field wraps a real control, which inherits the field's text colour.
+            // The composite case: a field wraps a real control, which inherits the field's text color.
             return `<div class="ori-input"><input class="ori-input__field" value="Typed value" ${flag}></div>`
         case 'select':
             return `<div class="ori-select__control-wrap"><select class="ori-select__control" ${flag}><option>Chosen</option></select><span class="ori-select__chevron" aria-hidden="true"></span></div>`
@@ -110,7 +110,7 @@ function control(block: string, invalid: boolean): string {
 // invalid border, never the label / hint / error, which are on-surface text and the danger TEXT tone. So
 // these are measured once per skin × theme like the `bare` block instead of six near-identical times; the
 // role-dependent form cells (the listbox options) live in the role loop above. Checkbox / radio / switch
-// labels are deliberately absent: they declare no colour of their own, so they read identically to
+// labels are deliberately absent: they declare no color of their own, so they read identically to
 // `field-label`. Both states a real form shows are rendered — resting (hint) and invalid (error).
 function form(): string {
     const cells = FORM_BLOCKS.map(
@@ -142,7 +142,7 @@ type Reading = { role: string; kind: string; muted: boolean; fg: string; bg: str
 type Row = Reading & { ratio: number; label: string }
 
 // getComputedStyle returns color-mix results in their mix space (oklch(…) / color(srgb … / .25)), which
-// colord can't parse. Resolve authoritatively in the engine: stack the colours on a 1×1 canvas (the opaque
+// colord can't parse. Resolve authoritatively in the engine: stack the colors on a 1×1 canvas (the opaque
 // backdrop first, then the element's own possibly-translucent bg, then its text) and read back the
 // composited sRGB pixel. `opacity` (the `quiet` variant, the hint, a disabled control) is a group fade, so
 // it is applied to the element's own bg and text alike — the probes never put an opacity group around a
@@ -158,8 +158,8 @@ async function readState(page: Page, skin: string, theme: string): Promise<Readi
             const cv = document.createElement('canvas')
             cv.width = cv.height = 1
             const ctx = cv.getContext('2d')!
-            // A colour the canvas refuses to parse leaves fillStyle untouched, so reset to transparent
-            // first: an unparseable value then reads as alpha 0 instead of reusing the previous colour.
+            // A color the canvas refuses to parse leaves fillStyle untouched, so reset to transparent
+            // first: an unparseable value then reads as alpha 0 instead of reusing the previous color.
             const fill = (c: string) => {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0)'
                 ctx.fillStyle = c
@@ -175,7 +175,7 @@ async function readState(page: Page, skin: string, theme: string): Promise<Readi
                 const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
                 return `rgb(${r} ${g} ${b})`
             }
-            // Authoritative alpha for any colour syntax (rgb / rgba / oklab / color(srgb …)): let the
+            // Authoritative alpha for any color syntax (rgb / rgba / oklab / color(srgb …)): let the
             // engine rasterise it and read the alpha channel back.
             const alphaOf = (c: string): number => {
                 ctx.clearRect(0, 0, 1, 1)
@@ -207,7 +207,7 @@ async function readState(page: Page, skin: string, theme: string): Promise<Readi
                 const cs = getComputedStyle(el)
                 const { stack, alpha } = backdrop(el)
                 const a = alpha * parseFloat(cs.opacity)
-                // `::placeholder` carries its own colour; everything else reads the element's own.
+                // `::placeholder` carries its own color; everything else reads the element's own.
                 const fg = getComputedStyle(el, el.dataset.pseudo ?? null).color
                 const under: [string, number][] = [...stack, [cs.backgroundColor, a]]
                 return {
@@ -224,7 +224,7 @@ async function readState(page: Page, skin: string, theme: string): Promise<Readi
 }
 
 // Form controls transition `background-color`, and the stylesheet lands AFTER the markup — without the
-// transition killer every field reads mid-flight from the UA `field` colour (an opaque white, in BOTH
+// transition killer every field reads mid-flight from the UA `field` color (an opaque white, in BOTH
 // themes) and the numbers are fiction. Any probe added here needs this.
 async function prepare(page: Page, body: string): Promise<void> {
     await page.setViewportSize({ width: 1280, height: 900 })
@@ -292,11 +292,11 @@ test.describe('role-as-text contrast — WCAG AA (4.5:1) across every skin, them
         const missed = rows.filter((r) => r.kind === 'raw-role-as-text' && r.ratio >= AA).map(line)
         expect(
             missed,
-            `the probe stopped catching the pre-fix error colour on ${missed.length} skins:\n${missed.join('\n')}`
+            `the probe stopped catching the pre-fix error color on ${missed.length} skins:\n${missed.join('\n')}`
         ).toEqual([])
 
         // …and the shipped tone, measured by the same pipeline on the same element, clears AA — so the
-        // reading above is the colour, not a broken probe.
+        // reading above is the color, not a broken probe.
         const regressed = rows.filter((r) => r.kind === 'danger-text-tone' && r.ratio < AA).map(line)
         expect(
             regressed,
@@ -310,7 +310,7 @@ test.describe('role-as-text contrast — WCAG AA (4.5:1) across every skin, them
      * "the probes never put an opacity group around a painted background". A container fade is a different
      * defect from a badly-toned token: the token pair stays honestly AA, and the contrast is lost on the
      * way to the screen, so neither the Node token guard (it reads pairs, never a render) nor an axe pass
-     * (it reads declared colours) can see it. Only a composited reading can.
+     * (it reads declared colors) can see it. Only a composited reading can.
      *
      * Example: an `opacity: 0.85` on `.ori-dialog__body` multiplied with a field hint's own 0.7 into 0.595.
      */

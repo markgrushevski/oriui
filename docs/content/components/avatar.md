@@ -7,7 +7,7 @@ title: Avatar
 A data-display component that shows an image, or initials derived from `name` when there is no
 image (or while it loads). Supports a title / subtitle column for list and profile UIs.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -330,7 +330,7 @@ render the same attributes.
 - The initials backdrop is `aria-hidden="true"` — it is a visual fallback, not semantic content.
 - The `<img>` is revealed only after the `load` event fires (`v-show`), preventing a flash of a
   broken-image icon while the initials are still visible.
-- There is no interactive behaviour; the component has no keyboard contract of its own. Wrap it in a
+- There is no interactive behavior; the component has no keyboard contract of its own. Wrap it in a
   `<button>` or `<a>` when it needs to be activatable, and supply an `aria-label` on the wrapper.
 
 | Attribute            | Element      | Notes                                                            |

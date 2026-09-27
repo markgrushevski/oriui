@@ -56,7 +56,7 @@
     }
 
     /* Grouping rule between items (`{ separator: true }` in the items array). The negative inline
-       margin is the panel's own `padding: 0.35rem` cancelled out, so the rule spans the full menu
+       margin is the panel's own `padding: 0.35rem` canceled out, so the rule spans the full menu
        width the way every reference menu draws it — a literal, because that padding is a literal too
        and a `var(…, 0.35rem)` fallback pointing at a property nothing declares would be dead code
        that looks live. */

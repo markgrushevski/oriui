@@ -9,7 +9,7 @@ const {
     label = 'Notifications',
     position = 'top-right'
 } = defineProps<{
-    /** Body alignment for every toast in the stack — a look of the stack, like `position`. A centred
+    /** Body alignment for every toast in the stack — a look of the stack, like `position`. A centered
      *  stack usually pairs with `top-center` / `bottom-center` and one-line status messages. */
     align?: 'start' | 'center'
     /** The key (a `KeyboardEvent.key` that types no text) that moves focus to the toasts; `''` turns it off. */

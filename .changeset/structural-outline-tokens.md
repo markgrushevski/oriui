@@ -9,7 +9,7 @@ one gap a real consumer filed that the library had not closed.
 
 Two weights, because there are two structural jobs: the resting hairline that separates surfaces (panels,
 menus, dividers, list rows) and the heavier edge that marks an interactive control (text fields, key caps,
-colour swatches). Both derive from `currentcolor`, so a hairline follows the text it accompanies and a
+color swatches). Both derive from `currentcolor`, so a hairline follows the text it accompanies and a
 themed subtree needs no per-theme re-declaration.
 
 Visible change: the hairlines that were 14% are now 12%, and the chip edges that were 20% / 25% are now

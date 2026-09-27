@@ -66,7 +66,7 @@
         --ori-toast-enter-x: -20px;
     }
 
-    /* A centred toaster has no side to come from — it fades and settles vertically instead. */
+    /* A centered toaster has no side to come from — it fades and settles vertically instead. */
     .ori-toaster_top-center {
         top: 0;
         left: 50%;
@@ -131,10 +131,10 @@
         border-inline-start: 4px solid var(--ori-color);
     }
 
-    /* Centred alignment centres the BODY on the CARD — which means the dismiss button has to leave the
-       flex flow. Left in flow it eats inline space on one side only, so "centred" text lands visibly
-       off-centre; that asymmetry is the defect a consumer reported against a top-center stack. The card
-       reserves the same inline room on both sides instead, so the optical centre is the real centre.
+    /* Centered alignment centers the BODY on the CARD — which means the dismiss button has to leave the
+       flex flow. Left in flow it eats inline space on one side only, so "centered" text lands visibly
+       off-center; that asymmetry is the defect a consumer reported against a top-center stack. The card
+       reserves the same inline room on both sides instead, so the optical center is the real center.
        A leading icon deliberately STAYS in flow: it is a content marker, not chrome, and a toast with an
        icon is a different composition — documented on the component page. */
     .ori-toast_align-center {
@@ -224,7 +224,7 @@
     /* TransitionGroup enter/leave — slide in off the toaster's own screen edge + fade; the leaving item
        is taken out of flow so the rest slide up smoothly. The offset comes from --ori-toast-enter-x,
        which the toaster sets (see the corner rules above): a left-pinned toaster no longer flies in from
-       the right, and a centred one does not slide sideways at all. `translateX` is physical, so the sign
+       the right, and a centered one does not slide sideways at all. `translateX` is physical, so the sign
        is resolved once, at the toaster, rather than here. */
     .ori-toast-enter-active,
     .ori-toast-leave-active {

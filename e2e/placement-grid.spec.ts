@@ -25,7 +25,7 @@ const CASES: { placement: string; side: Side; align: Align }[] = [
 ]
 
 async function boxes(page: Page, placement: string) {
-    // Trigger centred with room on every side; panel 80x60 vs trigger 120x40 → alignments differ.
+    // Trigger centered with room on every side; panel 80x60 vs trigger 120x40 → alignments differ.
     await page.setContent(`<!doctype html><html><body>
       <button id="t" popovertarget="p" style="anchor-name:--a;position:absolute;top:320px;left:560px;width:120px;height:40px;">T</button>
       <div id="p" popover class="ori-popover ori-anchored ori-anchored_${placement}" style="--ori-anchor:--a;min-width:0;width:80px;height:60px;" aria-label="P">P</div>

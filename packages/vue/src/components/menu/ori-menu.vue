@@ -3,7 +3,7 @@ import { computed, mergeProps, nextTick, useId, useTemplateRef, watch } from 'vu
 import { useMenu, useDismissable, type MenuItem } from '@oriui/headless/vue'
 import type { AnchoredPlacement } from '../../types'
 
-// OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behaviour
+// OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behavior
 // (open/close, Arrow/Home/End roving, Enter/Space activate, Escape/Tab/outside-click close) lives in the
 // @oriui/headless menu machine; this SFC renders the styled shell, moves real DOM focus to the active
 // item (roving needs it), returns focus to the trigger on close, and wires click-outside. The panel is

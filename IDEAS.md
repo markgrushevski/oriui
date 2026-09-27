@@ -19,7 +19,7 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
 - ◽ **Tooltip on `.ori-anchored`** — its arrow does not flip under `position-try` yet; low value.
 - 🧪 **`v-model.lazy` on Slider** — commit-only binding on top of the existing `change` event.
 - 🧪 **Visual-regression snapshots** — deliberately not done: the highest-maintenance test type, and
-  behaviour / a11y / geometry / contrast are already covered.
+  behavior / a11y / geometry / contrast are already covered.
 - 🧪 **Token inspector** — a dev-time panel showing which `--ori-*` tokens resolve and which `.ori-*`
   classes apply to a hovered element.
 - 🧪 **Contributor scaffolder** — a new component as SFC + stylesheet + test + docs page, once the

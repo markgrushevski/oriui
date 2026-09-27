@@ -138,7 +138,7 @@ test.describe('badge anchor mirror', () => {
             const anchor = await box(page, '#anchor')
             const badge = await box(page, '#badge')
 
-            // The badge centre sits ON the anchor's inline-end edge (half in, half out) at its top.
+            // The badge center sits ON the anchor's inline-end edge (half in, half out) at its top.
             const edge = dir === 'ltr' ? right(anchor) : anchor.x
             expect(Math.abs(cx(badge) - edge)).toBeLessThan(NEAR)
             expect(Math.abs(cy(badge) - anchor.y)).toBeLessThan(NEAR)
@@ -150,7 +150,7 @@ test.describe('badge anchor mirror', () => {
 })
 
 test.describe('anchored placement mirrors', () => {
-    // The panel is smaller than the trigger on both axes so start / centre / end are distinguishable.
+    // The panel is smaller than the trigger on both axes so start / center / end are distinguishable.
     const MARKUP = (placement: string) => `
         <button id="t" popovertarget="p" style="anchor-name:--a;position:absolute;top:320px;left:560px;width:120px;height:40px;">T</button>
         <div id="p" popover class="ori-popover ori-anchored ori-anchored_${placement}" style="--ori-anchor:--a;min-width:0;width:80px;height:60px;" aria-label="P">P</div>`
@@ -164,7 +164,7 @@ test.describe('anchored placement mirrors', () => {
 
     // `position-area` is logical, so the whole grid mirrors: `_left` means inline-start, which is the
     // physical RIGHT in RTL. This pins that contract — the class NAMES stay physical-sounding while the
-    // behaviour is direction-aware (see the report: naming vs behaviour).
+    // behavior is direction-aware (see the report: naming vs behavior).
     test('rtl: _left places the panel to the physical RIGHT of the trigger', async ({ page }) => {
         const { t, p } = await open(page, 'rtl', 'left')
         expect(p.x).toBeGreaterThanOrEqual(right(t) - 1)
@@ -195,7 +195,7 @@ test.describe('anchored placement mirrors', () => {
         expect(Math.abs(right(end.p) - right(end.t))).toBeLessThan(NEAR)
     })
 
-    test('rtl: a bare side still centres on the trigger', async ({ page }) => {
+    test('rtl: a bare side still centers on the trigger', async ({ page }) => {
         const { t, p } = await open(page, 'rtl', 'bottom')
         expect(p.y).toBeGreaterThanOrEqual(bottom(t) - 1)
         expect(Math.abs(cx(p) - cx(t))).toBeLessThan(NEAR)
@@ -420,7 +420,7 @@ test.describe('slider paint agrees with the native range direction', () => {
         <span id="accent" style="display:block;width:4px;height:4px;background-color:var(--ori-color-primary)"></span>
     </div>`
 
-    // A channel track (hue / alpha) repaints the FULL width, so its thumb parks at the centre, clear of
+    // A channel track (hue / alpha) repaints the FULL width, so its thumb parks at the center, clear of
     // every sample column.
     const CHANNEL = (modifier: 'hue' | 'alpha', style = '') =>
         `<div class="ori-slider" style="width:300px${style}">
@@ -439,7 +439,7 @@ test.describe('slider paint agrees with the native range direction', () => {
     // Which physical end is PAINTED closest to `color`? A computed-style read of
     // `::-webkit-slider-runnable-track` returns `none` (Chrome does not expose author styles for that
     // shadow pseudo), so this measures the real pixels: screenshot the control, decode it back into a
-    // canvas inside the page, and compare how close each sample column gets to the target colour. A
+    // canvas inside the page, and compare how close each sample column gets to the target color. A
     // whole column is scanned so the read does not depend on where the UA lays the 6px track out
     // inside the 20px control.
     async function nearerEnd(

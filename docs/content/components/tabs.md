@@ -7,9 +7,9 @@ title: Tabs
 An accessible tabs widget with automatic activation. The tablist holds a roving tabindex so
 `Tab` / `Shift+Tab` enter and leave the group as a single keyboard stop; arrow keys move between
 tabs and immediately select them. State is expressed through real ARIA attributes — `aria-selected`
-drives both the active indicator and the label colour; `disabled` is the native button attribute.
+drives both the active indicator and the label color; `disabled` is the native button attribute.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
@@ -20,7 +20,7 @@ A tabs widget is a block class plus single-class token utilities — one class r
 base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Baked default accent is primary; override with ori-color_* to change the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label colour shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
+:class-table{:rows='[{"class":"ori-tabs","type":"Block","description":"Required base class. Root flex container; column layout (horizontal) or row layout (vertical). Baked default accent is primary; override with ori-color_* to change the indicator and ring."},{"class":"ori-tabs_vertical","type":"Modifier","description":"Vertical orientation: row flex layout, column tablist, right side-bar indicator instead of bottom underline."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface — indicator and focus ring accent."},{"class":"ori-tabs__list","type":"Part","description":"The role=tablist container; bottom border in horizontal layout, right border in vertical layout."},{"class":"ori-tabs__tab","type":"Part","description":"A real button with role=tab. Active state via aria-selected=true (indicator scales in, label color shifts). Disabled via native disabled attribute."},{"class":"ori-tabs__panel","type":"Part","description":"A role=tabpanel with tabindex=0 and aria-labelledby its tab. Only the active panel is shown."},{"class":"aria-selected · disabled","type":"State","description":"Real attributes, not classes. aria-selected=true scales the after indicator; disabled dims and blocks."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/tabs.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -352,10 +352,10 @@ Vertical orientation, a non-default color, and named panel slots — a common se
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue component
-render the same attributes and keyboard behaviour.
+render the same attributes and keyboard behavior.
 
 - Full WAI-ARIA Tabs pattern, driven by the headless [`useTabs`](/headless/use-tabs) composable (the
-  shared Vue + Svelte behaviour). `role="tablist"` on the list with `aria-orientation` reflecting the
+  shared with the Svelte and React adapters). `role="tablist"` on the list with `aria-orientation` reflecting the
   `orientation` prop.
 - Each tab is a real `<button role="tab">` with a `useId()`-derived stable id, `aria-selected`
   (`"true"` / `"false"`), `aria-controls` pointing at its panel id, and a **roving tabindex**
@@ -367,7 +367,7 @@ render the same attributes and keyboard behaviour.
 - Disabled tabs are real `<button disabled>` — removed from tab order, not focusable, not selectable,
   and skipped by arrow-key navigation.
 - Focus is always visible: `:focus-visible` on both the tab button and the panel, using
-  `var(--ori-color, currentcolor)` so the ring colour matches the active indicator.
+  `var(--ori-color, currentcolor)` so the ring color matches the active indicator.
 - Tab/panel id pairs are SSR-safe via `useId()`.
 
 | Key                        | Action                                                                                |
@@ -388,7 +388,7 @@ API — its surface is the [classes](#classes) above.
 
 | Prop          | Type                         | Default                      | Description                                                                                                                |
 | ------------- | ---------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                 | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label colour, and the focus ring.           |
+| `color`       | `ThemeColor`                 | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label color, and the focus ring.            |
 | `label`       | `string`                     | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
 | `modelValue`  | `string \| number`           | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |

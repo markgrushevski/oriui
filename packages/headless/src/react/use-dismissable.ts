@@ -4,7 +4,7 @@ import { isTargetOutside } from '../core'
 /**
  * Headless dismiss layer (React) — the shared "close the overlay on an outside interaction" glue for
  * non-platform overlays (Menu, Combobox), the pattern Radix `DismissableLayer` / Floating-UI `useDismiss`
- * standardise; the React twin of the Vue / Svelte `useDismissable`, sharing the pure `isTargetOutside`
+ * standardize; the React twin of the Vue / Svelte `useDismissable`, sharing the pure `isTargetOutside`
  * predicate in `../core/dismiss`. (Popover / Dialog get this free from the native `[popover]` / `<dialog>`
  * top-layer; Escape already lives in the core connects.) While `enabled`, it attaches `document` listeners
  * — `pointerdown` (if `pointerDownOutside`) and/or `focusin` (if `focusOutside`) — and calls `onDismiss()`

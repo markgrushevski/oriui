@@ -10,7 +10,7 @@ no state machine, no positioning engine. Show is `:focus-within` (keyboard) and 
 `@media (hover: hover)` (pointer, without sticking open on touch). The pointer can move onto the bubble,
 and `Escape` hides it without moving focus or the pointer (WCAG 1.4.13).
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

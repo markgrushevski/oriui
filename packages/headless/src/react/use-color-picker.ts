@@ -98,7 +98,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
     /** The hex the field shows — `#rrggbbaa` when alpha is on, else `#rrggbb`. */
     const hex = formatColor(hsva, 'hex', withAlpha)
     // The canonical current color in the EMITTED format — the value a form submits, and the next
-    // onInput/onChange payload. Honours `format` + `alpha`; never empty (a color control always has a value).
+    // onInput/onChange payload. Honors `format` + `alpha`; never empty (a color control always has a value).
     const value = formatColor(hsva, format, withAlpha)
     /** The current color for the preview swatch — carries alpha so a checkerboard shows through. */
     const swatchColor = rgbToHex(rgb, hsva.a, withAlpha)
@@ -221,7 +221,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
             disabled: isDisabled || undefined,
             'aria-label': channel === 'saturation' ? 'Saturation' : 'Brightness',
             'aria-orientation': channel === 'value' ? ('vertical' as const) : undefined,
-            // Announce the axis value AND the resulting opaque color, so the settled colour is spoken too.
+            // Announce the axis value AND the resulting opaque color, so the settled color is spoken too.
             'aria-valuetext': `${pct}%, ${opaqueColor}`,
             onKeyDown: (event: ReactKeyboardEvent<HTMLInputElement>): void => {
                 if ((optsRef.current.disabled ?? false) || !keys.includes(event.key)) return
@@ -260,7 +260,7 @@ export function useColorPicker(options: UseColorPickerOptions) {
         setActivePresetState(i)
     }, [])
 
-    // Seed the roving stop on the selected swatch and let it follow external colour changes (Vue's immediate
+    // Seed the roving stop on the selected swatch and let it follow external color changes (Vue's immediate
     // `watch(selectedIndex)`).
     useEffect(() => {
         if (selectedIndex >= 0) setActivePreset(selectedIndex)

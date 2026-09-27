@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { OriColorPicker } from '@oriui/vue'
 
-// A mid-grey start so a drag to the top-right corner (max saturation + brightness) clearly changes the
+// A mid-gray start so a drag to the top-right corner (max saturation + brightness) clearly changes the
 // color. Count live updates (update:modelValue) and commits (change) alongside the model so the spec can
 // prove a pointer drag STREAMS live yet commits exactly ONCE on release — the invariant happy-dom's
 // synthetic events can't exercise (real pointer capture + drag geometry). v-model and the extra

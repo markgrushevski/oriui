@@ -6,11 +6,11 @@
 
 **Toast: an alignment axis, and the queue stops overriding the component's own `closable` default.**
 
-`OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centred alignment
-centres the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
-room on both sides. Done naively, `text-align: center` centres the text on the space the button leaves
-behind, which lands visibly off-centre — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
-measures the rendered centres in real Chromium, in both writing directions, with a counter-example test that
+`OriToaster` and `OriToast` gain `align` (`'start'` — today's look — or `'center'`). Centered alignment
+centers the body on the **card**: the dismiss button leaves the flex flow and the card reserves equal inline
+room on both sides. Done naively, `text-align: center` centers the text on the space the button leaves
+behind, which lands visibly off-center — that asymmetry is the reported defect, and `e2e/toast-align.spec.ts`
+measures the rendered centers in real Chromium, in both writing directions, with a counter-example test that
 fails if the compensation is ever removed. A leading icon deliberately stays in flow.
 
 `closable` is no longer stamped onto every queued toast. `OriToast` declares `closable = false`, but the
@@ -20,4 +20,4 @@ worth keeping: a toast with `duration: 0` never auto-dismisses, so it opts itsel
 impossible to remove.
 
 Migration: if you relied on every `useToast()` toast having a close button, pass `closable: true` (or set it
-once at your call sites). The behaviour change is visible, not silent.
+once at your call sites). The behavior change is visible, not silent.

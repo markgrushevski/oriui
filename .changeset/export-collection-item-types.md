@@ -10,7 +10,7 @@ re-exported from `@oriui/vue`, mirroring the `ComboboxItem` re-export the combob
 Type-only additions: no runtime, no output and no shape changes.
 
 `TabItem` existed under one name in both packages with two different shapes — `@oriui/headless`'s
-behaviour-only `{ value; disabled? }` and the styled component's `{ value; label; disabled? }`. They
+behavior-only `{ value; disabled? }` and the styled component's `{ value; label; disabled? }`. They
 describe the same thing (`<OriTabs>` hands its `tabs` array straight to `useTabs`), so the styled one
 now **derives** from the headless one — `interface TabItem extends HeadlessTabItem { label: string }`
 — rather than redeclaring it. The resolved shape is identical to before; what changes is that the two

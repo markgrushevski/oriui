@@ -309,7 +309,7 @@ already provides.
   for WCAG contrast over it.
 - **Presets are a single-select `role="listbox"`** (`presetGroupProps`) with **roving tabindex** — one tab
   stop, arrow keys move real DOM focus (`onPresetKeydown`, wrapping), `aria-selected` marks the active
-  color. Each chip is a `role="option"` button labelled by its color.
+  color. Each chip is a `role="option"` button labeled by its color.
 - **`label`** names the whole control (`role="group"`); **`disabled`** blocks the area drag / keyboard and
   disables the channel inputs.
 

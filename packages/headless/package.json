@@ -1,7 +1,7 @@
 {
     "name": "@oriui/headless",
     "version": "1.0.0-rc.19",
-    "description": "Framework-agnostic headless engine for oriUI + adapters (Vue at ./vue, Svelte at ./svelte, React at ./react) — tiny state machines + prop-getters behind a swappable contract",
+    "description": "Headless behavior for oriUI: focus, keyboard and ARIA. Vue adapter; Svelte and React adapters in development.",
     "license": "MIT",
     "repository": {
         "type": "git",

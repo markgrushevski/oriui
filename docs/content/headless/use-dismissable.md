@@ -5,7 +5,7 @@ title: useDismissable
 # useDismissable
 
 A headless **dismiss layer** — the "close the overlay on an outside interaction" glue a non-platform
-overlay needs, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardise. While
+overlay needs, the pattern Radix `DismissableLayer` / Floating-UI `useDismiss` standardize. While
 `enabled`, it attaches `document` listeners and calls `onDismiss()` when an interaction lands **outside**
 the overlay's own elements. Each overlay picks the strategy that fits it:
 

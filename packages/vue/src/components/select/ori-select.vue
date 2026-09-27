@@ -55,7 +55,7 @@ const {
 const model = defineModel<string | number>()
 
 // When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
-// label / hint / error; standalone the control wires its own (behaviour unchanged).
+// label / hint / error; standalone the control wires its own (behavior unchanged).
 const field = useOriField()
 const inField = Boolean(field)
 

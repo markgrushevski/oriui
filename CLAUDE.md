@@ -4,15 +4,8 @@ Guidance for anyone — human or agent — changing this repository.
 
 ## What this is
 
-**oriUI** (織り, "weaving") — a layered UI library: _prototype fast, scale without rewriting_. Three packages,
-each usable alone, woven around one set of design tokens:
-
-- `@oriui/css` — tokens, `.ori-*` classes and one stylesheet per component; no JavaScript.
-- `@oriui/headless` — a framework-agnostic behaviour core (focus, keyboard, ARIA) with Vue, Svelte and React
-  adapters behind a swappable `OriHeadless` contract.
-- `@oriui/vue` — styled Vue components: the two above, wired together.
-
-Theming is zero-runtime (CSS custom properties), with no Tailwind dependency.
+**oriUI** (織り): what it is and who it is for is in [README.md](README.md); this file is how to change it.
+The packages are listed under [Structure](#structure).
 
 ## Where things are written
 
@@ -41,6 +34,7 @@ One fact, one home: write in the file whose question it answers, and link instea
 - **Changesets are public** — they become the npm CHANGELOG. What changed, what breaks, how to migrate; no
   internal ids, repo-doc references or process narrative.
 - **Docs speak as the project** ("we"), for other developers.
+- **American English** everywhere, code and prose: color, behavior, center, gray, labeled.
 
 ## Working modes
 
@@ -62,8 +56,8 @@ One fact, one home: write in the file whose question it answers, and link instea
 - `npm run lint:all` — prettier + stylelint + eslint with `--fix`; `lint:ci` is the check-only gate
 - `npm run gate` — everything CI runs, in one script (the release workflow runs it too)
 
-Tests in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe) cover behaviour, a11y, the headless contract
-and token contrast. Anything about layout, pixels or composited colour goes to `e2e/`: happy-dom has no layout
+Tests in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe) cover behavior, a11y, the headless contract
+and token contrast. Anything about layout, pixels or composited color goes to `e2e/`: happy-dom has no layout
 engine and cannot evaluate `color-mix`. Type declarations come from `vue-tsc`, and the build fails on a type
 error.
 
@@ -72,7 +66,7 @@ error.
 ```
 packages/
   css/        @oriui/css — tokens, utilities, src/components/<name>.css (one per component)
-  headless/   @oriui/headless — src/core (engine) + src/vue, src/svelte, src/react (adapters)
+  headless/   @oriui/headless — src/core (engine) + src/vue (adapter); src/svelte, src/react (in development)
   vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/types.ts
 docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
 tests/  e2e/  unit + a11y suite; real-browser suite
@@ -106,7 +100,7 @@ and SMACSS property order. The rules below are the intent tooling cannot check.
   alias. A prop value becomes a class name, so renaming a value renames a public class.
 - Specificity stays flat (`:where()`, `@layer`), so consumer overrides always win.
 - **State is an attribute, not a class**: real `disabled`, `aria-busy`, `aria-pressed`, `data-*`.
-- Derive state colours with `color-mix(in srgb, var(--ori-color), …)`; put hover inside `@media (hover: hover)`.
+- Derive state colors with `color-mix(in srgb, var(--ori-color), …)`; put hover inside `@media (hover: hover)`.
 - Zero runtime: nothing JS computes what a CSS variable can resolve. The cost to watch is CSS size.
 
 ### Commits

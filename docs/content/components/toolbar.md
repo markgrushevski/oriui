@@ -10,11 +10,11 @@ components make it up — `OriToolbar` (the root, `role="toolbar"`), `OriToolbar
 composes `OriButton`), `OriToolbarSeparator` (a perpendicular divider), and a paired
 `OriToolbarToggleGroup` / `OriToolbarToggleItem` for a segmented single- or multi-select toggle.
 Unlike the data-driven `OriMenu` (an `items` array plus a machine), a toolbar is **compositional** —
-you assemble it from slotted components in whatever order and combination you need — so the behaviour
+you assemble it from slotted components in whatever order and combination you need — so the behavior
 underneath, [`useToolbar`](#headless-usetoolbar) from `@oriui/headless`, is a provide/inject
 roving-focus context rather than a state machine over an array.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default. Because the roving-tabindex focus movement is real
@@ -170,7 +170,7 @@ matching the WAI-ARIA APG reference toolbar. Set it to `false` to stop at the en
 #html
 
 ```html
-<!-- Structure only — loop is a JavaScript-only behaviour flag; no class or attribute marks it. -->
+<!-- Structure only — loop is a JavaScript-only behavior flag; no class or attribute marks it. -->
 <div class="ori-toolbar" role="toolbar" aria-label="Stops at the ends">…</div>
 ```
 
@@ -647,7 +647,7 @@ const align = ref('left')
 ## Accessibility
 
 The accessibility contract holds across every layer — the standalone classes and the Vue components
-render the same attributes and keyboard behaviour, though the roving-tabindex focus movement itself
+render the same attributes and keyboard behavior, though the roving-tabindex focus movement itself
 is JavaScript (there is no CSS-only affordance for it).
 
 - `role="toolbar"` needs a **required** accessible name — `label` (→ `aria-label`) or your own
@@ -688,21 +688,21 @@ is JavaScript (there is no CSS-only affordance for it).
   `role=radiogroup` / `menu` / `listbox` / `combobox` / `textbox` widget placed inside the bar — is
   never hijacked; the toolbar's keydown handler yields to it entirely.
 
-| Key                                        | Action                                                                                                                                                                                         |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Tab`                                      | Moves focus into the toolbar (landing on the roving-active item) or past it — the whole toolbar is a single stop.                                                                              |
-| `Shift+Tab`                                | Moves focus out of the toolbar, backwards, as a single stop.                                                                                                                                   |
-| `ArrowRight` / `ArrowLeft`                 | Horizontal toolbars: moves the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped in RTL.                                                            |
-| `ArrowDown` / `ArrowUp`                    | Vertical toolbars: moves the roving stop to the next / previous item (wraps when `loop`).                                                                                                      |
-| `Home` / `End`                             | Moves the roving stop to the first / last item, in either orientation.                                                                                                                         |
-| `Enter` / `Space`                          | Activates the focused button (native); toggles a toggle item's selection; no-ops on an `aria-disabled` item.                                                                                   |
-| Arrow keys, focus inside a composite child | Not intercepted — an `input`, `textarea`, `select`, `[contenteditable]`, or an element with role slider/spinbutton/radiogroup/menu/listbox/combobox/textbox keeps its own arrow-key behaviour. |
+| Key                                        | Action                                                                                                                                                                                        |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Tab`                                      | Moves focus into the toolbar (landing on the roving-active item) or past it — the whole toolbar is a single stop.                                                                             |
+| `Shift+Tab`                                | Moves focus out of the toolbar, backwards, as a single stop.                                                                                                                                  |
+| `ArrowRight` / `ArrowLeft`                 | Horizontal toolbars: moves the roving stop to the next / previous item (wraps first⇄last when `loop`, the default). Swapped in RTL.                                                           |
+| `ArrowDown` / `ArrowUp`                    | Vertical toolbars: moves the roving stop to the next / previous item (wraps when `loop`).                                                                                                     |
+| `Home` / `End`                             | Moves the roving stop to the first / last item, in either orientation.                                                                                                                        |
+| `Enter` / `Space`                          | Activates the focused button (native); toggles a toggle item's selection; no-ops on an `aria-disabled` item.                                                                                  |
+| Arrow keys, focus inside a composite child | Not intercepted — an `input`, `textarea`, `select`, `[contenteditable]`, or an element with role slider/spinbutton/radiogroup/menu/listbox/combobox/textbox keeps its own arrow-key behavior. |
 
 ## Framework API
 
 The props, events, and slots of the **Vue** components — five of them, composed together. The
 standalone CSS layer has no component API — its surface is the [classes](#classes) above, and the
-roving-tabindex keyboard behaviour is JavaScript you would need to author yourself, or get from
+roving-tabindex keyboard behavior is JavaScript you would need to author yourself, or get from
 [`useToolbar`](#headless-usetoolbar) in `@oriui/headless/vue`.
 
 ### OriToolbar
@@ -849,7 +849,7 @@ never omitted.
 `useToolbarItem` / `useToolbarOrientation` / `useToolbarToggleGroup` / `useToolbarToggleItem`) from
 `@oriui/headless/vue` — the same roving-tabindex engine, so you can build a fully custom-styled
 toolbar UI on the same keyboard contract. Unlike `useDialog` / `useCombobox` / `useMenu`, `useToolbar`
-does not go through the swappable `OriHeadless` adapter contract — a toolbar's behaviour is DOM order
+does not go through the swappable `OriHeadless` adapter contract — a toolbar's behavior is DOM order
 plus Vue `provide` / `inject` composition, not a state machine, so there is nothing to swap.
 
 ```vue
@@ -896,4 +896,4 @@ component source directly (`packages/vue/src/components/toolbar/`).
 The pure index/key math — `rovingIntent(key, orientation, dir)` and
 `resolveRovingIndex(intent, from, count, loop)` — lives in the framework-agnostic core
 (`@oriui/headless`, no framework import) and is reusable for any roving-tabindex widget; it is the
-same helper a future Svelte adapter would share.
+same helper the Svelte and React adapters share.

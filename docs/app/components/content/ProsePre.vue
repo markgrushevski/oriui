@@ -56,7 +56,7 @@ async function copy() {
 <style>
 .ori-code {
     /* Light — pairs with the github-light Shiki tokens (Nuxt Content emits dual
-       github-light/github-dark themes and switches token colours on html.dark). */
+       github-light/github-dark themes and switches token colors on html.dark). */
     --code-bg: #f6f8fa;
     --code-fg: #1f2328;
     --code-bar: #ebeef2;
@@ -126,7 +126,7 @@ async function copy() {
     color: #16a34a;
 }
 
-/* The inner Shiki <pre> fills the card with theme-aware code colours. */
+/* The inner Shiki <pre> fills the card with theme-aware code colors. */
 .prose .ori-code pre {
     margin: 0;
     padding: 16px;

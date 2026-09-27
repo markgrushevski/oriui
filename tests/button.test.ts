@@ -185,7 +185,7 @@ describe('OriButton', () => {
         expect(wrapper.classes()).not.toContain('ori-button_icon')
     })
 
-    it('an icon + text button is a labelled button, NOT an icon square', () => {
+    it('an icon + text button is a labeled button, NOT an icon square', () => {
         const wrapper = mount(OriButton, { props: { icon: 'M0 0', label: 'Save' } })
 
         expect(wrapper.classes()).not.toContain('ori-button_icon')
@@ -206,7 +206,7 @@ describe('OriButton', () => {
  *  1. The look must not be gated behind a `.ori-toolbar` ancestor again — that is what left every
  *     toggle button outside a toolbar with no pressed affordance.
  *  2. The obvious "just ungate it" edit — one flat `.ori-button[aria-pressed='true'] {
- *     background-color: <neutral> }` — silently strips the role colour off every solid / soft toggle.
+ *     background-color: <neutral> }` — silently strips the role color off every solid / soft toggle.
  *     A literal background beats `.ori-button`'s own `background-color:
  *     var(--ori-variant-bg-color)` on specificity, so the pressed tint may only be applied to the
  *     variants whose background is `transparent`.

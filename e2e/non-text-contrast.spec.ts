@@ -12,9 +12,9 @@ import a11yPlugin from 'colord/plugins/a11y'
  * The edges are derived with `color-mix` from the ambient ink, so a skin or theme token can move them
  * without touching the component CSS — only a measurement in a real engine catches that.
  *
- * Adding a cell: give the element an id, push it into PARTS, and say what its boundary colour is. The
+ * Adding a cell: give the element an id, push it into PARTS, and say what its boundary color is. The
  * measurement composites the boundary over the opaque surface on a 1x1 canvas, exactly as the text
- * probe does — `color-mix` only resolves to a concrete colour in a real engine.
+ * probe does — `color-mix` only resolves to a concrete color in a real engine.
  */
 extend([a11yPlugin])
 
@@ -50,7 +50,7 @@ test('every unchecked control boundary clears 3:1 in all skins and both themes',
                         else html.removeAttribute('data-ori-skin')
                         html.className = `ori-theme_${theme}`
 
-                        // The engine is the only authority on `color-mix` — stack the colours on a 1x1
+                        // The engine is the only authority on `color-mix` — stack the colors on a 1x1
                         // canvas and read the composited pixel back, the same technique the text probe uses.
                         const cv = document.createElement('canvas')
                         cv.width = cv.height = 1

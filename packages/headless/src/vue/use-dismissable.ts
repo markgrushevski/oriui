@@ -4,7 +4,7 @@ import { isTargetOutside } from '../core'
 /**
  * Headless dismiss layer (Vue) — the shared "close the overlay on an outside interaction" glue for
  * non-platform overlays (Menu, Combobox), the pattern Radix `DismissableLayer` / Floating-UI `useDismiss`
- * standardise. (Popover / Dialog get this free from the native `[popover]` / `<dialog>` top-layer; Escape
+ * standardize. (Popover / Dialog get this free from the native `[popover]` / `<dialog>` top-layer; Escape
  * already lives in the core connects.) While `enabled`, it attaches `document` listeners — `pointerdown`
  * (if `pointerDownOutside`) and/or `focusin` (if `focusOutside`) — and calls `onDismiss()` when the event
  * lands OUTSIDE every element in `elements()` (via `isTargetOutside`). Each overlay picks the strategy that

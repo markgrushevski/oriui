@@ -9,7 +9,7 @@ urgent `danger` / `warning` render `role="alert"` (assertive), everything else `
 so a non-urgent banner isn't announced assertively (override with the `live` prop). It supports an
 optional icon, a title, body text, an actions row, and a dismiss button.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.

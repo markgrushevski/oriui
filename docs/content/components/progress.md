@@ -9,7 +9,7 @@ known `value` out of a `max`) and an indeterminate mode (animated sweep) for tas
 measurable progress. State is expressed through ARIA attributes — `aria-valuenow` is omitted when
 indeterminate, giving screen readers the correct cue automatically.
 
-The examples are organised by **layer**: the [class reference](#classes) is the standalone
+The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / Svelte /
 plain-HTML usage), **Vue**; HTML is the default.
