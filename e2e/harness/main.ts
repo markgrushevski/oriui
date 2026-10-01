@@ -8,6 +8,7 @@ import MenuView from './views/MenuView.vue'
 import PerfCollectionsView from './views/PerfCollectionsView.vue'
 import RtlKeysView from './views/RtlKeysView.vue'
 import SegmentedView from './views/SegmentedView.vue'
+import TableView from './views/TableView.vue'
 import TabsView from './views/TabsView.vue'
 import ToastView from './views/ToastView.vue'
 import ToolbarView from './views/ToolbarView.vue'
@@ -28,6 +29,7 @@ const views: Record<string, Component> = {
     perf: PerfCollectionsView,
     'rtl-keys': RtlKeysView,
     segmented: SegmentedView,
+    table: TableView,
     tabs: TabsView,
     toast: ToastView,
     toolbar: ToolbarView,

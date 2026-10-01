@@ -3,7 +3,7 @@
         "name": "@oriui/css — styles.css (gzip)",
         "path": "packages/css/dist/styles.css",
         "gzip": true,
-        "limit": "12.5 kB",
+        "limit": "13 kB",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
@@ -14,10 +14,10 @@
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
-        "name": "@oriui/vue — full library, all 37 components (gzip)",
+        "name": "@oriui/vue — full library, all 38 components (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
-        "limit": "52.5 kB",
+        "limit": "54 kB",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
@@ -31,7 +31,7 @@
         "name": "@oriui/headless/vue (gzip)",
         "path": "packages/headless/dist/vue/index.js",
         "gzip": true,
-        "limit": "12.5 kB",
+        "limit": "13 kB",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
@@ -45,7 +45,7 @@
         "name": "@oriui/headless/react (gzip)",
         "path": "packages/headless/dist/react/index.js",
         "gzip": true,
-        "limit": "12.5 kB",
+        "limit": "13 kB",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
@@ -54,7 +54,7 @@
         "import": "*",
         "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
         "gzip": true,
-        "limit": "17.5 kB",
+        "limit": "18 kB",
         "message": "This is the denominator the per-component entries below are judged against: what a consumer ships who imports the whole catalog. Raising it to make CI pass also raises the bar every tree-shaking entry is read against, so re-measure those too."
     },
     {

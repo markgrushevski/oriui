@@ -52,10 +52,10 @@ const { dlg, bindings, hasTitle } = useDialogShell(
 <template>
     <slot name="trigger" :props="dlg.triggerProps.value" :open="dlg.open.value"></slot>
 
-    <dialog ref="dialog" v-bind="bindings" class="ori-dialog">
+    <dialog ref="dialog" v-bind="bindings()" class="ori-dialog">
         <div class="ori-dialog__content">
             <header class="ori-dialog__header">
-                <h2 v-if="hasTitle" v-bind="dlg.titleProps.value" class="ori-dialog__title">
+                <h2 v-if="hasTitle()" v-bind="dlg.titleProps.value" class="ori-dialog__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
                 <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-dialog__close" aria-label="Close">

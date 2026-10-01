@@ -71,23 +71,24 @@ export function useDialogShell(
     // only when there is body content and the caller set none.
     const slots = useSlots()
     const attrs = useAttrs()
-    const hasTitle = computed(() => Boolean(p.value.title) || Boolean(slots.title))
-    const describedBy = computed(() =>
+    // Functions, not computeds: `useSlots()` is not reactive, so a computed would cache a slot's absence and
+    // miss a #title or a body that appears later. They run on every render instead.
+    const hasTitle = () => Boolean(p.value.title) || Boolean(slots.title)
+    const describedBy = () =>
         slots.default && !attrs['aria-describedby'] ? (dlg.descriptionProps.value.id as string) : undefined
-    )
-    const bindings = computed(() => {
+    const bindings = () => {
         const { 'aria-labelledby': labelledBy, ...own } = dlg.dialogProps.value
         return mergeProps(
             attrs,
             own,
-            hasTitle.value ? { 'aria-labelledby': labelledBy } : {},
-            describedBy.value ? { 'aria-describedby': describedBy.value } : {}
+            hasTitle() ? { 'aria-labelledby': labelledBy } : {},
+            describedBy() ? { 'aria-describedby': describedBy() } : {}
         )
-    })
+    }
 
     if (import.meta.env.DEV) {
         watchPostEffect(() => {
-            if (dlg.open.value && !hasTitle.value && !attrs['aria-label'] && !attrs['aria-labelledby']) {
+            if (dlg.open.value && !hasTitle() && !attrs['aria-label'] && !attrs['aria-labelledby']) {
                 console.warn(
                     `[${component}] opened without an accessible name — pass a \`title\`, a #title slot, or an \`aria-label\`.`
                 )

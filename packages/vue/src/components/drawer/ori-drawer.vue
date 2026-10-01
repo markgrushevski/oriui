@@ -115,12 +115,12 @@ watch(
 
     <dialog
         ref="drawer"
-        v-bind="{ ...bindings, ...(modal ? {} : { popover: 'manual' }) }"
+        v-bind="{ ...bindings(), ...(modal ? {} : { popover: 'manual' }) }"
         :class="['ori-drawer', `ori-drawer_${side}`]"
     >
         <div class="ori-drawer__content">
             <header class="ori-drawer__header">
-                <h2 v-if="hasTitle" v-bind="dlg.titleProps.value" class="ori-drawer__title">
+                <h2 v-if="hasTitle()" v-bind="dlg.titleProps.value" class="ori-drawer__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
                 <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-drawer__close" aria-label="Close">

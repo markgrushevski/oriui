@@ -568,7 +568,8 @@ a:not(:where(.ori-button, .ori-list__row)) {
     color: inherit;
 }
 
-.prose table {
+/* Prose tables only: an unlayered rule here would beat oriUI's layered table styles in the live demos. */
+.prose table:not(.ori-table) {
     width: 100%;
     margin: 0 0 16px;
 
@@ -577,8 +578,7 @@ a:not(:where(.ori-button, .ori-list__row)) {
     border-collapse: collapse;
 }
 
-.prose th,
-.prose td {
+.prose :where(table:not(.ori-table)) :is(th, td) {
     padding: 8px 12px;
 
     border: 1px solid color-mix(in srgb, var(--ori-color-on-background) 12%, transparent);
@@ -586,7 +586,7 @@ a:not(:where(.ori-button, .ori-list__row)) {
     text-align: left;
 }
 
-.prose th {
+.prose :where(table:not(.ori-table)) th {
     background: color-mix(in srgb, var(--ori-color-on-background) 4%, transparent);
 
     font-weight: 700;

@@ -1,0 +1,127 @@
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-table, .ori-table *, .ori-table-scroll),
+    :where(.ori-table, .ori-table *, .ori-table-scroll)::before,
+    :where(.ori-table, .ori-table *, .ori-table-scroll)::after {
+        box-sizing: border-box;
+    }
+
+    /* A real <table>, styled: header row, row rules, start-aligned text. Modifiers add stripes, a hover
+       tint, a sticky header and density. Numbers go in `.ori-table__num` cells. The current row is marked
+       with `aria-current` (not `aria-selected`, which a plain table row does not take). */
+    :where(.ori-table) {
+        --ori-color: var(--ori-color-primary);
+        --ori-table-cell-padding: 0.6em 0.75em;
+        --ori-table-header-bg: var(--ori-color-surface);
+    }
+
+    .ori-table {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        font-variant-numeric: lining-nums;
+    }
+
+    .ori-table > caption {
+        padding-bottom: 0.5em;
+
+        font-weight: 600;
+        text-align: start;
+    }
+
+    .ori-table_caption-hidden > caption {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+
+        clip-path: inset(50%);
+
+        white-space: nowrap;
+    }
+
+    .ori-table :is(th, td) {
+        padding: var(--ori-table-cell-padding);
+
+        text-align: start;
+        vertical-align: middle;
+    }
+
+    .ori-table > thead th {
+        border-bottom: 1px solid var(--ori-color-outline);
+
+        font-size: 0.875em;
+        font-weight: 600;
+    }
+
+    .ori-table > tbody > tr + tr,
+    .ori-table > tfoot > tr {
+        border-top: 1px solid color-mix(in srgb, var(--ori-color-outline) 60%, transparent);
+    }
+
+    .ori-table_striped > tbody > tr:nth-child(even) {
+        background: color-mix(in srgb, var(--ori-color-on-surface) 4%, transparent);
+    }
+
+    @media (hover: hover) {
+        .ori-table_hover > tbody > tr:hover {
+            background: color-mix(in srgb, var(--ori-color-on-surface) 7%, transparent);
+        }
+    }
+
+    .ori-table > tbody > tr[aria-current]:not([aria-current='false']) {
+        background: color-mix(in srgb, var(--ori-color) 14%, transparent);
+    }
+
+    /* Right-aligned (inline-end) figures of equal width, so a column of numbers lines up. */
+    .ori-table .ori-table__num {
+        font-variant-numeric: tabular-nums;
+        text-align: end;
+    }
+
+    .ori-table_md {
+        --ori-table-cell-padding: 0.6em 0.75em;
+    }
+
+    .ori-table_sm {
+        --ori-table-cell-padding: 0.35em 0.5em;
+    }
+
+    .ori-table_lg {
+        --ori-table-cell-padding: 0.9em 1em;
+    }
+
+    /* The header stays at the top of the scroll box while the rows scroll under it. */
+    /* The header cells are opaque so rows do not show through (`--ori-table-header-bg`, the surface by
+       default), and the rule under them is a shadow: with collapsed borders the border stays with the grid
+       and would scroll away. */
+    .ori-table_sticky-header > thead th {
+        position: sticky;
+        z-index: 1;
+        top: 0;
+
+        background: var(--ori-table-header-bg);
+        box-shadow: inset 0 -1px 0 var(--ori-color-outline);
+    }
+
+    /* The scroll box a wide table sits in, so a phone scrolls the table instead of the page. It needs a
+       name and a tab stop when it scrolls (role="region", aria-labelledby the caption, tabindex="0"), so
+       keyboard users can scroll it too. */
+    .ori-table-scroll {
+        max-width: 100%;
+        overflow: auto;
+
+        overscroll-behavior-x: contain;
+    }
+
+    .ori-table-scroll:focus-visible {
+        outline: 2px solid var(--ori-color-primary);
+        outline-offset: 2px;
+    }
+}

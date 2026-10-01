@@ -90,6 +90,7 @@ describe('@oriui/css à-la-carte entry points', () => {
             'stack',
             'surface',
             'switch',
+            'table',
             'tabs',
             'tag',
             'textarea',
