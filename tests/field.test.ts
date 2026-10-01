@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { defineComponent, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
     OriField,
@@ -453,6 +454,31 @@ describe('OriField', () => {
             { attachTo: document.body }
         )
         await expectNoA11yViolations(wrapper.element)
+        wrapper.unmount()
+    })
+})
+
+describe('OriField — slots that appear after mount', () => {
+    it('an #error slot added later marks the control invalid and describes it', async () => {
+        const failed = ref(false)
+        const Host = defineComponent({
+            components: { OriField, OriInput },
+            setup: () => ({ failed }),
+            template: `<OriField label="Email" hint="We never share it">
+                <OriInput />
+                <template v-if="failed" #error>Enter a valid email</template>
+            </OriField>`
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        const input = () => wrapper.find('input')
+        expect(input().attributes('aria-invalid')).toBeUndefined()
+        expect(input().attributes('aria-describedby')).toMatch(/-hint$/)
+
+        failed.value = true
+        await nextTick()
+        expect(wrapper.find('.ori-field__error').exists()).toBe(true)
+        expect(input().attributes('aria-invalid')).toBe('true')
+        expect(input().attributes('aria-describedby')).toMatch(/-error$/)
         wrapper.unmount()
     })
 })

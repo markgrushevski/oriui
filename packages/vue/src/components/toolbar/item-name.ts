@@ -1,4 +1,5 @@
-import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch, type ComponentPublicInstance, type Ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type ComponentPublicInstance, type Ref } from 'vue'
+import { useSlotPresence } from '../field/slot-presence'
 
 interface ItemNameProps {
     ariaLabel?: string
@@ -16,11 +17,11 @@ export function useItemName(
     button: Readonly<Ref<ComponentPublicInstance | null>>,
     component: string
 ) {
-    const slots = useSlots()
+    const slotted = useSlotPresence('default')
     // Until the first measurement (and during SSR) a filled slot is assumed to hold text.
     const slotText = ref(true)
 
-    const visible = () => Boolean(props().label) || (Boolean(slots.default) && slotText.value)
+    const visible = () => Boolean(props().label) || (slotted.default && slotText.value)
     const ariaLabel = computed(() => props().ariaLabel ?? (visible() ? undefined : props().tooltip))
     // The tooltip describes the item only when something else names it; otherwise name == description.
     const describedBy = (bubbleId: string) => (props().ariaLabel || visible() ? bubbleId : undefined)
