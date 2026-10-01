@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, provide, useId, useSlots } from 'vue'
+import { computed, provide, useId } from 'vue'
 import type { ActionSize } from '../../types'
 import { oriFieldKey } from './context'
+import { useSlotPresence } from './slot-presence'
 
 // OriField — the shared form-field shell: one source of truth for the label / hint / error / required
 // a11y contract the text controls (OriInput, OriSelect, OriTextarea) otherwise each wire by hand. It
@@ -45,10 +46,10 @@ const hintId = computed(() => `${fieldId.value}-hint`)
 const errorId = computed(() => `${fieldId.value}-error`)
 // error / hint can come from a prop OR a slot; the a11y wiring must track whichever actually renders
 // a `<p>` (the template renders error/hint on `prop || $slots.<name>`), else aria-describedby dangles.
-const slots = useSlots()
-const hasError = computed(() => Boolean(error) || Boolean(slots.error))
-const hasHint = computed(() => Boolean(hint) || Boolean(slots.hint))
-const hasLabel = computed(() => Boolean(label) || Boolean(slots.label))
+const slotted = useSlotPresence('error', 'hint', 'label')
+const hasError = computed(() => Boolean(error) || slotted.error)
+const hasHint = computed(() => Boolean(hint) || slotted.hint)
+const hasLabel = computed(() => Boolean(label) || slotted.label)
 const isInvalid = computed(() => invalid || hasError.value)
 // Only expose a labelId when a label actually renders (mirrors describedBy) — else a group/composite
 // control's aria-labelledby would dangle at a non-existent element.

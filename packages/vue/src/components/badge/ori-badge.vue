@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, useSlots } from 'vue'
+import { computed } from 'vue'
 import type { RadiusSize, ThemeColor, Variant } from '../../types'
+import { useSlotPresence } from '../field/slot-presence'
 
 // OriBadge — a small status / count indicator. Two modes: standalone inline (no default slot), or
 // floating over wrapped content (default slot + `floating`). The badge surface rides the shared
@@ -44,14 +45,14 @@ const displayValue = computed(() => {
     return content
 })
 
-const slots = useSlots()
+const slotted = useSlotPresence('content')
 
 // A pure dot with no label carries no information for assistive tech — hide it. An empty non-dot
 // badge (no label and nothing to render) is likewise an unnamed empty element, so hide it too.
 // Anything else is either named (label), has visible text content, or carries a #content slot.
 // The #content slot only renders when NOT a dot, so a dot stays decorative regardless of it.
 const decorative = computed(
-    () => !label && (dot || ((displayValue.value === undefined || displayValue.value === '') && !slots.content))
+    () => !label && (dot || ((displayValue.value === undefined || displayValue.value === '') && !slotted.content))
 )
 </script>
 

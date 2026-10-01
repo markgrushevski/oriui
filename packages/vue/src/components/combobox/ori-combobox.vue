@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed, mergeProps, ref, useAttrs, useId, useSlots, watch, watchEffect } from 'vue'
+import { computed, mergeProps, ref, useAttrs, useId, watch, watchEffect } from 'vue'
 import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 import { setTopLayer } from '../popover/top-layer'
+import { useSlotPresence } from '../field/slot-presence'
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
@@ -117,11 +118,11 @@ watch(
 // hint / error live in this SFC (the machine doesn't know about validation); wire aria-describedby +
 // aria-invalid onto the headless input, and label the listbox only when a visible label exists. Inside a
 // field, the field owns the id / label / hint / error / required / invalid / size wiring instead.
-const slots = useSlots()
+const slotted = useSlotPresence('label')
 const ownInputId = computed(() => inputProps.value.id as string)
 const inputElId = computed(() => field?.id.value ?? ownInputId.value)
 const labelId = computed(() => labelProps.value.id as string)
-const hasLabel = computed(() => Boolean(label) || Boolean(slots.label))
+const hasLabel = computed(() => Boolean(label) || slotted.label)
 const listboxLabelledBy = computed(() => (field ? field.labelId.value : hasLabel.value ? labelId.value : undefined))
 const hintId = computed(() => `${ownInputId.value}-hint`)
 const errorId = computed(() => `${ownInputId.value}-error`)

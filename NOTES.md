@@ -499,8 +499,10 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   template.** OriField renders its error/hint `<p>` on `prop || $slots.x`, but the `isInvalid` /
   `describedBy` computeds first tracked only the props — so a slot-only `#error` left `aria-invalid` /
   `aria-describedby` unset, and `#error`-slot + `hint`-prop pointed `aria-describedby` at a hint `<p>` the
-  error's `v-else-if` suppressed (a **dangling** describedby, which REVIEW.md forbids). Fix: fold
-  `useSlots()` into the computeds — `hasError = error || slots.error`, `hasHint = hint || slots.hint`.
+  error's `v-else-if` suppressed (a **dangling** describedby, which REVIEW.md forbids). Fold the slot into
+  the derived state — but not by reading `useSlots()` in a computed: slots are not reactive, so the
+  computed caches the slot's absence and misses a `<template v-if #error>` that appears later. Read slot
+  presence through `useSlotPresence` (field/slot-presence.ts), or in a function called from the render.
 - **OriBadge's `decorative` (aria-hidden) guard must include `!$slots.content`, GATED ON non-dot.** A
   slotted glyph with no `content`/`label` prop would otherwise be aria-hidden and dropped from AT — but
   the `#content` slot only renders when `!dot`, so the guard is
