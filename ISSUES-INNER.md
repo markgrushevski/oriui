@@ -15,13 +15,4 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
 
 ---
 
-## ORI-I-100 — OriField's label points `for` at nothing when it wraps a group
-
-`confirmed`
-
-- **Where:** `OriField` renders `<label for="<field id>">`, and a single control (input, select, textarea)
-  takes that id. A group — `OriRadioGroup`, `OriSegmentedControl` — takes none: it is named through
-  `aria-labelledby` instead, so the name is right, but the label's `for` points at no element and a click
-  on the label does nothing.
-- **Fix:** let a group tell the field it is one (the field context already carries `labelId` for it), and
-  render the label without `for` then.
+Nothing is open right now.

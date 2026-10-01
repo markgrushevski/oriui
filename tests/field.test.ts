@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
     OriField,
@@ -479,6 +479,28 @@ describe('OriField — slots that appear after mount', () => {
         expect(wrapper.find('.ori-field__error').exists()).toBe(true)
         expect(input().attributes('aria-invalid')).toBe('true')
         expect(input().attributes('aria-describedby')).toMatch(/-error$/)
+        wrapper.unmount()
+    })
+})
+
+describe('OriField — the label of a group', () => {
+    // The group marks itself during its own setup, after the field's first render: one tick later.
+    it('drops `for` around a group, which names itself through aria-labelledby', async () => {
+        for (const control of [h(OriRadioGroup, { options: [{ label: 'A', value: 'a' }] }), h(OriColorPicker, {})]) {
+            const wrapper = mount(OriField, { props: { label: 'Pick' }, slots: { default: () => control } })
+            await nextTick()
+            const label = wrapper.find('.ori-field__label')
+            expect(label.attributes('for')).toBeUndefined()
+            expect(wrapper.find('[aria-labelledby]').attributes('aria-labelledby')).toBe(label.attributes('id'))
+            wrapper.unmount()
+        }
+    })
+
+    it('keeps `for` around a single control that takes the field id', () => {
+        const wrapper = mount(OriField, { props: { label: 'Email' }, slots: { default: () => h(OriInput) } })
+        const forId = wrapper.find('.ori-field__label').attributes('for')
+        expect(forId).toBeTruthy()
+        expect(wrapper.find('input').attributes('id')).toBe(forId)
         wrapper.unmount()
     })
 })

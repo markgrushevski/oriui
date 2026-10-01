@@ -49,6 +49,7 @@ const emit = defineEmits<{ change: [value: string] }>()
 // label id + adopts its describedby / disabled; standalone it keeps its own `label` → aria-label. It has
 // no size / required / invalid concept, so those field bits don't apply. `isDisabled` feeds the engine.
 const field = useOriField()
+field?.markGroup?.()
 const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
 const isInvalid = computed(() => field?.invalid.value ?? false)
 const labelledBy = computed(() => field?.labelId.value)
