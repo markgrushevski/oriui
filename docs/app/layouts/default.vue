@@ -49,6 +49,7 @@ const sections = [
                 links: [
                     { label: 'Button', to: '/components/button' },
                     { label: 'Dialog', to: '/components/dialog' },
+                    { label: 'Drawer', to: '/components/drawer' },
                     { label: 'Menu', to: '/components/menu' },
                     { label: 'Popover', to: '/components/popover' },
                     { label: 'Toolbar', to: '/components/toolbar' }
@@ -79,6 +80,7 @@ const sections = [
                     { label: 'Card', to: '/components/card' },
                     { label: 'Icon', to: '/components/icon' },
                     { label: 'Kbd', to: '/components/kbd' },
+                    { label: 'List', to: '/components/list' },
                     { label: 'Tag', to: '/components/tag' }
                 ]
             },
@@ -86,7 +88,6 @@ const sections = [
                 title: 'Layout',
                 links: [
                     { label: 'Divider', to: '/components/divider' },
-                    { label: 'Drawer', to: '/components/drawer' },
                     { label: 'Join', to: '/components/join' },
                     { label: 'Stack', to: '/components/stack' },
                     { label: 'Surface', to: '/components/surface' }

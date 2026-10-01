@@ -34,6 +34,13 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Docs (Nuxt Content + MDC)
 
+- **`:class-table` descriptions are HTML.** MDC decodes `&lt;` in the attribute before `v-html` renders it,
+  so `<code>&lt;details&gt;</code>` put a real `<details>` (and a live checkbox, for the switch) inside the
+  table cell. Name elements without angle brackets: `<code>details</code>`.
+- **MDC nesting runs out at three levels.** `::example` > `::ori-list` > `::ori-list-item` with a `#end`
+  slot will not parse at any colon count; without slots the outer blocks need more colons than the inner
+  ones. Past two levels, write a demo component.
+
 - A **new component in a new dir** plus a change to the global-registration plugin
   (`docs/app/plugins/oriui.ts`) may need a **dev-server restart** for MDC to resolve the new
   `:ori-*` tag — HMR usually picks it up, but not always.
@@ -500,6 +507,10 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   control); the Accordion title slot sits inside `<summary>` (a click toggles). Fine for text / icons /
   badges; a nested interactive control (a link in a consent label) is the caller's responsibility — the
   same limitation the native elements carry.
+- **An `undefined` binding still overrides a child component's own attribute.** On a plain element
+  `:href="undefined"` renders nothing, but on a component it is a fall-through key, and `mergeProps`
+  assigns it over the attribute the component sets on its root: a router link passed as `as` lost its
+  href and its aria-current. Build the bindings without the keys that have nothing to say (OriListItem).
 - **A filled slot is not a visible name.** `$slots.default` says only that the caller passed something;
   an icon component renders no text. Whether a slot names its button is read from the rendered DOM, with a
   MutationObserver: slot content is rendered inside the child component, so a change to it re-renders
