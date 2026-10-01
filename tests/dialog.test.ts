@@ -160,7 +160,7 @@ describe('OriDialog (native <dialog> engine)', () => {
     it('drives a controlled `open` prop through a swapped adapter', async () => {
         // The controllable contract is composed from setOpen + onOpenChange, which any adapter
         // implements — so v-model:open must work on a swapped engine, not just the native default.
-        const wrapper = mountDialog({ open: false }, {}, [[OriHeadless, { dialog: fakeDialog }]])
+        const wrapper = mountDialog({ open: false, title: 'Confirm' }, {}, [[OriHeadless, { dialog: fakeDialog }]])
         await nextTick()
         // Fixed-id prop bag proves the fake (not native) adapter produced these props.
         expect(dialogEl()?.getAttribute('aria-labelledby')).toBe('test-dialog-title')
@@ -178,6 +178,13 @@ describe('OriDialog (native <dialog> engine)', () => {
         expect(dialogEl()?.open).toBe(false)
     })
 
+    it("a titleless dialog keeps the caller's aria-labelledby", async () => {
+        mountDialog({ defaultOpen: true, 'aria-labelledby': 'page-heading' })
+        await nextTick()
+
+        expect(dialogEl()?.getAttribute('aria-labelledby')).toBe('page-heading')
+    })
+
     it('works with no adapter wired — native is the default engine', async () => {
         // The dialog no longer needs an injected adapter: useDialog() falls back to the native engine.
         mountDialog({ title: 'x', defaultOpen: true })
@@ -188,7 +195,7 @@ describe('OriDialog (native <dialog> engine)', () => {
     })
 
     it('honors a custom dialog adapter swapped in via OriHeadless', async () => {
-        mountDialog({ defaultOpen: true }, {}, [[OriHeadless, { dialog: fakeDialog }]])
+        mountDialog({ defaultOpen: true, title: 'Confirm' }, {}, [[OriHeadless, { dialog: fakeDialog }]])
         await nextTick()
 
         // The fake adapter uses a fixed base id, so this proves the swapped adapter (not the native

@@ -92,8 +92,8 @@ Behavior is chosen per primitive — provided once at the app root, never thread
 
 - **Disclosure** — a native, zero-dependency engine ships from `@oriui/headless` as the default. Nothing
   to wire; it just works.
-- **Dialog** — runs on the native `<dialog>` element (`showModal()`), so the focus trap, scroll lock,
-  focus return, `::backdrop` and `aria-modal` come from the platform. It is the **default**, with no
+- **Dialog** — runs on the native `<dialog>` element (`showModal()`), so the focus trap, focus return,
+  `::backdrop` and `aria-modal` come from the platform (the page-scroll lock is in `dialog.css`). It is the **default**, with no
   adapter or dependency required. See [useDialog](/headless/use-dialog).
 - **Combobox** / **Menu** — no native platform primitive, so the default is the in-house `core` state
   machine (the WAI-ARIA listbox / menu keyboard). Swappable through the same contract. See

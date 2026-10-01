@@ -30,6 +30,13 @@
         background: color-mix(in srgb, #000000 50%, transparent);
     }
 
+    /* showModal() makes the page inert but leaves it scrollable: a wheel over the backdrop still scrolls
+       it. No `scrollbar-gutter: stable` here: the reserved gutter narrows the viewport the top layer is
+       laid out in, which pulls an edge-docked drawer and the backdrop off the edge. */
+    :root:has(.ori-dialog:modal) {
+        overflow: hidden;
+    }
+
     .ori-dialog__content {
         padding: 24px;
     }

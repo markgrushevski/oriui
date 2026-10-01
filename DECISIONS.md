@@ -3,6 +3,27 @@
 Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
 argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
 
+## Drawer: a dialog with a side, without gestures
+
+**Date:** 2026-10-01.
+
+`OriDrawer` is OriDialog's engine and element with a `side` (`start | end | top | bottom`, logical), the
+shape of shadcn's Sheet, Chakra's and PrimeVue's Drawer. A modal drawer is `showModal()`; a non-modal one
+is the same `<dialog>` as a `popover="manual"`, because `show()` would leave it in the page, where a
+transformed or clipping ancestor misplaces it, and the top layer is where every other oriUI overlay
+opens. A manual popover closes on nothing by itself, so Escape and a press outside are wired in the
+component.
+
+**Not in this version: swipe to dismiss and snap points.** They need pointer tracking with velocity and
+thresholds, and a resolution of drag against scroll inside the sheet. The libraries that ship them are
+still settling: Vaul is unmaintained, Reka's Drawer is alpha, Base UI's went stable in March 2026, Ark
+replaced its BottomSheet in February 2026. Without a gesture there is no drag handle either, since a
+handle that cannot be dragged promises something the sheet does not do.
+
+**The drawer does not change kind by screen width.** "A dialog on desktop, a sheet on a phone" is two
+components and one media query in the app, the way shadcn and Nuxt UI document it: the breakpoint
+belongs to the app, and a centered dialog and a docked panel differ in more than position.
+
 ## Accordion's `#default` slot is a per-item template
 
 **Date:** 2026-09-26.

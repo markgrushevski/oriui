@@ -3,6 +3,7 @@ import AccordionView from './views/AccordionView.vue'
 import ColorPickerView from './views/ColorPickerView.vue'
 import ComboboxView from './views/ComboboxView.vue'
 import DialogView from './views/DialogView.vue'
+import DrawerView from './views/DrawerView.vue'
 import MenuView from './views/MenuView.vue'
 import PerfCollectionsView from './views/PerfCollectionsView.vue'
 import RtlKeysView from './views/RtlKeysView.vue'
@@ -21,6 +22,7 @@ const views: Record<string, Component> = {
     colorpicker: ColorPickerView,
     combobox: ComboboxView,
     dialog: DialogView,
+    drawer: DrawerView,
     menu: MenuView,
     perf: PerfCollectionsView,
     'rtl-keys': RtlKeysView,

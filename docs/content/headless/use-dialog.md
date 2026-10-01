@@ -4,9 +4,8 @@ title: useDialog
 
 # useDialog
 
-A headless **modal dialog** primitive built on the native `<dialog>` element — focus trap, scroll lock,
-`Escape` to close, focus return, and `aria-modal` semantics all come from the platform via
-`showModal()`. It owns the open state and the ARIA wiring as ready-to-bind prop bags; **you own the
+A headless **modal dialog** primitive built on the native `<dialog>` element — focus trap, `Escape` to
+close, focus return, and `aria-modal` semantics all come from the platform via `showModal()`. It owns the open state and the ARIA wiring as ready-to-bind prop bags; **you own the
 markup and styles** (you render the `<dialog>` and drive `showModal()` / `close()` from `open`).
 
 This is the **Vue** binding; the engine-agnostic contract lives in [`@oriui/headless`](/headless/core), and the
@@ -159,8 +158,8 @@ function Confirm() {
 
 ## Adapter
 
-`useDialog` defaults to the native `<dialog>` engine — the focus trap, scroll lock, `Esc`, `::backdrop`
-and focus-return are the platform's job now, so no dependency is required. The `OriHeadless` contract is
+`useDialog` defaults to the native `<dialog>` engine — the focus trap, `Esc`, `::backdrop` and
+focus-return are the platform's job now, so no dependency is required. The `OriHeadless` contract is
 still there as a **hedge**: register a custom engine per primitive only if a project needs one (for
 example a Zag-backed adapter for a genuinely hard widget), without touching your markup.
 
@@ -189,8 +188,10 @@ The native `<dialog>` carries the WAI-ARIA dialog contract; the prop bags comple
 - `triggerProps` carry the `aria-*` attributes the open control needs.
 - `closeTriggerProps` carry the close control's wiring; give it an accessible name (e.g.
   `aria-label="Close"`).
-- The live behavior — focus trap, scroll lock, returning focus to the trigger on close — comes from
-  `showModal()`. A non-modal `show()` (`modal: false`) does not trap focus or block the page.
+- The live behavior — focus trap, returning focus to the trigger on close — comes from `showModal()`. A
+  non-modal `show()` (`modal: false`) does not trap focus or block the page.
+- `showModal()` does **not** stop the page from scrolling under the dialog. The `.ori-dialog` class does
+  it for you; with a class of your own, add `:root:has(dialog:modal) { overflow: hidden; }`.
 
 | Key         | Action                                                                     |
 | ----------- | -------------------------------------------------------------------------- |

@@ -106,6 +106,18 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Component / CSS patterns
 
+- **`showModal()` does not lock the page scroll.** The page goes inert, but a wheel over the backdrop
+  still scrolls it (measured: 800px under an open dialog). dialog.css and drawer.css set
+  `:root:has(…:modal) { overflow: hidden }`. Not `scrollbar-gutter: stable` with it: the reserved gutter
+  narrows the viewport the top layer lays out in, so an edge-docked drawer and the backdrop stop 15px short
+  of the edge. The cost is a scrollbar-width shift of the dimmed page on classic-scrollbar systems; only
+  JS could measure it away. e2e/drawer.
+
+- **happy-dom writes `popover="undefined"`.** Its `popover` setter removes the attribute only for `null`,
+  so `:popover="cond ? undefined : 'manual'"` leaves a bogus attribute there (a browser drops it). Spread
+  the attribute in or out instead (OriDrawer). And a component that listens on `document` keeps listening
+  after `document.body.innerHTML = ''`: unmount every wrapper in `afterEach`.
+
 - **A fixed-position panel is only as free as its ancestors allow.** An ancestor with `transform`,
   `filter` or `contain` becomes the containing block of a `position: fixed` descendant, and its
   `overflow` then clips it. Anchored panels that open from anywhere (menu, combobox listbox, popover)

@@ -536,7 +536,8 @@ a:not(:where(.ori-button)) {
     font-weight: 800;
 }
 
-.prose h2 {
+/* Not inside a live demo's dialog or drawer: their titles carry the component's own heading style. */
+.prose h2:not(dialog *) {
     margin: 36px 0 12px;
     padding-bottom: 6px;
 

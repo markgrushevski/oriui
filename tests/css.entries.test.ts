@@ -70,6 +70,7 @@ describe('@oriui/css à-la-carte entry points', () => {
             'combobox',
             'dialog',
             'divider',
+            'drawer',
             'field',
             'icon',
             'input',

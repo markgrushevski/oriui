@@ -298,8 +298,9 @@ same attributes. The interactive behavior, however, must be driven by JavaScript
 - The close button has `aria-label="Close"`.
 - The `#trigger` slot's `props` object includes the `aria-*` attributes for the trigger element; bind
   them with `v-bind="props"`.
-- `showModal()` provides the live behavior — focus trap, scroll lock, `::backdrop`, and returning focus
-  to the trigger on close — straight from the platform.
+- `showModal()` provides the live behavior — focus trap, `::backdrop`, and returning focus to the trigger
+  on close — straight from the platform. It leaves the page scrollable, so `dialog.css` locks the page
+  scroll while a `.ori-dialog` is open as a modal.
 
 | Key         | Action                                                                  |
 | ----------- | ----------------------------------------------------------------------- |
@@ -314,14 +315,14 @@ no component API — its surface is the [classes](#classes) above, and the behav
 
 ### Props
 
-| Prop                     | Type      | Default | Description                                                                |
-| ------------------------ | --------- | ------- | -------------------------------------------------------------------------- |
-| `closeOnEscape`          | `boolean` | `true`  | Whether `Esc` closes the dialog.                                           |
-| `closeOnInteractOutside` | `boolean` | `true`  | Whether a click on the `::backdrop` closes the dialog.                     |
-| `defaultOpen`            | `boolean` | `false` | Whether the dialog is open on first mount.                                 |
-| `modal`                  | `boolean` | `true`  | Modal mode: `showModal()` (trap + scroll lock + `::backdrop`) vs `show()`. |
-| `open`                   | `boolean` | —       | Controlled open state for `v-model:open`. Omit for an uncontrolled dialog. |
-| `title`                  | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.               |
+| Prop                     | Type      | Default | Description                                                                       |
+| ------------------------ | --------- | ------- | --------------------------------------------------------------------------------- |
+| `closeOnEscape`          | `boolean` | `true`  | Whether `Esc` closes the dialog.                                                  |
+| `closeOnInteractOutside` | `boolean` | `true`  | Whether a click on the `::backdrop` closes the dialog.                            |
+| `defaultOpen`            | `boolean` | `false` | Whether the dialog is open on first mount.                                        |
+| `modal`                  | `boolean` | `true`  | Modal mode: `showModal()` (trap + `::backdrop` + page scroll locked) vs `show()`. |
+| `open`                   | `boolean` | —       | Controlled open state for `v-model:open`. Omit for an uncontrolled dialog.        |
+| `title`                  | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.                      |
 
 ### Events & attributes
 
@@ -356,8 +357,8 @@ trigger on the trigger element via the `#trigger` slot's `props` instead.
 ### Headless & adapter
 
 `OriDialog` calls [`useDialog()`](/headless/use-dialog) from `@oriui/headless/vue`, which defaults to the native
-`<dialog>` engine — the focus trap, scroll lock, `Esc` handling, `::backdrop` and focus-return are the
-platform's job, so **no adapter and no extra dependency are required**.
+`<dialog>` engine — the focus trap, `Esc` handling, `::backdrop` and focus-return are the platform's job,
+and the page-scroll lock is a line of CSS, so **no adapter and no extra dependency are required**.
 
 The `OriHeadless` contract is still available as a hedge: register a custom engine (e.g. a Zag-backed
 adapter for a genuinely hard widget) only if a project needs one — the markup never changes.
