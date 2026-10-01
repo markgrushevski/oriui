@@ -1,6 +1,6 @@
 {
     "name": "@oriui/css",
-    "version": "1.0.0-rc.19",
+    "version": "1.0.0-rc.20",
     "description": "Design tokens and .ori-* component classes for oriUI. No JavaScript, no build step.",
     "license": "MIT",
     "repository": {
