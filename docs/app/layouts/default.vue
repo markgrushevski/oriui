@@ -81,6 +81,7 @@ const sections = [
                     { label: 'Icon', to: '/components/icon' },
                     { label: 'Kbd', to: '/components/kbd' },
                     { label: 'List', to: '/components/list' },
+                    { label: 'Table', to: '/components/table' },
                     { label: 'Tag', to: '/components/tag' }
                 ]
             },

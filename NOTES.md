@@ -37,6 +37,10 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 - **`:class-table` descriptions are HTML.** MDC decodes `&lt;` in the attribute before `v-html` renders it,
   so `<code>&lt;details&gt;</code>` put a real `<details>` (and a live checkbox, for the switch) inside the
   table cell. Name elements without angle brackets: `<code>details</code>`.
+- **An unlayered `.prose` rule beats every layered component rule on the same element.** `.prose table / th /
+td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the docs guard such rules with
+  `:not(.ori-*)`. Raw `<thead>` / `<tbody>` inside an MDC component block is stripped, so a slotted table
+  needs a demo component (a raw `<table>` directly in `::example` works).
 - **MDC nesting runs out at three levels.** `::example` > `::ori-list` > `::ori-list-item` with a `#end`
   slot will not parse at any colon count; without slots the outer blocks need more colons than the inner
   ones. Past two levels, write a demo component.

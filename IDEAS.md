@@ -42,7 +42,7 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
 - **Navigation:** ◽ Breadcrumbs · ◽ Pagination · ◽ Steps · 🧪 Command palette · 🧪 Navbar / Bottom nav
 - **Overlays:** ◽ Drawer gestures (swipe to dismiss, snap points; see DECISIONS) · 🧪 Hovercard
 - **Feedback:** ◽ Indicator (a dot / count anchored on an icon or avatar) · ◽ Empty state · 🧪 Meter
-- **Data display:** ◽ Table (styled `<table>` first) · ◽ Stat · 🧪 Timeline · 🧪 Tree ·
+- **Data display:** ◽ Stat · 🧪 Timeline · 🧪 Tree ·
   🧪 Carousel · 🧪 Calendar · 🧪 Description list · 🧪 Avatar group
 - **Layout:** ◽ Container · ◽ AspectRatio · ◽ Center · ◽ ScrollArea · 🧪 Footer / Hero (better as docs
   recipes) · 🧪 Mask · 🧪 z-Stack

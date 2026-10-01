@@ -178,6 +178,27 @@ describe('OriDialog (native <dialog> engine)', () => {
         expect(dialogEl()?.open).toBe(false)
     })
 
+    it('a #title slot that appears after mount names the dialog', async () => {
+        const withTitle = ref(false)
+        const Host = defineComponent({
+            components: { OriDialog },
+            setup: () => ({ withTitle }),
+            template: `<OriDialog :default-open="true" aria-label="Fallback">
+                <template v-if="withTitle" #title>Late title</template>
+                <p>Body</p>
+            </OriDialog>`
+        })
+        mount(Host, { attachTo: document.body })
+        await nextTick()
+        expect(document.querySelector('.ori-dialog__title')).toBeNull()
+
+        withTitle.value = true
+        await nextTick()
+        const title = document.querySelector('.ori-dialog__title')
+        expect(title?.textContent?.trim()).toBe('Late title')
+        expect(dialogEl()?.getAttribute('aria-labelledby')).toBe(title?.id)
+    })
+
     it("a titleless dialog keeps the caller's aria-labelledby", async () => {
         mountDialog({ defaultOpen: true, 'aria-labelledby': 'page-heading' })
         await nextTick()

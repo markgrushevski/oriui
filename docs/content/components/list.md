@@ -25,6 +25,7 @@ htmx / Astro / Svelte / plain-HTML usage), **Vue**; HTML is the default.
 | [Menu](/components/menu)           | A transient popup opened from a trigger; arrow keys move through it, one action is chosen and it closes.       |
 | [Tabs](/components/tabs)           | Entries that switch panels of content in place.                                                                |
 | [Accordion](/components/accordion) | Sections that open and close to reveal their own content.                                                      |
+| [Table](/components/table)         | Records compared across columns: a leaderboard, an invoice, a list of files with sizes and dates.              |
 
 ## Classes
 
