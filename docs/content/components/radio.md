@@ -8,6 +8,8 @@ A "choose one" compound control. A `role="radiogroup"` container names the set v
 `aria-labelledby`; each option is a real `<input type="radio">` sharing a single `name` — so the
 browser enforces single-select and native form submission — visually hidden behind a styled circle.
 Pass the options as an array; per-option `disabled` is supported.
+For a short pick shown as one compact row of buttons (Light / Dark / Auto), use
+[SegmentedControl](/components/segmented-control): the same radio semantics, styled as segments.
 
 The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every

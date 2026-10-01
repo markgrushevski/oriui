@@ -55,14 +55,16 @@ function markup(): string {
         <span class="ori-tag ori-color_${role}" data-role="${role}" data-kind="tag"><span class="ori-tag__text">Tag</span></span>
         <div class="ori-alert ori-color_${role}" data-role="${role}" data-kind="alert"><div class="ori-alert__content"><div class="ori-alert__title">Alert</div></div></div>
         <div class="ori-tabs ori-color_${role}"><div class="ori-tabs__list" role="tablist"><button class="ori-tabs__tab" role="tab" aria-selected="true" data-role="${role}" data-kind="tab-selected">Selected</button></div></div>
-        <div class="ori-combobox ori-color_${role}">${listbox(role)}</div>`
+        <div class="ori-combobox ori-color_${role}">${listbox(role)}</div>
+        <div class="ori-segmented-control ori-color_${role}"><div class="ori-segmented-control__track"><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-${role}" checked><span class="ori-segmented-control__text" data-role="${role}" data-kind="segmented-checked">On</span></label><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-${role}"><span class="ori-segmented-control__text" data-role="${role}" data-kind="segmented-idle">Off</span></label></div></div>`
     const bare = `
         <button class="ori-button ori-variant_text" data-role="baked-primary" data-kind="bare-button-text">Bare</button>
         <button class="ori-button ori-variant_soft" data-active data-role="baked-primary" data-kind="bare-button-soft-active">Bare</button>
         <span class="ori-tag" data-role="baked-primary" data-kind="bare-tag"><span class="ori-tag__text">Bare</span></span>
         <div class="ori-alert" data-role="baked-info" data-kind="bare-alert"><div class="ori-alert__content"><div class="ori-alert__title">Bare</div></div></div>
         <div class="ori-tabs"><div class="ori-tabs__list" role="tablist"><button class="ori-tabs__tab" role="tab" aria-selected="true" data-role="baked-primary" data-kind="bare-tab-selected">Bare</button></div></div>
-        <div class="ori-combobox"><ul class="ori-combobox__listbox"><li class="ori-combobox__option ori-combobox__option_selected" data-role="baked-primary" data-kind="bare-combobox-option-selected">Bare</li></ul></div>`
+        <div class="ori-combobox"><ul class="ori-combobox__listbox"><li class="ori-combobox__option ori-combobox__option_selected" data-role="baked-primary" data-kind="bare-combobox-option-selected">Bare</li></ul></div>
+        <div class="ori-segmented-control"><div class="ori-segmented-control__track"><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-bare" checked><span class="ori-segmented-control__text" data-role="baked-primary" data-kind="bare-segmented-checked">On</span></label><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-bare"><span class="ori-segmented-control__text" data-role="baked-primary" data-kind="bare-segmented-idle">Off</span></label></div></div>`
     return surface(`${ROLES.map(cell).join('\n')}${bare}${form()}`)
 }
 

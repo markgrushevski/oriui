@@ -28,7 +28,7 @@ Or drop it in with no build step at all:
 ## À-la-carte imports
 
 `@oriui/css` is the **default**, and it ships everything: the reset, the tokens and skins, the
-utilities, and all 35 component blocks. If you render only a few components, import a **foundation**
+utilities, and all 36 component blocks. If you render only a few components, import a **foundation**
 first and then the blocks you use:
 
 ```ts

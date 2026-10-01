@@ -1,0 +1,160 @@
+/* A segment's icon is an OriIcon — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './icon.css';
+
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-segmented-control, .ori-segmented-control *),
+    :where(.ori-segmented-control, .ori-segmented-control *)::before,
+    :where(.ori-segmented-control, .ori-segmented-control *)::after {
+        box-sizing: border-box;
+    }
+
+    /* A single-select row of segments: real radios (one `name`), so the browser gives arrow keys, a single
+       Tab stop, form submission and RTL. Baked defaults — accent `primary`, size `md`, radius `md` — sit at
+       zero specificity, so one `.ori-color_*` / `.ori-segmented-control_<size>` / radius utility repoints them. */
+    :where(.ori-segmented-control) {
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
+        --ori-font-size: var(--ori-font-size_md);
+        --ori-size-action: var(--ori-size-action_md);
+        --ori-size-radius: var(--ori-size-radius_md);
+    }
+
+    .ori-segmented-control {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 0.4em;
+
+        font-size: var(--ori-font-size);
+        line-height: 1.2;
+    }
+
+    .ori-segmented-control__label {
+        font-size: calc(var(--ori-font-size) * 0.875);
+        font-weight: 500;
+    }
+
+    /* Equal-width segments, as wide as the widest one (Apple's rule); `_fluid` stretches the track. */
+    .ori-segmented-control__track {
+        display: inline-grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        gap: 2px;
+        min-height: var(--ori-size-action);
+        padding: 3px;
+
+        border-radius: var(--ori-size-radius);
+
+        background: color-mix(in srgb, var(--ori-color-on-surface) 8%, transparent);
+    }
+
+    .ori-segmented-control_fluid,
+    .ori-segmented-control_fluid .ori-segmented-control__track {
+        display: grid;
+        width: 100%;
+    }
+
+    .ori-segmented-control__item {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.85em;
+
+        /* No `color` transition: the role text tokens are relative colors, which do not interpolate. */
+        transition:
+            background-color 0.15s ease-out,
+            border-color 0.15s ease-out;
+
+        border: 1px solid transparent;
+        border-radius: calc(var(--ori-size-radius) - 3px);
+
+        color: var(--ori-color-on-surface);
+
+        font-weight: 500;
+        white-space: nowrap;
+
+        cursor: pointer;
+        user-select: none;
+        gap: 0.4em;
+    }
+
+    /* Visually hidden, still the focusable and checkable control. */
+    .ori-segmented-control__input {
+        position: absolute;
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+        margin: 0;
+
+        opacity: 0;
+
+        cursor: inherit;
+    }
+
+    @media (hover: hover) {
+        .ori-segmented-control__item:hover:not(:has(:checked, :disabled)) {
+            background: color-mix(in srgb, var(--ori-color-on-surface) 8%, transparent);
+        }
+    }
+
+    /* The fill alone does not tell the checked segment from the track in every role (a warning fill, or
+       any role in dark mode, measures under 3:1), so its edge carries the role's text tone, which does. */
+    .ori-segmented-control__item:has(.ori-segmented-control__input:checked) {
+        border-color: var(--ori-color-text);
+
+        background: var(--ori-color);
+        box-shadow: var(--ori-shadow-sm);
+        color: var(--ori-color-on);
+    }
+
+    .ori-segmented-control__item:has(.ori-segmented-control__input:focus-visible) {
+        outline: 2px solid var(--ori-color);
+        outline-offset: 2px;
+    }
+
+    /* Disabled reads the real control state, so `<fieldset disabled>` dims it too. */
+    .ori-segmented-control__item:has(.ori-segmented-control__input:disabled) {
+        opacity: 0.45;
+
+        cursor: not-allowed;
+    }
+
+    .ori-segmented-control__icon {
+        flex-shrink: 0;
+    }
+
+    .ori-segmented-control_xs {
+        --ori-size-action: var(--ori-size-action_xs);
+    }
+
+    .ori-segmented-control_sm {
+        --ori-size-action: var(--ori-size-action_sm);
+    }
+
+    .ori-segmented-control_md {
+        --ori-size-action: var(--ori-size-action_md);
+    }
+
+    .ori-segmented-control_lg {
+        --ori-size-action: var(--ori-size-action_lg);
+    }
+
+    .ori-segmented-control_xl {
+        --ori-size-action: var(--ori-size-action_xl);
+    }
+
+    .ori-segmented-control_xxl {
+        --ori-size-action: var(--ori-size-action_xxl);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ori-segmented-control__item {
+            transition: none;
+        }
+    }
+}
