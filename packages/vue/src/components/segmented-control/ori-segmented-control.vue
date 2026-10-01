@@ -47,6 +47,7 @@ const model = defineModel<string | number>()
 // Inside an OriField the field owns the label and the a11y wiring, as for OriRadioGroup.
 const field = useOriField()
 const inField = Boolean(field)
+field?.markGroup?.()
 
 const uid = useId()
 const groupName = computed(() => name ?? uid)

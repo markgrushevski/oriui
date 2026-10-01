@@ -21,6 +21,9 @@ export interface OriFieldContext {
     disabled: ComputedRef<boolean>
     /** The field's action-size, propagated so the control matches the label/hint scale. */
     size: ComputedRef<ActionSize>
+    /** Called by a group control (radiogroup, segmented control, color picker): no element takes the field's
+     *  id, so the field renders its label without `for`, which would otherwise point at nothing. */
+    markGroup?: () => void
 }
 
 // Value may be `undefined` — a composite control (e.g. OriColorPicker) provides `undefined` to shield

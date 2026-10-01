@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, provide, useId } from 'vue'
+import { computed, provide, ref, useId } from 'vue'
 import type { ActionSize } from '../../types'
 import { oriFieldKey } from './context'
 import { useSlotPresence } from './slot-presence'
@@ -63,6 +63,9 @@ const describedBy = computed(() => {
 })
 
 // Hand the contract to a nested Ori control.
+// A group control names itself through aria-labelledby and takes no id, so the label drops its `for`.
+const wrapsGroup = ref(false)
+
 provide(oriFieldKey, {
     id: fieldId,
     labelId,
@@ -70,7 +73,10 @@ provide(oriFieldKey, {
     invalid: isInvalid,
     required: computed(() => required),
     disabled: computed(() => disabled),
-    size: computed(() => size)
+    size: computed(() => size),
+    markGroup: () => {
+        wrapsGroup.value = true
+    }
 })
 
 // Ready-to-spread attributes for a raw control via the scoped slot (the css-layer / htmx path).
@@ -91,7 +97,12 @@ const slotProps = computed(() => ({
 
 <template>
     <div :class="['ori-field', `ori-font-size_${size}`, { 'ori-field_fluid': fluid }]">
-        <label v-if="label || $slots.label" :id="labelId" :for="fieldId" class="ori-field__label">
+        <label
+            v-if="label || $slots.label"
+            :id="labelId"
+            :for="wrapsGroup ? undefined : fieldId"
+            class="ori-field__label"
+        >
             <slot name="label">{{ label }}</slot
             ><span v-if="required" class="ori-field__required" aria-hidden="true">*</span>
         </label>

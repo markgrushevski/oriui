@@ -43,6 +43,7 @@ const model = defineModel<string | number>()
 // the field's label id rather than a `<label for>`.
 const field = useOriField()
 const inField = Boolean(field)
+field?.markGroup?.()
 
 const uid = useId()
 const groupName = computed(() => name ?? uid)
