@@ -198,9 +198,16 @@ try {
     writeFileSync(join(consumer, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
     // vue/svelte/react are the three optional peers of @oriui/headless; all three are installed so
-    // every adapter entry can actually be imported. --prefer-offline keeps this on the npm cache.
-    const installArgs = ['install', ...tarballs, 'vue@^3.5', 'svelte@^5', 'react@^19']
-    npm([...installArgs, '--no-audit', '--no-fund', '--prefer-offline', '--loglevel=error'], consumer)
+    // every adapter entry can actually be imported. --prefer-offline keeps this on the npm cache, whose
+    // version lists can be stale: a fresh release that needs a newer dependency than the cache lists fails
+    // with ETARGET, so a failed offline-first install is retried against the registry.
+    const installArgs = ['install', ...tarballs, 'vue@^3.5', 'svelte@^5', 'react@^19', '--no-audit', '--no-fund']
+    try {
+        npm([...installArgs, '--prefer-offline', '--loglevel=error'], consumer)
+    } catch {
+        console.log('smoke: the offline-first install failed; retrying against the registry')
+        npm([...installArgs, '--prefer-online', '--loglevel=error'], consumer)
+    }
 
     // 3. Execute the installed artifacts.
     writeFileSync(join(consumer, 'smoke.mjs'), ASSERTIONS)

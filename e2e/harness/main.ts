@@ -9,6 +9,7 @@ import RtlKeysView from './views/RtlKeysView.vue'
 import TabsView from './views/TabsView.vue'
 import ToastView from './views/ToastView.vue'
 import ToolbarView from './views/ToolbarView.vue'
+import TopLayerView from './views/TopLayerView.vue'
 import '@oriui/css'
 
 // The harness mounts exactly ONE interactive component, chosen by `location.hash` (#accordion /
@@ -25,7 +26,8 @@ const views: Record<string, Component> = {
     'rtl-keys': RtlKeysView,
     tabs: TabsView,
     toast: ToastView,
-    toolbar: ToolbarView
+    toolbar: ToolbarView,
+    'top-layer': TopLayerView
 }
 
 function currentView(): Component {

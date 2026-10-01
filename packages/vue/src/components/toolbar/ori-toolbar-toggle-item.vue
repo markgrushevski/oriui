@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useSlots } from 'vue'
+import { computed, mergeProps, useTemplateRef } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { useToolbarToggleItem } from '@oriui/headless/vue'
 import { OriButton } from '../button'
 import { OriTooltip } from '../tooltip'
+import { useItemName } from './item-name'
 
 // OriToolbarToggleItem — a toggle button inside an OriToolbarToggleGroup. Composes OriButton with
 // `useToolbarToggleItem`, which supplies the roving props PLUS aria-pressed (derived from the group's
@@ -40,17 +41,8 @@ const {
 defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarToggleItem(() => value)
-const slots = useSlots()
-
-// Dev-only: warn on a nameless icon-only item (axe `button-name`); describedby only when `aria-label` names
-// it (else name == tooltip, a double-announce) — see OriToolbarButton for the rationale.
-if (import.meta.env?.DEV && icon && !ariaLabel && !tooltip && !label) {
-    console.warn(
-        '[OriToolbarToggleItem] an icon-only item needs an accessible name — pass `aria-label` (or `tooltip` / `label`).'
-    )
-}
-const named = () => Boolean(ariaLabel || label || slots.default)
-const describedBy = (bubbleId: string) => (named() ? bubbleId : undefined)
+const button = useTemplateRef('button')
+const name = useItemName(() => ({ ariaLabel, label, tooltip }), button, 'OriToolbarToggleItem')
 
 const buttonBindings = computed(() => ({
     ...itemProps.value,
@@ -60,8 +52,7 @@ const buttonBindings = computed(() => ({
     radius,
     size,
     variant,
-    // See OriToolbarButton: the tooltip names the item only when nothing visible does (WCAG 2.5.3).
-    'aria-label': ariaLabel ?? (label || slots.default ? undefined : tooltip),
+    'aria-label': name.ariaLabel.value,
     'aria-disabled': disabled || undefined
 }))
 
@@ -77,8 +68,9 @@ function onClickCapture(event: MouseEvent): void {
     <OriTooltip v-if="tooltip" :content="tooltip">
         <template #default="{ bubbleId }">
             <OriButton
+                ref="button"
                 v-bind="mergeProps(buttonBindings, $attrs)"
-                :aria-describedby="describedBy(bubbleId)"
+                :aria-describedby="name.describedBy(bubbleId)"
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
@@ -89,7 +81,7 @@ function onClickCapture(event: MouseEvent): void {
         </template>
     </OriTooltip>
 
-    <OriButton v-else v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
+    <OriButton v-else ref="button" v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
         <template v-if="$slots.default" #default><slot></slot></template>
     </OriButton>
 </template>
