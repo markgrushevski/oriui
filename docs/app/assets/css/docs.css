@@ -36,7 +36,7 @@ body {
    `a` (0,0,1), exactly as before. Without :where(), `:not(.ori-button)` is (0,1,1) and would beat
    the single-class nav/ToC/sidebar/social link rules below (0,1,0), turning every chrome link the
    brand color. */
-a:not(:where(.ori-button)) {
+a:not(:where(.ori-button, .ori-list__row)) {
     color: var(--ori-color-primary);
     text-decoration: none;
 }

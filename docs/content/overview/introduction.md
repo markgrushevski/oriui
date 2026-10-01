@@ -12,7 +12,7 @@ on it. It is made for our own apps first, so a component is added when one of th
 | Package           | What it gives you                                                                                                                                               |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@oriui/css`      | Design tokens and a stylesheet per component: `.ori-*` classes, eight skins, light and dark. No JavaScript and no build step.                                   |
-| `@oriui/vue`      | 36 Vue 3 components, such as `<OriButton variant="soft" />`. Each renders the CSS classes and adds keyboard, focus, ARIA and form behavior.                     |
+| `@oriui/vue`      | 37 Vue 3 components, such as `<OriButton variant="soft" />`. Each renders the CSS classes and adds keyboard, focus, ARIA and form behavior.                     |
 | `@oriui/headless` | That behavior without markup: composables that return state and prop bags for your own elements. The Vue adapter is ready; Svelte and React are in development. |
 
 The CSS is the foundation, and the other two build on it. `OriButton` is the `.ori-button` classes plus a

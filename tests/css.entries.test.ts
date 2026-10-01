@@ -77,6 +77,7 @@ describe('@oriui/css à-la-carte entry points', () => {
             'join',
             'kbd',
             'link',
+            'list',
             'menu',
             'popover',
             'progress',

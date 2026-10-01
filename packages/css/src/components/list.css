@@ -1,0 +1,158 @@
+/* A row's icon is an OriIcon — inlined so this entry is self-contained (deduped in the full bundle). */
+@import './icon.css';
+
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-list, .ori-list *),
+    :where(.ori-list, .ori-list *)::before,
+    :where(.ori-list, .ori-list *)::after {
+        box-sizing: border-box;
+    }
+
+    /* A vertical list of rows: settings, a panel of actions, navigation outside a role="menu". Each row
+       reads start → label → end. A row that acts is a real <button> or <a>; a row that only holds
+       content (or a control of its own in `__end`) is a <div>. Accent for the current row: `primary`. */
+    :where(.ori-list) {
+        --ori-color: var(--ori-color-primary);
+        --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
+        --ori-size-radius: var(--ori-size-radius_md);
+    }
+
+    .ori-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .ori-list_divided {
+        gap: 0;
+    }
+
+    .ori-list_divided > .ori-list__item + .ori-list__item {
+        border-top: 1px solid var(--ori-color-outline);
+    }
+
+    .ori-list__row {
+        display: flex;
+        align-items: center;
+        gap: 0.75em;
+        width: 100%;
+        min-height: 2.5em;
+        margin: 0;
+        padding: 0.5em 0.75em;
+
+        border: 0;
+        border-radius: var(--ori-size-radius);
+
+        background: none;
+        color: inherit;
+
+        font: inherit;
+        text-align: start;
+        text-decoration: none;
+    }
+
+    /* Only rows that act react to the pointer. */
+    :is(button, a).ori-list__row {
+        transition: background-color 0.15s ease-out;
+        cursor: pointer;
+    }
+
+    @media (hover: hover) {
+        :is(button, a).ori-list__row:hover:not(
+                :disabled,
+                [aria-disabled='true'],
+                [aria-current]:not([aria-current='false'])
+            ) {
+            background: color-mix(in srgb, currentcolor 8%, transparent);
+        }
+    }
+
+    .ori-list__row:focus-visible {
+        outline: 2px solid var(--ori-color);
+        outline-offset: -2px;
+    }
+
+    /* The tint alone is too faint to mark the current row (WCAG 1.4.11), so a bar in the role's text tone
+       sits on its inline-start edge. */
+    .ori-list__row[aria-current]:not([aria-current='false']) {
+        background: color-mix(in srgb, var(--ori-color) 15%, transparent);
+        box-shadow: inset 3px 0 0 var(--ori-color-text);
+
+        font-weight: 600;
+    }
+
+    /* On the current row's tint the 0.7 fade of the second line falls under AA (4.24:1 measured, sumi light). */
+    .ori-list__row[aria-current]:not([aria-current='false']) :is(.ori-list__description, .ori-list__hint) {
+        opacity: 0.85;
+    }
+
+    .ori-list__row[aria-current]:not([aria-current='false']):dir(rtl) {
+        box-shadow: inset -3px 0 0 var(--ori-color-text);
+    }
+
+    .ori-list__row:disabled,
+    .ori-list__row[aria-disabled='true'] {
+        opacity: 0.45;
+
+        cursor: not-allowed;
+    }
+
+    .ori-list__start,
+    .ori-list__end {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .ori-list__start {
+        opacity: 0.8;
+    }
+
+    .ori-list__main {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .ori-list__label {
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ori-list__description {
+        opacity: 0.7;
+        font-size: 0.85em;
+    }
+
+    .ori-list__hint {
+        opacity: 0.7;
+        font-size: 0.8em;
+    }
+
+    .ori-list__chevron {
+        opacity: 0.6;
+    }
+
+    /* The chevron points into a sub-panel: inline-end, so it flips in RTL. */
+    .ori-list__chevron:dir(rtl) {
+        transform: scaleX(-1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :is(button, a).ori-list__row {
+            transition: none;
+        }
+    }
+}

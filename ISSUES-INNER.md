@@ -25,14 +25,3 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
   on the label does nothing.
 - **Fix:** let a group tell the field it is one (the field context already carries `labelId` for it), and
   render the label without `for` then.
-
-## ORI-I-99 — No list row outside OriMenu
-
-`confirmed` · reported by justpaint (JP-O-13)
-
-- **Where:** a panel of rows — icon, label, a shortcut hint or a chevron into a sub-panel, as a button or a
-  link — has no component. `OriMenu` has rows, but its `role="menu"` cannot hold inline controls (a
-  segmented picker, a select, a switch), and an `OriButton` centers its content, so a row built from it
-  needs local CSS to read left to right.
-- **Fix:** a List / ListItem component: `ul > li` rows with leading, title and trailing parts, the row's
-  action a real button or link, `aria-current` for the current row.
