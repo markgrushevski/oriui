@@ -63,6 +63,7 @@ const sections = [
                     { label: 'Field', to: '/components/field' },
                     { label: 'Input', to: '/components/input' },
                     { label: 'Radio', to: '/components/radio' },
+                    { label: 'Segmented control', to: '/components/segmented-control' },
                     { label: 'Select', to: '/components/select' },
                     { label: 'Slider', to: '/components/slider' },
                     { label: 'Switch', to: '/components/switch' },

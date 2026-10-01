@@ -30,7 +30,7 @@ const PARTS = [
 
 const MARKUP = `<div id="surface" style="background-color: var(--ori-color-surface); color: var(--ori-color-on-surface); padding: 24px">
     <label class="ori-checkbox"><input type="checkbox" class="ori-checkbox__input"><span class="ori-checkbox__box" id="cb"></span><span>Box</span></label>
-    <label class="ori-radio"><input type="radio" class="ori-radio__input"><span class="ori-radio__box" id="rb"></span><span>Radio</span></label>
+    <label class="ori-radio"><input type="radio" class="ori-radio__input"><span class="ori-radio__circle" id="rb"></span><span>Radio</span></label>
 </div>`
 
 test('every unchecked control boundary clears 3:1 in all skins and both themes', async ({ page }) => {
@@ -38,6 +38,14 @@ test('every unchecked control boundary clears 3:1 in all skins and both themes',
     await page.setContent(`<!doctype html><html><head></head><body>${MARKUP}</body></html>`)
     await page.addStyleTag({ path: STYLES })
     await page.addStyleTag({ content: '* { transition: none !important; animation: none !important; }' })
+
+    // A probe on a class the stylesheet does not have measures a span with no border at all, which
+    // "passes" every time: the radio cell named a class that never existed, so its edge went unmeasured.
+    const unstyled = await page.evaluate(
+        (ids) => ids.filter((id) => getComputedStyle(document.getElementById(id)!).borderTopStyle === 'none'),
+        PARTS.map((p) => p.id)
+    )
+    expect(unstyled, 'probe cells without a border: their class matches no rule').toEqual([])
 
     const rows: { skin: string; theme: string; label: string; fg: string; bg: string }[] = []
     for (const skin of SKINS) {
@@ -94,4 +102,76 @@ test('every unchecked control boundary clears 3:1 in all skins and both themes',
 
     const fails = measured.filter((r) => r.ratio < NON_TEXT)
     expect(fails.map(line).join('\n'), `${fails.length} boundary reading(s) below ${NON_TEXT}:1`).toBe('')
+})
+
+// The checked segment of a segmented control has to stand out 3:1 from the track it sits on, for every role
+// a caller can pass. Its fill alone does not (measured: down to 1.01:1), so its edge carries the role's
+// text tone; this measures that edge against the track.
+// `surface` too: it is a valid `color`, and the neutral segment is the likeliest to blend into its track.
+const ROLES = ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'surface'] as const
+
+test('a checked segment stands out 3:1 from its track in every role, skin and theme', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 })
+    const cell = (role: string) => `
+        <div class="ori-segmented-control ori-color_${role}"><div class="ori-segmented-control__track" id="track-${role}">
+            <label class="ori-segmented-control__item" id="seg-${role}"><input class="ori-segmented-control__input" type="radio" name="${role}" checked><span>On</span></label>
+            <label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="${role}"><span>Off</span></label>
+        </div></div>`
+    await page.setContent(
+        `<!doctype html><html><head></head><body><div id="surface" style="background-color: var(--ori-color-surface); color: var(--ori-color-on-surface); padding: 24px">${ROLES.map(cell).join('')}</div></body></html>`
+    )
+    await page.addStyleTag({ path: STYLES })
+    await page.addStyleTag({ content: '* { transition: none !important; animation: none !important; }' })
+
+    const rows: { skin: string; theme: string; label: string; fg: string; bg: string }[] = []
+    for (const skin of SKINS) {
+        for (const theme of THEMES) {
+            rows.push(
+                ...(await page.evaluate(
+                    ({ skin, theme, roles }) => {
+                        const html = document.documentElement
+                        if (skin) html.setAttribute('data-ori-skin', skin)
+                        else html.removeAttribute('data-ori-skin')
+                        html.className = `ori-theme_${theme}`
+                        const cv = document.createElement('canvas')
+                        cv.width = cv.height = 1
+                        const ctx = cv.getContext('2d')!
+                        const paint = (stack: string[]) => {
+                            ctx.clearRect(0, 0, 1, 1)
+                            for (const c of stack) {
+                                ctx.fillStyle = 'rgba(0,0,0,0)'
+                                ctx.fillStyle = c
+                                ctx.fillRect(0, 0, 1, 1)
+                            }
+                            const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
+                            return `rgb(${r} ${g} ${b})`
+                        }
+                        const bgOf = (id: string) => getComputedStyle(document.getElementById(id)!).backgroundColor
+                        const surface = bgOf('surface')
+                        return roles.map((role) => ({
+                            skin,
+                            theme,
+                            label: `segmented ${role} checked edge`,
+                            fg: paint([
+                                surface,
+                                bgOf(`track-${role}`),
+                                getComputedStyle(document.getElementById(`seg-${role}`)!).borderTopColor
+                            ]),
+                            bg: paint([surface, bgOf(`track-${role}`)])
+                        }))
+                    },
+                    { skin, theme, roles: [...ROLES] }
+                ))
+            )
+        }
+    }
+
+    const measured = rows.map((r) => ({ ...r, ratio: colord(r.fg).contrast(colord(r.bg)) }))
+    const line = (r: (typeof measured)[number]) =>
+        `${r.ratio.toFixed(2).padStart(5)}  ${r.label}  ${r.skin || 'ori'} · ${r.theme}  (${r.fg} on ${r.bg})`
+    const worst = [...measured].sort((a, b) => a.ratio - b.ratio)[0]!
+    // eslint-disable-next-line no-console
+    console.log(`\n[non-text] segmented: ${measured.length} readings, floor ${worst.ratio.toFixed(2)} — ${line(worst)}`)
+    const fails = measured.filter((r) => r.ratio < NON_TEXT)
+    expect(fails.map(line).join('\n'), `${fails.length} segmented reading(s) below ${NON_TEXT}:1`).toBe('')
 })

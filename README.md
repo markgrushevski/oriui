@@ -12,7 +12,7 @@ A design system in plain CSS, with accessible Vue components built on it.
 | Package                                                        | What it is                                                                                                               |
 | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | [`@oriui/css`](https://npmjs.com/package/@oriui/css)           | Design tokens and a stylesheet per component. No JavaScript, no build step; works in any stack.                          |
-| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | 35 Vue 3 components that render those classes and handle keyboard, focus, ARIA and forms.                                |
+| [`@oriui/vue`](https://npmjs.com/package/@oriui/vue)           | 36 Vue 3 components that render those classes and handle keyboard, focus, ARIA and forms.                                |
 | [`@oriui/headless`](https://npmjs.com/package/@oriui/headless) | The components' behavior on its own, for your own markup. The Vue adapter is ready; React and Svelte are in development. |
 
 - **Theming is CSS.** Skins, dark mode, sizes and variants are custom properties switched by a class or

@@ -7,14 +7,15 @@ title: Field
 The shared shell for form controls — **one source of truth** for the `label` / `hint` / `error` /
 `required` contract that [Input](/components/input), [Select](/components/select),
 [Textarea](/components/textarea), [Combobox](/components/combobox), [Slider](/components/slider),
-[RadioGroup](/components/radio), and [ColorPicker](/components/color-picker) otherwise each wire
+[RadioGroup](/components/radio), [SegmentedControl](/components/segmented-control) and
+[ColorPicker](/components/color-picker) otherwise each wire
 by hand. Wrap a control in `OriField` and it adopts the field's id, `aria-describedby`,
 `aria-invalid`, `required`, `disabled`, and `size` — and stops rendering its own label and helper, so
 there is exactly one of each, wired identically every time. Group and composite controls (RadioGroup,
-Combobox's listbox, ColorPicker) name themselves via `aria-labelledby` pointing at the field's label.
+SegmentedControl, Combobox's listbox, ColorPicker) name themselves via `aria-labelledby` pointing at the field's label.
 
 Most controls wire up automatically: `OriInput`, `OriTextarea`, `OriSelect`, `OriCombobox`,
-`OriSlider`, `OriRadioGroup` and `OriColorPicker` read the field's context via `provide`/`inject`; a
+`OriSlider`, `OriRadioGroup`, `OriSegmentedControl` and `OriColorPicker` read the field's context via `provide`/`inject`; a
 raw `<input>` or htmx markup wires up through the scoped-slot `controlAttrs`. The standalone
 **HTML / `@oriui/css`** path is the same `.ori-field` shell around any `.ori-*` field element.
 
@@ -145,7 +146,7 @@ its own label and helper and reads the field's wiring instead.
 ## Sizes
 
 `size` lives on the field and propagates to controls that have a size scale (Input, Select, Textarea,
-Combobox, RadioGroup), so the label, helper, and control share one scale. `xs` → `xxl`. Size-less
+Combobox, RadioGroup, SegmentedControl), so the label, helper, and control share one scale. `xs` → `xxl`. Size-less
 controls (Slider, ColorPicker) keep their fixed dimensions — only the label + helper scale.
 
 ::example
@@ -210,7 +211,7 @@ attributes and ARIA wiring.
 
 - **Labelable controls** (Input, Select, Textarea, the Combobox input, the Slider range) are tied to
   the `label` by `for` / `id`; the id is auto-generated (`useId`) when you don't pass one, and the
-  nested control adopts it. **Group / composite controls** (RadioGroup, ColorPicker, the Combobox
+  nested control adopts it. **Group / composite controls** (RadioGroup, SegmentedControl, ColorPicker, the Combobox
   listbox) can't be targeted by `for`, so they name themselves via `aria-labelledby` pointing at the
   field's label instead.
 - `hint` and `error` are wired through `aria-describedby`, referencing only the element actually

@@ -7,6 +7,7 @@ import DrawerView from './views/DrawerView.vue'
 import MenuView from './views/MenuView.vue'
 import PerfCollectionsView from './views/PerfCollectionsView.vue'
 import RtlKeysView from './views/RtlKeysView.vue'
+import SegmentedView from './views/SegmentedView.vue'
 import TabsView from './views/TabsView.vue'
 import ToastView from './views/ToastView.vue'
 import ToolbarView from './views/ToolbarView.vue'
@@ -26,6 +27,7 @@ const views: Record<string, Component> = {
     menu: MenuView,
     perf: PerfCollectionsView,
     'rtl-keys': RtlKeysView,
+    segmented: SegmentedView,
     tabs: TabsView,
     toast: ToastView,
     toolbar: ToolbarView,

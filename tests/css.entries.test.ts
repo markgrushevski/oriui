@@ -81,6 +81,7 @@ describe('@oriui/css à-la-carte entry points', () => {
             'popover',
             'progress',
             'radio',
+            'segmented-control',
             'select',
             'skeleton',
             'slider',
