@@ -1,0 +1,243 @@
+@layer ori.components {
+    /* Reset-independent box model: the reset's border-box, mirrored within the block (zero-specificity
+       box-sizing subtree rule) — components must render identically without base.css; the contract is
+       guarded by e2e/reset-independence.spec.ts. */
+    :where(.ori-drawer, .ori-drawer *),
+    :where(.ori-drawer, .ori-drawer *)::before,
+    :where(.ori-drawer, .ori-drawer *)::after {
+        box-sizing: border-box;
+    }
+
+    /* A panel docked to one edge of the viewport: a native <dialog>, opened with showModal() when modal
+       or as a `popover="manual"` when not, so either way it sits in the top layer. `--ori-drawer-size` is
+       the width of a side drawer and the maximum height of a top or bottom one. Every UA box property of
+       <dialog> and [popover] (inset, margin, max sizes, border, padding) is set here, so neither leaks. */
+    .ori-drawer {
+        --ori-size-radius: var(--ori-size-radius_lg);
+        --ori-drawer-size: 20rem;
+
+        position: fixed;
+        inset: 0;
+
+        width: auto;
+        max-width: none;
+        height: auto;
+        max-height: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+
+        border: 0;
+
+        background: var(--ori-color-surface);
+
+        box-shadow: var(--ori-shadow-lg);
+        color: var(--ori-color-on-surface);
+    }
+
+    /* Open, the drawer is a column whose body takes the leftover height and scrolls, so the header and the
+       footer stay in place. Only while open: a closed <dialog> keeps the UA's display: none. */
+    .ori-drawer:is([open], :popover-open) {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Side drawers span the height. On a phone the width leaves a strip of the page in view, which also
+       shows what the drawer covers and gives a place to tap it away. */
+    .ori-drawer_start,
+    .ori-drawer_end {
+        width: min(var(--ori-drawer-size), 100% - 3rem);
+    }
+
+    .ori-drawer_start {
+        --ori-drawer-from: -100% 0;
+
+        inset-inline-end: auto;
+
+        border-start-end-radius: var(--ori-size-radius);
+        border-end-end-radius: var(--ori-size-radius);
+    }
+
+    .ori-drawer_end {
+        --ori-drawer-from: 100% 0;
+
+        inset-inline-start: auto;
+
+        border-start-start-radius: var(--ori-size-radius);
+        border-end-start-radius: var(--ori-size-radius);
+    }
+
+    /* `start` and `end` are logical, so they swap sides in RTL, and the slide follows them. */
+    .ori-drawer_start:dir(rtl) {
+        --ori-drawer-from: 100% 0;
+    }
+
+    .ori-drawer_end:dir(rtl) {
+        --ori-drawer-from: -100% 0;
+    }
+
+    /* Top and bottom drawers take the height of their content, up to most of the screen, and stop
+       growing wider than a reading width on a large screen (centered). */
+    .ori-drawer_top,
+    .ori-drawer_bottom {
+        --ori-drawer-size: 85dvh;
+
+        width: min(100%, 40rem);
+        max-height: var(--ori-drawer-size);
+        margin-inline: auto;
+    }
+
+    .ori-drawer_top {
+        --ori-drawer-from: 0 -100%;
+
+        inset-block-end: auto;
+
+        border-end-start-radius: var(--ori-size-radius);
+        border-end-end-radius: var(--ori-size-radius);
+    }
+
+    .ori-drawer_bottom {
+        --ori-drawer-from: 0 100%;
+
+        inset-block-start: auto;
+
+        border-start-start-radius: var(--ori-size-radius);
+        border-start-end-radius: var(--ori-size-radius);
+    }
+
+    .ori-drawer::backdrop {
+        background: color-mix(in srgb, #000000 50%, transparent);
+    }
+
+    /* A non-modal drawer (a popover) leaves the page live, so nothing dims it. */
+    .ori-drawer[popover]::backdrop {
+        background: none;
+    }
+
+    /* showModal() makes the page inert but leaves it scrollable: a wheel over the backdrop still scrolls
+       it. No `scrollbar-gutter: stable` here: the reserved gutter narrows the viewport the top layer is
+       laid out in, which pulls an edge-docked drawer and the backdrop off the edge. */
+    :root:has(.ori-drawer:modal) {
+        overflow: hidden;
+    }
+
+    /* The content fills the drawer, so a click on the drawer itself is a click on its backdrop. Padding
+       clears the notch and the home indicator on the edges the drawer touches. */
+    .ori-drawer__content {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+        padding: 24px;
+    }
+
+    .ori-drawer_start .ori-drawer__content,
+    .ori-drawer_end .ori-drawer__content {
+        padding-block: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-bottom));
+    }
+
+    .ori-drawer_top .ori-drawer__content {
+        padding-block-start: max(24px, env(safe-area-inset-top));
+    }
+
+    .ori-drawer_bottom .ori-drawer__content {
+        padding-block-end: max(24px, env(safe-area-inset-bottom));
+    }
+
+    .ori-drawer__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .ori-drawer__title {
+        margin: 0;
+
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .ori-drawer__close {
+        /* Explicit padding: the UA gives a native <button> padding the reset used to zero. */
+        margin-inline-start: auto;
+        padding: 0;
+
+        border: 0;
+        opacity: 0.7;
+
+        background: none;
+        color: inherit;
+
+        font-size: 22px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+    @media (hover: hover) {
+        .ori-drawer__close:hover {
+            opacity: 1;
+        }
+    }
+
+    /* No opacity: this wraps the caller's content, and a container fade multiplies with every fade
+       inside it (see dialog.css). */
+    /* The one scrolling region. The 4px inset keeps the focus rings of controls at its edges unclipped. */
+    .ori-drawer__body {
+        flex: 1 1 auto;
+        min-height: 0;
+        margin: -4px;
+        padding: 4px;
+        overflow: auto;
+
+        font-size: 14px;
+
+        overscroll-behavior: contain;
+    }
+
+    /* Actions at the far end of the drawer, below the body however short it is. */
+    .ori-drawer__footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    /* Slide in from the docked edge and back out (discrete display + overlay keep it in the top layer
+       while it leaves); the backdrop fades. No motion when the user asks for none. */
+    @media (prefers-reduced-motion: no-preference) {
+        .ori-drawer {
+            transition:
+                translate 0.25s ease-out,
+                overlay 0.25s ease-out allow-discrete,
+                display 0.25s ease-out allow-discrete;
+        }
+
+        .ori-drawer:not(:is([open], :popover-open)) {
+            translate: var(--ori-drawer-from);
+        }
+
+        .ori-drawer::backdrop {
+            transition:
+                opacity 0.25s ease-out,
+                overlay 0.25s ease-out allow-discrete,
+                display 0.25s ease-out allow-discrete;
+        }
+
+        .ori-drawer:not([open])::backdrop {
+            opacity: 0;
+        }
+
+        @starting-style {
+            .ori-drawer:is([open], :popover-open) {
+                translate: var(--ori-drawer-from);
+            }
+
+            .ori-drawer[open]::backdrop {
+                opacity: 0;
+            }
+        }
+    }
+}

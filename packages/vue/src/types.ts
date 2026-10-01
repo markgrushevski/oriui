@@ -29,6 +29,9 @@ type AnchoredSide = 'top' | 'bottom' | 'left' | 'right'
  *  the cross axis; `-start` / `-end` align to the trigger's start / end edge (logical, RTL-aware). */
 export type AnchoredPlacement = AnchoredSide | `${AnchoredSide}-start` | `${AnchoredSide}-end`
 
+/** The viewport edge a drawer docks to. `start` / `end` are logical, so they swap sides in RTL. */
+export type DrawerSide = 'start' | 'end' | 'top' | 'bottom'
+
 /* ==================== Colors ==================== */
 
 /** The palette roles a component's `color` prop accepts — each one resolves the `--ori-color` /

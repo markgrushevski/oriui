@@ -41,8 +41,7 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
 - **Forms:** ◽ NumberField / Stepper · ◽ Segmented control (a toggle group outside a toolbar) ·
   ◽ FileInput / Dropzone · 🧪 DatePicker / TimePicker · 🧪 PIN / OTP · 🧪 Rating
 - **Navigation:** ◽ Breadcrumbs · ◽ Pagination · ◽ Steps · 🧪 Command palette · 🧪 Navbar / Bottom nav
-- **Overlays:** ⭐ Drawer / Sheet (the docs shell has a bespoke one to extract; the native `<dialog>`
-  engine can back it) · 🧪 Hovercard
+- **Overlays:** ◽ Drawer gestures (swipe to dismiss, snap points; see DECISIONS) · 🧪 Hovercard
 - **Feedback:** ◽ Indicator (a dot / count anchored on an icon or avatar) · ◽ Empty state · 🧪 Meter
 - **Data display:** ◽ Table (styled `<table>` first) · ◽ Stat · ◽ List · 🧪 Timeline · 🧪 Tree ·
   🧪 Carousel · 🧪 Calendar · 🧪 Description list · 🧪 Avatar group
