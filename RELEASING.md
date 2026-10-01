@@ -16,8 +16,7 @@ The three are a **fixed** lockstep group (`.changeset/config.json`) — they alw
 resolves `latest`, and the docs describe the current line, so after each release `latest` must point at it
 (step 4 below). It cannot be automated without a token: trusted publishing can only publish, not move tags,
 and `changeset publish` refuses a custom `--tag` in pre mode. The step disappears at 1.0, when stable
-versions publish to `latest` on their own. The `alpha` dist-tag is a leftover of earlier routing, frozen at
-`1.0.0-alpha.17`; step 6 of the 1.0 cutover repoints it.
+versions publish to `latest` on their own.
 
 ## One-time setup
 
@@ -121,17 +120,14 @@ Leaving pre mode is its own release. Run it in this order.
 
 5. **Merge it.** The three publish as a stable `1.0.0` on `latest`, with no manual tag step from here on.
 
-6. **Repoint the stale `alpha` and `rc` dist-tags — do not delete them.**
+6. **Repoint the stale `rc` dist-tag — do not delete it.**
 
     ```bash
-    for p in vue headless css; do
-      npm dist-tag add @oriui/$p@1.0.0 alpha
-      npm dist-tag add @oriui/$p@1.0.0 rc
-    done
+    for p in vue headless css; do npm dist-tag add @oriui/$p@1.0.0 rc; done
     ```
 
-    Deleting them (`npm dist-tag rm`) would make `npm i @oriui/vue@alpha` fail with `ETARGET` for anyone who
-    used that tag; repointing keeps those installs resolving.
+    Deleting it (`npm dist-tag rm`) would make `npm i @oriui/vue@rc` fail with `ETARGET` for anyone who used
+    that tag; repointing keeps those installs resolving.
 
 ## Verify
 
