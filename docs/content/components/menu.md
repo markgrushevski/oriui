@@ -6,9 +6,10 @@ title: Menu
 
 A WAI-ARIA menu button: a trigger opens a **roving-tabindex** action list. Unlike the Popover, open/close,
 focus movement, and click-outside dismissal are driven entirely by the **`@oriui/headless` menu
-machine** in JavaScript, not the Popover API — so the panel is not top-layer and carries a z-index. The
-panel is still placed with the same **CSS Anchor Positioning** primitive as the Popover (`ori-anchored`),
-zero positioning JS.
+machine** in JavaScript. `OriMenu` still opens the panel in the **top layer** (`popover="manual"` +
+`showPopover()`), so an ancestor's `transform`, `overflow` or `z-index` cannot displace or clip it, and
+places it with the same **CSS Anchor Positioning** primitive as the Popover (`ori-anchored`), zero
+positioning JS. In your own markup, do the same; without `popover` the panel falls back to its z-index.
 
 The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
@@ -23,7 +24,7 @@ documented on the [Popover page](/components/popover#classes) — placement, the
 `--ori-anchor` / `--ori-anchored-gap` custom props are shared, not duplicated here.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-menu","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg + a z-index (not top-layer, unlike Popover). Composed with .ori-anchored for placement."},{"class":"ori-anchored / ori-anchored_*","type":"Placement base","description":"Shared floating-panel placement primitive — see the Popover class reference for the full modifier list."},{"class":"ori-menu__item","type":"Part","description":"One action row (role=menuitem). Highlight follows roving focus / pointer hover via [data-highlighted]."},{"class":"ori-menu__separator","type":"Part","description":"Grouping rule (role=separator) rendered for an entry marked separator: true. Spans the panel width; not navigable."},{"class":"aria-disabled / data-highlighted","type":"State","description":"real attributes, not classes — a disabled item is skipped by roving navigation."}]'}
+:class-table{:rows='[{"class":"ori-menu","type":"Block","description":"The panel surface: sizing, padding, border, surface background + ori-shadow-lg. Give it popover=\"manual\" to open it in the top layer; the z-index covers markup without it. Composed with .ori-anchored for placement."},{"class":"ori-anchored / ori-anchored_*","type":"Placement base","description":"Shared floating-panel placement primitive — see the Popover class reference for the full modifier list."},{"class":"ori-menu__item","type":"Part","description":"One action row (role=menuitem). Highlight follows roving focus / pointer hover via [data-highlighted]."},{"class":"ori-menu__separator","type":"Part","description":"Grouping rule (role=separator) rendered for an entry marked separator: true. Spans the panel width; not navigable."},{"class":"aria-disabled / data-highlighted","type":"State","description":"real attributes, not classes — a disabled item is skipped by roving navigation."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/menu.css`. The shared `.ori-anchored`
 placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation

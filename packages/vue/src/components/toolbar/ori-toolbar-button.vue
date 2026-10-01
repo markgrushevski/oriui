@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useSlots } from 'vue'
+import { computed, mergeProps, useTemplateRef } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { useToolbarItem } from '@oriui/headless/vue'
 import { OriButton } from '../button'
 import { OriTooltip } from '../tooltip'
+import { useItemName } from './item-name'
 
 // OriToolbarButton — a button that participates in the toolbar's roving tabindex. Composes OriButton
 // for the visuals and `useToolbarItem` for the roving props. Two toolbar-specific additions: a `pressed`
@@ -47,29 +48,11 @@ const {
 defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarItem()
-const slots = useSlots()
-
-// A11y guardrail (dev only): an icon-only button with no name is an axe `button-name` failure. Warn
-// when `icon` is set but there's no `aria-label` / `tooltip` / `label` to name it (mirrors OriToolbar's warn).
-if (import.meta.env?.DEV && icon && !ariaLabel && !tooltip && !label) {
-    console.warn(
-        '[OriToolbarButton] an icon-only button needs an accessible name — pass `aria-label` (or `tooltip` / `label`).'
-    )
-}
-
-// aria-describedby points the tooltip at the button ONLY when it's a genuine supplementary description
-// (something else already names the button). When the name itself falls back to the tooltip text, describing
-// with the same text would double-announce (name == description), so it's omitted.
-const named = () => Boolean(ariaLabel || label || slots.default)
-const describedBy = (bubbleId: string) => (named() ? bubbleId : undefined)
+const button = useTemplateRef('button')
+// The tooltip names the button only when it shows no text (see item-name.ts); a nameless one warns in DEV.
+const name = useItemName(() => ({ ariaLabel, label, tooltip }), button, 'OriToolbarButton')
 
 // OriButton props + the toolbar/roving/a11y attributes (the latter fall through to the <button>).
-//
-// The `aria-label` falls back to `tooltip` ONLY for a button with no visible text. Overriding a
-// rendered label with the tooltip would break WCAG 2.5.3 Label in Name: the button reads "Save" and
-// answers to "Write the current document to disk", so a voice-control user saying "click Save"
-// cannot activate it. That combination became reachable the moment `text` was renamed to `label` —
-// before it, the visible text and the accessible name were different props and could not collide.
 const buttonBindings = computed(() => ({
     ...itemProps.value,
     color,
@@ -78,7 +61,7 @@ const buttonBindings = computed(() => ({
     radius,
     size,
     variant,
-    'aria-label': ariaLabel ?? (label || slots.default ? undefined : tooltip),
+    'aria-label': name.ariaLabel.value,
     'aria-pressed': pressed,
     'aria-disabled': disabled || undefined
 }))
@@ -98,8 +81,9 @@ function onClickCapture(event: MouseEvent): void {
     <OriTooltip v-if="tooltip" :content="tooltip">
         <template #default="{ bubbleId }">
             <OriButton
+                ref="button"
                 v-bind="mergeProps(buttonBindings, $attrs)"
-                :aria-describedby="describedBy(bubbleId)"
+                :aria-describedby="name.describedBy(bubbleId)"
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
@@ -110,7 +94,7 @@ function onClickCapture(event: MouseEvent): void {
         </template>
     </OriTooltip>
 
-    <OriButton v-else v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
+    <OriButton v-else ref="button" v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
         <template v-if="$slots.default" #default><slot></slot></template>
     </OriButton>
 </template>

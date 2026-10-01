@@ -3,6 +3,7 @@ import { computed, mergeProps, ref, useAttrs, useId, useSlots, watch, watchEffec
 import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
+import { setTopLayer } from '../popover/top-layer'
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
@@ -172,6 +173,10 @@ useDismissable(() => ({
     pointerDownOutside: true,
     focusOutside: true
 }))
+
+// The listbox opens in the top layer, so no ancestor's transform, overflow or z-index can displace or clip it.
+const listboxEl = ref<HTMLElement>()
+watch(open, (isOpen) => setTopLayer(listboxEl.value, isOpen), { flush: 'post' })
 </script>
 
 <template>
@@ -235,6 +240,8 @@ useDismissable(() => ({
 
             <ul
                 v-bind="listboxProps"
+                ref="listboxEl"
+                popover="manual"
                 :class="['ori-combobox__listbox', 'ori-anchored', 'ori-anchored_bottom-start']"
                 :style="{ '--ori-anchor': anchorName }"
                 :aria-labelledby="listboxLabelledBy"

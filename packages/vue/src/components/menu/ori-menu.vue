@@ -2,12 +2,14 @@
 import { computed, mergeProps, nextTick, useId, useTemplateRef, watch } from 'vue'
 import { useMenu, useDismissable, type MenuItem } from '@oriui/headless/vue'
 import type { AnchoredPlacement } from '../../types'
+import { setTopLayer } from '../popover/top-layer'
 
 // OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behavior
 // (open/close, Arrow/Home/End roving, Enter/Space activate, Escape/Tab/outside-click close) lives in the
 // @oriui/headless menu machine; this SFC renders the styled shell, moves real DOM focus to the active
 // item (roving needs it), returns focus to the trigger on close, and wires click-outside. The panel is
-// placed with the shared .ori-anchored primitive (CSS Anchor Positioning, zero positioning JS).
+// placed with the shared .ori-anchored primitive (CSS Anchor Positioning, zero positioning JS) and opens
+// in the top layer (`popover="manual"`), so no ancestor can displace or clip it.
 //
 // The #trigger scoped slot exposes a `props` bag to spread onto YOUR <button>, plus the current `open`
 // state — the same pair OriDialog's #trigger slot exposes, so the two overlays read alike at the call
@@ -61,6 +63,13 @@ useDismissable(() => ({
     pointerDownOutside: true
 }))
 
+// Into the top layer before any focus moves: the focus watchers below wait a tick, a post watcher does not.
+watch(
+    () => m.open.value,
+    (open) => setTopLayer(contentRef.value, open),
+    { flush: 'post' }
+)
+
 // On open, focus the menu (arrows then move into items); on close, return focus to the trigger.
 watch(
     () => m.open.value,
@@ -81,6 +90,7 @@ watch(
     <div
         v-bind="mergeProps($attrs, m.contentProps.value)"
         ref="content"
+        popover="manual"
         :class="['ori-menu', 'ori-anchored', `ori-anchored_${placement}`]"
         :style="{ '--ori-anchor': anchorName }"
     >

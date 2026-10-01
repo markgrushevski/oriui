@@ -28,6 +28,11 @@ const buttons = () => Array.from(document.querySelectorAll<HTMLButtonElement>('.
 // `trigger()` works around the exact same thing by bumping `_vts` past the collision window (see
 // node_modules/@vue/test-utils …/trigger, and https://github.com/vuejs/test-utils/issues/1854); mirror
 // it here since these tests click raw elements from `buttons()`, not `.find()`-wrapped ones.
+// An icon component: renders an svg and no text, like a consumer's own icon set.
+const Glyph = defineComponent({
+    render: () => h('svg', { 'aria-hidden': 'true', viewBox: '0 0 24 24' }, [h('path', { d: 'M4 12h16' })])
+})
+
 function click(el: HTMLElement): void {
     const event = new MouseEvent('click', { bubbles: true, cancelable: true })
     ;(event as unknown as { _vts: number })._vts = Date.now() + 1
@@ -487,6 +492,67 @@ describe('OriToolbarButton', () => {
         wrapper.unmount()
     })
 
+    // An icon component renders no text, so a slot holding only one is not a visible name.
+    it('a slot that renders only an icon leaves the name to the tooltip', async () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: { default: () => h(OriToolbarButton, { tooltip: 'Undo' }, () => h(Glyph)) },
+            attachTo: document.body
+        })
+        await nextTick()
+
+        const button = wrapper.find('.ori-button')
+        expect(button.attributes('aria-label')).toBe('Undo')
+        expect(button.attributes('aria-describedby')).toBeUndefined()
+        await expectNoA11yViolations(wrapper.element)
+        wrapper.unmount()
+    })
+
+    it('a slot that switches from text to an icon hands the name to the tooltip', async () => {
+        const iconOnly = ref(false)
+        const Host = defineComponent({
+            setup: () => () =>
+                h(OriToolbar, { label: 'Bar' }, () =>
+                    h(OriToolbarButton, { tooltip: 'Undo' }, () => (iconOnly.value ? h(Glyph) : 'Undo'))
+                )
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+        expect(wrapper.find('.ori-button').attributes('aria-label')).toBeUndefined()
+
+        iconOnly.value = true
+        await nextTick()
+        await nextTick()
+        expect(wrapper.find('.ori-button').attributes('aria-label')).toBe('Undo')
+        wrapper.unmount()
+    })
+
+    it('warns in DEV when an item shows no text and has neither aria-label nor tooltip', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: { default: () => h(OriToolbarButton, null, () => h(Glyph)) },
+            attachTo: document.body
+        })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('[OriToolbarButton]'))
+        warn.mockRestore()
+        wrapper.unmount()
+    })
+
+    it('does not warn when the slot renders visible text', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: { default: () => h(OriToolbarButton, null, () => 'Bold') },
+            attachTo: document.body
+        })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+        wrapper.unmount()
+    })
+
     it('an explicit aria-label still overrides both', () => {
         const wrapper = mount(OriToolbar, {
             props: { label: 'Bar' },
@@ -604,6 +670,26 @@ describe('OriToolbarSeparator', () => {
 })
 
 describe('OriToolbarToggleGroup + OriToolbarToggleItem', () => {
+    it('an item whose slot renders only an icon is named by its tooltip', async () => {
+        const Host = defineComponent({
+            components: { Glyph, OriToolbar, OriToolbarToggleGroup, OriToolbarToggleItem },
+            template: `
+                <OriToolbar label="Tools">
+                    <OriToolbarToggleGroup type="single" label="Tool">
+                        <OriToolbarToggleItem value="pen" tooltip="Pen"><Glyph /></OriToolbarToggleItem>
+                    </OriToolbarToggleGroup>
+                </OriToolbar>
+            `
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+
+        const [pen] = buttons()
+        expect(pen.getAttribute('aria-label')).toBe('Pen')
+        expect(pen.hasAttribute('aria-describedby')).toBe(false)
+        await expectNoA11yViolations(wrapper.element)
+    })
+
     it('single type: click sets aria-pressed and updates v-model (deselectable)', async () => {
         const value = ref<string | undefined>(undefined)
         const Host = defineComponent({

@@ -106,6 +106,11 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Component / CSS patterns
 
+- **A fixed-position panel is only as free as its ancestors allow.** An ancestor with `transform`,
+  `filter` or `contain` becomes the containing block of a `position: fixed` descendant, and its
+  `overflow` then clips it. Anchored panels that open from anywhere (menu, combobox listbox, popover)
+  go in the top layer (`popover="manual"` + `showPopover()`), which no ancestor reaches. e2e/top-layer.
+
 - **A non-standard mode (icon square) must be an EXPLICIT opt-in, never the absence of another prop.**
   `ori-button_icon` is `Boolean(icon) && !text` (icon set, no label), NOT `!text` — the old `!text`
   silently turned `<OriButton>Label</OriButton>` (slot-only) into a fixed-size icon square that clipped
@@ -483,6 +488,10 @@ e2e/harness/vite.config.ts --port 5199 --strictPort`, `reuseExistingServer: !CI`
   control); the Accordion title slot sits inside `<summary>` (a click toggles). Fine for text / icons /
   badges; a nested interactive control (a link in a consent label) is the caller's responsibility — the
   same limitation the native elements carry.
+- **A filled slot is not a visible name.** `$slots.default` says only that the caller passed something;
+  an icon component renders no text. Whether a slot names its button is read from the rendered DOM, with a
+  MutationObserver: slot content is rendered inside the child component, so a change to it re-renders
+  only that child, and the forwarding component's `onUpdated` never fires (toolbar `item-name.ts`).
 
 ## CSS cascade / layers
 

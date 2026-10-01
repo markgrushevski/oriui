@@ -356,9 +356,10 @@ pressing `Enter` / `Space` on it, does nothing.
 Pass `tooltip` and `OriToolbarButton` (or `OriToolbarToggleItem`) wraps itself in an `OriTooltip`. When
 the button also carries an `aria-label`, the tooltip is wired as its **description** (`aria-describedby` on the
 real button) — the manual step the standalone [Tooltip](/components/tooltip#accessibility) component
-normally asks of a consumer, done for you. When there is **no** `aria-label`, the tooltip text becomes the
-button's accessible **name** instead, and `aria-describedby` is omitted so a screen reader doesn't
-announce the same text twice.
+normally asks of a consumer, done for you. When nothing else names the button — no `aria-label`, no
+`label`, no text in the default slot — the tooltip text becomes its accessible **name** instead, and
+`aria-describedby` is omitted so a screen reader doesn't announce the same text twice. A slot that holds
+only an icon (an `<svg>` or your own icon component) renders no text, so it does not count as a name.
 
 ::example
 ::ori-toolbar{label="Actions"}

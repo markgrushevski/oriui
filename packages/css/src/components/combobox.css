@@ -151,7 +151,8 @@
 
     /* The popup listbox — floated by the shared `.ori-anchored` primitive (composed on the element):
        fixed + anchored under the control, with a collision flip on overflow. `min-width` matches the
-       control; `hidden` (from the prop-getter when closed) wins via the attribute selector. */
+       control; `hidden` (from the prop-getter when closed) wins via the attribute selector. As with the menu,
+       `popover="manual"` + `showPopover()` lifts it into the top layer; the z-index covers markup without it. */
     .ori-combobox__listbox {
         /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the alias (two-tier);
            the option radius derives from it. Mirrors menu.css / popover.css / card.css. */

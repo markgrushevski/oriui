@@ -13,8 +13,9 @@
     }
 
     /* The menu surface — a roving-tabindex action list floated by the shared `.ori-anchored` primitive
-       (composed alongside this class). Unlike the popover it is not top-layer (no Popover API), so it
-       carries a z-index; placement + collision flip come from `.ori-anchored`. */
+       (composed alongside this class); placement + collision flip come from `.ori-anchored`. Give the panel
+       `popover="manual"` and show it with `showPopover()` to lift it into the top layer, out of reach of an
+       ancestor's transform, overflow or z-index; the z-index covers markup without it. */
     .ori-menu {
         /* Baked default so a consumer's `.ori-size-radius_*` utility can repoint the alias (two-tier). */
         --ori-size-radius: var(--ori-size-radius_md);
