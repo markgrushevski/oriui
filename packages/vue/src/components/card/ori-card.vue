@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useSlots } from 'vue'
 import type { RadiusSize, ThemeColor, Variant } from '../../types'
 import { OriAvatar } from '../avatar'
 import { OriIcon } from '../icon'
@@ -13,8 +14,14 @@ import { OriIcon } from '../icon'
 // and a hand-written card that adds a role still needs it).
 
 const {
+    appendAvatar,
+    appendIcon,
     color = 'surface',
+    prependAvatar,
+    prependIcon,
     radius = 'lg',
+    subtitle,
+    title,
     variant = 'solid'
 } = defineProps<{
     appendAvatar?: string
@@ -34,6 +41,12 @@ const {
     variant?: Variant
     row?: boolean
 }>()
+
+// Read while rendering: `useSlots()` is not reactive, so a computed would miss a slot that appears later.
+const slots = useSlots()
+const hasPrepend = () => Boolean(slots['header-prepend'] || prependAvatar || prependIcon)
+const hasAppend = () => Boolean(slots['header-append'] || appendAvatar || appendIcon)
+const hasHeader = () => hasPrepend() || hasAppend() || Boolean(slots.title || title || slots.subtitle || subtitle)
 </script>
 
 <template>
@@ -61,22 +74,24 @@ const {
             >
                 <slot name="actions-prepend"></slot>
             </div>
-            <div class="ori-card__header">
-                <div class="ori-card__header-prepend">
+            <!-- Each header part renders only with content: an empty one still takes the row's gap (and an
+                 empty header the card's), pushing the title off the body's edge. -->
+            <div v-if="hasHeader()" class="ori-card__header">
+                <div v-if="hasPrepend()" class="ori-card__header-prepend">
                     <slot name="header-prepend">
                         <ori-avatar v-if="prependAvatar" :src="prependAvatar" />
                         <ori-icon v-if="prependIcon" :icon="prependIcon" size="sm" />
                     </slot>
                 </div>
                 <div class="ori-card__headline">
-                    <div class="ori-card__title">
+                    <div v-if="$slots.title || title" class="ori-card__title">
                         <slot name="title">{{ title }}</slot>
                     </div>
-                    <div class="ori-card__subtitle">
+                    <div v-if="$slots.subtitle || subtitle" class="ori-card__subtitle">
                         <slot name="subtitle">{{ subtitle }}</slot>
                     </div>
                 </div>
-                <div class="ori-card__header-append">
+                <div v-if="hasAppend()" class="ori-card__header-append">
                     <slot name="header-append">
                         <ori-avatar v-if="appendAvatar" :src="appendAvatar" />
                         <ori-icon v-if="appendIcon" :icon="appendIcon" size="sm" />
