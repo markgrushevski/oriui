@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, provide, ref, useAttrs, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useColorPicker } from '@oriui/headless/vue'
 import type { ColorFormat } from '@oriui/headless/vue'
 import { OriSlider } from '../slider'
 import { OriInput } from '../input'
 import { OriButton } from '../button'
-import { oriFieldKey, useOriField } from '../field/context'
+import { oriFieldKey } from '../field/context'
+import { useFieldGroup } from '../field/use-field-control'
 
 // OriColorPicker — an INLINE saturation/value + hue (+ optional alpha) + hex + presets panel. It is
 // open-state-agnostic: to open from a swatch button, drop it inside <OriPopover> and reuse its #trigger
@@ -45,21 +46,10 @@ const {
 const model = defineModel<string>()
 const emit = defineEmits<{ change: [value: string] }>()
 
-// A color-picker names itself via aria-label(ledby), so inside an OriField it points at the field's
-// label id + adopts its describedby / disabled; standalone it keeps its own `label` → aria-label. It has
-// no size / required / invalid concept, so those field bits don't apply. `isDisabled` feeds the engine.
-const field = useOriField()
-field?.markGroup?.()
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-const isInvalid = computed(() => field?.invalid.value ?? false)
-const labelledBy = computed(() => field?.labelId.value)
-// A caller's aria-describedby joins the field's hint instead of replacing it. The template binds `$attrs`
-// just before it, so every other attribute still goes to the caller, as plain fall-through would.
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const ids = [field?.describedBy.value, attrs['aria-describedby'] as string | undefined].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
+// A color-picker names itself via aria-label(ledby), so inside an OriField it points at the field's label
+// id and adopts its description and disabled state. Its `label` is an aria-label, not a labelledby target,
+// so it is not passed in. `isDisabled` feeds the engine.
+const { isDisabled, isInvalid, labelledBy, describedBy } = useFieldGroup(() => ({ disabled }))
 // Keep the own aria-label unless the field actually supplies a labelledby (a label-less field must not
 // blank the picker's name).
 const ariaLabel = computed(() => (labelledBy.value ? undefined : label))

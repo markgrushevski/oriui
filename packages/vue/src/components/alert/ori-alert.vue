@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
+import { CLOSE_ICON } from '../../internal/icons'
 import { OriIcon } from '../icon'
 
 const {
@@ -41,8 +42,6 @@ const ariaRole = computed(() => {
     if (politeness.value === 'polite') return 'status'
     return undefined
 })
-
-const CLOSE_ICON = 'M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6Z'
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { RadiusSize, ThemeColor, Variant } from '../../types'
-import { useSlotPresence } from '../field/slot-presence'
+import { useSlotPresence } from '../../internal/slot-presence'
 
 // OriBadge — a small status / count indicator. Two modes: standalone inline (no default slot), or
 // floating over wrapped content (default slot + `floating`). The badge surface rides the shared

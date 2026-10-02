@@ -2,7 +2,7 @@
 import { computed, provide, ref, useId } from 'vue'
 import type { ActionSize } from '../../types'
 import { oriFieldKey } from './context'
-import { useSlotPresence } from './slot-presence'
+import { useSlotPresence } from '../../internal/slot-presence'
 
 // OriField — the shared form-field shell: one source of truth for the label / hint / error / required
 // a11y contract the text controls (OriInput, OriSelect, OriTextarea) otherwise each wire by hand. It

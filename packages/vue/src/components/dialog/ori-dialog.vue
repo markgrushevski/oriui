@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTemplateRef } from 'vue'
-import { useDialogShell } from './use-dialog-shell'
+import { useDialogShell } from '../../internal/use-dialog-shell'
 
 // Forward stray attributes (aria-label, data-*, @click, …) to the <dialog>, not the multi-root
 // fragment — the dialog is the meaningful element, matching the other controls. (Without this, a
