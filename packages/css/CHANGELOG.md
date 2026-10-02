@@ -1,5 +1,86 @@
 # @oriui/css
 
+## 1.0.0-rc.21
+
+### Minor Changes
+
+- [`cbea554`](https://github.com/markgrushevski/oriui/commit/cbea5549ea089bd3c16e2a4559d210fe13af695c): **New: `OriDrawer`, a panel docked to an edge of the viewport.**
+
+    `<OriDrawer v-model:open="open" side="end" title="Filters">` opens a native `<dialog>` docked to `side`:
+    `start`, `end` (the default), `top` or `bottom`. `start` and `end` are logical and swap sides in RTL.
+
+    - **Modal by default:** a backdrop, a focus trap, an inert page, Escape and a press on the backdrop close
+      it, and focus returns to the trigger. `:modal="false"` leaves the page live: the drawer still opens in
+      the top layer, and Escape or a press outside closes it.
+    - **Sizes:** a side drawer is 20rem wide, and on a phone leaves a 3rem strip of the page in view; a top
+      or bottom drawer takes its content height up to 85% of the screen, at most 40rem wide. Set
+      `--ori-drawer-size` on the element to change either.
+    - **Slots:** `#trigger="{ props, open }"` (the props toggle the drawer), the body, `#title` and `#footer`.
+    - `@oriui/css` adds `drawer.css`: `.ori-drawer`, `.ori-drawer_<side>` and the `__content`, `__header`,
+      `__title`, `__close`, `__body` and `__footer` parts. It slides in from its edge and stays still under
+      `prefers-reduced-motion: reduce`.
+
+- [`3b813a6`](https://github.com/markgrushevski/oriui/commit/3b813a62f64db867aa6cd1992edf18471eb59c1a): **New: `OriList` and `OriListItem`, rows for settings panels, action panels and navigation.**
+
+    A row reads start → label → end: an `icon`, a `label` with an optional `description`, and a `hint`
+    (a shortcut), a `chevron` into a sub-panel or a control of your own in the `#end` slot. Unlike `OriMenu`,
+    a list is part of the page, reached with Tab, so a row can hold a switch or a segmented control.
+
+    - **The row element follows what it does:** `as` wins (a router link component), `href` makes a link,
+      a click listener makes a button, and anything else is a static row. Only a static row may hold a
+      control, since a control inside a button or a link is invalid HTML. Attributes and listeners go to
+      the row element.
+    - **`current`** sets `aria-current` (`"page"` on links). The current row is tinted and carries a bar on
+      its inline-start edge in the role's text tone; the tint alone is too faint to mark it.
+    - **`disabled`** disables a button row; a link row drops its `href` and gets `aria-disabled`.
+    - `OriList` is a `<ul role="list">`; `divided` draws hairlines between rows.
+    - `@oriui/css` adds `list.css`: `.ori-list`, `_divided`, `__item`, `__row`, `__start`, `__main`,
+      `__label`, `__description`, `__end`, `__hint` and `__chevron`.
+
+- [`00f3cba`](https://github.com/markgrushevski/oriui/commit/00f3cba822a00860d6b26838b9520964b678c754): **New: `OriSegmentedControl`, a compact single-select row.**
+
+    `<OriSegmentedControl v-model="theme" label="Theme" :options="[{ value: 'light', label: 'Light' }, …]" />`
+    renders a row of equal-width segments over real radio inputs that share one `name`. The browser does the
+    rest: arrow keys move and select, the group is a single Tab stop, the value submits with a form, and RTL
+    mirrors the row.
+
+    - **Props:** `options` (`{ label, value, disabled?, icon? }`), `label` (or `aria-label`), `name`,
+      `color` (default `primary`), `size`, `fluid`, `disabled`, `required`. Inside an `OriField` the field
+      owns the label, hint and error wiring, as it does for `OriRadioGroup`. The `#option` slot replaces a
+      segment's text.
+    - **Visible state:** the checked segment takes the accent fill and an edge in the role's text tone. The
+      fill alone does not stand out 3:1 from the track in every role and theme; the edge does.
+    - `@oriui/css` adds `segmented-control.css`: `.ori-segmented-control` with `__label`, `__track`, `__item`,
+      `__input`, `__icon` and `__text`, plus `_<size>` and `_fluid`. It works without JavaScript.
+
+- [`84847d8`](https://github.com/markgrushevski/oriui/commit/84847d8b771fcf67f3ab558fa4d03c8440f706cb): **New: a styled `<table>` — `.ori-table` in `@oriui/css` and `OriTable` in `@oriui/vue`.**
+
+    The CSS works on any native `<table>`: a header row with a rule, hairlines between body rows and
+    start-aligned cells, with `ori-table_striped`, `ori-table_hover`, `ori-table_sticky-header`, density
+    (`ori-table_sm`, `ori-table_lg`) and `ori-table_caption-hidden`. `.ori-table__num` aligns a column of
+    numbers to the end with tabular figures. A `<tr aria-current>` marks the current row. `.ori-table-scroll`
+    is the box a wide table scrolls in, so a phone scrolls the table instead of the page.
+
+    `<OriTable caption="Leaderboard" striped>` takes your `thead` / `tbody` / `tfoot` rows in its default slot
+    and renders the caption and the scroll box. While the table overflows the box, the box is a region named
+    by the caption and a tab stop, so a keyboard can scroll it; a table that fits adds no tab stop. Props:
+    `caption` (or `#caption`), `captionHidden`, `hover`, `maxHeight`, `size`, `stickyHeader`, `striped`.
+
+    It is not a data grid: sorting, row selection and virtualization are not part of it.
+
+### Patch Changes
+
+- [`cbea554`](https://github.com/markgrushevski/oriui/commit/cbea5549ea089bd3c16e2a4559d210fe13af695c): **Two `OriDialog` fixes: the page no longer scrolls under an open modal dialog, and a titleless dialog keeps
+  your `aria-labelledby`.**
+
+    - **Scroll lock.** `showModal()` makes the page inert but leaves it scrollable, so a wheel over the
+      backdrop scrolled the page behind an `OriDialog`. `dialog.css` now sets `overflow: hidden` on the root
+      while a `.ori-dialog` is open as a modal. On systems with classic scrollbars the dimmed page shifts by
+      the scrollbar's width while the dialog is open.
+    - **Name.** Without a `title` or `#title`, the dialog still pointed `aria-labelledby` at a title that was
+      not rendered, and that reference replaced an `aria-labelledby` you passed, leaving the dialog with no
+      accessible name. It is now dropped when there is no title, so yours applies.
+
 ## 1.0.0-rc.20
 
 ### Minor Changes
