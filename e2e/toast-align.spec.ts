@@ -75,6 +75,61 @@ test('the naive implementation would fail this test — a flow-positioned close 
     expect(Math.abs(centerX(text) - centerX(card))).toBeGreaterThan(4)
 })
 
+// Vertical geometry: every part sits on the message's first line, whatever its own height.
+const centerY = (b: Box) => b.y + b.height / 2
+const firstLine = `
+    <div class="ori-toast ori-color_success" role="status" style="width: 26rem">
+        <i class="ori-icon ori-toast__icon" aria-hidden="true" id="icon">
+            <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z" /></svg>
+        </i>
+        <div class="ori-toast__body">
+            <div class="ori-toast__text" id="text">Message archived.</div>
+        </div>
+        <button class="ori-button ori-button_sm ori-font-size_sm ori-variant_soft ori-toast__action" id="action">
+            Undo
+        </button>
+        <button class="ori-toast__close" type="button" aria-label="Dismiss" id="close">×</button>
+    </div>`
+
+const lineCenter = (page: Page) =>
+    page.locator('#text').evaluate((el) => {
+        // The first rendered line of glyphs: `line-height` may be `normal`, which has no number to read.
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        const r = range.getClientRects()[0]!
+        return r.top + r.height / 2
+    })
+
+test('the action, the icon and the dismiss button line up with the first line of the message', async ({ page }) => {
+    await render(page, 'ltr', firstLine)
+    const line = await lineCenter(page)
+
+    // Baseline alignment centers a label on its own line box, so a pixel of font metrics remains; the ×
+    // glyph is 1.25 times the text, so its box sits a little further off. Unaligned, the action is 5px+ off.
+    for (const [id, tolerance] of [
+        ['#action', 1.5],
+        ['#icon', 1.5],
+        ['#close', 2.5]
+    ] as const) {
+        const box = (await page.locator(id).boundingBox()) as Box
+        expect(Math.abs(centerY(box) - line), id).toBeLessThanOrEqual(tolerance)
+    }
+})
+
+test('centering only the action leaves a one-line message above it', async ({ page }) => {
+    // The counter-example: the body at the top of the card and the action centered on it, the shape that
+    // put the text visibly above the Undo button.
+    await render(page, 'ltr', firstLine)
+    await page.addStyleTag({
+        content: `.ori-toast .ori-toast__body { align-self: flex-start }
+                  .ori-toast .ori-toast__action { align-self: center }`
+    })
+    const line = await lineCenter(page)
+    const action = (await page.locator('#action').boundingBox()) as Box
+
+    expect(Math.abs(centerY(action) - line)).toBeGreaterThan(3)
+})
+
 test('the default alignment is unchanged — the body still starts at the content edge', async ({ page }) => {
     await render(page, 'ltr', toast({ close: true }))
     const { card, text } = await boxes(page)

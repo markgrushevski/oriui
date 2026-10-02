@@ -153,14 +153,25 @@
         inset-inline-end: calc(var(--ori-size-gap) * 1.5);
     }
 
+    /* Every part lines up with the message's first line: the body, the icon, the action and the dismiss
+       button share its baseline, so a one-line toast reads centered against the taller action button. An
+       SVG has no text baseline, so the icon box takes the height of one line, centers its glyph in it, and
+       borrows a baseline from an empty character. */
     .ori-toast .ori-toast__icon {
         flex-shrink: 0;
+        align-self: baseline;
+        height: 1lh;
 
         color: var(--ori-color);
     }
 
+    .ori-toast .ori-toast__icon::before {
+        content: '\200b';
+    }
+
     .ori-toast .ori-toast__body {
         flex-grow: 1;
+        align-self: baseline;
 
         min-width: 0;
     }
@@ -177,6 +188,7 @@
 
     .ori-toast .ori-toast__close {
         flex-shrink: 0;
+        align-self: baseline;
 
         width: 1.5em;
         height: 1.5em;
@@ -212,7 +224,7 @@
 
     .ori-toast .ori-toast__action {
         flex-shrink: 0;
-        align-self: center;
+        align-self: baseline;
     }
 
     /* The toaster takes focus from its hotkey; the ring shows where the keyboard landed. */
