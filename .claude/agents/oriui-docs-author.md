@@ -14,16 +14,15 @@ READ first: `docs/content/components/button.md` (the template exemplar), the com
 Page skeleton (mirror Button):
 
 1. Frontmatter `title` → intro + the "live, switchable Vue/HTML" note.
-2. **Examples** — dense, DaisyUI-style: every variant / color / size / state + meaningful
-   combinations + a real-world recipe. Each is an `::example` block with `#vue` and `#html` tabs.
-3. **Props** table (`type` · `default` · `description`) — read straight from the SFC; do **not**
-   invent props.
-4. **Events & attributes** (custom emits / fall-through), **Slots** table.
-5. **CSS classes** table (the standalone-layer reference).
-6. **Accessibility** (the contract + a keyboard table for interactive components).
-
-Compound components add an **Anatomy** section; headless ones add a **Headless** section (the
-`useX()` contract + adapter).
+2. **Classes** — the `:class-table` (the standalone-layer reference). Compound components follow it
+   with an **Anatomy** section.
+3. **Examples** — one section per topic (variants, colors, sizes, states …), dense, DaisyUI-style:
+   every variant / color / size / state + meaningful combinations. Each is an `::example` block with
+   `#vue` and `#html` tabs. Close with **Common patterns** (real-world recipes).
+4. **Accessibility** (the contract + a keyboard table for interactive components).
+5. **Framework API** — **Props** (`type` · `default` · `description`, read straight from the SFC; do
+   **not** invent props), **Events & attributes** (custom emits / fall-through), **Slots**. A component
+   with a `useX()` composable adds a **Headless** section (the contract + adapter).
 
 MDC rules (NOTES.md): inline boolean props as `:prop="true"`; arrays as `:options='[...]'`.
 

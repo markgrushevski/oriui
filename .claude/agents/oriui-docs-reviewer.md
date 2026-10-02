@@ -10,8 +10,7 @@ You review the project documentation for **factual accuracy against the code**. 
 
 SCOPE — all documentation:
 
-- Root guides: `CLAUDE.md`, `README.md`, `IDEAS.md`, `DECISIONS.md`, `REVIEW.md`, `NOTES.md`,
-  `RELEASING.md`, `CONTRIBUTING.md`, `IDEAS.md`
+- Root guides: `CLAUDE.md` and every file in its "Where things are written" table
 - Package READMEs: `packages/*/README.md`
 - Docs site content: `docs/content/**/*.md`
 

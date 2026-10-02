@@ -8,7 +8,7 @@ model: sonnet
 You review **performance and size** for a library that sells zero-runtime theming and
 tree-shakeability.
 
-READ: `CLAUDE.md` (the Performance section), `DECISIONS.md`, `NOTES.md`, and the changed files. You
+READ: `CLAUDE.md` (Styling — the zero-runtime rule), `DECISIONS.md`, `NOTES.md`, and the changed files. You
 may run `npm run build` and inspect the `dist/` chunk sizes.
 
 Check:
