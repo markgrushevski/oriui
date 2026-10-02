@@ -1,5 +1,16 @@
-import { computed, onBeforeUnmount, onMounted, ref, watch, type ComponentPublicInstance, type Ref } from 'vue'
-import { useSlotPresence } from '../field/slot-presence'
+import {
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch,
+    type ComponentPublicInstance,
+    type Ref
+} from 'vue'
+import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
+import { swallowClick } from '../../internal/events'
+import { useSlotPresence } from '../../internal/slot-presence'
 
 interface ItemNameProps {
     ariaLabel?: string
@@ -7,12 +18,56 @@ interface ItemNameProps {
     tooltip?: string
 }
 
+export interface ItemButtonProps extends ItemNameProps {
+    color?: ThemeColor
+    disabled: boolean
+    icon?: string
+    pressed?: boolean
+    radius?: RadiusSize
+    size?: ActionSize
+    variant: Variant
+}
+
+/**
+ * What OriToolbarButton and OriToolbarToggleItem share: the OriButton they render, carrying the headless
+ * item's roving props, its accessible name, and a disabled state that stays focusable (WAI-ARIA toolbar
+ * discoverability) yet never activates. The template refs that button as `ref="button"`.
+ */
+export function useItemButton<ItemProps extends object>(
+    props: () => ItemButtonProps,
+    itemProps: Readonly<Ref<ItemProps>>,
+    component: string
+) {
+    const name = useItemName(props, useTemplateRef<ComponentPublicInstance>('button'), component)
+    const bindings = computed(() => {
+        const { color, disabled, icon, label, pressed, radius, size, variant } = props()
+        return {
+            ...itemProps.value,
+            color,
+            icon,
+            label,
+            radius,
+            size,
+            variant,
+            'aria-label': name.ariaLabel.value,
+            // Only a toggle button has its own pressed state; a toggle item's comes with `itemProps`.
+            ...(pressed === undefined ? {} : { 'aria-pressed': pressed }),
+            'aria-disabled': disabled || undefined
+        }
+    })
+    // CSS already stops the pointer; this stops the keyboard click a focusable item still gets.
+    const onClickCapture = (event: MouseEvent): void => {
+        if (props().disabled) swallowClick(event)
+    }
+    return { bindings, describedBy: name.describedBy, onClickCapture }
+}
+
 // The accessible name of a toolbar item. The tooltip names the item only when nothing visible does: a
 // tooltip that renamed a button with visible text would break WCAG 2.5.3 Label in Name (the button reads
 // "Save" but answers to its tooltip). Slotted content counts as visible only if it renders text. That is
 // read from the DOM: an icon component and a text component look the same before they render, and slot
 // content re-renders inside the button, where this component's own update hooks never see it.
-export function useItemName(
+function useItemName(
     props: () => ItemNameProps,
     button: Readonly<Ref<ComponentPublicInstance | null>>,
     component: string

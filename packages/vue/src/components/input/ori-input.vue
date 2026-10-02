@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
-import { useOriField } from '../field/context'
+import { useFieldControl } from '../field/use-field-control'
 
 // OriInput — the first form control: a labeled, tokenized text field with real a11y wiring
 // (label/for, aria-invalid, aria-describedby tied to the hint/error) and v-model via defineModel.
@@ -47,33 +46,10 @@ const {
 
 const model = defineModel<string>()
 
-// When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
-// label / hint / error; standalone the control wires its own (behavior unchanged).
-const field = useOriField()
-const inField = Boolean(field)
-
-// SSR-safe unique id (Vue 3.5) so the label's `for` always targets the field — even when the
-// caller doesn't pass an explicit id. Inside a field, the field's id wins.
-const uid = useId()
-const fieldId = computed(() => field?.id.value ?? id ?? uid)
-const hintId = computed(() => `${fieldId.value}-hint`)
-const errorId = computed(() => `${fieldId.value}-error`)
-const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)))
-const isRequired = computed(() => required || (field?.required.value ?? false))
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-const fieldSize = computed(() => field?.size.value ?? size)
-
-// Describe by whichever helper is actually rendered (error replaces hint), plus any caller-supplied
-// id — never reference an element that isn't in the DOM. Inside a field, the field supplies it.
-// A caller's own `aria-describedby` arrives through `$attrs`, and the template binds `v-bind="$attrs"`
-// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const inherited = attrs['aria-describedby'] as string | undefined
-    const own = field ? [field.describedBy.value] : [error ? errorId.value : hint ? hintId.value : '', describedby]
-    const ids = [...own, inherited].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
+// Inside an OriField the control takes the field's id and a11y wiring and the field renders the label,
+// hint and error; standalone it wires its own.
+const { inField, fieldId, hintId, errorId, describedBy, isInvalid, isRequired, isDisabled, fieldSize } =
+    useFieldControl(() => ({ describedby, disabled, error, hint, id, invalid, required, size }))
 </script>
 
 <template>

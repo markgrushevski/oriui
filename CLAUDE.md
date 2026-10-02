@@ -67,7 +67,7 @@ error.
 packages/
   css/        @oriui/css — tokens, utilities, src/components/<name>.css (one per component)
   headless/   @oriui/headless — src/core (engine) + src/vue (adapter); src/svelte, src/react (in development)
-  vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/types.ts
+  vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/internal/ (not exported); src/types.ts
 docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
 tests/  e2e/  unit + a11y suite; real-browser suite
 ```
@@ -91,6 +91,9 @@ and SMACSS property order. The rules below are the intent tooling cannot check.
   accessible label on an icon-only control).
 - Import types from `../../types`, then siblings (`from '../icon'`) — never the root barrel `../../` (an import
   cycle).
+- Logic more than one component needs is written once. A family's own composable sits in its folder
+  (`field/use-field-control.ts`, `toolbar/use-item-button.ts`); a helper that belongs to no component goes in
+  `src/internal/`, which the package does not export.
 
 ### Styling
 

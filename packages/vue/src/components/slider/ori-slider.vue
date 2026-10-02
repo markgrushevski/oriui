@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref, useAttrs, useId, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { ThemeColor } from '../../types'
-import { useOriField } from '../field/context'
+import { useFieldControl } from '../field/use-field-control'
 
 const {
     color = 'primary',
@@ -31,23 +31,9 @@ const emit = defineEmits<{
 // role/value/keyboard live there, so the accessible name must too (mirrors the other form controls).
 defineOptions({ inheritAttrs: false })
 
-// Adopt a surrounding OriField's id + a11y wiring (the field's `<label for>` then names the range);
-// standalone the slider wires its own. A slider has no required/size concept, so it takes only the
-// field's id / disabled / describedby / invalid.
-const field = useOriField()
-const inField = Boolean(field)
-const uid = useId()
-const id = computed(() => field?.id.value ?? uid)
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-// A caller's own `aria-describedby` arrives through `$attrs`, and the template binds `v-bind="$attrs"`
-// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const inherited = attrs['aria-describedby'] as string | undefined
-    const ids = [field?.describedBy.value, inherited].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
-const isInvalid = computed(() => field?.invalid.value ?? false)
+// Inside an OriField the field's `<label for>` names the range and the control takes its id and wiring;
+// standalone it wires its own. A slider has no required or size, so only `disabled` goes in.
+const { inField, fieldId: id, describedBy, isInvalid, isDisabled } = useFieldControl(() => ({ disabled }))
 
 // The thumb is the browser's and moves on its own; the fill and the readout are ours. Reading them
 // from `modelValue` made the three disagree whenever the prop did not come back — an unbound

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, ThemeColor } from '../../types'
-import { useOriField } from '../field/context'
+import { useFieldGroup } from '../field/use-field-control'
 
 /** One radio in `<OriRadioGroup>`'s `options` prop. */
 export interface RadioOption {
@@ -38,28 +37,10 @@ const {
 
 const model = defineModel<string | number>()
 
-// When nested in an OriField, the field owns the group's name + a11y wiring; standalone the group
-// wires its own (behavior unchanged). A radiogroup names itself via aria-labelledby, so it points at
-// the field's label id rather than a `<label for>`.
-const field = useOriField()
-const inField = Boolean(field)
-field?.markGroup?.()
-
-const uid = useId()
-const groupName = computed(() => name ?? uid)
-const ownLabelId = computed(() => `${uid}-label`)
-const labelledBy = computed(() => (field ? field.labelId.value : label ? ownLabelId.value : undefined))
-// A caller's aria-describedby joins the field's hint instead of replacing it. The template binds `$attrs`
-// just before it, so every other attribute still goes to the caller, as plain fall-through would.
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const ids = [field?.describedBy.value, attrs['aria-describedby'] as string | undefined].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
-const isInvalid = computed(() => field?.invalid.value ?? false)
-const isRequired = computed(() => required || (field?.required.value ?? false))
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-const groupSize = computed(() => field?.size.value ?? size)
+// A radiogroup names itself via aria-labelledby, so inside an OriField it points at the field's label id
+// rather than a `<label for>`; standalone it wires its own.
+const { inField, groupName, ownLabelId, labelledBy, describedBy, isInvalid, isRequired, isDisabled, groupSize } =
+    useFieldGroup(() => ({ disabled, label, name, required, size }))
 </script>
 
 <template>

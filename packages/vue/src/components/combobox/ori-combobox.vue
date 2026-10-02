@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, mergeProps, ref, useAttrs, useId, watch, watchEffect } from 'vue'
+import { computed, mergeProps, ref, useId, watch, watchEffect } from 'vue'
 import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
-import { setTopLayer } from '../popover/top-layer'
-import { useSlotPresence } from '../field/slot-presence'
+import { useFieldControl } from '../field/use-field-control'
+import { setTopLayer } from '../../internal/top-layer'
+import { useSlotPresence } from '../../internal/slot-presence'
 
 // OriCombobox — a filterable single-select listbox, and the first styled component driven by the
 // @oriui/headless core (state machine + prop-getters + WAI-ARIA listbox keyboard). The composable
@@ -69,12 +70,14 @@ const model = defineModel<string | null>()
 // Per-instance anchor-name tethers the fixed listbox to the control (CSS Anchor Positioning + flip).
 const anchorName = `--ori-combobox-${useId()}`
 
-// When nested in an OriField, adopt its shared id + a11y wiring and let the field own the
-// label / hint / error; standalone the control wires its own (behavior unchanged). `isDisabled` is
-// read by the composable below, so it is declared before useCombobox.
-const field = useOriField()
-const inField = Boolean(field)
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
+// Inside an OriField the control takes the field's id and a11y wiring and the field renders the label,
+// hint and error; standalone it wires its own, with the headless input's id. `isDisabled` feeds
+// useCombobox below, so this comes first (the id getter is only read later, once `inputProps` exists).
+const { inField, fieldId, hintId, errorId, describedBy, isInvalid, isRequired, isDisabled, fieldSize } =
+    useFieldControl(
+        () => ({ describedby, disabled, error, hint, id, invalid, required, size }),
+        () => inputProps.value.id as string
+    )
 
 const {
     open,
@@ -115,29 +118,12 @@ watch(
     }
 )
 
-// hint / error live in this SFC (the machine doesn't know about validation); wire aria-describedby +
-// aria-invalid onto the headless input, and label the listbox only when a visible label exists. Inside a
-// field, the field owns the id / label / hint / error / required / invalid / size wiring instead.
+// Label the listbox only when a visible label exists; inside a field, the field's label names it.
+const field = useOriField()
 const slotted = useSlotPresence('label')
-const ownInputId = computed(() => inputProps.value.id as string)
-const inputElId = computed(() => field?.id.value ?? ownInputId.value)
 const labelId = computed(() => labelProps.value.id as string)
 const hasLabel = computed(() => Boolean(label) || slotted.label)
 const listboxLabelledBy = computed(() => (field ? field.labelId.value : hasLabel.value ? labelId.value : undefined))
-const hintId = computed(() => `${ownInputId.value}-hint`)
-const errorId = computed(() => `${ownInputId.value}-error`)
-const isInvalid = computed(() => (field ? field.invalid.value : invalid || Boolean(error)))
-const isRequired = computed(() => required || (field?.required.value ?? false))
-const fieldSize = computed(() => field?.size.value ?? size)
-// A caller's own `aria-describedby` arrives through `$attrs`, and the visible input merges `$attrs`
-// BEFORE `:aria-describedby` — so it has to be joined here, or mergeProps would clobber it.
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const inherited = attrs['aria-describedby'] as string | undefined
-    const own = field ? [field.describedBy.value] : [error ? errorId.value : hint ? hintId.value : '', describedby]
-    const ids = [...own, inherited].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
 
 // `required` must guard the SELECTION, not the visible input's label text. Typing a non-matching query
 // never commits a value, so a native `required` on the text field would report VALID while the form
@@ -199,7 +185,7 @@ watch(open, (isOpen) => setTopLayer(listboxEl.value, isOpen), { flush: 'post' })
         <div v-bind="controlProps" ref="controlEl" class="ori-combobox__control" :style="{ anchorName }">
             <input
                 v-bind="mergeProps($attrs, { onKeydown: onInputKeydown }, inputProps)"
-                :id="inputElId"
+                :id="fieldId"
                 ref="inputEl"
                 :class="['ori-input__field', 'ori-combobox__input', `ori-size-radius_${radius}`]"
                 :placeholder="placeholder"

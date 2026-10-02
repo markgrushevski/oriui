@@ -2,7 +2,7 @@
 import { computed, useId, useTemplateRef, watch } from 'vue'
 import { useDismissable } from '@oriui/headless/vue'
 import type { DrawerSide } from '../../types'
-import { useDialogShell } from '../dialog/use-dialog-shell'
+import { useDialogShell } from '../../internal/use-dialog-shell'
 
 // Stray attributes (aria-label, data-*, …) go to the <dialog>, not the multi-root fragment.
 defineOptions({ inheritAttrs: false })

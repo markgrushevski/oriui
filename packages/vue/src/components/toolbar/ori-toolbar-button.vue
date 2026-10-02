@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useTemplateRef } from 'vue'
+import { mergeProps } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { useToolbarItem } from '@oriui/headless/vue'
 import { OriButton } from '../button'
 import { OriTooltip } from '../tooltip'
-import { useItemName } from './item-name'
+import { useItemButton } from './use-item-button'
 
 // OriToolbarButton — a button that participates in the toolbar's roving tabindex. Composes OriButton
 // for the visuals and `useToolbarItem` for the roving props. Two toolbar-specific additions: a `pressed`
@@ -48,33 +48,11 @@ const {
 defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarItem()
-const button = useTemplateRef('button')
-// The tooltip names the button only when it shows no text (see item-name.ts); a nameless one warns in DEV.
-const name = useItemName(() => ({ ariaLabel, label, tooltip }), button, 'OriToolbarButton')
-
-// OriButton props + the toolbar/roving/a11y attributes (the latter fall through to the <button>).
-const buttonBindings = computed(() => ({
-    ...itemProps.value,
-    color,
-    icon,
-    label,
-    radius,
-    size,
-    variant,
-    'aria-label': name.ariaLabel.value,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || undefined
-}))
-
-// Block activation of an aria-disabled item. CSS pointer-events:none already stops the mouse; this
-// covers the keyboard (Enter/Space fire a click on a focused button). Capture phase + stopImmediate so
-// a caller's own @click (bubble, same element) never runs.
-function onClickCapture(event: MouseEvent): void {
-    if (disabled) {
-        event.stopImmediatePropagation()
-        event.preventDefault()
-    }
-}
+const { bindings, describedBy, onClickCapture } = useItemButton(
+    () => ({ ariaLabel, color, disabled, icon, label, pressed, radius, size, tooltip, variant }),
+    itemProps,
+    'OriToolbarButton'
+)
 </script>
 
 <template>
@@ -82,8 +60,8 @@ function onClickCapture(event: MouseEvent): void {
         <template #default="{ bubbleId }">
             <OriButton
                 ref="button"
-                v-bind="mergeProps(buttonBindings, $attrs)"
-                :aria-describedby="name.describedBy(bubbleId)"
+                v-bind="mergeProps(bindings, $attrs)"
+                :aria-describedby="describedBy(bubbleId)"
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
@@ -94,7 +72,7 @@ function onClickCapture(event: MouseEvent): void {
         </template>
     </OriTooltip>
 
-    <OriButton v-else ref="button" v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
+    <OriButton v-else ref="button" v-bind="mergeProps(bindings, $attrs)" @click.capture="onClickCapture">
         <template v-if="$slots.default" #default><slot></slot></template>
     </OriButton>
 </template>

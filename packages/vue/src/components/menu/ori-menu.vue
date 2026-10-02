@@ -2,7 +2,7 @@
 import { computed, mergeProps, nextTick, useId, useTemplateRef, watch } from 'vue'
 import { useMenu, useDismissable, type MenuItem } from '@oriui/headless/vue'
 import type { AnchoredPlacement } from '../../types'
-import { setTopLayer } from '../popover/top-layer'
+import { setTopLayer } from '../../internal/top-layer'
 
 // OriMenu — a WAI-ARIA menu button: a trigger opens a roving-tabindex menu of actions. Behavior
 // (open/close, Arrow/Home/End roving, Enter/Space activate, Escape/Tab/outside-click close) lives in the

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { computed, useAttrs, useId } from 'vue'
 import type { ActionSize, ThemeColor } from '../../types'
-import { useOriField } from '../field/context'
+import { useFieldGroup } from '../field/use-field-control'
 import { OriIcon } from '../icon'
 
 /** One segment of `<OriSegmentedControl>`'s `options` prop. */
@@ -45,24 +44,8 @@ const {
 const model = defineModel<string | number>()
 
 // Inside an OriField the field owns the label and the a11y wiring, as for OriRadioGroup.
-const field = useOriField()
-const inField = Boolean(field)
-field?.markGroup?.()
-
-const uid = useId()
-const groupName = computed(() => name ?? uid)
-const ownLabelId = computed(() => `${uid}-label`)
-const labelledBy = computed(() => (field ? field.labelId.value : label ? ownLabelId.value : undefined))
-// A caller's aria-describedby joins the field's hint instead of replacing it ($attrs is bound before it).
-const attrs = useAttrs()
-const describedBy = computed(() => {
-    const ids = [field?.describedBy.value, attrs['aria-describedby'] as string | undefined].filter(Boolean)
-    return ids.length ? ids.join(' ') : undefined
-})
-const isInvalid = computed(() => field?.invalid.value ?? false)
-const isRequired = computed(() => required || (field?.required.value ?? false))
-const isDisabled = computed(() => disabled || (field?.disabled.value ?? false))
-const groupSize = computed(() => field?.size.value ?? size)
+const { inField, groupName, ownLabelId, labelledBy, describedBy, isInvalid, isRequired, isDisabled, groupSize } =
+    useFieldGroup(() => ({ disabled, label, name, required, size }))
 </script>
 
 <template>

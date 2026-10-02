@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, useAttrs } from 'vue'
+import { swallowClick } from '../../internal/events'
 import { OriIcon } from '../icon'
 
 // OriListItem — one row of an OriList: start (an icon), a label with an optional description, and an end
@@ -56,19 +57,12 @@ const rowBindings = computed(() => {
         if (href && !disabled) bindings.href = href
         if (disabled) {
             bindings['aria-disabled'] = 'true'
-            bindings.onClickCapture = swallow
+            bindings.onClickCapture = swallowClick
         }
     }
     if (current) bindings['aria-current'] = isLink.value ? 'page' : 'true'
     return bindings
 })
-
-// A disabled link or component row still receives clicks (a router link would navigate from its own
-// handler). Capture phase + stopImmediate keeps them from every later listener on the row.
-function swallow(event: MouseEvent): void {
-    event.preventDefault()
-    event.stopImmediatePropagation()
-}
 </script>
 
 <template>

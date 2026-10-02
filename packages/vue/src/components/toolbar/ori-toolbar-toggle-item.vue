@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, mergeProps, useTemplateRef } from 'vue'
+import { mergeProps } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { useToolbarToggleItem } from '@oriui/headless/vue'
 import { OriButton } from '../button'
 import { OriTooltip } from '../tooltip'
-import { useItemName } from './item-name'
+import { useItemButton } from './use-item-button'
 
 // OriToolbarToggleItem — a toggle button inside an OriToolbarToggleGroup. Composes OriButton with
 // `useToolbarToggleItem`, which supplies the roving props PLUS aria-pressed (derived from the group's
@@ -41,27 +41,11 @@ const {
 defineOptions({ inheritAttrs: false })
 
 const { itemProps } = useToolbarToggleItem(() => value)
-const button = useTemplateRef('button')
-const name = useItemName(() => ({ ariaLabel, label, tooltip }), button, 'OriToolbarToggleItem')
-
-const buttonBindings = computed(() => ({
-    ...itemProps.value,
-    color,
-    icon,
-    label,
-    radius,
-    size,
-    variant,
-    'aria-label': name.ariaLabel.value,
-    'aria-disabled': disabled || undefined
-}))
-
-function onClickCapture(event: MouseEvent): void {
-    if (disabled) {
-        event.stopImmediatePropagation()
-        event.preventDefault()
-    }
-}
+const { bindings, describedBy, onClickCapture } = useItemButton(
+    () => ({ ariaLabel, color, disabled, icon, label, radius, size, tooltip, variant }),
+    itemProps,
+    'OriToolbarToggleItem'
+)
 </script>
 
 <template>
@@ -69,8 +53,8 @@ function onClickCapture(event: MouseEvent): void {
         <template #default="{ bubbleId }">
             <OriButton
                 ref="button"
-                v-bind="mergeProps(buttonBindings, $attrs)"
-                :aria-describedby="name.describedBy(bubbleId)"
+                v-bind="mergeProps(bindings, $attrs)"
+                :aria-describedby="describedBy(bubbleId)"
                 @click.capture="onClickCapture"
             >
                 <!-- Forward the caller's children (any icon source) to OriButton; when absent, OriButton
@@ -81,7 +65,7 @@ function onClickCapture(event: MouseEvent): void {
         </template>
     </OriTooltip>
 
-    <OriButton v-else ref="button" v-bind="mergeProps(buttonBindings, $attrs)" @click.capture="onClickCapture">
+    <OriButton v-else ref="button" v-bind="mergeProps(bindings, $attrs)" @click.capture="onClickCapture">
         <template v-if="$slots.default" #default><slot></slot></template>
     </OriButton>
 </template>
