@@ -98,6 +98,11 @@ function onPointerUp(): void {
     drawing = undefined
 }
 
+// A single toggle group can be emptied by pressing its item again; a drawing app always has a tool.
+function pickTool(value: string | string[] | undefined): void {
+    if (typeof value === 'string' && value) tool.value = value as Tool
+}
+
 function undo(): void {
     const stroke = strokes.value.pop()
     if (stroke) undone.value.push(stroke)
@@ -146,12 +151,7 @@ const strokeCount = computed(() => `${strokes.value.length} ${strokes.value.leng
         </header>
 
         <OriToolbar label="Drawing tools" class="home-editor__toolbar">
-            <OriToolbarToggleGroup
-                :model-value="tool"
-                type="single"
-                label="Tool"
-                @update:model-value="(value: string) => value && (tool = value as Tool)"
-            >
+            <OriToolbarToggleGroup :model-value="tool" type="single" label="Tool" @update:model-value="pickTool">
                 <OriToolbarToggleItem value="pen" tooltip="Pen" :icon="icons.pen" />
                 <OriToolbarToggleItem value="marker" tooltip="Marker" :icon="icons.marker" />
                 <OriToolbarToggleItem value="eraser" tooltip="Eraser" :icon="icons.eraser" />
