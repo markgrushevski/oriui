@@ -17,6 +17,29 @@ describe('OriCard', () => {
         expect(wrapper.find('.ori-card__body').text()).toBe('Body')
     })
 
+    // An empty header part is still a flex item: it takes the header's gap and shifts the title off the
+    // body's edge. Only parts with content render, matching the documented HTML.
+    it('renders only the header parts that have content', () => {
+        const titled = mount(OriCard, { props: { title: 'Hello', text: 'Body' } })
+
+        expect(titled.find('.ori-card__header').exists()).toBe(true)
+        expect(titled.find('.ori-card__header-prepend').exists()).toBe(false)
+        expect(titled.find('.ori-card__header-append').exists()).toBe(false)
+        expect(titled.find('.ori-card__subtitle').exists()).toBe(false)
+
+        const bodyOnly = mount(OriCard, { props: { text: 'Body' } })
+        expect(bodyOnly.find('.ori-card__header').exists()).toBe(false)
+
+        const decorated = mount(OriCard, {
+            props: { prependIcon: 'M0 0h24v24H0z' },
+            slots: { subtitle: 'Sub', 'header-append': '<button type="button">More</button>' }
+        })
+        expect(decorated.find('.ori-card__header-prepend .ori-icon').exists()).toBe(true)
+        expect(decorated.find('.ori-card__subtitle').text()).toBe('Sub')
+        expect(decorated.find('.ori-card__header-append button').exists()).toBe(true)
+        expect(decorated.find('.ori-card__title').exists()).toBe(false)
+    })
+
     // State is an attribute, not a class — the css layer styles [aria-disabled] / [aria-busy].
     it('reflects disabled via aria-disabled', () => {
         const wrapper = mount(OriCard, { props: { title: 'x', disabled: true } })
