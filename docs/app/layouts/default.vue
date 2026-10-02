@@ -209,21 +209,13 @@ onMounted(() => {
             </main>
         </div>
 
-        <Teleport to="body">
-            <div v-if="drawerOpen" class="docs-drawer-overlay" @click="drawerOpen = false">
-                <aside class="docs-drawer" @click.stop>
-                    <div class="docs-drawer__head">
-                        <NuxtLink to="/" class="docs-brand" @click="drawerOpen = false">oriUI</NuxtLink>
-                        <button class="docs-drawer__close" aria-label="Close navigation" @click="drawerOpen = false">
-                            ×
-                        </button>
-                    </div>
-
-                    <NavTree :sections="sections" @navigate="drawerOpen = false" />
-                    <NavSocial />
-                </aside>
-            </div>
-        </Teleport>
+        <OriDrawer v-model:open="drawerOpen" side="start" class="docs-drawer">
+            <template #title>
+                <NuxtLink to="/" class="docs-brand" @click="drawerOpen = false">oriUI</NuxtLink>
+            </template>
+            <NavTree :sections="sections" @navigate="drawerOpen = false" />
+            <NavSocial />
+        </OriDrawer>
 
         <OriToaster />
     </div>

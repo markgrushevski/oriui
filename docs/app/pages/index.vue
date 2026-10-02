@@ -1,5 +1,49 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { SKINS, type SkinId } from '../composables/useOriTheme'
+
 const NuxtLink = resolveComponent('NuxtLink')
+const { theme, skin, setSkin, setTheme } = useOriTheme()
+
+// The hero's controls repaint the live editor beside them (and the whole site, like the header picker).
+// Right to left flips only the editor, so the page around it stays readable.
+const dark = computed({
+    get: () => theme.value === 'dark',
+    set: (value: boolean) => setTheme(value ? 'dark' : 'light')
+})
+const rtl = ref(false)
+const skinLabel = computed(() => SKINS.find((s) => s.id === skin.value)?.label ?? 'Ori')
+
+function pickSkin(id: SkinId): void {
+    setSkin(id)
+}
+
+const claims = [
+    {
+        title: 'CSS that stands alone',
+        text: 'Design tokens and a stylesheet per component. No JavaScript and no build step, so the same classes work in plain HTML, htmx, Astro or any framework.',
+        link: 'Read the CSS guide',
+        to: '/guides/css'
+    },
+    {
+        title: 'Theming without JavaScript',
+        text: 'Eight skins and dark mode are set on <html>; sizes and variants are single classes. All of it is CSS custom properties.',
+        link: 'Open the skin gallery',
+        to: '/guides/skins'
+    },
+    {
+        title: 'Accessibility that is tested',
+        text: 'axe runs against every component, every color pair passes WCAG AA in every skin, and keyboard behavior is exercised in real Chromium.',
+        link: 'See what is tested',
+        to: '/overview/accessibility'
+    },
+    {
+        title: 'Behavior you can replace',
+        text: 'The Vue components get keyboard, focus and ARIA from @oriui/headless. Use it with your own markup, or plug in another engine for one widget.',
+        link: 'Read about headless',
+        to: '/headless/core'
+    }
+]
 
 // Logo paths from Simple Icons (CC0).
 const frameworks = [
@@ -26,45 +70,68 @@ const frameworks = [
         path: 'M10.354 21.125a4.44 4.44 0 0 1-4.765-1.767 4.109 4.109 0 0 1-.703-3.107 3.898 3.898 0 0 1 .134-.522l.105-.321.287.21a7.21 7.21 0 0 0 2.186 1.092l.208.063-.02.208a1.253 1.253 0 0 0 .226.83 1.337 1.337 0 0 0 1.435.533 1.231 1.231 0 0 0 .343-.15l5.59-3.562a1.164 1.164 0 0 0 .524-.778 1.242 1.242 0 0 0-.211-.937 1.338 1.338 0 0 0-1.435-.533 1.23 1.23 0 0 0-.343.15l-2.133 1.36a4.078 4.078 0 0 1-1.135.499 4.44 4.44 0 0 1-4.765-1.766 4.108 4.108 0 0 1-.702-3.108 3.855 3.855 0 0 1 1.742-2.582l5.589-3.563a4.072 4.072 0 0 1 1.135-.499 4.44 4.44 0 0 1 4.765 1.767 4.109 4.109 0 0 1 .703 3.107 3.943 3.943 0 0 1-.134.522l-.105.321-.286-.21a7.204 7.204 0 0 0-2.187-1.093l-.208-.063.02-.207a1.255 1.255 0 0 0-.226-.831 1.337 1.337 0 0 0-1.435-.532 1.231 1.231 0 0 0-.343.15L8.62 9.368a1.162 1.162 0 0 0-.524.778 1.24 1.24 0 0 0 .211.937 1.338 1.338 0 0 0 1.435.533 1.235 1.235 0 0 0 .344-.151l2.132-1.36a4.067 4.067 0 0 1 1.135-.498 4.44 4.44 0 0 1 4.765 1.766 4.108 4.108 0 0 1 .702 3.108 3.857 3.857 0 0 1-1.742 2.583l-5.589 3.562a4.072 4.072 0 0 1-1.135.499m10.358-17.95C18.484-.015 14.082-.96 10.9 1.068L5.31 4.63a6.412 6.412 0 0 0-2.896 4.295 6.753 6.753 0 0 0 .666 4.336 6.43 6.43 0 0 0-.96 2.396 6.833 6.833 0 0 0 1.168 5.167c2.229 3.19 6.63 4.135 9.812 2.108l5.59-3.562a6.41 6.41 0 0 0 2.896-4.295 6.756 6.756 0 0 0-.665-4.336 6.429 6.429 0 0 0 .958-2.396 6.831 6.831 0 0 0-1.167-5.168Z'
     }
 ]
-
-const features = [
-    {
-        title: 'CSS that stands alone',
-        text: 'Design tokens and a stylesheet per component. No JavaScript and no build step, so the same classes work in plain HTML, htmx, Astro or any framework.'
-    },
-    {
-        title: 'Theming without JavaScript',
-        text: 'Eight skins and dark mode are set on <html>; sizes and variants are single classes. All of it is CSS custom properties.'
-    },
-    {
-        title: 'Accessibility that is tested',
-        text: 'axe runs against every component, every color pair passes WCAG AA in every skin, and keyboard behavior is exercised in real Chromium.'
-    },
-    {
-        title: 'Behavior you can replace',
-        text: 'The Vue components get keyboard, focus and ARIA from @oriui/headless. Use it with your own markup, or plug in another engine for one widget.'
-    }
-]
 </script>
 
 <template>
-    <section class="home">
-        <p class="home__kicker">織り · release candidate</p>
-        <h1 class="home__title">A design system in plain CSS</h1>
-        <p class="home__tagline">
-            Tokens and component styles that work in any stack, with accessible Vue 3 components built on them.
-        </p>
+    <div class="home">
+        <section class="home__hero">
+            <div class="home__intro">
+                <h1 class="home__title">A design system in plain CSS</h1>
+                <p class="home__tagline">
+                    Tokens and component styles that work in any stack, with accessible Vue 3 components built on them.
+                    The editor here is made of nothing else: repaint it.
+                </p>
 
-        <div class="home__cta">
-            <OriButton :as="NuxtLink" to="/overview/get-started" label="Get started" color="primary" />
-            <OriButton
-                :as="NuxtLink"
-                to="/components/button"
-                label="Browse components"
-                variant="outline"
-                color="primary"
-            />
-        </div>
+                <div class="home__cta">
+                    <OriButton :as="NuxtLink" to="/overview/get-started" label="Get started" color="primary" />
+                    <OriButton
+                        :as="NuxtLink"
+                        to="/components/button"
+                        label="Browse components"
+                        variant="outline"
+                        color="primary"
+                    />
+                </div>
+
+                <div class="home__controls">
+                    <div class="home__skins" role="radiogroup" aria-labelledby="home-skins-label">
+                        <span id="home-skins-label" class="home__skins-label">
+                            Skin <span class="home__skin-name">{{ skinLabel }}</span>
+                        </span>
+                        <label v-for="s in SKINS" :key="s.id" class="home__skin" :title="s.label">
+                            <input
+                                type="radio"
+                                name="home-skin"
+                                class="home__skin-input"
+                                :value="s.id"
+                                :checked="skin === s.id"
+                                @change="pickSkin(s.id)"
+                            />
+                            <span
+                                class="home__skin-dot"
+                                :style="{ '--a': s.swatches[0], '--b': s.swatches[1] }"
+                                aria-hidden="true"
+                            ></span>
+                            <span class="home__sr">{{ s.label }}</span>
+                        </label>
+                    </div>
+                    <OriSwitch v-model="dark" label="Dark" size="sm" />
+                    <OriSwitch v-model="rtl" label="Right to left" size="sm" />
+                </div>
+            </div>
+
+            <div class="home__stage" :dir="rtl ? 'rtl' : 'ltr'">
+                <HomeEditor />
+            </div>
+        </section>
+
+        <section class="home__claims" aria-label="What oriUI is">
+            <div v-for="c in claims" :key="c.title" class="home__claim">
+                <h2 class="home__claim-title">{{ c.title }}</h2>
+                <p class="home__claim-text">{{ c.text }}</p>
+                <NuxtLink :to="c.to" class="home__claim-link">{{ c.link }}</NuxtLink>
+            </div>
+        </section>
 
         <ul class="home__frameworks" aria-label="Where it runs">
             <li v-for="f in frameworks" :key="f.name" class="home__framework">
@@ -75,8 +142,13 @@ const features = [
             </li>
         </ul>
 
-        <div class="home__features">
-            <OriCard v-for="f in features" :key="f.title" class="home__feature" :title="f.title" :text="f.text" />
-        </div>
-    </section>
+        <footer class="home__footer">
+            <p>oriUI 1.0 release candidate, MIT license.</p>
+            <nav class="home__footer-links" aria-label="Project">
+                <a href="https://github.com/markgrushevski/oriui">GitHub</a>
+                <a href="https://www.npmjs.com/package/@oriui/vue">npm</a>
+                <a href="https://github.com/markgrushevski/oriui/blob/main/packages/vue/CHANGELOG.md">Changelog</a>
+            </nav>
+        </footer>
+    </div>
 </template>
