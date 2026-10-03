@@ -145,6 +145,7 @@ const frameworks = [
         <footer class="home__footer">
             <p>oriUI 1.0 release candidate, MIT license.</p>
             <nav class="home__footer-links" aria-label="Project">
+                <NuxtLink to="/overview/showcase">Showcase</NuxtLink>
                 <a href="https://github.com/markgrushevski/oriui">GitHub</a>
                 <a href="https://www.npmjs.com/package/@oriui/vue">npm</a>
                 <a href="https://github.com/markgrushevski/oriui/blob/main/packages/vue/CHANGELOG.md">Changelog</a>

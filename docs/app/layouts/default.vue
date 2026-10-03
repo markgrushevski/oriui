@@ -27,7 +27,8 @@ const sections = [
             { label: 'Get started', to: '/overview/get-started' },
             { label: 'Cheat sheet', to: '/overview/cheat-sheet' },
             { label: 'Installation', to: '/overview/installation' },
-            { label: 'Accessibility', to: '/overview/accessibility' }
+            { label: 'Accessibility', to: '/overview/accessibility' },
+            { label: 'Showcase', to: '/overview/showcase' }
         ]
     },
     {
