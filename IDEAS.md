@@ -8,8 +8,9 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
 
 ## Project
 
-- ⭐ **A real composed screen** — a recipes / showcase page a docs visitor can poke, assembled from the
-  library to surface API gaps that isolated component demos hide.
+- ⭐ **A booking example** — a train-ticket booking screen a docs visitor can poke: route search, a date on
+  a calendar, seat and fare choice, a passenger form and a summary. Assembled from the library, it surfaces
+  the API gaps isolated demos hide, and it is the first real screen that needs a Calendar and a DatePicker.
 - ◽ **Generic item values** — `T extends string` narrowing for Tabs / Select / RadioGroup values. Today a
   narrowed union has to be bridged to `string | number | undefined` by hand (justpaint's `AuthForm.vue`).
 - ◽ **A rule for polymorphic `as`** — it exists on 7 of 34 components with no stated policy. The ones that
@@ -38,12 +39,13 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
 
 ## Candidate components
 
-- **Forms:** ◽ NumberField / Stepper · ◽ FileInput / Dropzone · 🧪 DatePicker / TimePicker · 🧪 PIN / OTP · 🧪 Rating
+- **Forms:** ⭐ DatePicker (the booking example) · ◽ NumberField / Stepper · ◽ FileInput / Dropzone ·
+  🧪 TimePicker · 🧪 PIN / OTP · 🧪 Rating
 - **Navigation:** ◽ Breadcrumbs · ◽ Pagination · ◽ Steps · 🧪 Command palette · 🧪 Navbar / Bottom nav
 - **Overlays:** ◽ Drawer gestures (swipe to dismiss, snap points; see DECISIONS) · 🧪 Hovercard
 - **Feedback:** ◽ Indicator (a dot / count anchored on an icon or avatar) · ◽ Empty state · 🧪 Meter
 - **Data display:** ◽ Stat · 🧪 Timeline · 🧪 Tree ·
-  🧪 Carousel · 🧪 Calendar · 🧪 Description list · 🧪 Avatar group
+  ⭐ Calendar (the booking example) · 🧪 Carousel · 🧪 Description list · 🧪 Avatar group
 - **Layout:** ◽ Container · ◽ AspectRatio · ◽ Center · ◽ ScrollArea · 🧪 Footer / Hero (better as docs
   recipes) · 🧪 Mask · 🧪 z-Stack
 - **Typography:** ◽ Prose (`.ori-prose`) · 🧪 Heading / Text
