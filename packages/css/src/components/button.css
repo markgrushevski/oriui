@@ -210,4 +210,19 @@
     .ori-button:not(.ori-button_icon) .ori-button__icon {
         font-size: calc(var(--ori-font-size) + 2px);
     }
+
+    /* Forced colors repaint every fill as the page background, so a pressed toggle looked like any other
+       button. A system color survives the repaint; Highlight is the system's own pair for "selected". */
+    @media (forced-colors: active) {
+        .ori-button[aria-pressed='true'],
+        .ori-button[aria-pressed='true']:is(.ori-variant_text, .ori-variant_quiet, .ori-variant_outline),
+        .ori-button[aria-pressed='true']:is(.ori-variant_text, .ori-variant_quiet, .ori-variant_outline):hover {
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            forced-color-adjust: none;
+
+            border-color: Highlight;
+            background-color: Highlight;
+            color: HighlightText;
+        }
+    }
 }

@@ -184,4 +184,13 @@
             pointer-events: auto;
         }
     }
+
+    /* The bubble is told apart from the page by its fill alone, which forced colors repaint as the page
+       background. A transparent border is drawn in the system's text color there, so the bubble keeps an
+       edge. */
+    @media (forced-colors: active) {
+        .ori-tooltip__bubble {
+            border: 1px solid transparent;
+        }
+    }
 }

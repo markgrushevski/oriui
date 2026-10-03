@@ -201,4 +201,14 @@
         opacity: 0.5;
         pointer-events: none;
     }
+
+    /* The area, the swatch and the presets show the colors being chosen. Forced colors would repaint them
+       as the page background, so they keep their own. */
+    @media (forced-colors: active) {
+        .ori-color-picker__area,
+        .ori-color-picker__swatch,
+        .ori-color-picker__preset {
+            forced-color-adjust: none;
+        }
+    }
 }

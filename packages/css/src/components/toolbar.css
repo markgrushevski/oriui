@@ -65,4 +65,11 @@
 
     /* The pressed-toggle look lives in button.css (imported above), keyed on the button alone and split
        by variant, so a toggle outside a toolbar gets it too. */
+
+    /* The separator is a filled line, and forced colors repaint fills as the page background. */
+    @media (forced-colors: active) {
+        .ori-toolbar__separator {
+            background-color: CanvasText;
+        }
+    }
 }

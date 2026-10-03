@@ -44,4 +44,12 @@
     .ori-surface_elevation-lg {
         box-shadow: var(--ori-shadow-lg);
     }
+
+    /* Without `bordered` the surface is lifted by its shadow alone, and forced colors drop shadows. A
+       transparent border is drawn in the system's text color there, so the surface keeps an edge. */
+    @media (forced-colors: active) {
+        .ori-surface:not(.ori-surface_bordered) {
+            border: 1px solid transparent;
+        }
+    }
 }

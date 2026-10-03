@@ -31,6 +31,23 @@ every skin's CSS and asserts each role/on-role pair clears the **WCAG AA** contr
 every skin and both light and dark. It has already caught a real contrast failure in a skin during
 development.
 
+## Forced colors
+
+In a forced-colors mode (Windows contrast themes) the browser repaints every background in the page color
+and drops shadows and gradients, so anything shown by fill alone would disappear. We draw those parts in
+system colors instead:
+
+- **Selected and pressed** — a pressed toggle, the selected segment, the current list or table row and the
+  highlighted menu item or combobox option take `Highlight` / `HighlightText`, the system's own pair.
+- **Tracks** — the switch, the slider and the progress bar get an outline, with the fill or the "on"
+  state in `Highlight`.
+- **Edges** — a dialog, a drawer, a tooltip bubble, an avatar and an unbordered surface keep a border.
+- **Content colors** — the color picker's area, swatch, presets and hue and alpha tracks keep their
+  colors: they are what the user is choosing.
+
+`e2e/forced-colors.spec.ts` renders each of these in both states, with the light and the dark contrast
+palette, and requires the two to look different.
+
 ## Keyboard and focus
 
 - Controls render **native elements** (`<button>`, `<input>`) wherever possible, so keyboard

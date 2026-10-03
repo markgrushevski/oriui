@@ -240,4 +240,12 @@
             }
         }
     }
+
+    /* The panel is lifted by its shadow alone, and forced colors drop shadows. A transparent border is
+       drawn in the system's text color there, so the panel keeps an edge. */
+    @media (forced-colors: active) {
+        .ori-drawer {
+            border: 1px solid transparent;
+        }
+    }
 }

@@ -103,4 +103,16 @@
             animation: none;
         }
     }
+
+    /* Forced colors repaint the track and the fill as the page background: the track gets an outline and
+       the fill a system color. */
+    @media (forced-colors: active) {
+        .ori-progress__track {
+            border: 1px solid CanvasText;
+        }
+
+        .ori-progress__indicator {
+            background-color: Highlight;
+        }
+    }
 }

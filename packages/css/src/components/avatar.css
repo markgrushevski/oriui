@@ -125,4 +125,12 @@
         opacity: 0.8;
         font-size: smaller;
     }
+
+    /* Initials sit on a filled circle, which forced colors repaint as the page background. A transparent
+       border is drawn in the system's text color there, so the avatar keeps its outline. */
+    @media (forced-colors: active) {
+        .ori-avatar {
+            border: 1px solid transparent;
+        }
+    }
 }

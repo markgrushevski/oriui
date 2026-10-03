@@ -260,4 +260,51 @@
             0 0 0 2px #ffffff,
             0 0 0 4px rgb(0 0 0 / 0.6);
     }
+
+    /* Forced colors drop gradients and repaint fills, so the track and its fill vanished and only the
+       thumb's ring was left. The input keeps its own colors and draws them in system colors; the hue and
+       alpha tracks keep their spectrum, which is content. */
+    @media (forced-colors: active) {
+        .ori-slider .ori-slider__input {
+            forced-color-adjust: none;
+        }
+
+        .ori-slider .ori-slider__input:not(.ori-slider_hue, .ori-slider_alpha)::-webkit-slider-runnable-track {
+            background: linear-gradient(
+                var(--ori-slider-axis),
+                Highlight var(--ori-slider-pct),
+                Canvas var(--ori-slider-pct)
+            );
+            box-shadow: 0 0 0 1px CanvasText;
+        }
+
+        .ori-slider .ori-slider__input:not(.ori-slider_hue, .ori-slider_alpha)::-moz-range-track {
+            background: Canvas;
+            box-shadow: 0 0 0 1px CanvasText;
+        }
+
+        .ori-slider .ori-slider__input:not(.ori-slider_hue, .ori-slider_alpha)::-moz-range-progress {
+            background: Highlight;
+        }
+
+        .ori-slider .ori-slider__input::-webkit-slider-thumb {
+            border-color: Canvas;
+            background: CanvasText;
+            box-shadow: none;
+        }
+
+        .ori-slider .ori-slider__input::-moz-range-thumb {
+            border-color: Canvas;
+            background: CanvasText;
+            box-shadow: none;
+        }
+
+        .ori-slider .ori-slider__input:focus-visible::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px Highlight;
+        }
+
+        .ori-slider .ori-slider__input:focus-visible::-moz-range-thumb {
+            box-shadow: 0 0 0 3px Highlight;
+        }
+    }
 }

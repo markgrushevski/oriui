@@ -79,4 +79,12 @@
             transform: rotate(360deg);
         }
     }
+
+    /* Forced colors draw the transparent gap in the system's text color, closing the ring, and a closed
+       ring spins without visible motion. The page color keeps the gap open. */
+    @media (forced-colors: active) {
+        .ori-spinner {
+            border-bottom-color: Canvas;
+        }
+    }
 }

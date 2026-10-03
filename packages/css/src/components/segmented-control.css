@@ -157,4 +157,17 @@
             transition: none;
         }
     }
+
+    /* Forced colors repaint the selected fill and give every segment the same border, so the selected
+       segment takes the system's selected pair. */
+    @media (forced-colors: active) {
+        .ori-segmented-control__item:has(.ori-segmented-control__input:checked) {
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            forced-color-adjust: none;
+
+            border-color: Highlight;
+            background-color: Highlight;
+            color: HighlightText;
+        }
+    }
 }
