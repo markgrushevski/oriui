@@ -92,18 +92,36 @@ test.describe('OriTooltip — anchored placement + color pairing (real Chromium)
     })
 
     test('the shared default anchor-name pairs each bubble with its own trigger', async ({ page }) => {
+        // Triggers in normal flow, as in a toolbar. With one shared name the LAST trigger in the document
+        // wins for every bubble; a positioned wrapper per tooltip would hide that, so there is none here.
         await page.setViewportSize({ width: 800, height: 600 })
+        const ids = ['a', 'b', 'c']
         await setup(
             page,
-            `<div style="position:absolute;top:300px;left:100px;">${tooltip('a', { content: 'first' })}</div>
-             <div style="position:absolute;top:300px;left:500px;">${tooltip('b', { content: 'second' })}</div>`
+            `<div style="display:flex;gap:120px;padding:200px 100px;">
+                ${ids.map((id) => tooltip(id, { content: id })).join('')}
+            </div>`
         )
-        const ta = (await page.locator('#a .ori-tooltip__trigger').boundingBox())!
-        const tb = (await page.locator('#b .ori-tooltip__trigger').boundingBox())!
-        const ba = (await page.locator('#a-bubble').boundingBox())!
-        const bb = (await page.locator('#b-bubble').boundingBox())!
-        expect(Math.abs(ba.x + ba.width / 2 - (ta.x + ta.width / 2))).toBeLessThan(2)
-        expect(Math.abs(bb.x + bb.width / 2 - (tb.x + tb.width / 2))).toBeLessThan(2)
+        for (const id of ids) {
+            const t = (await page.locator(`#${id} .ori-tooltip__trigger`).boundingBox())!
+            const b = (await page.locator(`#${id}-bubble`).boundingBox())!
+            expect(Math.abs(b.x + b.width / 2 - (t.x + t.width / 2)), id).toBeLessThan(2)
+        }
+    })
+
+    test('a tooltip inside another tooltip anchors to its own trigger, and so does the outer one', async ({ page }) => {
+        await page.setViewportSize({ width: 800, height: 600 })
+        const inner = tooltip('inner', { content: 'inner', placement: 'bottom' })
+        const outer = tooltip('outer', { content: 'outer' }).replace(
+            '<button type="button">trigger</button>',
+            `${inner}<span style="display:inline-block;width:200px"></span>`
+        )
+        await setup(page, `<div style="padding:200px 100px;">${outer}</div>`)
+        for (const id of ['inner', 'outer']) {
+            const t = (await page.locator(`#${id} > .ori-tooltip__trigger`).boundingBox())!
+            const b = (await page.locator(`#${id}-bubble`).boundingBox())!
+            expect(Math.abs(b.x + b.width / 2 - (t.x + t.width / 2)), id).toBeLessThan(2)
+        }
     })
 
     test('the arrow sits on the bubble edge facing the trigger for the placement', async ({ page }) => {
