@@ -1,3 +1,5 @@
+import { setFlagsFromString } from 'node:v8'
+import { runInNewContext } from 'node:vm'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, h, type Ref } from 'vue'
 import { mount } from '@vue/test-utils'
@@ -47,22 +49,16 @@ afterEach(() => {
     document.documentElement.classList.remove('dark')
 })
 
-/** MutationObserver delivery is async — settle a macrotask before asserting observer-driven updates. */
+/** MutationObserver records arrive in a microtask; one macrotask turn delivers them all. */
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
+
+/** A full garbage collection on demand: `--expose-gc` set at runtime, `gc` read from a fresh context. */
+setFlagsFromString('--expose-gc')
+const collectGarbage = runInNewContext('gc') as () => void
 
 // ---------------------------------------------------------------------------
 // Core engine
 // ---------------------------------------------------------------------------
-
-// A MutationObserver delivery is a macrotask in happy-dom, so on a loaded full-suite run (65 files,
-// parallel workers) a short waitFor window is a wall-clock race rather than a statement about
-// behavior. Two numbers, and the relationship between them is the whole point: widening the window
-// alone does NOTHING, because vitest's own per-test budget (5s by default) expires first and reports
-// the test — not the wait — as timed out. So every test that waits on the observer states a budget
-// that the window fits comfortably inside. Raising `testTimeout` globally would buy the same thing by
-// slackening every unrelated test, which is how a genuine hang stops being visible.
-const OBSERVER_WAIT = { timeout: 5000, interval: 20 }
-const OBSERVER_BUDGET = 20_000
 
 describe('resolveToken (core)', () => {
     it('resolves a token through a var() alias chain to the computed color', () => {
@@ -127,23 +123,42 @@ describe('resolveToken (core)', () => {
 })
 
 describe('observeTheme (core)', () => {
-    it(
-        'fires on a :root class change and a :root style change',
-        async () => {
-            const callback = vi.fn()
-            const stop = observeTheme(callback)
+    it('fires on a :root class change and a :root style change', async () => {
+        const callback = vi.fn()
+        const stop = observeTheme(callback)
 
-            document.documentElement.classList.add('dark')
-            await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(1), OBSERVER_WAIT)
+        document.documentElement.classList.add('dark')
+        await settle()
+        expect(callback).toHaveBeenCalledTimes(1)
 
-            document.documentElement.style.setProperty('--ori-test-inline', 'red')
-            await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2), OBSERVER_WAIT)
+        document.documentElement.style.setProperty('--ori-test-inline', 'red')
+        await settle()
+        expect(callback).toHaveBeenCalledTimes(2)
 
-            stop()
-            document.documentElement.style.removeProperty('--ori-test-inline')
-        },
-        OBSERVER_BUDGET
-    )
+        stop()
+        document.documentElement.style.removeProperty('--ori-test-inline')
+    })
+
+    it('keeps firing after a garbage collection', async () => {
+        // An environment that holds the observer weakly loses it on the next collection, and a loaded
+        // full run is what triggers one: the test above then fails on its second change, never alone.
+        // Collecting on purpose makes that failure deterministic.
+        const callback = vi.fn()
+        const stop = observeTheme(callback)
+
+        document.documentElement.classList.add('dark')
+        await settle()
+        collectGarbage()
+        await settle()
+        collectGarbage()
+
+        document.documentElement.style.setProperty('--ori-test-inline', 'red')
+        await settle()
+        expect(callback).toHaveBeenCalledTimes(2)
+
+        stop()
+        document.documentElement.style.removeProperty('--ori-test-inline')
+    })
 
     it('the unsubscribe disconnects the observer', async () => {
         const callback = vi.fn()
@@ -215,18 +230,15 @@ describe('useToken (Vue)', () => {
         wrapper.unmount()
     })
 
-    it(
-        're-resolves when the theme observer fires (:root class toggle)',
-        async () => {
-            const { wrapper, value } = mountToken('--ori-test-brand')
-            expect(value()).toBe(BRAND_LIGHT)
+    it('re-resolves when the theme observer fires (:root class toggle)', async () => {
+        const { wrapper, value } = mountToken('--ori-test-brand')
+        expect(value()).toBe(BRAND_LIGHT)
 
-            document.documentElement.classList.add('dark')
-            await vi.waitFor(() => expect(value()).toBe(BRAND_DARK), OBSERVER_WAIT)
-            wrapper.unmount()
-        },
-        OBSERVER_BUDGET
-    )
+        document.documentElement.classList.add('dark')
+        await settle()
+        expect(value()).toBe(BRAND_DARK)
+        wrapper.unmount()
+    })
 
     it('re-resolves when the token getter changes', async () => {
         const { wrapper, value } = mountToken('--ori-test-brand')
@@ -284,23 +296,20 @@ describe('useToken (Svelte)', () => {
         expect(seen).toEqual([BRAND_LIGHT, ACCENT])
     })
 
-    it(
-        're-resolves when the theme observer fires, and tears down with the last subscriber',
-        async () => {
-            const value = useTokenSvelte('--ori-test-brand')
-            const seen: string[] = []
-            const stop = value.subscribe((v) => seen.push(v))
+    it('re-resolves when the theme observer fires, and tears down with the last subscriber', async () => {
+        const value = useTokenSvelte('--ori-test-brand')
+        const seen: string[] = []
+        const stop = value.subscribe((v) => seen.push(v))
 
-            document.documentElement.classList.add('dark')
-            await vi.waitFor(() => expect(seen).toContain(BRAND_DARK), OBSERVER_WAIT)
+        document.documentElement.classList.add('dark')
+        await settle()
+        expect(seen).toEqual([BRAND_LIGHT, BRAND_DARK])
 
-            stop()
-            document.documentElement.classList.remove('dark')
-            await settle()
-            expect(seen).toEqual([BRAND_LIGHT, BRAND_DARK])
-        },
-        OBSERVER_BUDGET
-    )
+        stop()
+        document.documentElement.classList.remove('dark')
+        await settle()
+        expect(seen).toEqual([BRAND_LIGHT, BRAND_DARK])
+    })
 
     it('useThemeColor resolves --ori-color-<role> and follows a role store', () => {
         vi.spyOn(console, 'warn').mockImplementation(() => {}) // the missing role below warns in dev mode

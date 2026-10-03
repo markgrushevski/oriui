@@ -712,11 +712,12 @@ ever use that window: the enclosing budget expires first, and the report reads `
 the clock. A waitFor window is only real if the test states a budget comfortably larger than it
 (`it(name, fn, 20_000)`).
 
-Worth knowing alongside it: a suite that is green in isolation and flaky in the full run is usually
-saying the budget is too tight, not that the behavior is wrong. `tests/token.test.ts` waits on
-happy-dom MutationObserver deliveries, which are macrotasks — 20 runs of the file alone never flake,
-while 65 files across parallel workers can starve a worker for seconds. Raise the budget on the tests
-that genuinely wait; raising `testTimeout` globally hides real hangs everywhere else.
+A test that passes alone and flakes in the full run is not always short of time. The `observeTheme`
+flake in `tests/token.test.ts` outlived a 5s window because the observer was gone: happy-dom before
+20.11.2 held each MutationObserver's delivery callback only in a `WeakRef`, so the first garbage
+collection, which a loaded full run triggers and a lone file rarely does, silently stopped every
+observer. Before widening a wait, force a collection (`setFlagsFromString('--expose-gc')`, then
+`runInNewContext('gc')`): a flake that turns into a steady failure is not about time.
 
 ## A fresh publish is not visible on the registry for minutes — a 404 is not evidence
 
