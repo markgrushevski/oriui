@@ -14,10 +14,9 @@
 
     .ori-tooltip {
         /* Anchor pairing (CSS Anchor Positioning): the trigger names itself, the bubble anchors to it.
-           The default is a SHARED name — anchor resolution picks the nearest preceding element with the
-           name, and the trigger always immediately precedes its bubble, so every tooltip finds its own
-           trigger with zero per-instance wiring (no inline styles, no JS). Set --ori-anchor per instance
-           only when you need an explicit pair. */
+           Every tooltip shares one default name, and a fixed-position bubble resolves a shared name to the
+           LAST element carrying it in the document, so `anchor-scope` keeps the name inside this tooltip:
+           each bubble finds its own trigger with no per-instance wiring. */
         --ori-anchor: --ori-tooltip-anchor;
 
         /* Default chip: the page INVERTED — the page ink as the fill, the page itself as the label.
@@ -40,6 +39,8 @@
         --ori-tooltip-radius: 0.25rem;
 
         display: inline-flex;
+
+        anchor-scope: var(--ori-anchor);
     }
 
     /* A color role class on the wrapper repoints bg + text as a PAIR from that role's source (the
