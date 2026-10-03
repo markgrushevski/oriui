@@ -215,16 +215,31 @@ describe('the pressed look in @oriui/css', () => {
     const componentsDir = resolve(process.cwd(), 'packages/css/src/components')
     const strip = (file: string) => readFileSync(resolve(componentsDir, file), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 
+    // A selector list split on its top-level commas only: `:is(a, b)` stays one selector.
+    const splitSelectors = (list: string) => {
+        const parts = ['']
+        let depth = 0
+        for (const char of list) {
+            if (char === '(') depth++
+            if (char === ')') depth--
+            if (char === ',' && depth === 0) parts.push('')
+            else parts[parts.length - 1] += char
+        }
+        return parts.map((s) => s.trim()).filter(Boolean)
+    }
+
     // Every rule block whose selector list mentions [aria-pressed='true']. `[^{}]*` cannot cross a
     // brace, so the selector capture stops at the enclosing @layer / @media opening brace.
     const pressedRules = (css: string) =>
         [...css.matchAll(/([^{}]*\[aria-pressed='true'\][^{}]*)\{([^{}]*)\}/g)].map((m) => ({
-            selectors: m[1]
-                .split(',')
-                .map((s) => s.trim())
-                .filter(Boolean),
+            selectors: splitSelectors(m[1]),
             declarations: m[2]
         }))
+
+    // Forced colors repaint every variant's fill, so there the pressed state is a system color on all of
+    // them — on purpose, and outside what the variant rules below guard.
+    const FORCED_COLORS = /@media \(forced-colors: active\)\s*\{[^{}]*\{[^{}]*\}\s*\}/g
+    const withoutForcedColors = (css: string) => css.replace(FORCED_COLORS, '')
 
     const TRANSPARENT_VARIANTS = ['.ori-variant_text', '.ori-variant_quiet', '.ori-variant_outline']
 
@@ -255,7 +270,7 @@ describe('the pressed look in @oriui/css', () => {
     })
 
     it('the pressed tint reaches only the variants whose background is transparent', () => {
-        for (const rule of pressedRules(strip('button.css'))) {
+        for (const rule of pressedRules(withoutForcedColors(strip('button.css')))) {
             if (!/background-color/.test(rule.declarations)) continue
 
             for (const selector of rule.selectors) {
@@ -265,6 +280,16 @@ describe('the pressed look in @oriui/css', () => {
                 ).toBe(true)
             }
         }
+    })
+
+    it('in forced colors every pressed variant takes the system selected pair, without a text backplate', () => {
+        const forced = strip('button.css').match(FORCED_COLORS)?.join('') ?? ''
+        const rule = pressedRules(forced).find((r) => r.selectors.includes(".ori-button[aria-pressed='true']"))
+
+        expect(rule, 'no forced-colors rule for [aria-pressed="true"]').toBeDefined()
+        expect(rule?.declarations).toMatch(/background-color:\s*Highlight/)
+        expect(rule?.declarations).toMatch(/color:\s*HighlightText/)
+        expect(rule?.declarations).toMatch(/forced-color-adjust:\s*none/)
     })
 
     it('toolbar.css no longer owns a pressed rule of its own', () => {

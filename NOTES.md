@@ -117,6 +117,12 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
 
 ## Component / CSS patterns
 
+- **Forced colors keep a system color the author wrote, but not a gradient, and they back text with a
+  plate.** `background-color: Highlight` survives the repaint; `linear-gradient(Highlight, …)` is dropped
+  anyway, so a gradient-drawn state needs `forced-color-adjust: none`. And on a `Highlight` fill the browser
+  lays a `Canvas` backplate under the text, which hides `HighlightText` as a blank box: any part that pairs
+  them needs `forced-color-adjust: none` too. A transparent border is drawn in the text color, which is the
+  cheap way to give a shadow-only surface an edge. e2e/forced-colors.spec.ts pins all three.
 - **`showModal()` does not lock the page scroll.** The page goes inert, but a wheel over the backdrop
   still scrolls it (measured: 800px under an open dialog). dialog.css and drawer.css set
   `:root:has(…:modal) { overflow: hidden }`. Not `scrollbar-gutter: stable` with it: the reserved gutter

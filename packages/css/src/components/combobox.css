@@ -233,4 +233,16 @@
     .ori-combobox__error {
         color: var(--ori-color-danger-text);
     }
+
+    /* Forced colors repaint the highlight tint, and focus stays in the input, so without the system's
+       selected pair nothing shows which option the arrows are on. */
+    @media (forced-colors: active) {
+        .ori-combobox__option[data-highlighted] {
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            forced-color-adjust: none;
+
+            background-color: Highlight;
+            color: HighlightText;
+        }
+    }
 }

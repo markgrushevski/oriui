@@ -112,4 +112,11 @@
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;
     }
+
+    /* Forced colors repaint the dot's fill as the page background; a system color survives. */
+    @media (forced-colors: active) {
+        .ori-radio__circle::after {
+            background-color: CanvasText;
+        }
+    }
 }

@@ -124,4 +124,15 @@
         outline: 2px solid var(--ori-color-primary);
         outline-offset: 2px;
     }
+
+    /* Forced colors repaint the tint, so the current row takes the system's selected pair. */
+    @media (forced-colors: active) {
+        .ori-table > tbody > tr[aria-current]:not([aria-current='false']) {
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            forced-color-adjust: none;
+
+            background-color: Highlight;
+            color: HighlightText;
+        }
+    }
 }

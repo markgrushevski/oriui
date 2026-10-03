@@ -92,4 +92,20 @@
         outline: 2px solid var(--ori-color);
         outline-offset: -2px;
     }
+
+    /* Forced colors repaint fills as the page background: the highlighted item takes the system's selected
+       pair, and the separator line a system color. */
+    @media (forced-colors: active) {
+        .ori-menu__item[data-highlighted] {
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            forced-color-adjust: none;
+
+            background-color: Highlight;
+            color: HighlightText;
+        }
+
+        .ori-menu__separator {
+            background-color: CanvasText;
+        }
+    }
 }

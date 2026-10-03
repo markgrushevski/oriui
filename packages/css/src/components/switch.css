@@ -115,4 +115,28 @@
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;
     }
+
+    /* Forced colors repaint the track and the thumb as the page background, which left only the label.
+       The track gets an outline (the padding gives the border its pixel back) and both parts system
+       colors, with the selected pair when on. */
+    @media (forced-colors: active) {
+        .ori-switch__track {
+            padding: 1px;
+
+            border: 1px solid CanvasText;
+        }
+
+        .ori-switch__thumb {
+            background-color: CanvasText;
+        }
+
+        .ori-switch__input:checked ~ .ori-switch__track {
+            border-color: Highlight;
+            background-color: Highlight;
+        }
+
+        .ori-switch__input:checked ~ .ori-switch__track .ori-switch__thumb {
+            background-color: HighlightText;
+        }
+    }
 }
