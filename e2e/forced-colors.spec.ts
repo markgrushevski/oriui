@@ -144,31 +144,44 @@ test('forced colors — the color picker keeps the colors being chosen', async (
     expect(await pixel(page, page.locator('#preset'), 0.5, 0.5)).toEqual([0, 0, 255])
 })
 
-/** The share of the label's text box painted in the Highlight color. */
-async function highlightShare(page: Page, part: Locator): Promise<number> {
-    const clip = await part.evaluate((el) => {
+/**
+ * The share of the label's text box painted in the part's own fill, read from a pixel of its padding: the
+ * fill as rendered, whatever the platform's Highlight is.
+ */
+async function fillShareUnderText(page: Page, part: Locator): Promise<number> {
+    const { fill, text } = await part.evaluate((el) => {
         const range = document.createRange()
         range.selectNodeContents(el)
-        const { x, y, width, height } = range.getBoundingClientRect()
-        return { x, y, width, height }
+        const t = range.getBoundingClientRect()
+        const box = el.getBoundingClientRect()
+        return {
+            fill: { x: box.left + 3, y: box.top + box.height / 2, width: 1, height: 1 },
+            text: { x: t.x, y: t.y, width: t.width, height: t.height }
+        }
     })
-    const png = (await page.screenshot({ clip })).toString('base64')
-    return page.evaluate(async (png) => {
-        const probe = document.createElement('i')
-        probe.style.color = 'Highlight'
-        document.body.append(probe)
-        const highlight = getComputedStyle(probe).color.match(/\d+/g)!.slice(0, 3).join()
-        const img = new Image()
-        img.src = `data:image/png;base64,${png}`
-        await img.decode()
-        const canvas = new OffscreenCanvas(img.width, img.height)
-        const ctx = canvas.getContext('2d')!
-        ctx.drawImage(img, 0, 0)
-        const data = ctx.getImageData(0, 0, img.width, img.height).data
-        let hits = 0
-        for (let i = 0; i < data.length; i += 4) if ([data[i], data[i + 1], data[i + 2]].join() === highlight) hits++
-        return hits / (data.length / 4)
-    }, png)
+    const fillPng = (await page.screenshot({ clip: fill })).toString('base64')
+    const textPng = (await page.screenshot({ clip: text })).toString('base64')
+    return page.evaluate(
+        async ({ fillPng, textPng }) => {
+            const read = async (png: string) => {
+                const img = new Image()
+                img.src = `data:image/png;base64,${png}`
+                await img.decode()
+                const canvas = new OffscreenCanvas(img.width, img.height)
+                const ctx = canvas.getContext('2d')!
+                ctx.drawImage(img, 0, 0)
+                return ctx.getImageData(0, 0, img.width, img.height).data
+            }
+            const f = await read(fillPng)
+            const data = await read(textPng)
+            const near = (i: number) =>
+                Math.abs(data[i]! - f[0]!) + Math.abs(data[i + 1]! - f[1]!) + Math.abs(data[i + 2]! - f[2]!) < 24
+            let hits = 0
+            for (let i = 0; i < data.length; i += 4) if (near(i)) hits++
+            return hits / (data.length / 4)
+        },
+        { fillPng, textPng }
+    )
 }
 
 test('forced colors — a highlighted label is not hidden by the text backplate', async ({ page }) => {
@@ -176,12 +189,12 @@ test('forced colors — a highlighted label is not hidden by the text backplate'
     // the HighlightText label into a blank box unless the part opts out of the forced repaint. Between the
     // glyphs the fill shows through: about two thirds of the text box measured, against none with a backplate.
     await render(page, menuItem(true))
-    expect(await highlightShare(page, page.locator('.ori-menu__item'))).toBeGreaterThan(0.4)
+    expect(await fillShareUnderText(page, page.locator('.ori-menu__item'))).toBeGreaterThan(0.4)
 })
 
 test('the backplate measurement would catch the blank box', async ({ page }) => {
     // The counter-example: the same item left to the forced repaint, so the backplate is drawn.
     await render(page, menuItem(true))
     await page.addStyleTag({ content: '.ori-menu__item { forced-color-adjust: auto !important }' })
-    expect(await highlightShare(page, page.locator('.ori-menu__item'))).toBeLessThan(0.05)
+    expect(await fillShareUnderText(page, page.locator('.ori-menu__item'))).toBeLessThan(0.05)
 })
