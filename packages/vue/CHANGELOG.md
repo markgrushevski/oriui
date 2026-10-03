@@ -1,5 +1,18 @@
 # @oriui/vue
 
+## 1.0.0-rc.22
+
+### Patch Changes
+
+- [`5bd9e62`](https://github.com/markgrushevski/oriui/commit/5bd9e6287038f6413b3b1a65ad2d83e15f54230e): `OriCard` renders only the header parts that have content. An empty leading area, trailing area or subtitle no
+  longer takes a gap, so the title lines up with the body text, and a card with only `text` has no empty header
+  above it. The output now matches the documented HTML.
+- Updated dependencies [[`0ba0dbc`](https://github.com/markgrushevski/oriui/commit/0ba0dbcd065a14555bfe257e7cc1dee43306a757)]
+- Updated dependencies [[`a2431c5`](https://github.com/markgrushevski/oriui/commit/a2431c5a87b142b1549f7a90263b3b737523480d)]
+- Updated dependencies [[`d882d11`](https://github.com/markgrushevski/oriui/commit/d882d116330603414a9930ae0b2b7f1b9d105c96)]
+    - @oriui/css@1.0.0-rc.22
+    - @oriui/headless@1.0.0-rc.22
+
 ## 1.0.0-rc.21
 
 ### Minor Changes

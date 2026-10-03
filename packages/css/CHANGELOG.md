@@ -1,5 +1,32 @@
 # @oriui/css
 
+## 1.0.0-rc.22
+
+### Patch Changes
+
+- [`0ba0dbc`](https://github.com/markgrushevski/oriui/commit/0ba0dbcd065a14555bfe257e7cc1dee43306a757): Components stay usable in forced-colors mode (Windows contrast themes). The browser repaints backgrounds in
+  the page color there and drops shadows and gradients, which hid every state shown by fill alone. These now
+  use system colors:
+
+    - a pressed toggle button, the selected segment, the current list or table row and the highlighted menu item
+      or combobox option take `Highlight` / `HighlightText`;
+    - the switch, the slider and the progress bar get an outline, with the fill or the "on" state in `Highlight`;
+      the radio dot and the menu and toolbar separators are drawn in the text color;
+    - a dialog, a drawer, a tooltip bubble, an avatar and an `.ori-surface` without `bordered` keep an edge, and
+      the spinner keeps its gap, so it visibly turns;
+    - the color picker's area, swatch, presets and hue and alpha tracks keep their colors.
+
+    Nothing changes outside forced colors. Nothing to migrate; a consumer rule that added a forced-colors border
+    to an unbordered surface can be removed.
+
+- [`a2431c5`](https://github.com/markgrushevski/oriui/commit/a2431c5a87b142b1549f7a90263b3b737523480d): Toast parts line up with the first line of the message. The text, icon, action button and dismiss button
+  share its baseline, so a one-line toast no longer sits above a taller action button, and a leading icon is
+  centered on the first line instead of riding above it.
+- [`d882d11`](https://github.com/markgrushevski/oriui/commit/d882d116330603414a9930ae0b2b7f1b9d105c96): Each tooltip opens at its own trigger. Tooltips share one default anchor name, and with several of them in
+  normal flow, such as the buttons of a toolbar, every bubble was placed at the last trigger on the page.
+  `.ori-tooltip` now scopes the name with `anchor-scope`. Nothing to migrate; a per-instance `--ori-anchor` set
+  only to work around this can be removed.
+
 ## 1.0.0-rc.21
 
 ### Minor Changes
