@@ -16,7 +16,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-            # Build toolchain floor is Node 22 (tsdown needs ^22.18 || >=24.11; Node 20 is EOL).
+            # Build toolchain floor is Node 22.19 (size-limit needs ^22.19 || ^24.5, tsdown ^22.18 || >=24.11).
             matrix:
                 node: ['22', '24']
         steps:

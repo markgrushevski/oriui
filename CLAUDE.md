@@ -112,4 +112,4 @@ Conventional Commits (`feat` / `fix` / `refactor` / `docs` / `build` …, `!` fo
 **No `Co-Authored-By` trailer.** Work on a branch and merge to `main` with `--no-ff` (CONTRIBUTING.md). The
 pre-commit hook runs the build and lint-staged.
 
-Node ≥ 22.18.
+Node ≥ 22.19.

@@ -34,6 +34,10 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Docs (Nuxt Content + MDC)
 
+- **Nuxt Content looks for `better-sqlite3` from its own place in the root `node_modules`.** When an install
+  leaves the module nested in `docs/node_modules` (a downgrade or a partial reinstall can), `nuxi typecheck`
+  and the build stop with "Nuxt Content requires better-sqlite3", although `require('better-sqlite3')` works
+  inside `docs/`. Regenerating the lockfile hoists it back.
 - **`:class-table` descriptions are HTML.** MDC decodes `&lt;` in the attribute before `v-html` renders it,
   so `<code>&lt;details&gt;</code>` put a real `<details>` (and a live checkbox, for the switch) inside the
   table cell. Name elements without angle brackets: `<code>details</code>`.
@@ -386,6 +390,10 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
 
 ## Build / tests
 
+- **Regenerate the lockfile with npm 10, then check it installs under npm 11.** npm 11.7, rebuilding
+  `package-lock.json` from scratch, dropped `"optional": true` from 19 platform bindings that arrive through
+  a peer (`oxc-parser`'s). npm 11 tolerates that; the Node 22 CI job's npm 10 refuses with `EBADPLATFORM`
+  on an Android binding. `npx npm@10 install --package-lock-only` writes the flags back.
 - **A complexity guard has to time the suspect code alone.** The combobox's O(n²) counter-example grew
   x34 on a dev box but x18-x28 on CI, inside the band of the shipped x10-x17, because a whole keystroke
   also pays a linear render that a CI runner makes relatively heavier. Timing one pass of the getters
