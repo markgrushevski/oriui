@@ -386,6 +386,11 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
 
 ## Build / tests
 
+- **A complexity guard has to time the suspect code alone.** The combobox's O(n²) counter-example grew
+  x34 on a dev box but x18-x28 on CI, inside the band of the shipped x10-x17, because a whole keystroke
+  also pays a linear render that a CI runner makes relatively heavier. Timing one pass of the getters
+  with no render around it gives x10 against x90 everywhere (e2e/perf-collections.spec.ts). The CDP CPU
+  throttle did not reproduce the CI mix: it slows everything evenly.
 - Tests live in `tests/` (out of `src`); `vitest.config.ts` aliases `@oriui/*` to package **source**,
   so the suite needs no `build:packages` first.
 - **Test color lists must use real `ThemeColor` roles** — the role is `warning` (it was `warn` until

@@ -5,43 +5,34 @@ import { test, expect, type Page } from '@playwright/test'
 //  1. Put numbers on a dimension nobody had measured. The component renders EVERY option — there is no
 //     virtualization, and a closed listbox is `display:none` with all its <li> still in the DOM — so
 //     cost is linear in the option count and the constant is what decides whether it janks.
-//  2. Guard the `getOptionProps(item, index)` signature. ISSUES-INNER proposes dropping the index and
-//     deriving it inside with `collection.findIndex(...)`. That getter runs ONCE PER RENDERED OPTION,
-//     so an O(n) body turns an O(n) render into O(n^2). `?variant=findindex` mounts exactly that
-//     variant through the library's own swap seam (provideHeadless), and the second test proves it
-//     trips this guard — a threshold nothing can fail is not a guard.
+//  2. Guard the `getOptionProps(item, index)` signature. Dropping the index and deriving it inside with
+//     `collection.findIndex(...)` looks harmless, but that getter runs ONCE PER RENDERED OPTION, so an
+//     O(n) body turns an O(n) render into O(n^2). `?variant=findindex` mounts exactly that variant
+//     through the library's own swap seam (provideHeadless), and a counter-example proves the guard trips.
 //
-// All timing is `performance.now()` INSIDE the page (see harness/views/PerfCollectionsView.vue), around
-// a dispatch + Vue flush + forced layout; wall clock around a Playwright call would measure the CDP
-// round-trip instead of the render, and paint is deliberately out of scope — what is measured is the
-// scripting + layout a keystroke costs.
+// All timing is `performance.now()` INSIDE the page (see harness/views/PerfCollectionsView.vue); wall
+// clock around a Playwright call would measure the CDP round-trip instead of the work.
 //
-// The primary assertion is a GROWTH RATIO (10k vs 1k, same page load, seconds apart) rather than an
-// absolute millisecond count, because the ratio moves far less with machine speed: over an 8x CPU
-// throttle the 10k keystroke cost moved 37ms -> 588ms (16x) while its growth ratio moved 11.7 -> 15.5
-// (1.3x). It does NOT cancel out entirely — see the measured table below, which is why the threshold is
-// placed off the throttled numbers and not off this box's. Each size is measured twice and the BEST
-// round is kept, because contention only ever adds time.
+// The assertions are GROWTH RATIOS (10k vs 1k, same page load, seconds apart) rather than absolute
+// millisecond counts, because a ratio moves far less with machine speed. Each size is measured twice and
+// the BEST is kept, because contention only ever adds time.
 test.describe.configure({ mode: 'serial' })
 
-// Measured on a 2026 dev box, Chromium 149 — best of 2 rounds, median of 16 warm keystrokes:
-//   shipped   1k: mount 11ms  open 28ms  arrow 3.2ms | 10k: mount 78ms  open 290ms  arrow 37ms
-//   findIndex 1k: mount 14ms  open 30ms  arrow 7.1ms | 10k: mount 261ms open 473ms  arrow 246ms
+// Job 2 is timed on the getters alone, not on the component. A keystroke at 10k options also pays a
+// linear Vue render, and on a CI runner that linear part is heavy enough to swamp the quadratic one:
+// over 28 CI runs the component's keystroke grew x9.9-x17.1 with the shipped getter and only x18.4-x44.4
+// with the findIndex one, so in a quarter of them the broken variant passed the component guard. One
+// pass of the getters over every option, with no render around it, separates them by almost an order:
 //
-// The thresholds below are NOT guesses off those numbers — a slow runner was simulated with CDP
-// `Emulation.setCPUThrottlingRate` and measured, because the growth ratio does NOT hold constant as
-// the box slows down (JS throttles, layout and memory traffic do not, so the 10k side stretches more):
+//   getter pass growth (1k -> 10k)   shipped x10.1-x10.8     findIndex x80-x96
 //
-//   arrow growth   shipped x1 11.7 | x4 16.2 | x8 15.5        findIndex x1 34.4 | x4 50.1
-//   mount growth   shipped x1  6.6 | x4  8.0 | x8  8.3        findIndex x1 17.7 | x4 31.9
-//   10k arrow ms   shipped x1   37 | x4  266 | x8  588        findIndex x1  246 | x4 1768
-//
-// So the shipped ratio plateaus near 16 however slow the box gets, while the broken one is never below
-// 34: the guard goes between the WORST shipped number and the BEST broken one, at the geometric
-// midpoint of 16.2 and 34.4. The broken variant was confirmed to fail this exact assertion
-// ("per-keystroke cost grew x34.5 for 10x the options"). If it ever flakes, re-measure before touching
-// it — `page.context().newCDPSession(page)` then `Emulation.setCPUThrottlingRate {rate: 4}` around the
-// same `measure()` reproduces the table above. Do NOT delete it; the signal it separates is 3x wide.
+// measured on a dev box plain, at a CDP CPU throttle of x4, and under four parallel workers (one outlier
+// of x41.7 came from an unwarmed 1k pass, which the warm-up below removes). The guard sits between the
+// two with room on both sides. If it ever flakes, re-measure before touching it.
+const GETTER_GROWTH_MAX = 30
+
+// The component ratios are a linearity alarm for a regression in the render itself, not a proof about
+// the getter (above). Shipped on CI: keystroke x9.9-x17.1, mount x4.9-x11.6; dev box x12 and x7.
 const ARROW_GROWTH_MAX = 24
 const MOUNT_GROWTH_MAX = 14
 // Absolute ceilings are machine-speed dependent in a way the ratios are not (10k keystroke: 37ms here,
@@ -178,22 +169,32 @@ test('OriCombobox cost stays linear in the option count (1k / 10k, real Chromium
     expect(samples[10000].filter).toBeLessThan(FILTER_MAX_MS)
 })
 
-// The proof that the guard above is not vacuous. `?variant=findindex` changes NOTHING about the output —
-// same options, same highlight, same ids — it only derives the option index with a findIndex over the
-// collection inside the getter, which is precisely the refactor ISSUES-INNER proposes. If this test ever
-// goes green, the guard above has stopped guarding.
+/** One page load: warm the getters up, then the best of two passes per size. */
+async function getterGrowth(page: Page, variant: 'current' | 'findindex'): Promise<{ growth: number; ms: number[] }> {
+    await page.goto(`/?variant=${variant}#perf`)
+    await page.waitForFunction(() => Boolean(window.__oriPerf))
+    expect(await page.evaluate(() => window.__oriPerf.variant)).toBe(variant)
+    const ms = await page.evaluate((sizes) => {
+        const perf = window.__oriPerf
+        perf.getters(sizes[0]!)
+        return sizes.map((size) => Math.min(perf.getters(size), perf.getters(size)))
+    }, SIZES)
+    console.log(`[perf-collections] ${variant} getters: ${ms.map((v) => v.toFixed(2)).join('ms / ')}ms`)
+    return { growth: ms[1]! / ms[0]!, ms }
+}
+
+test('the option getter costs the same at any collection size (one pass, 1k / 10k)', async ({ page }) => {
+    const { growth } = await getterGrowth(page, 'current')
+    expect(growth, `a getter pass grew x${growth.toFixed(1)} for 10x the options`).toBeLessThan(GETTER_GROWTH_MAX)
+})
+
+// The proof that the getter guard is not vacuous. `?variant=findindex` changes NOTHING about the output —
+// same props, same ids — it only derives the option index with a findIndex over the collection inside the
+// getter. If this test ever goes green, the guard above has stopped guarding.
 test('deriving the option index inside the getter is quadratic, and trips the guard', async ({ page }) => {
-    test.setTimeout(180_000)
-    const samples = await sample(page, 'findindex')
-    report('findIndex-inside-getter', samples)
-
-    // Same rendered output — so the only thing the numbers differ by is the per-option scan.
-    expect(samples[10000].rendered).toBe(10000)
-    expect(samples[10000].highlighted).toBe('Option 19')
-
-    const arrowGrowth = samples[10000].arrowMedian / samples[1000].arrowMedian
+    const { growth } = await getterGrowth(page, 'findindex')
     expect(
-        arrowGrowth,
-        `the quadratic variant must exceed the guard (grew x${arrowGrowth.toFixed(1)}), or the guard is vacuous`
-    ).toBeGreaterThan(ARROW_GROWTH_MAX)
+        growth,
+        `the quadratic variant must exceed the guard (grew x${growth.toFixed(1)}), or the guard is vacuous`
+    ).toBeGreaterThan(GETTER_GROWTH_MAX)
 })
