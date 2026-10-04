@@ -4,7 +4,7 @@ How work flows through oriUI — branches, commits, versioning and releases. Cod
 in [CLAUDE.md](CLAUDE.md), the reasons behind them in [DECISIONS.md](DECISIONS.md), the publish mechanics in
 [RELEASING.md](RELEASING.md).
 
-Prerequisites: **Node ≥ 22.18** and npm. The repo uses **npm workspaces** — one root `npm install` wires
+Prerequisites: **Node ≥ 22.19** and npm. The repo uses **npm workspaces** — one root `npm install` wires
 `docs/` and `packages/*`.
 
 That floor is the **build** requirement and lives only in the root (private) `package.json`. What the

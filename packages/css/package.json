@@ -37,6 +37,6 @@
         "autoprefixer": "^10.6.1",
         "cssnano": "^8.0.10",
         "postcss": "^8.5.28",
-        "postcss-import": "^16.2.0"
+        "postcss-import": "^17.0.0"
     }
 }

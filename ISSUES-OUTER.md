@@ -6,11 +6,23 @@ registry. We can only work around them, so each entry names the workaround, to k
 
 - **Only live problems.** When an upstream fix ships, drop the workaround and delete the entry in the
   same change.
-- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-06**.
+- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-07**.
 - **Status:** `confirmed` — reproduced · `unconfirmed` — suspected · `mitigated` — a workaround is in
   place · `accepted` — a permanent constraint we design around.
 
 ---
+
+## ORI-O-07 — three dependency majors are held back
+
+`accepted` · each hold lifts on its own condition
+
+- **Changesets 3 (with `changesets/action` v2):** it moves a prerelease's versioned changesets into
+  `.changeset/pre/` and drops their list from `pre.json`. Taking over the v2 pre mode we are in is not
+  reliable: a trial `changeset version` on the untouched v2 state put all 40 already-released changesets
+  into the next rc's changelog. Upgrade right after `changeset pre exit`, when there is no pre state left.
+- **TypeScript 7:** typescript-eslint 8.71 accepts `typescript <6.1.0`. Upgrade when it widens the range.
+- **better-sqlite3 13** (the docs' Nuxt Content database): it builds from source with node-gyp on install,
+  which fails on Windows without Visual Studio. Nuxt Content accepts `^12.5`, so the docs stay on 12.
 
 ## ORI-O-06 — `mdast-util-to-markdown` 2.1.3+ sends the docs build into endless recursion
 

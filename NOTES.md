@@ -34,6 +34,10 @@ go to [DECISIONS.md](DECISIONS.md), conventions to [CLAUDE.md](CLAUDE.md).
 
 ## Docs (Nuxt Content + MDC)
 
+- **Nuxt Content looks for `better-sqlite3` from its own place in the root `node_modules`.** When an install
+  leaves the module nested in `docs/node_modules` (a downgrade or a partial reinstall can), `nuxi typecheck`
+  and the build stop with "Nuxt Content requires better-sqlite3", although `require('better-sqlite3')` works
+  inside `docs/`. Regenerating the lockfile hoists it back.
 - **`:class-table` descriptions are HTML.** MDC decodes `&lt;` in the attribute before `v-html` renders it,
   so `<code>&lt;details&gt;</code>` put a real `<details>` (and a live checkbox, for the switch) inside the
   table cell. Name elements without angle brackets: `<code>details</code>`.
