@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, shallowRef } from 'vue'
+import { effectScope, nextTick, ref, shallowRef } from 'vue'
 import { OriCombobox } from '@oriui/vue'
 import { nativeCombobox, provideHeadless, type ComboboxItem } from '@oriui/headless/vue'
 
@@ -115,12 +115,42 @@ async function measureFilter(query: string): Promise<{ ms: number; matched: numb
     return { ms, matched: document.querySelectorAll('[role="option"]').length }
 }
 
+// One render's worth of option getters — a call per option, in order, as the template makes them — with
+// no Vue render and no DOM around it. The component numbers mix the getters with linear render and
+// layout work, which on a slow runner swamps an O(n) getter; here the getter is all that is timed.
+// A pass over 1k options is far below the timer's resolution, so passes repeat until the batch is long
+// enough to time, and the best of five batches is kept.
+function measureGetters(n: number): number {
+    const scope = effectScope()
+    const items = build(n)
+    const control = scope.run(() =>
+        (variant === 'findindex' ? findIndexCombobox : nativeCombobox)({ id: 'bench', options: items })
+    )!
+    const pass = () => {
+        for (let i = 0; i < items.length; i++) control.getOptionProps(items[i]!, i)
+    }
+    pass()
+    let best = Infinity
+    for (let batch = 0; batch < 5; batch++) {
+        let passes = 0
+        const start = performance.now()
+        do {
+            pass()
+            passes++
+        } while (performance.now() - start < 20)
+        best = Math.min(best, (performance.now() - start) / passes)
+    }
+    scope.stop()
+    return best
+}
+
 // Shape declared once in ../perf-api.d.ts, shared with the spec.
 window.__oriPerf = {
     variant,
     mount: measureMount,
     open: measureOpen,
     arrows: measureArrows,
+    getters: measureGetters,
     filter: measureFilter,
     options: () => document.querySelectorAll('[role="option"]').length,
     highlighted: () => document.querySelector('[role="option"][data-highlighted]')?.textContent?.trim() ?? null

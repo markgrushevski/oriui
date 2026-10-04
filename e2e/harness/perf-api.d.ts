@@ -11,6 +11,8 @@ interface OriPerfApi {
     open(): Promise<number>
     /** Dispatch `count` ArrowDown keydowns, one flush each. Returns the per-keystroke ms. */
     arrows(count: number): Promise<number[]>
+    /** One pass of `getOptionProps` over `n` options, outside any render. Returns ms per pass. */
+    getters(n: number): number
     /** Type `query` into the input and re-filter. Returns ms and how many options survived. */
     filter(query: string): Promise<{ ms: number; matched: number }>
     /** How many `[role=option]` elements are in the DOM right now. */
