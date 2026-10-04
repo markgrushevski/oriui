@@ -34,9 +34,9 @@
         "prepack": "npm run build"
     },
     "devDependencies": {
-        "autoprefixer": "^10.5.2",
-        "cssnano": "^8.0.2",
-        "postcss": "^8.5.16",
-        "postcss-import": "^16.1.1"
+        "autoprefixer": "^10.6.1",
+        "cssnano": "^8.0.10",
+        "postcss": "^8.5.28",
+        "postcss-import": "^16.2.0"
     }
 }

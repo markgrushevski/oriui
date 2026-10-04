@@ -6,11 +6,32 @@ registry. We can only work around them, so each entry names the workaround, to k
 
 - **Only live problems.** When an upstream fix ships, drop the workaround and delete the entry in the
   same change.
-- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-04**.
+- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-06**.
 - **Status:** `confirmed` — reproduced · `unconfirmed` — suspected · `mitigated` — a workaround is in
   place · `accepted` — a permanent constraint we design around.
 
 ---
+
+## ORI-O-06 — `mdast-util-to-markdown` 2.1.3+ sends the docs build into endless recursion
+
+`mitigated` · remark-mdc 3.11.1 with mdast-util-to-markdown ≥ 2.1.3 ([nuxt-content/remark-mdc#161](https://github.com/nuxt-content/remark-mdc/issues/161))
+
+- **What:** since 2.1.3, bold and italic are written only through a handler's `attention` / `peek` properties.
+  remark-mdc wraps the `strong` and `emphasis` handlers without copying them, so the wrapper calls itself:
+  `/llms-full.txt` and `/raw/*.md` fail with "Maximum call stack size exceeded" and `docs:build` stops.
+- **Workaround:** `overrides` in the root `package.json` pins `mdast-util-to-markdown` to exactly `2.1.2`. An
+  override does not touch an already-resolved lockfile; changing it needs `package-lock.json` regenerated.
+- **When it can go:** once a remark-mdc release copies those properties. Drop the override, regenerate the
+  lockfile, and check that `docs:build` writes `llms-full.txt`.
+
+## ORI-O-05 — `npm audit` reports advisories in dev tooling that have no fixed release
+
+`accepted` · braces (via stylelint), node-forge (via the Nuxt CLI's dev certificates)
+
+- **What:** every remaining advisory sits in build and docs tooling, with no patched version upstream. The
+  published packages have no runtime dependencies, only peers, so nothing reaches a consumer.
+- **Do not run `npm audit fix --force`:** it "fixes" these by downgrading Nuxt to 3 and the SMACSS order
+  config to 1, which breaks the docs and the linter. Re-run `npm audit` after dependency updates instead.
 
 ## ORI-O-04 — npm refuses the unscoped name `oriui`
 
