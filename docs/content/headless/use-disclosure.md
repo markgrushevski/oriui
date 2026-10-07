@@ -66,45 +66,9 @@ const { open, triggerProps, contentProps } = useDisclosure(() => ({ defaultOpen:
 </template>
 ```
 
-#svelte
-
-The **Svelte** binding is the same primitive as stores — auto-subscribe with `$` and spread the bags:
-
-```svelte
-<script>
-    import { useDisclosure } from '@oriui/headless/svelte';
-
-    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false });
-</script>
-
-<button {...$triggerProps}>Details {$open ? '▲' : '▼'}</button>
-<div {...$contentProps}>…content…</div>
-```
-
-#react
-
-The **React** binding is the same primitive as a hook — the control is plain values (no `.value` / `$`,
-re-rendering on state changes via `useSyncExternalStore`); spread the bags onto your JSX:
-
-```tsx
-import { useDisclosure } from '@oriui/headless/react'
-
-function Details() {
-    const { open, triggerProps, contentProps } = useDisclosure({ defaultOpen: false })
-
-    return (
-        <>
-            <button {...triggerProps}>Details {open ? '▲' : '▼'}</button>
-            <div {...contentProps}>…content…</div>
-        </>
-    )
-}
-```
-
 ::
 
-> `@oriui/css` is framework-free: the same `.ori-*` classes and tokens style this markup in React / Next
-> today, no adapter needed. The React adapter adds the _behavior_ and is in development.
+> `@oriui/css` is framework-free: the same `.ori-*` classes and tokens style this markup in any framework.
 
 ## Adapter
 

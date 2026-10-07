@@ -3,11 +3,11 @@
 oriUI is a small monorepo of **three publishable packages** plus the docs workspace, released with
 **changesets** in pre mode (`rc`).
 
-| Package           | Path                | What it is                                             |
-| ----------------- | ------------------- | ------------------------------------------------------ |
-| `@oriui/vue`      | `packages/vue`      | Styled Vue components (**peers**: css + headless)      |
-| `@oriui/headless` | `packages/headless` | Engine (`.`) + `./vue`, `./svelte`, `./react` adapters |
-| `@oriui/css`      | `packages/css`      | Standalone CSS tokens + utilities                      |
+| Package           | Path                | What it is                                        |
+| ----------------- | ------------------- | ------------------------------------------------- |
+| `@oriui/vue`      | `packages/vue`      | Styled Vue components (**peers**: css + headless) |
+| `@oriui/headless` | `packages/headless` | Engine (`.`) + `./vue` adapter                    |
+| `@oriui/css`      | `packages/css`      | Standalone CSS tokens + utilities                 |
 
 The three are a **fixed** lockstep group (`.changeset/config.json`) — they always bump together. While
 `.changeset/pre.json` is in pre mode, versions are `1.0.0-rc.N`.

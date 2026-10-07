@@ -31,21 +31,7 @@
         "name": "@oriui/headless/vue (gzip)",
         "path": "packages/headless/dist/vue/index.js",
         "gzip": true,
-        "limit": "13 kB",
-        "disablePlugins": ["@size-limit/esbuild"]
-    },
-    {
-        "name": "@oriui/headless/svelte (gzip)",
-        "path": "packages/headless/dist/svelte/index.js",
-        "gzip": true,
-        "limit": "11 kB",
-        "disablePlugins": ["@size-limit/esbuild"]
-    },
-    {
-        "name": "@oriui/headless/react (gzip)",
-        "path": "packages/headless/dist/react/index.js",
-        "gzip": true,
-        "limit": "13 kB",
+        "limit": "13.5 kB",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {

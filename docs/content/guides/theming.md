@@ -179,10 +179,8 @@ const { resolvedTheme, setTheme, toggleTheme, cycleTheme } = useTheme({
 
 `resolvedTheme` is the applied `'light'` / `'dark'`; `theme` is the setting (`'auto'` included).
 `setTheme(mode)` pins a choice, `toggleTheme()` flips light ⇄ dark, `cycleTheme()` goes
-`auto → light → dark`. A Svelte store twin ships at `@oriui/headless/svelte` (`$theme.resolvedTheme`
-
-- the same setters). For **SSR** (e.g. Nuxt), keep the inline head script for the first paint — the
-  composable is inert on the server and takes over on the client.
+`auto → light → dark`. For **SSR** (e.g. Nuxt), keep the inline head script for the first paint — the
+composable is inert on the server and takes over on the client.
 
 Have your own theme store, or vanilla JS? Call the low-level **`applyTheme`** exactly where you would
 have toggled the class:

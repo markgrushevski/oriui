@@ -9,7 +9,7 @@ The framework-agnostic heart of the headless layer: a **behavior contract** plus
 so a primitive behaves identically wherever it runs — and the behavior stays swappable per primitive,
 without touching markup.
 
-This is the **agnostic** layer. It has no Vue, no Svelte, no CSS. For the concrete composable API, see
+This is the **agnostic** layer. It has no framework code and no CSS. For the concrete composable API, see
 the Vue binding pages — [useDisclosure](/headless/use-disclosure) and [useDialog](/headless/use-dialog),
 with the rest linked from [The core toolkit](#the-core-toolkit) below; for the standalone styling layer
 see the [CSS guide](/guides/css).
@@ -19,12 +19,10 @@ see the [CSS guide](/guides/css).
 The headless layer is split along a framework axis. The behavior lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
-| Package                  | What it is                                                                                                                                                                  | Framework    |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `@oriui/headless`        | Behavior contract + native engine                                                                                                                                           | **agnostic** |
-| `@oriui/headless/vue`    | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
-| `@oriui/headless/svelte` | The same composables as Svelte stores. **In development.**                                                                                                                  | Svelte       |
-| `@oriui/headless/react`  | The same composables as React hooks. **In development.**                                                                                                                    | React        |
+| Package               | What it is                                                                                                                                                                  | Framework    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `@oriui/headless`     | Behavior contract + native engine                                                                                                                                           | **agnostic** |
+| `@oriui/headless/vue` | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
 
 ## The contract
 
@@ -54,9 +52,9 @@ api.toggle()
 Every part bag (root, trigger, content) carries the anatomy's `data-scope` / `data-part` attrs, and
 the content bag is a landmark `region` (`role: 'region'`). The prop bags are framework-neutral **plain
 objects**. `connect()` is a pure projection of machine state to prop-getters; the binding supplies a
-`normalizeProps` transform (Vue keeps `onClick`, Svelte lowercases it to `onclick`) and re-invokes
-`connect()` on every state change, wrapping the result in the framework's reactivity primitive — a Vue
-`ComputedRef` or a Svelte store. The same engine, the same ARIA, expressed once.
+`normalizeProps` transform that maps the neutral props to the framework's casing (Vue keeps `onClick`)
+and re-invokes `connect()` on every state change, wrapping the result in the framework's reactivity
+primitive (the Vue adapter returns a `ComputedRef`). The same engine, the same ARIA, expressed once.
 
 Three small building blocks back every primitive:
 
@@ -70,8 +68,8 @@ Three small building blocks back every primitive:
 ## The core toolkit
 
 Beyond the disclosure engine above, `@oriui/headless` ships the behavior every binding composes —
-state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue,
-Svelte and React adapters consume them without re-implementing anything.
+state machines, pure roving-focus math, and the theme / token bridges. All framework-agnostic; the Vue
+adapter consumes them without re-implementing anything.
 
 | Export                                                                    | What it is                                                                                                                                                                                                                  | Vue binding                                                                                                       |
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -112,15 +110,13 @@ app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox })
 
 ## Frameworks
 
-The same core powers each binding, so a primitive behaves the same everywhere.
+The package ships one framework binding, for Vue; the core underneath it imports no framework.
 
 - **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
-- **Svelte** (in development) — `@oriui/headless/svelte` consumes the identical contract, returning Svelte stores (lowercased event handlers, `MaybeReactive` options); no behavior is re-implemented.
-- **React** (in development) — `@oriui/headless/react` consumes the identical contract as hooks, returning plain values (machine-driven primitives re-render through `useSyncExternalStore`; React-cased handlers, options as a plain object); no behavior is re-implemented. One shape differs by necessity: `useToolbar` / `useToolbarToggleGroup` also return a `ToolbarProvider` / `ToggleGroupProvider` to wrap the items with, because React context needs a rendered provider where Vue has `provide` and Svelte `setContext`.
 
 ## See also
 
-- The composables (each page carries the Vue, Svelte and React binding side by side) —
+- The composables —
   [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
   [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) ·
   [useToolbar](/headless/use-toolbar) · [useColorPicker](/headless/use-color-picker) ·

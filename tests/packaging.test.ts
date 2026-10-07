@@ -43,8 +43,15 @@ describe('published package manifests', () => {
         expect(manifest(dir).files).toContain('CHANGELOG.md')
     })
 
-    it.each(['vue', 'headless'])('@oriui/%s ships src — its dist source maps resolve into it', (dir) => {
-        expect(manifest(dir).files).toContain('src')
+    it('@oriui/vue ships src — its dist source maps resolve into it', () => {
+        expect(manifest('vue').files).toContain('src')
+    })
+
+    it('@oriui/headless ships the src of its published entries only — core and vue', () => {
+        // Its maps resolve into src/core and src/vue; src/svelte and src/react are kept but not published.
+        const { files } = manifest('headless')
+        expect(files).toEqual(expect.arrayContaining(['src/core', 'src/vue']))
+        expect(files).not.toContain('src')
     })
 
     it('@oriui/css ships dist only — nothing it publishes can reach src', () => {

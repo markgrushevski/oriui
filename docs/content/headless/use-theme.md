@@ -11,7 +11,7 @@ around a bug in current Chromium where a runtime theme toggle otherwise leaves s
 painting the previous theme's colors until they re-render.
 
 This is the **Vue** binding; the framework-agnostic core (`createThemeController`, `applyTheme`) lives
-in [`@oriui/headless`](/headless/core), and a Svelte store twin ships at `@oriui/headless/svelte`.
+in [`@oriui/headless`](/headless/core).
 Theming is DOM + state, so — unlike [`useDisclosure`](/headless/use-disclosure) /
 [`useDialog`](/headless/use-dialog) — there is no swappable adapter.
 
@@ -74,54 +74,6 @@ The controller applies the persisted / default theme in `setup`, **before mount*
 between mount and the applied theme — and tears its OS-scheme listener down on scope dispose. (A
 client-only SPA can still flash on the very first paint before JS runs; the pre-paint script below
 closes that gap.)
-
-#svelte
-
-The **Svelte** twin is the same controller as a readable store (auto-subscribe with `$`) plus the
-setters:
-
-```svelte
-<script>
-    import { useTheme } from '@oriui/headless/svelte';
-
-    const theme = useTheme({ storageKey: 'ori-theme', default: 'auto' });
-</script>
-
-<button on:click={theme.cycleTheme}> Theme: {$theme.theme} ({$theme.resolvedTheme}) </button>
-```
-
-The Svelte controller lives as long as the **component**, not as long as the subscription — an `{#if}`
-that unmounts the markup reading `$theme` no longer tears the controller down (it used to, which
-silently killed `auto` mode for the rest of the session). Teardown rides on `onDestroy`, which only
-exists during component init, so a `useTheme()` called at **module scope** has no component to hang on:
-there the store exposes `theme.destroy()` and you are responsible for calling it, or the OS-scheme
-listener outlives the page's need for it.
-
-#react
-
-The **React** binding is the same controller as a hook — the return is plain values (`theme` /
-`resolvedTheme`, no `$` / `.value`) plus the same setters, re-rendering on change (`onClick` in React
-casing). It is **client-only**: the controller is created in a mount effect, so the server and the first
-client render show the neutral default and there is no hydration mismatch (the persisted / OS-resolved
-value lands right after mount — see **SSR & the initial theme** below):
-
-```tsx
-import { useTheme } from '@oriui/headless/react'
-
-function ThemeToggle() {
-    // setTheme(mode) and toggleTheme() are also returned — see Returns.
-    const { theme, resolvedTheme, cycleTheme } = useTheme({
-        storageKey: 'ori-theme',
-        default: 'auto'
-    })
-
-    return (
-        <button onClick={cycleTheme}>
-            Theme: {theme} ({resolvedTheme})
-        </button>
-    )
-}
-```
 
 ::
 

@@ -25,8 +25,7 @@ import { useDismissable } from '@oriui/headless/vue'
 
 ## Options
 
-`useDismissable(() => ({ … }))` takes its options as a getter (Svelte: a plain object or a store) so
-`enabled` / `elements` stay reactive.
+`useDismissable(() => ({ … }))` takes its options as a getter so `enabled` / `elements` stay reactive.
 
 | Option               | Type                                         | Default | Description                                                                                         |
 | -------------------- | -------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------- |
@@ -65,64 +64,6 @@ useDismissable(() => ({
     pointerDownOutside: true
 }))
 </script>
-```
-
-#svelte
-
-The **Svelte** binding is the same — options are a plain object or a store, and it wires the identical
-listeners over the shared `isTargetOutside`:
-
-```svelte
-<script>
-    import { writable, derived } from 'svelte/store';
-    import { useDismissable } from '@oriui/headless/svelte';
-
-    export let controlEl; // bound to the combobox control
-    const open = writable(false);
-
-    // focus-out for a combobox (focus lives on its input)
-    useDismissable(derived(open, ($open) => ({
-        enabled: $open,
-        elements: () => [controlEl],
-        onDismiss: () => open.set(false),
-        focusOutside: true
-    })));
-</script>
-```
-
-#react
-
-The **React** binding is the same — options are a plain object (no getter / store), element refs come from
-`useRef`, and it returns nothing; it wires the identical `document` capture listeners over the shared
-`isTargetOutside`. The subscribe re-runs only when `enabled` / the strategy changes, and the latest
-`onDismiss` / `elements` are always read on the event:
-
-```tsx
-// MyMenu.tsx — pointerdown-outside (a menu has no single focus anchor)
-import { useRef, useState } from 'react'
-import { useDismissable } from '@oriui/headless/react'
-
-function MyMenu() {
-    const [open, setOpen] = useState(false)
-    const content = useRef<HTMLDivElement>(null)
-    const trigger = useRef<HTMLButtonElement>(null)
-
-    useDismissable({
-        enabled: open,
-        elements: () => [content.current, trigger.current],
-        onDismiss: () => setOpen(false),
-        pointerDownOutside: true
-    })
-
-    return (
-        <>
-            <button ref={trigger} onClick={() => setOpen((v) => !v)}>
-                Menu
-            </button>
-            {open && <div ref={content}>…menu items…</div>}
-        </>
-    )
-}
 ```
 
 ::

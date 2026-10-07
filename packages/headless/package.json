@@ -1,7 +1,7 @@
 {
     "name": "@oriui/headless",
     "version": "1.0.0-rc.22",
-    "description": "Headless behavior for oriUI: focus, keyboard and ARIA. Vue adapter; Svelte and React adapters in development.",
+    "description": "Headless behavior for oriUI: focus, keyboard and ARIA, as a framework-free engine with a Vue adapter.",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -16,7 +16,8 @@
     "files": [
         "CHANGELOG.md",
         "dist",
-        "src"
+        "src/core",
+        "src/vue"
     ],
     "publishConfig": {
         "access": "public"
@@ -32,16 +33,6 @@
             "import": "./dist/vue/index.js",
             "default": "./dist/vue/index.js"
         },
-        "./svelte": {
-            "types": "./dist/svelte/index.d.ts",
-            "import": "./dist/svelte/index.js",
-            "default": "./dist/svelte/index.js"
-        },
-        "./react": {
-            "types": "./dist/react/index.d.ts",
-            "import": "./dist/react/index.js",
-            "default": "./dist/react/index.js"
-        },
         "./package.json": "./package.json"
     },
     "scripts": {
@@ -50,17 +41,9 @@
         "types": "tsc --noEmit"
     },
     "peerDependencies": {
-        "react": "^18.0.0 || ^19.0.0",
-        "svelte": "^5.0.0",
         "vue": "^3.5"
     },
     "peerDependenciesMeta": {
-        "react": {
-            "optional": true
-        },
-        "svelte": {
-            "optional": true
-        },
         "vue": {
             "optional": true
         }

@@ -76,9 +76,9 @@ Takes no arguments. Outside a `useToolbar` root there is nothing to register wit
 `useToolbarOrientation()` — reads the enclosing toolbar's orientation, used by a custom separator or
 group to render perpendicular / matching. It returns the getter **directly** (not a prop bag).
 
-| Returns                | Type                      | Description                                                                                                                                                                            |
-| ---------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| the orientation getter | `() => RovingOrientation` | Reads the enclosing orientation (`'horizontal' \| 'vertical'`); defaults to `'horizontal'` outside a toolbar. (The Svelte twin returns a `Readable<RovingOrientation>` store instead.) |
+| Returns                | Type                      | Description                                                                                                   |
+| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| the orientation getter | `() => RovingOrientation` | Reads the enclosing orientation (`'horizontal' \| 'vertical'`); defaults to `'horizontal'` outside a toolbar. |
 
 ### useToolbarToggleGroup
 
@@ -212,100 +212,6 @@ const { itemProps } = useToolbarToggleItem(() => value)
 </template>
 ```
 
-#svelte
-
-The **Svelte** binding is the same — a `setContext` roving context, the prop bags as `Readable` stores
-you auto-subscribe with `$`, and lowercased event handlers (`onkeydown` / `onfocus`). Options are a
-plain object (or a store), not getters:
-
-```svelte
-<!-- MyToolbar.svelte -->
-<script>
-    import { useToolbar } from '@oriui/headless/svelte';
-
-    export let label = 'Formatting';
-    const { toolbarProps } = useToolbar({ label });
-</script>
-
-<div {...$toolbarProps}>
-    <slot />
-</div>
-```
-
-```svelte
-<!-- MyToolbarButton.svelte -->
-<script>
-    import { useToolbarItem } from '@oriui/headless/svelte';
-
-    export let text;
-    const { itemProps } = useToolbarItem();
-</script>
-
-<button {...$itemProps}>{text}</button>
-```
-
-#react
-
-The **React** binding is the same two pieces — but because a React context needs a _rendered_ Provider
-(Vue's `provide` / Svelte's `setContext` have no hook-only equivalent), `useToolbar` returns a stable
-`ToolbarProvider` you wrap the items with. The prop bags are plain objects in React casing (`onKeyDown` /
-`onFocus` / `tabIndex`), options are a plain object, and `@oriui/css` styles the markup with the same
-`.ori-toolbar` classes in React / Next today:
-
-```tsx
-import { useToolbar, useToolbarItem } from '@oriui/headless/react'
-import type { ReactNode } from 'react'
-
-function Toolbar({ children, label = 'Formatting' }: { children: ReactNode; label?: string }) {
-    const { toolbarProps, ToolbarProvider } = useToolbar({ label })
-    // No element ref: the keydown handler resolves the root from event.currentTarget.
-    return (
-        <ToolbarProvider>
-            <div {...toolbarProps}>{children}</div>
-        </ToolbarProvider>
-    )
-}
-
-function ToolbarButton({ text }: { text: string }) {
-    // itemProps carries data-ori-toolbar-item + the roving tabIndex + onFocus.
-    const { itemProps } = useToolbarItem()
-    return <button {...itemProps}>{text}</button>
-}
-
-// <Toolbar label="Formatting">
-//     <ToolbarButton text="New" />
-//     <ToolbarButton text="Open" />
-//     <ToolbarButton text="Save" />
-// </Toolbar>
-```
-
-A **toggle group** works the same way — `useToolbarToggleGroup` returns a `ToggleGroupProvider`, and
-`useToolbarToggleItem` composes the roving item with the group's selection (`aria-pressed` + a toggling
-`onClick`). It is controlled — pass `value` / `onChange`:
-
-```tsx
-import { useToolbarToggleGroup, useToolbarToggleItem } from '@oriui/headless/react'
-import { useState, type ReactNode } from 'react'
-
-function ToggleGroup({ children }: { children: ReactNode }) {
-    const [value, setValue] = useState<string | string[] | undefined>()
-    const { groupProps, ToggleGroupProvider } = useToolbarToggleGroup({ type: 'single', value, onChange: setValue })
-    return (
-        <ToggleGroupProvider>
-            <div {...groupProps} aria-label="Text style">
-                {children}
-            </div>
-        </ToggleGroupProvider>
-    )
-}
-
-function ToggleItem({ value, children }: { value: string; children: ReactNode }) {
-    // itemProps = roving props + aria-pressed (from the group) + the toggling onClick.
-    const { itemProps } = useToolbarToggleItem(value)
-    return <button {...itemProps}>{children}</button>
-}
-```
-
 ::
 
 ## Accessibility
@@ -346,7 +252,7 @@ the keyboard behavior is the roving `onKeydown` on the root.
 ## See also
 
 - [@oriui/headless](/headless/core) — the framework-agnostic core: the pure roving index/key math
-  (`rovingIntent` / `resolveRovingIndex`) and the arrow-yield predicate, shared with the Svelte twin.
+  (`rovingIntent` / `resolveRovingIndex`) and the arrow-yield predicate.
 - [Toolbar](/components/toolbar) — the styled `OriToolbar` (+ Button / Separator / ToggleGroup /
   ToggleItem) built on these composables.
 - [useDialog](/headless/use-dialog) · [useDisclosure](/headless/use-disclosure) — the sibling headless

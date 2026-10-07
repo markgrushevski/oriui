@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         domain: 'https://oriui.vercel.app',
         title: 'oriUI',
         description:
-            'oriUI is a design system in plain CSS (@oriui/css), with accessible Vue 3 components built on it (@oriui/vue) and their behavior as headless composables (@oriui/headless: a Vue adapter; Svelte and React adapters in development). Single-class token utilities; theming through CSS custom properties, no Tailwind.',
+            'oriUI is a design system in plain CSS (@oriui/css), with accessible Vue 3 components built on it (@oriui/vue) and their behavior as headless composables (@oriui/headless: a framework-free engine with a Vue adapter). Single-class token utilities; theming through CSS custom properties, no Tailwind.',
         full: {
             title: 'oriUI — full documentation',
             description: 'Every oriUI documentation page concatenated, for single-fetch consumption.'
@@ -63,8 +63,7 @@ export default defineNuxtConfig({
             },
             {
                 title: 'Headless',
-                description:
-                    'The framework-agnostic behavior contract and its Vue binding (Svelte and React bindings in development).',
+                description: 'The framework-agnostic behavior contract and its Vue binding.',
                 contentCollection: 'docs',
                 contentFilters: [{ field: 'path', operator: 'LIKE', value: '/headless/%' }]
             }

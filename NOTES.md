@@ -382,7 +382,7 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   **The gate is now live** (`ci.yml`, after publint): `attw --pack {headless,vue} --profile node16
 --ignore-rules cjs-resolves-to-esm`, both exit 0. **Why `--profile node16` (not the full check):** the
   packages don't target node10 (classic resolution) — it ignores `exports`, so _every_ entry, incl. the
-  subpath `@oriui/headless/{vue,svelte}`, reports `node10: 💀 Resolution failed`. Supporting it would mean
+  subpath `@oriui/headless/vue`, reports `node10: 💀 Resolution failed`. Supporting it would mean
   shipping `typesVersions` fallbacks; instead the profile is scoped to node16/nodenext + bundler, which is
   what an ESM-only Node≥22 library actually serves. **Pin the attw version** (`@0.18.5`): 0.18.2 crashes
   (`Cannot read properties of undefined (reading 'filename')`), and the `alpha` npm dist-tag drift lesson
