@@ -58,12 +58,13 @@ registry. We can only work around them, so each entry names the workaround, to k
 - **When it can go:** once a remark-mdc release copies those properties. Drop the override, regenerate the
   lockfile, and check that `docs:build` writes `llms-full.txt`.
 
-## ORI-O-05 — `npm audit` reports advisories in dev tooling that have no fixed release
+## ORI-O-05 — `npm audit` reports advisories in dev tooling
 
-`accepted` · braces (via stylelint), node-forge (via the Nuxt CLI's dev certificates)
+`accepted` · braces (via stylelint), node-forge (via the Nuxt CLI's dev certificates), Changesets 2's own tree
 
-- **What:** every remaining advisory sits in build and docs tooling, with no patched version upstream. The
-  published packages have no runtime dependencies, only peers, so nothing reaches a consumer.
+- **What:** every remaining advisory sits in build and docs tooling. braces and node-forge have no patched
+  version upstream; the Changesets chain clears with Changesets 3, which waits for the end of pre mode
+  (ORI-O-07). The published packages have no runtime dependencies, only peers, so nothing reaches a consumer.
 - **Do not run `npm audit fix --force`:** it "fixes" these by downgrading Nuxt to 3 and the SMACSS order
   config to 1, which breaks the docs and the linter. Re-run `npm audit` after dependency updates instead.
 

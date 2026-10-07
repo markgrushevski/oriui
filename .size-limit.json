@@ -21,18 +21,30 @@
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
-        "name": "@oriui/headless — core engine (gzip)",
+        "name": "@oriui/headless — every core export, bundled (gzip)",
         "path": "packages/headless/dist/core/index.js",
+        "import": "*",
         "gzip": true,
-        "limit": "1 kB",
-        "disablePlugins": ["@size-limit/esbuild"]
+        "limit": "4.5 kB",
+        "message": "What an app ships that imports the whole engine, measured through its chunks: the entry file alone is a re-export of a few hundred bytes."
     },
     {
-        "name": "@oriui/headless/vue (gzip)",
+        "name": "@oriui/headless/vue — every composable, bundled, vue excluded (gzip)",
         "path": "packages/headless/dist/vue/index.js",
+        "import": "*",
+        "ignore": ["vue"],
         "gzip": true,
-        "limit": "13.5 kB",
-        "disablePlugins": ["@size-limit/esbuild"]
+        "limit": "10 kB",
+        "message": "The whole Vue adapter with the engine it bundles. It is the denominator for the useDialog entry below."
+    },
+    {
+        "name": "tree-shaking — useDialog alone from @oriui/headless/vue (gzip)",
+        "path": "packages/headless/dist/vue/index.js",
+        "import": "{ useDialog }",
+        "ignore": ["vue"],
+        "gzip": true,
+        "limit": "1.5 kB",
+        "message": "One composable must not pull the adapter: a jump toward the entry above means the barrel stopped tree-shaking, e.g. a module-scope side effect against \"sideEffects\": false."
     },
     {
         "name": "tree-shaking ceiling — every @oriui/vue export bundled into one app (gzip)",
