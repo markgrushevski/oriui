@@ -53,6 +53,12 @@ so a `dependencies` entry could never enforce the match anyway. While the line i
 ranges pin the exact version (a `^1.0.0` range cannot match `1.0.0-rc.N`); widening them is part of the 1.0
 cutover in [RELEASING.md](RELEASING.md).
 
+**The public API is written down in `api/`**: every export with its type, every component's props, events
+and slots, and every class, `data-*` attribute selector, custom property and stylesheet file of the CSS layer.
+The gate regenerates it from the built packages and fails on any difference. When a change is meant to
+alter the API, run `npm run api:update` and commit `api/` with it; a removed or narrowed line is a breaking
+change, and the changeset has to say so.
+
 Releases publish to the `rc` dist-tag, and `latest` is moved to each new version right after
 ([RELEASING.md](RELEASING.md)), so `npm install @oriui/vue` gets the current line.
 
