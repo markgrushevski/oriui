@@ -108,7 +108,10 @@
         transform: scale(1);
     }
 
-    .ori-radio__input:focus-visible ~ .ori-radio__circle {
+    /* WebKit drops :focus-visible from a radio the arrow keys focused, so the ring also follows :focus while the
+       group carries `data-ori-keyboard` (the Vue component sets it during keyboard use). */
+    .ori-radio__input:focus-visible ~ .ori-radio__circle,
+    .ori-radio-group[data-ori-keyboard] .ori-radio__input:focus ~ .ori-radio__circle {
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;
     }

@@ -48,7 +48,7 @@ test.describe('OriDialog — native <dialog> focus trap (real Chromium)', () => 
         expect(await focusIsInsideDialog(page)).toBe(true)
     })
 
-    test('Tab is trapped inside the dialog and cannot reach the outside controls', async ({ page }) => {
+    test('Tab is trapped inside the dialog and cannot reach the outside controls', async ({ page, browserName }) => {
         await page.getByTestId('open').click()
         await expect(page.locator('dialog')).toBeVisible()
 
@@ -62,7 +62,9 @@ test.describe('OriDialog — native <dialog> focus trap (real Chromium)', () => 
             await page.keyboard.press('Tab')
             forward.push(await activeLabel(page))
         }
-        expect(forward).toContain('close')
+        // Past the last control Chromium and WebKit wrap to the first; Firefox moves focus to its own toolbar,
+        // which leaves the page out of reach just the same.
+        if (browserName !== 'firefox') expect(forward).toContain('close')
         expect(forward).toContain('first')
         expect(forward).toContain('last')
         expect(forward).not.toContain('outside')

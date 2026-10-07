@@ -583,7 +583,9 @@ same attributes and keyboard behavior.
   field's label, `aria-describedby` carries the hint or error (a `aria-describedby` you add joins it rather
   than replacing it), and an error sets `aria-invalid="true"` on the group.
 - Focus is drawn on the visible segment, not the hidden input: a 2 px `outline` in the accent color, offset 2
-  px, on `:focus-visible`.
+  px, on `:focus-visible`. Safari drops `:focus-visible` from a radio an arrow key focused, so the component
+  sets `data-ori-keyboard` on the group while the keyboard is in use and the ring follows `:focus` under it;
+  in plain HTML, set that attribute yourself on keydown and remove it on pointerdown.
 - A new control starts with nothing checked unless you give it a value, and a user cannot clear a choice —
   give `v-model` an initial value when one option is the sensible default.
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ActionSize, ThemeColor } from '../../types'
 import { useFieldGroup } from '../field/use-field-control'
+import { useKeyboardModality } from '../../internal/keyboard-modality'
 
 /** One radio in `<OriRadioGroup>`'s `options` prop. */
 export interface RadioOption {
@@ -41,6 +42,8 @@ const model = defineModel<string | number>()
 // rather than a `<label for>`; standalone it wires its own.
 const { inField, groupName, ownLabelId, labelledBy, describedBy, isInvalid, isRequired, isDisabled, groupSize } =
     useFieldGroup(() => ({ disabled, label, name, required, size }))
+
+const { keyboard, onKeydown, onPointerdown } = useKeyboardModality()
 </script>
 
 <template>
@@ -52,11 +55,14 @@ const { inField, groupName, ownLabelId, labelledBy, describedBy, isInvalid, isRe
             { 'ori-radio-group_inline': inline }
         ]"
         role="radiogroup"
+        :data-ori-keyboard="keyboard ? '' : undefined"
         :aria-labelledby="labelledBy"
         :aria-invalid="isInvalid ? 'true' : undefined"
         :aria-required="isRequired ? 'true' : undefined"
         v-bind="$attrs"
         :aria-describedby="describedBy"
+        @keydown="onKeydown"
+        @pointerdown="onPointerdown"
     >
         <div v-if="label && !inField" :id="ownLabelId" class="ori-radio-group__label">{{ label }}</div>
 

@@ -109,3 +109,23 @@ jobs:
 
             - name: e2e (.ori-anchored placement + collision flip + Popover API)
               run: npm run test:e2e
+
+    e2e-engines:
+        name: e2e (Playwright — Firefox + WebKit)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: '22'
+                  cache: npm
+
+            - name: Install (npm ci — root + workspaces)
+              run: npm ci
+
+            - name: Install Playwright Firefox + WebKit
+              run: npx playwright install --with-deps firefox webkit
+
+            - name: e2e in Firefox and WebKit
+              run: npm run test:e2e:engines

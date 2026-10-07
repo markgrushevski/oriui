@@ -142,4 +142,15 @@ describe('OriRadioGroup', () => {
         await expectNoA11yViolations(wrapper.element)
         wrapper.unmount()
     })
+
+    it('marks keyboard use on the group, so the focus ring survives an arrow key, and a pointer press clears it', async () => {
+        const wrapper = mount(OriRadioGroup, { props: { options: OPTIONS, label: 'Plan' } })
+        expect(wrapper.attributes('data-ori-keyboard')).toBeUndefined()
+
+        await wrapper.find('input').trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.attributes('data-ori-keyboard')).toBe('')
+
+        await wrapper.find('input').trigger('pointerdown')
+        expect(wrapper.attributes('data-ori-keyboard')).toBeUndefined()
+    })
 })

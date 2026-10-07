@@ -12,6 +12,9 @@ import path from 'node:path'
  */
 const STYLES = path.resolve('packages/css/dist/styles.css')
 
+// Playwright emulates forced colors in Chromium only; elsewhere the media query matches but nothing is repainted.
+test.skip(({ browserName }) => browserName !== 'chromium', 'forced-colors emulation is Chromium-only')
+
 async function render(page: Page, body: string, colorScheme: 'light' | 'dark' = 'light') {
     await page.emulateMedia({ forcedColors: 'active', colorScheme })
     await page.setContent(`<!doctype html><html><head></head><body style="margin:0;padding:16px">${body}</body></html>`)

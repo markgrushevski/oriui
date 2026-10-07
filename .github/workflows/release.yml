@@ -46,8 +46,8 @@ jobs:
             - name: Install (npm ci — root + workspaces)
               run: npm ci
 
-            - name: Install Playwright Chromium (for the e2e leg of the gate)
-              run: npx playwright install --with-deps chromium
+            - name: Install Playwright browsers (for the e2e legs of the gate)
+              run: npx playwright install --with-deps chromium firefox webkit
 
             # Gate the publish on the same checks CI runs: one root script, `npm run gate`, and
             # tests/packaging.test.ts fails if a check reachable from ci.yml is not reachable from here.
@@ -59,6 +59,9 @@ jobs:
 
             - name: Quality gate (e2e — real Chromium)
               run: npm run test:e2e
+
+            - name: Quality gate (e2e — Firefox + WebKit)
+              run: npm run test:e2e:engines
 
             - name: Create Release PR or publish to npm
               uses: changesets/action@v1
