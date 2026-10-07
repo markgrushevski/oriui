@@ -897,4 +897,4 @@ component source directly (`packages/vue/src/components/toolbar/`).
 The pure index/key math — `rovingIntent(key, orientation, dir)` and
 `resolveRovingIndex(intent, from, count, loop)` — lives in the framework-agnostic core
 (`@oriui/headless`, no framework import) and is reusable for any roving-tabindex widget; it is the
-same helper the Svelte and React adapters share.
+same helper the Vue adapter uses.

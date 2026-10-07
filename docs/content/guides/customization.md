@@ -421,7 +421,7 @@ watch(brand, (c) => engine.setColor(c || fallback)) // skin/mode flips re-push a
 
 Colors-only for now — the probe resolves through the `color` property, so the token must resolve to a
 `<color>`. The full pattern (seeding a canvas engine on mount, the framework-agnostic `resolveToken` /
-`observeTheme` primitives, the Svelte twin) is in the
+`observeTheme` primitives) is in the
 [`@oriui/headless` README](https://github.com/markgrushevski/oriui/blob/main/packages/headless/README.md#reading-tokens-from-js).
 
 ## See also

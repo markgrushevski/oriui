@@ -96,73 +96,6 @@ const { tablistProps, getTabProps, getPanelProps } = useTabs(() => ({
 </template>
 ```
 
-#svelte
-
-The **Svelte** binding is the same — the prop bags are `Readable` stores you auto-subscribe with `$`, the
-item / panel getters are **stores of functions** (`$getTabProps(tab, i)`), event handlers are lowercased
-(`onkeydown` / `onclick`), and options are a plain object (or a store), not a getter:
-
-```svelte
-<!-- MyTabs.svelte -->
-<script>
-    import { useTabs } from '@oriui/headless/svelte';
-
-    export let tabs;
-    let value;
-    $: t = useTabs({ tabs, value, onChange: (v) => (value = v) });
-    $: ({ tablistProps, getTabProps, getPanelProps } = t);
-</script>
-
-<div {...$tablistProps}>
-    {#each tabs as tab, i (tab.value)}
-        <button {...$getTabProps(tab, i)}>{tab.label}</button>
-    {/each}
-</div>
-
-{#each tabs as tab, i (tab.value)}
-    <div {...$getPanelProps(tab, i)}><slot name={`panel-${tab.value}`} /></div>
-{/each}
-```
-
-#react
-
-The **React** binding is the same — the control is plain values (no `$` / `.value`), the item / panel
-getters are plain functions (`getTabProps(tab, i)`), handlers use React casing (`onKeyDown` / `onClick` /
-`tabIndex`), and options are a plain object. `@oriui/css` styles the markup with the same `.ori-tabs`
-classes in React / Next today:
-
-```tsx
-import { useState } from 'react'
-import { useTabs } from '@oriui/headless/react'
-
-function MyTabs({ tabs }: { tabs: { value: string; label: string; disabled?: boolean }[] }) {
-    const [value, setValue] = useState(tabs[0]?.value)
-    const { tablistProps, getTabProps, getPanelProps } = useTabs({
-        tabs,
-        value,
-        onChange: (v) => setValue(v as string)
-    })
-
-    return (
-        <div>
-            <div {...tablistProps}>
-                {tabs.map((tab, i) => (
-                    <button key={tab.value} {...getTabProps(tab, i)}>
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
-
-            {tabs.map((tab, i) => (
-                <div key={tab.value} {...getPanelProps(tab, i)}>
-                    …{tab.value}…
-                </div>
-            ))}
-        </div>
-    )
-}
-```
-
 ::
 
 ## Accessibility
@@ -195,7 +128,7 @@ roving `onKeydown` on the tablist.
 ## See also
 
 - [@oriui/headless](/headless/core) — the framework-agnostic core: the pure roving index/key math
-  (`rovingIntent` / `resolveRovingIndex`, with the skip-disabled predicate), shared with the Svelte twin.
+  (`rovingIntent` / `resolveRovingIndex`, with the skip-disabled predicate).
 - [Tabs](/components/tabs) — the styled `OriTabs` built on this composable.
 - [useToolbar](/headless/use-toolbar) — the sibling roving primitive (compositional, slotted items).
 - [CSS layer](/guides/css) — the standalone `.ori-tabs` classes for the tabs parts.

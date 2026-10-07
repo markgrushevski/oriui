@@ -1,12 +1,11 @@
-export type Framework = 'html' | 'js' | 'ts' | 'vue' | 'svelte' | 'react'
+export type Framework = 'html' | 'js' | 'ts' | 'vue'
 
 // Two groups of code an Example can show. Framework-free (the standalone `@oriui/css` markup + any
-// vanilla JS/TS for the headless core) and framework (the styled components). Each group has its own
-// default + persisted preference, so framework-free sections default to HTML and framework sections
-// default to Vue — independently. The framework group is the three bindings @oriui/headless ships
-// (Vue, Svelte, React); a tab only appears where that slot carries code, so no page grows an empty one.
+// vanilla JS/TS for the headless core) and framework (the Vue components and composables). Each group has
+// its own default + persisted preference, so framework-free sections default to HTML and framework sections
+// default to Vue — independently. A tab only appears where that slot carries code.
 export const NO_FRAMEWORK: Framework[] = ['html', 'js', 'ts']
-export const FRAMEWORKS: Framework[] = ['vue', 'svelte', 'react']
+export const FRAMEWORKS: Framework[] = ['vue']
 
 export function useOriFramework() {
     // Framework-free code defaults to HTML; framework code defaults to Vue. Both persisted.

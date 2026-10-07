@@ -346,8 +346,8 @@ Toasts are announced without moving focus.
 
 The composable is a module-level singleton — every call returns the same reactive queue. Import
 it anywhere; no Vue injection or plugin registration required. Its behavior is the framework-agnostic
-[`useToast`](/headless/use-toast) — the same imperative API ships from `@oriui/headless/vue` and
-`@oriui/headless/svelte`; this `@oriui/vue` re-export is unchanged.
+[`useToast`](/headless/use-toast) — the same imperative API ships from `@oriui/headless/vue`; this
+`@oriui/vue` re-export is unchanged.
 
 ```ts
 import { useToast } from '@oriui/vue'

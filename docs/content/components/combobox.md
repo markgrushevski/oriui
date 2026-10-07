@@ -63,46 +63,6 @@ const options = [
 </template>
 ```
 
-#svelte
-
-```svelte
-<script>
-    import { useCombobox } from '@oriui/headless/svelte';
-
-    // The full state machine + WAI-ARIA listbox keyboard — the same engine as Vue, as Svelte stores.
-    // (No styled Svelte component yet: compose @oriui/headless/svelte with the .ori-* classes.)
-    const { items, rootProps, labelProps, controlProps, inputProps, listboxProps, getOptionProps, getOptionState } =
-        useCombobox({
-            id: 'fruit',
-            options: [
-                { label: 'Apple', value: 'apple' },
-                { label: 'Banana', value: 'banana' },
-                { label: 'Cherry', value: 'cherry' },
-                { label: 'Grape', value: 'grape' },
-                { label: 'Mango', value: 'mango' }
-            ]
-        });
-</script>
-
-<div {...$rootProps} class="ori-combobox ori-color_primary ori-font-size_md">
-    <label {...$labelProps} class="ori-combobox__label">Fruit</label>
-    <div {...$controlProps} class="ori-combobox__control">
-        <input {...$inputProps} class="ori-input__field ori-combobox__input ori-size-radius_md" placeholder="Search a fruit…" />
-        <ul {...$listboxProps} class="ori-combobox__listbox ori-anchored ori-anchored_bottom-start">
-            {#each $items as item, i}
-                <li
-                    {...$getOptionProps(item, i)}
-                    class="ori-combobox__option"
-                    class:ori-combobox__option_selected={$getOptionState(item).selected}
-                >
-                    {item.label}
-                </li>
-            {/each}
-        </ul>
-    </div>
-</div>
-```
-
 ::
 
 ## Clearable
@@ -194,35 +154,8 @@ const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useC
 </template>
 ```
 
-The same behavior in Svelte 5 via `@oriui/headless/svelte` — the composable returns stores (auto-subscribe
-with `$`), and the item prop-getters are a store of a function (`$getOptionProps(item, i)`):
-
-```svelte
-<script>
-    import { useCombobox } from '@oriui/headless/svelte';
-
-    const { items, inputProps, listboxProps, getOptionProps, getOptionState } = useCombobox({
-        options: [
-            { label: 'Apple', value: 'apple' },
-            { label: 'Banana', value: 'banana' }
-        ]
-    });
-</script>
-
-<div>
-    <input {...$inputProps} />
-    <ul {...$listboxProps}>
-        {#each $items as item, i}
-            <li {...$getOptionProps(item, i)} data-selected={$getOptionState(item).selected}>
-                {item.label}
-            </li>
-        {/each}
-    </ul>
-</div>
-```
-
-Options are a `MaybeReactive` — pass a Svelte store instead of a plain object to react to a changing
-option list or `disabled`.
+Options are a `MaybeRefOrGetter` — pass a getter (as above) or a ref instead of a plain object to react to a
+changing option list or `disabled`.
 
 Pass a `filter` (`(item, query) => boolean`) to override the default case-insensitive substring
 match — for fuzzy matching, async results, or server-side filtering.

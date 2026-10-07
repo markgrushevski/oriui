@@ -11,10 +11,9 @@ active skin. It reads through a hidden probe, because the obvious API is a trap:
 substitution only happens at a real property's computed-value time.
 
 This is the **Vue** binding; the framework-agnostic core (`resolveToken`, `observeTheme`) lives in
-[`@oriui/headless`](/headless/core), and a Svelte store twin ships at `@oriui/headless/svelte`. Like
-[`useTheme`](/headless/use-theme), this is DOM + state — a read-only reactive **value**, not a widget — so
-there are no prop bags and no swappable adapter. It re-resolves on every skin / mode flip, and is a
-**colors-only MVP**: the token must resolve to a `<color>`.
+[`@oriui/headless`](/headless/core). Like [`useTheme`](/headless/use-theme), this is DOM + state — a read-only
+reactive **value**, not a widget — so there are no prop bags and no swappable adapter. It re-resolves on every
+skin / mode flip, and is a **colors-only MVP**: the token must resolve to a `<color>`.
 
 ## Import
 
@@ -25,26 +24,26 @@ import { useToken, useThemeColor } from '@oriui/headless/vue'
 ## Arguments
 
 `useToken` takes the custom-property name; `useThemeColor` is sugar that takes a color **role** and
-expands it to `--ori-color-<role>`. Pass a getter / ref (Vue) or a store (Svelte) to re-resolve when the
-argument changes — a plain string is a fixed snapshot.
+expands it to `--ori-color-<role>`. Pass a getter or a ref to re-resolve when the argument
+changes — a plain string is a fixed snapshot.
 
-| Argument (composable)     | Vue type                   | Svelte type             | Description                                                           |
-| ------------------------- | -------------------------- | ----------------------- | --------------------------------------------------------------------- |
-| `token` — `useToken`      | `MaybeRefOrGetter<string>` | `MaybeReactive<string>` | The `--ori-*` custom property to resolve, e.g. `--ori-color-primary`. |
-| `color` — `useThemeColor` | `MaybeRefOrGetter<string>` | `MaybeReactive<string>` | A color role name; resolves `--ori-color-<color>` (e.g. `primary`).   |
+| Argument (composable)     | Type                       | Description                                                           |
+| ------------------------- | -------------------------- | --------------------------------------------------------------------- |
+| `token` — `useToken`      | `MaybeRefOrGetter<string>` | The `--ori-*` custom property to resolve, e.g. `--ori-color-primary`. |
+| `color` — `useThemeColor` | `MaybeRefOrGetter<string>` | A color role name; resolves `--ori-color-<color>` (e.g. `primary`).   |
 
 ## Returns
 
 Both return a single **read-only reactive value** — the token's resolved computed color (e.g.
 `'rgb(3, 105, 161)'`), or `''` until it resolves.
 
-| Composable             | Vue                     | Svelte             | Value                                                         |
-| ---------------------- | ----------------------- | ------------------ | ------------------------------------------------------------- |
-| `useToken(token)`      | `Readonly<Ref<string>>` | `Readable<string>` | The resolved computed value of the `--ori-*` custom property. |
-| `useThemeColor(color)` | `Readonly<Ref<string>>` | `Readable<string>` | Sugar: the resolved value of `--ori-color-<color>`.           |
+| Composable             | Type                    | Value                                                         |
+| ---------------------- | ----------------------- | ------------------------------------------------------------- |
+| `useToken(token)`      | `Readonly<Ref<string>>` | The resolved computed value of the `--ori-*` custom property. |
+| `useThemeColor(color)` | `Readonly<Ref<string>>` | Sugar: the resolved value of `--ori-color-<color>`.           |
 
 The value is `''` during SSR and before mount (Vue) — server and first client render match — resolving
-on mount; re-resolves when the token argument changes (only if you passed a getter / ref / store) and on
+on mount; re-resolves when the token argument changes (only if you passed a getter / ref) and on
 every theme change — skin class / style toggles **and** OS `prefers-color-scheme` flips — via the core
 `observeTheme`. The observer is torn down on scope dispose (Vue component unmount). An unresolvable token
 returns `''` too, and in dev builds warns once naming the token (so the SSR-`''` and failed-`''` cases are
@@ -79,60 +78,6 @@ watch(brand, (c) => engine?.setColor(c || null)) // '' (SSR/unresolved) -> engin
 <template>
     <canvas ref="canvas" />
 </template>
-```
-
-#svelte
-
-The **Svelte** binding is the same — a lazy readable store (resolution and the theme observer start with
-the first subscriber and tear down with the last). Create the engine in `onMount`, then `subscribe`: it
-fires immediately with the current value (seeding the engine) and again on every theme flip. (In markup
-you can auto-subscribe with `$brand` instead.)
-
-```svelte
-<script>
-    import { onMount } from 'svelte';
-    import { useThemeColor } from '@oriui/headless/svelte';
-
-    let canvas;
-    const brand = useThemeColor('primary');
-
-    onMount(() => {
-        const engine = createEngine(canvas);
-        const stop = brand.subscribe((c) => engine.setColor(c || null)); // fires immediately, then on theme flips
-        return () => stop();
-    });
-</script>
-
-<canvas bind:this={canvas} />
-```
-
-#react
-
-The **React** binding is the same — the control is a plain value (no `.value` / `$`, re-rendering on theme
-flips via a `useEffect` that resolves and observes; `''` until mounted, SSR-safe). Create the engine in one
-effect, then seed + re-push from a second effect keyed on the resolved color — `''` (SSR/unresolved) maps to
-the engine's own default. `@oriui/css` styles any surrounding markup with the same tokens in React / Next
-today:
-
-```tsx
-import { useEffect, useRef } from 'react'
-import { useThemeColor } from '@oriui/headless/react'
-
-function BrandCanvas() {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const engineRef = useRef<Engine>()
-    const brand = useThemeColor('primary') // resolved --ori-color-primary; '' until mounted (SSR-safe)
-
-    useEffect(() => {
-        engineRef.current = createEngine(canvasRef.current!)
-    }, []) // create the engine once
-
-    useEffect(() => {
-        engineRef.current?.setColor(brand || null) // seed on mount, re-push on every theme flip
-    }, [brand])
-
-    return <canvas ref={canvasRef} />
-}
 ```
 
 ::

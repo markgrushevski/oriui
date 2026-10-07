@@ -4,7 +4,7 @@
 // the library build) is ALIASED to `src/`, so `dist/` and the `exports` maps were built, weighed by
 // size-limit and statically parsed by publint/attw — but never executed.
 //
-// What this does: `npm pack` the three workspaces, install the tarballs plus vue/svelte/react into a
+// What this does: `npm pack` the three workspaces, install the tarballs plus vue into a
 // throwaway directory, and run one ESM module there that imports every published entry point through
 // its `exports` map and asserts a real export from each.
 //
@@ -58,19 +58,25 @@ check('@oriui/vue ships the whole catalog', () => {
     assert(components.length >= 34, 'only ' + components.length + ' Ori* exports resolved')
 })
 
-// --- the headless engine + its three adapters, each through its own subpath export ---
+// --- the headless engine + its Vue adapter, each through its own subpath export ---
 const core = await import('@oriui/headless')
 check('@oriui/headless (core) exports applyTheme + createMachine', () => {
     assert(typeof core.applyTheme === 'function', 'applyTheme is not a function')
     assert(typeof core.createMachine === 'function', 'createMachine is not a function')
 })
 
-for (const adapter of ['vue', 'svelte', 'react']) {
-    const mod = await import('@oriui/headless/' + adapter)
-    check('@oriui/headless/' + adapter + ' exports useDialog + useTabs + normalizeProps', () => {
-        assert(typeof mod.useDialog === 'function', 'useDialog is not a function')
-        assert(typeof mod.useTabs === 'function', 'useTabs is not a function')
-        assert(mod.normalizeProps, 'normalizeProps is missing')
+const vueAdapter = await import('@oriui/headless/vue')
+check('@oriui/headless/vue exports useDialog + useTabs + normalizeProps', () => {
+    assert(typeof vueAdapter.useDialog === 'function', 'useDialog is not a function')
+    assert(typeof vueAdapter.useTabs === 'function', 'useTabs is not a function')
+    assert(vueAdapter.normalizeProps, 'normalizeProps is missing')
+})
+
+// The Svelte and React adapters are not part of 1.0: their subpaths must not resolve.
+for (const adapter of ['svelte', 'react']) {
+    const reason = await import('@oriui/headless/' + adapter).then(() => 'resolved', (error) => error.code)
+    check('@oriui/headless/' + adapter + ' is not exported', () => {
+        assert(reason === 'ERR_PACKAGE_PATH_NOT_EXPORTED', 'the subpath ' + (reason === 'resolved' ? 'resolved' : 'failed with ' + reason))
     })
 }
 
@@ -105,8 +111,8 @@ for (const name of ['@oriui/vue', '@oriui/headless', '@oriui/css']) {
 }
 
 // --- adapter isolation: the premise the optional peers rest on ---
-// Each subpath entry may only reach its OWN framework, transitively through the shared chunks. If
-// dist/vue/index.js could pull in react, marking all three peers optional would be unsound.
+// The Vue entry may only reach Vue, transitively through the shared chunks, and the core no framework at
+// all: that is what keeps vue an optional peer.
 function bareImports(entry) {
     const seen = new Set()
     const bare = new Set()
@@ -130,14 +136,12 @@ check('@oriui/headless core reaches no framework at all', () => {
     const reached = [...bareImports(join(headlessDir, 'dist', 'core', 'index.js'))].filter((s) => FRAMEWORKS.includes(s))
     assert(reached.length === 0, 'core imports ' + reached.join(', '))
 })
-for (const adapter of FRAMEWORKS) {
-    check('@oriui/headless/' + adapter + ' reaches only ' + adapter, () => {
-        const reached = [...bareImports(join(headlessDir, 'dist', adapter, 'index.js'))].filter((s) => FRAMEWORKS.includes(s))
-        assert(reached.length > 0, 'the ' + adapter + ' entry imports no framework at all -- did the entry resolve?')
-        const foreign = reached.filter((s) => s !== adapter)
-        assert(foreign.length === 0, 'the ' + adapter + ' entry also imports ' + foreign.join(', '))
-    })
-}
+check('@oriui/headless/vue reaches only vue', () => {
+    const reached = [...bareImports(join(headlessDir, 'dist', 'vue', 'index.js'))].filter((s) => FRAMEWORKS.includes(s))
+    assert(reached.length > 0, 'the vue entry imports no framework at all -- did the entry resolve?')
+    const foreign = reached.filter((s) => s !== 'vue')
+    assert(foreign.length === 0, 'the vue entry also imports ' + foreign.join(', '))
+})
 
 // --- the one thing a duplicate install would break silently ---
 check('@oriui/headless resolves to a single copy from both consumers', () => {
@@ -197,11 +201,11 @@ try {
     const manifest = { name: 'oriui-smoke-consumer', private: true, version: '0.0.0', type: 'module' }
     writeFileSync(join(consumer, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
-    // vue/svelte/react are the three optional peers of @oriui/headless; all three are installed so
-    // every adapter entry can actually be imported. --prefer-offline keeps this on the npm cache, whose
+    // vue is the optional peer of @oriui/headless and the peer of @oriui/vue; it is installed so the Vue
+    // entries can actually be imported. --prefer-offline keeps this on the npm cache, whose
     // version lists can be stale: a fresh release that needs a newer dependency than the cache lists fails
     // with ETARGET, so a failed offline-first install is retried against the registry.
-    const installArgs = ['install', ...tarballs, 'vue@^3.5', 'svelte@^5', 'react@^19', '--no-audit', '--no-fund']
+    const installArgs = ['install', ...tarballs, 'vue@^3.5', '--no-audit', '--no-fund']
     try {
         npm([...installArgs, '--prefer-offline', '--loglevel=error'], consumer)
     } catch {

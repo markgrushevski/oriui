@@ -8,16 +8,16 @@ oriUI combines three things that usually come separately: a CSS design system th
 styled Vue components, and headless behavior. This page sets it next to the libraries it learns from.
 It has fewer components than most of them: we add one when an app built on oriUI needs it.
 
-|                   | CSS without a framework | Styled components            | Headless behavior                     | Theming                  |
-| ----------------- | ----------------------- | ---------------------------- | ------------------------------------- | ------------------------ |
-| **oriUI**         | ✅ plain CSS            | Vue                          | Vue (Svelte and React in development) | CSS custom properties    |
-| daisyUI           | a Tailwind plugin       | —                            | —                                     | CSS custom properties    |
-| Ark UI (Zag)      | —                       | —                            | React, Vue, Solid, Svelte             | unstyled                 |
-| Reka UI           | —                       | —                            | Vue                                   | unstyled                 |
-| Radix Primitives  | —                       | —                            | React                                 | unstyled                 |
-| Headless UI       | —                       | —                            | React, Vue                            | unstyled                 |
-| shadcn/ui         | —                       | React, copied into your code | through Radix                         | Tailwind + CSS variables |
-| Vuetify, PrimeVue | —                       | Vue                          | —                                     | configured in JavaScript |
+|                   | CSS without a framework | Styled components            | Headless behavior         | Theming                  |
+| ----------------- | ----------------------- | ---------------------------- | ------------------------- | ------------------------ |
+| **oriUI**         | ✅ plain CSS            | Vue                          | Vue                       | CSS custom properties    |
+| daisyUI           | a Tailwind plugin       | —                            | —                         | CSS custom properties    |
+| Ark UI (Zag)      | —                       | —                            | React, Vue, Solid, Svelte | unstyled                 |
+| Reka UI           | —                       | —                            | Vue                       | unstyled                 |
+| Radix Primitives  | —                       | —                            | React                     | unstyled                 |
+| Headless UI       | —                       | —                            | React, Vue                | unstyled                 |
+| shadcn/ui         | —                       | React, copied into your code | through Radix             | Tailwind + CSS variables |
+| Vuetify, PrimeVue | —                       | Vue                          | —                         | configured in JavaScript |
 
 Every project here is good at what it set out to do; the table compares design intent, not quality.
 

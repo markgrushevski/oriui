@@ -14,8 +14,7 @@ live. Swipe to dismiss, snap points and nested drawers are not in this version.
 The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
 example is live — flip its code between **HTML** (the standalone classes, also your htmx / Astro / plain-HTML
-usage) and **Vue**; the first example also shows the **Svelte** and **React** bindings of `@oriui/headless`
-(in development). HTML is the default.
+usage) and **Vue**. HTML is the default.
 
 ## Classes
 
@@ -104,96 +103,6 @@ const open = ref(false)
         </footer>
     </div>
 </dialog>
-```
-
-#svelte
-
-```svelte
-<script>
-    import { useDialog } from '@oriui/headless/svelte';
-
-    // No styled Svelte component yet — drive a native <dialog> with @oriui/headless/svelte.
-    let drawerEl;
-    const { open, triggerProps, dialogProps, titleProps, closeTriggerProps } = useDialog({ id: 'filters' });
-
-    // The platform gives the focus trap, Esc and ::backdrop; we only toggle showModal()/close() on `open`.
-    $effect(() => {
-        if (!drawerEl) return;
-        if ($open && !drawerEl.open) drawerEl.showModal();
-        else if (!$open && drawerEl.open) drawerEl.close();
-    });
-</script>
-
-<button {...$triggerProps} class="ori-button">Open drawer</button>
-
-<dialog {...$dialogProps} bind:this={drawerEl} class="ori-drawer ori-drawer_end">
-    <div class="ori-drawer__content">
-        <header class="ori-drawer__header">
-            <h2 {...$titleProps} class="ori-drawer__title">Filters</h2>
-            <button {...$closeTriggerProps} class="ori-drawer__close" aria-label="Close">×</button>
-        </header>
-        <div class="ori-drawer__body">
-            <p>Narrow the list by status, owner or date.</p>
-        </div>
-        <footer class="ori-drawer__footer">
-            <button {...$closeTriggerProps} class="ori-button ori-variant_text">Cancel</button>
-            <button {...$closeTriggerProps} class="ori-button">Apply</button>
-        </footer>
-    </div>
-</dialog>
-```
-
-#react
-
-```tsx
-import { useEffect, useRef } from 'react'
-import { useDialog } from '@oriui/headless/react'
-
-// No styled React component yet — drive a native <dialog> with @oriui/headless/react.
-function Filters() {
-    const drawerRef = useRef<HTMLDialogElement>(null)
-    const { open, triggerProps, dialogProps, titleProps, closeTriggerProps } = useDialog({ id: 'filters' })
-
-    // The platform gives the focus trap, Esc and ::backdrop; we only toggle showModal()/close() on `open`.
-    useEffect(() => {
-        const el = drawerRef.current
-        if (!el) return
-        if (open && !el.open) el.showModal()
-        else if (!open && el.open) el.close()
-    }, [open])
-
-    return (
-        <>
-            <button {...triggerProps} className="ori-button">
-                Open drawer
-            </button>
-
-            <dialog {...dialogProps} ref={drawerRef} className="ori-drawer ori-drawer_end">
-                <div className="ori-drawer__content">
-                    <header className="ori-drawer__header">
-                        <h2 {...titleProps} className="ori-drawer__title">
-                            Filters
-                        </h2>
-                        <button {...closeTriggerProps} className="ori-drawer__close" aria-label="Close">
-                            ×
-                        </button>
-                    </header>
-                    <div className="ori-drawer__body">
-                        <p>Narrow the list by status, owner or date.</p>
-                    </div>
-                    <footer className="ori-drawer__footer">
-                        <button {...closeTriggerProps} className="ori-button ori-variant_text">
-                            Cancel
-                        </button>
-                        <button {...closeTriggerProps} className="ori-button">
-                            Apply
-                        </button>
-                    </footer>
-                </div>
-            </dialog>
-        </>
-    )
-}
 ```
 
 ::

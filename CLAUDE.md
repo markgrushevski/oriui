@@ -66,7 +66,7 @@ error.
 ```
 packages/
   css/        @oriui/css — tokens, utilities, src/components/<name>.css (one per component)
-  headless/   @oriui/headless — src/core (engine) + src/vue (adapter); src/svelte, src/react (in development)
+  headless/   @oriui/headless — src/core (engine) + src/vue (adapter); src/svelte, src/react (kept, not published)
   vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/internal/ (not exported); src/types.ts
 docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
 tests/  e2e/  unit + a11y suite; real-browser suite

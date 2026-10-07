@@ -9,11 +9,11 @@ on it. It is made for our own apps first, so a component is added when one of th
 
 ## The packages
 
-| Package           | What it gives you                                                                                                                                               |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@oriui/css`      | Design tokens and a stylesheet per component: `.ori-*` classes, eight skins, light and dark. No JavaScript and no build step.                                   |
-| `@oriui/vue`      | 38 Vue 3 components, such as `<OriButton variant="soft" />`. Each renders the CSS classes and adds keyboard, focus, ARIA and form behavior.                     |
-| `@oriui/headless` | That behavior without markup: composables that return state and prop bags for your own elements. The Vue adapter is ready; Svelte and React are in development. |
+| Package           | What it gives you                                                                                                                             |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@oriui/css`      | Design tokens and a stylesheet per component: `.ori-*` classes, eight skins, light and dark. No JavaScript and no build step.                 |
+| `@oriui/vue`      | 38 Vue 3 components, such as `<OriButton variant="soft" />`. Each renders the CSS classes and adds keyboard, focus, ARIA and form behavior.   |
+| `@oriui/headless` | That behavior without markup: composables that return state and prop bags for your own elements, as a framework-free core with a Vue adapter. |
 
 The CSS is the foundation, and the other two build on it. `OriButton` is the `.ori-button` classes plus a
 few props; `OriDialog` is `useDialog` from `@oriui/headless` plus markup that uses the same classes. So you
@@ -41,7 +41,7 @@ everything shares the same tokens.
 ## Where it runs
 
 The CSS works in any stack: plain HTML, htmx, Astro, or any framework. The components are Vue 3. The
-headless composables have a Vue adapter, and the Svelte and React adapters are in development. See
+headless composables have a Vue adapter. See
 [Applicability](/overview/applicability) for each environment.
 
 ## Status

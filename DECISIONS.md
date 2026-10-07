@@ -3,6 +3,22 @@
 Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
 argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
 
+## 1.0 publishes the headless engine and its Vue adapter, not the Svelte and React ones
+
+**Date:** 2026-10-07.
+
+`@oriui/headless` 1.0 exports the framework-free core (`.`) and the Vue adapter (`./vue`). The Svelte and
+React adapters were published through the release candidates as `./svelte` and `./react`, marked in
+development; for 1.0 they are taken out of the `exports` map, the peer list and the tarball.
+
+A subpath in a 1.0 package is covered by SemVer, and these two have no consumer yet: nothing has tested
+their API against a real app the way justpaint tested the Vue one. Shipping them under a "may still change"
+caveat would make 1.0 promise less than its version number says.
+
+Their source and tests stay in the repository (`src/svelte`, `src/react`), aliased for the unit suite, so
+the parity they reached is kept rather than rewritten later. Adding a subpath export back is a minor
+release, so either adapter can return in a 1.x once an app uses it.
+
 ## Drawer: a dialog with a side, without gestures
 
 **Date:** 2026-10-01.
