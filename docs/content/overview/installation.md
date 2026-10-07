@@ -15,6 +15,16 @@ contract, so you can add another later without reworking what you built.
   framework at all.
 - The **CSS layer needs none of the above** — it is a plain stylesheet and classes.
 
+## Browser support
+
+**Chrome and Edge 131+, Firefox 147+, Safari 26+.** The floor comes from CSS anchor positioning, which places
+the floating panels (menus, the combobox list, popovers, tooltips) next to their trigger; every other
+feature the CSS uses is older. In an earlier browser those panels open at the corner of the viewport instead.
+
+We test every change in current Chromium, Firefox and WebKit. Where the components build on a native control,
+an engine's own behavior stays: Safari keeps physical arrow keys in a right-to-left radio group, and in
+Firefox, Tab past a modal dialog's last control moves to the browser's toolbar rather than back to the first.
+
 ## Styled components — `@oriui/vue`
 
 The full experience: ready Vue components, themed through tokens.

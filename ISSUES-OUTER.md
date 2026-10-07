@@ -6,11 +6,33 @@ registry. We can only work around them, so each entry names the workaround, to k
 
 - **Only live problems.** When an upstream fix ships, drop the workaround and delete the entry in the
   same change.
-- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-07**.
+- **Newest on top.** IDs are never reused; the last one issued is **ORI-O-09**.
 - **Status:** `confirmed` — reproduced · `unconfirmed` — suspected · `mitigated` — a workaround is in
   place · `accepted` — a permanent constraint we design around.
 
 ---
+
+## ORI-O-09 — WebKit's native radios keep physical arrows in a right-to-left group
+
+`accepted` · WebKit (measured in Playwright's WebKit, October 2026)
+
+- **What:** in `dir="rtl"`, Chromium and Firefox mirror the arrows of a radio group (Left moves to the next
+  option); WebKit does not, so Right still moves forward. `OriRadioGroup` and `OriSegmentedControl` are
+  native radio groups, so they inherit it. Up and Down behave the same everywhere.
+- **No workaround:** rewriting the arrows would take the keyboard away from the browser for a difference the
+  platform owns. `e2e/segmented-control.spec.ts` skips its RTL case in WebKit.
+
+## ORI-O-08 — WebKit does not match `:focus-visible` on a radio an arrow key focused
+
+`mitigated` · WebKit (measured in Playwright's WebKit, October 2026)
+
+- **What:** Tab into a radio group matches `:focus-visible`; moving with an arrow key then focuses the next
+  radio without it, so a ring drawn from `:focus-visible` disappears after the first arrow.
+- **Workaround:** `OriRadioGroup` and `OriSegmentedControl` set `data-ori-keyboard` on the group on keydown
+  and clear it on pointerdown (`src/internal/keyboard-modality.ts`); radio.css and segmented-control.css also
+  draw the ring from `:focus` under that attribute. Plain-HTML users set the attribute themselves.
+- **When it can go:** once WebKit matches `:focus-visible` there. `e2e/segmented-control.spec.ts` checks the
+  ring after an arrow key and fails in WebKit without the workaround.
 
 ## ORI-O-07 — three dependency majors are held back
 

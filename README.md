@@ -67,6 +67,12 @@ defaults, so a bare block is valid; add a class only to change an axis. Dynamic 
 and skin are set on `<html>` (`class="dark"`, `data-ori-skin="cyber"`) and reskin everything through CSS
 variables.
 
+## Browser support
+
+Chrome and Edge 131+, Firefox 147+, Safari 26+, the versions with CSS anchor positioning. Every change is
+tested in current Chromium, Firefox and WebKit. Details:
+[Installation → Browser support](https://oriui.vercel.app/overview/installation#browser-support).
+
 ## Documentation
 
 - **[oriui.vercel.app](https://oriui.vercel.app)** — a page per component with live demos, props and

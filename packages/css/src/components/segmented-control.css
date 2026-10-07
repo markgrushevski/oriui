@@ -112,7 +112,10 @@
         color: var(--ori-color-on);
     }
 
-    .ori-segmented-control__item:has(.ori-segmented-control__input:focus-visible) {
+    /* WebKit drops :focus-visible from a radio the arrow keys focused, so the ring also follows :focus while the
+       group carries `data-ori-keyboard` (the Vue component sets it during keyboard use). */
+    .ori-segmented-control__item:has(.ori-segmented-control__input:focus-visible),
+    .ori-segmented-control[data-ori-keyboard] .ori-segmented-control__item:has(.ori-segmented-control__input:focus) {
         outline: 2px solid var(--ori-color);
         outline-offset: 2px;
     }

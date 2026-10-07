@@ -18,7 +18,12 @@ export default defineConfig({
         baseURL: 'http://localhost:5199',
         trace: 'on-first-retry'
     },
-    projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+    // `npm run test:e2e` runs Chromium, `npm run test:e2e:engines` Firefox and WebKit; CI and the release run both.
+    projects: [
+        { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+        { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+        { name: 'webkit', use: { ...devices['Desktop Safari'] } }
+    ],
     // Serve the Vite harness (real mounted Vue components) for the interaction specs. The static
     // geometry/reset specs don't rely on it, but starting it is cheap and idempotent. `npx vite`
     // resolves the workspace's vite devDependency; `--strictPort` fails fast rather than drifting ports.

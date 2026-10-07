@@ -26,7 +26,8 @@ test.describe('OriSegmentedControl — native radio keyboard (real Chromium)', (
         await expect(page.getByTestId('submit')).toBeFocused() // the group was a single stop
     })
 
-    test('in RTL the arrows follow the reading direction', async ({ page }) => {
+    test('in RTL the arrows follow the reading direction', async ({ page, browserName }) => {
+        test.skip(browserName === 'webkit', "WebKit's native radios keep physical arrows in RTL")
         await page.goto('/?rtl#segmented')
         await page.getByRole('radio', { name: 'Light' }).focus()
         await page.keyboard.press('ArrowLeft') // "next" in RTL

@@ -32,9 +32,11 @@ test.describe.configure({ mode: 'serial' })
 const GETTER_GROWTH_MAX = 30
 
 // The component ratios are a linearity alarm for a regression in the render itself, not a proof about
-// the getter (above). Shipped on CI: keystroke x9.9-x17.1, mount x4.9-x11.6; dev box x12 and x7.
+// the getter (above). Shipped on CI: keystroke x9.9-x17.1, mount x4.9-x11.6; inside a full parallel run
+// on a dev box the mount reached x13, so its ceiling leaves room above that. A quadratic render grows
+// an order of magnitude past either line.
 const ARROW_GROWTH_MAX = 24
-const MOUNT_GROWTH_MAX = 14
+const MOUNT_GROWTH_MAX = 20
 // Absolute ceilings are machine-speed dependent in a way the ratios are not (10k keystroke: 37ms here,
 // 588ms at x8 throttle; 10k filter: 17ms here, 256ms at x8), so they are catastrophe alarms only, set
 // well above the x8-throttled number. They exist because a UNIFORM constant-factor regression — every

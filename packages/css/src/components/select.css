@@ -97,6 +97,8 @@
         box-sizing: border-box;
         width: 100%;
         height: var(--ori-size-action);
+        /* Firefox's UA sheet gives a <select> 1px of block padding, which the reset would otherwise hide. */
+        padding-block: 0;
         padding-inline: 0.75em;
         padding-inline-end: 2.25em;
 

@@ -326,7 +326,10 @@ render the same attributes and keyboard behavior.
 - `required` sets both the native `required` attribute on each input and `aria-required="true"` on
   the group container.
 - Focus is always visible via `:focus-visible` on the hidden `<input>`, reflected onto the
-  `ori-radio__circle` with a 2 px `outline` in the group's accent color.
+  `ori-radio__circle` with a 2 px `outline` in the group's accent color. Safari drops `:focus-visible` from a
+  radio an arrow key focused, so the component sets `data-ori-keyboard` on the group while the keyboard is in
+  use and the ring follows `:focus` under it; in plain HTML, set that attribute yourself on keydown and remove
+  it on pointerdown.
 
 | Key          | Action                                            |
 | ------------ | ------------------------------------------------- |
