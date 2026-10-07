@@ -52,6 +52,10 @@ jobs:
             - name: Build (headless packages -> lib -> .d.ts)
               run: npm run build
 
+            - name: Public API report (api/ must match the built packages)
+              if: matrix.node == '22'
+              run: npm run api:check
+
             - name: Size budget (size-limit — CSS + JS gzip, guards the zero-runtime promise)
               if: matrix.node == '22'
               run: npm run size

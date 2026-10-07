@@ -54,6 +54,8 @@ One fact, one home: write in the file whose question it answers, and link instea
 - `npm run types` — type-check every package; `test:types` type-checks the test suite
 - `npm run test` — Vitest (`test:watch`, `test:cov`); `test:e2e` — Playwright in real Chromium
 - `npm run lint:all` — prettier + stylelint + eslint with `--fix`; `lint:ci` is the check-only gate
+- `npm run api:check` — the built packages against the public API report in `api/`; `api:update` rewrites it
+  after a deliberate API change
 - `npm run gate` — everything CI runs, in one script (the release workflow runs it too)
 
 Tests in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe) cover behavior, a11y, the headless contract
@@ -70,6 +72,7 @@ packages/
   vue/        @oriui/vue — src/components/<name>/ori-<name>.vue + index.ts; src/internal/ (not exported); src/types.ts
 docs/         Nuxt Content site — app/ (shell), content/ (pages; inline demos are live components)
 tests/  e2e/  unit + a11y suite; real-browser suite
+api/          the public API report (generated; CONTRIBUTING.md)
 ```
 
 ## Code conventions
