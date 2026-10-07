@@ -78,9 +78,10 @@ test.describe('OriDialog — native <dialog> focus trap (real Chromium)', () => 
         }
         expect(backward).not.toContain('outside')
         expect(backward).not.toContain('open')
-        // After all that tabbing, focus is still contained (inside the dialog, or on the body boundary).
+        // After all that tabbing, focus is still contained: on a control, on the <dialog> itself (where Firefox
+        // can leave it), or on the body boundary.
         const label = await activeLabel(page)
-        expect(['close', 'first', 'last', 'body']).toContain(label)
+        expect(['close', 'first', 'last', 'dialog', 'body']).toContain(label)
         if (label !== 'body') expect(await focusIsInsideDialog(page)).toBe(true)
     })
 
