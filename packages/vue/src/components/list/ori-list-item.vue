@@ -54,8 +54,10 @@ const rowBindings = computed(() => {
         if (disabled) bindings.disabled = true
     } else if (isLink.value) {
         // A disabled link has no href, so it is neither followed nor focused; its clicks are swallowed too.
+        // An <a> without href has no role of its own, so it keeps `link` explicitly to be announced as one.
         if (href && !disabled) bindings.href = href
         if (disabled) {
+            if (tag.value === 'a') bindings.role = 'link'
             bindings['aria-disabled'] = 'true'
             bindings.onClickCapture = swallowClick
         }

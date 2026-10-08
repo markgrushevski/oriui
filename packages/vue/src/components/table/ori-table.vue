@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, useId, useSlots, useTemplateRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, useAttrs, useId, useSlots, useTemplateRef } from 'vue'
 
 // OriTable — a styled <table> in a scroll box. The rows are yours (thead / tbody / tfoot in the default
 // slot); the component adds the classes, the caption and the scroll box's accessibility: while the table
-// is wider or taller than its box, the box is a region named by the caption and a tab stop, so a keyboard
-// can scroll it. A table that fits adds no tab stop. Attributes go to the <table>.
+// is wider or taller than its box, the box is a tab stop, so a keyboard can scroll it, and a region named
+// like the table (its caption, or the `aria-label` / `aria-labelledby` you give it). A table with no name
+// gets no region, since an unnamed region is a landmark nobody can tell apart. A table that fits adds no
+// tab stop. Attributes go to the <table>.
 defineOptions({ inheritAttrs: false })
 
 const {
@@ -37,6 +39,16 @@ const captionId = `${useId()}-caption`
 // A function, not a computed: `useSlots()` is not reactive, so a computed would cache a slot's absence.
 const hasCaption = () => Boolean(caption) || Boolean(slots.caption)
 
+// A function for the same reason: attributes are not reactive either, and the render reads it fresh.
+const attrs = useAttrs()
+function name(): Record<string, string> | undefined {
+    if (hasCaption()) return { 'aria-labelledby': captionId }
+    const labelledBy = attrs['aria-labelledby'] as string | undefined
+    if (labelledBy) return { 'aria-labelledby': labelledBy }
+    const label = attrs['aria-label'] as string | undefined
+    return label ? { 'aria-label': label } : undefined
+}
+
 const scrollEl = useTemplateRef<HTMLElement>('scroll')
 const scrolls = ref(false)
 let observer: ResizeObserver | undefined
@@ -62,8 +74,8 @@ onBeforeUnmount(() => observer?.disconnect())
         ref="scroll"
         class="ori-table-scroll"
         :style="maxHeight ? { maxHeight } : undefined"
-        :role="scrolls ? 'region' : undefined"
-        :aria-labelledby="scrolls && hasCaption() ? captionId : undefined"
+        v-bind="scrolls ? name() : undefined"
+        :role="scrolls && name() ? 'region' : undefined"
         :tabindex="scrolls ? 0 : undefined"
     >
         <table

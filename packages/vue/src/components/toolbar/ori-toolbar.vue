@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useAttrs } from 'vue'
 import { useToolbar } from '@oriui/headless/vue'
+import { DEV } from '../../internal/dev'
 
 // OriToolbar — a styled WAI-ARIA toolbar: a set of controls behind a SINGLE tab stop, navigated with
 // arrow keys (roving tabindex, real DOM focus). All the behavior comes from the headless `useToolbar`
@@ -33,7 +34,7 @@ const { toolbarProps } = useToolbar({
 // A11y guardrail: a role="toolbar" with no accessible name is non-conformant (axe fails it). Warn in dev
 // when neither `label` nor an aria-labelledby/aria-label attribute is present.
 const attrs = useAttrs()
-if (import.meta.env?.DEV && !label && !attrs['aria-label'] && !attrs['aria-labelledby']) {
+if (DEV && !label && !attrs['aria-label'] && !attrs['aria-labelledby']) {
     console.warn('[OriToolbar] needs an accessible name — pass `label` (aria-label) or `aria-labelledby`.')
 }
 </script>

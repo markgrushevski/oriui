@@ -9,7 +9,7 @@
  *
  * {@link createThemeController} layers `auto` (follow the OS scheme) + persistence on top, reusing the
  * core {@link observeTheme} matchMedia plumbing. Every API is SSR-safe (inert without `document`) and
- * dependency-free — framework adapters (`./vue`, `./svelte` `useTheme`) are thin reactive wrappers.
+ * dependency-free — the `./vue` adapter's `useTheme` is a thin reactive wrapper.
  */
 
 /** The resolved, applied theme — exactly one of these is ever on the DOM. */
@@ -109,8 +109,8 @@ function isSetting(value: unknown): value is ThemeSetting {
 
 /**
  * Stateful theme controller: resolves `auto` against the OS scheme (live), persists the setting, and
- * applies via {@link applyTheme} on every change. Framework-agnostic — `./vue` and `./svelte` `useTheme`
- * wrap it for reactivity. Applies the initial theme immediately on construction (client-side) so there
+ * applies via {@link applyTheme} on every change. Framework-agnostic — the `./vue` adapter's `useTheme`
+ * wraps it for reactivity. Applies the initial theme immediately on construction (client-side) so there
  * is no post-mount flash in a SPA; for SSR, gate construction behind mount or set the class in an inline
  * head script. SSR-safe: without `document` it holds the setting but touches nothing.
  */

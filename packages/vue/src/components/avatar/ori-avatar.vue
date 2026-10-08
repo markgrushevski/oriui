@@ -14,11 +14,11 @@ const {
     /** The person or entity the avatar stands for: drives the initials fallback and the image `alt`. */
     name?: string
     radius?: RadiusSize
+    reverse?: boolean
     size?: ActionSize
     spaced?: boolean
     subtitle?: string
     title?: string
-    reverse?: boolean
 }>()
 
 const loaded = ref(false)

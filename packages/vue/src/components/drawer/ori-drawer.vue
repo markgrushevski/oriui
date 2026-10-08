@@ -38,7 +38,8 @@ const emit = defineEmits<{
     close: []
 }>()
 
-const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const FOCUSABLE =
+    'button:not(:disabled), [href], input:not(:disabled, [type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
 const drawerEl = useTemplateRef<HTMLDialogElement>('drawer')
 // Where focus goes back to when a non-modal drawer closes with focus inside it.
 let returnTo: HTMLElement | null = null
@@ -69,7 +70,8 @@ const { dlg, bindings, hasTitle } = useDialogShell(
         hide,
         isShown: (el) => el.open || (typeof el.showPopover === 'function' && el.matches(':popover-open'))
     },
-    'OriDrawer'
+    'OriDrawer',
+    false
 )
 
 // The trigger toggles: a non-modal drawer leaves it reachable, and pressing it again should close. The
@@ -84,7 +86,7 @@ const triggerEl = () => document.querySelector<HTMLElement>(`[data-ori-drawer-tr
 
 // Non-modal dismissal. A press outside closes (the trigger excepted, so its click can toggle). Escape
 // closes unless another component took it (a menu or a combobox inside), or it was meant for another
-// dialog on top.
+// layer: a dialog on top, or a popover open inside the drawer, which closes itself without saying so.
 useDismissable(() => ({
     enabled: dlg.open.value && !modal && closeOnInteractOutside,
     elements: () => [drawerEl.value, triggerEl()],
@@ -96,6 +98,8 @@ function onEscape(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || event.defaultPrevented) return
     const owner = event.target instanceof Element ? event.target.closest('dialog') : null
     if (owner && owner !== drawerEl.value) return
+    // The popover's own Escape handling runs after this listener, so it is still open here.
+    if (drawerEl.value?.querySelector(':popover-open')) return
     dlg.setOpen(false)
 }
 

@@ -55,7 +55,14 @@ check('@oriui/vue exports OriButton as a component', () => {
 })
 check('@oriui/vue ships the whole catalog', () => {
     const components = Object.keys(vue).filter((k) => k.startsWith('Ori'))
-    assert(components.length >= 34, 'only ' + components.length + ' Ori* exports resolved')
+    assert(components.length >= 44, 'only ' + components.length + ' Ori* exports resolved')
+})
+// The app's bundler decides whether they ship, so a library build that compiles them out is a bug.
+check('@oriui/vue keeps its development warnings', () => {
+    const dist = join(dirname(require.resolve('@oriui/vue/package.json')), 'dist')
+    const files = readdirSync(dist, { recursive: true }).map(String).filter((f) => f.endsWith('.js'))
+    const kept = files.some((f) => readFileSync(join(dist, f), 'utf8').includes('[OriTabs] panel slot'))
+    assert(kept, 'no file in dist carries the OriTabs warning -- the build compiled the warnings out')
 })
 
 // --- the headless engine + its Vue adapter, each through its own subpath export ---

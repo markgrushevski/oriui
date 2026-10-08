@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { OriDialog, OriDrawer } from '@oriui/vue'
+import { OriDialog, OriDrawer, OriPopover, OriTooltip } from '@oriui/vue'
 import type { DrawerSide } from '@oriui/vue'
 
 // A tall page (so scroll lock is observable), a modal drawer whose side `?side=` picks, a non-modal drawer
@@ -32,6 +32,15 @@ const outsideClicks = ref(0)
                     <button v-bind="props" type="button" data-testid="open-panel">Menu</button>
                 </template>
                 <button type="button" data-testid="panel-item">New drawing</button>
+                <OriTooltip content="Saved two minutes ago">
+                    <button type="button" data-testid="panel-tooltip-trigger">Status</button>
+                </OriTooltip>
+                <OriPopover>
+                    <template #trigger="{ props }">
+                        <button v-bind="props" type="button" data-testid="panel-popover-trigger">Share</button>
+                    </template>
+                    <div data-testid="panel-popover">Link copied</div>
+                </OriPopover>
             </OriDrawer>
         </div>
 

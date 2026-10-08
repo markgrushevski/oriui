@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
+import { renderToString } from 'vue/server-renderer'
 import {
     OriField,
     OriInput,
@@ -9,11 +10,28 @@ import {
     OriCombobox,
     OriSlider,
     OriRadioGroup,
-    OriColorPicker
+    OriColorPicker,
+    OriSegmentedControl
 } from '../packages/vue/src'
 import { expectNoA11yViolations } from './helpers/axe'
 
 describe('OriField', () => {
+    // The group says so from its own setup, after the field's label is written: the server's HTML must not
+    // carry a `for` that points at no element.
+    it('server-renders no label `for` around a group control', async () => {
+        const options = [
+            { value: 'a', label: 'A' },
+            { value: 'b', label: 'B' }
+        ]
+        for (const group of [OriRadioGroup, OriSegmentedControl, OriColorPicker]) {
+            const html = await renderToString(h(OriField, { label: 'Pick' }, () => h(group, { options })))
+            expect(html).toContain('ori-field__label')
+            expect(html).not.toMatch(/<label[^>]*\bfor=/)
+        }
+        const html = await renderToString(h(OriField, { label: 'Name' }, () => h(OriInput)))
+        expect(html).toMatch(/<label[^>]*\bfor=/)
+    })
+
     // ----- standalone shell (label / hint / error / required, wired to a raw control) -----
 
     it('renders the field wrapper with the font-size token class', () => {

@@ -360,14 +360,28 @@ describe('OriTable', () => {
             expect(wrapper.attributes('tabindex')).toBeUndefined()
         })
 
-        it('gets a role and a tab stop but no aria-labelledby when there is no caption', async () => {
+        it('gets a tab stop but no region when the table has no name', async () => {
             overflowing()
             const wrapper = mountTable()
             await nextTick()
 
-            expect(wrapper.attributes('role')).toBe('region')
+            expect(wrapper.attributes('role')).toBeUndefined()
             expect(wrapper.attributes('tabindex')).toBe('0')
             expect(wrapper.attributes('aria-labelledby')).toBeUndefined()
+        })
+
+        it('names the region like the table when there is no caption', async () => {
+            overflowing()
+            const labeled = mountTable({}, { 'aria-label': 'Inventory' })
+            await nextTick()
+            expect(labeled.attributes('role')).toBe('region')
+            expect(labeled.attributes('aria-label')).toBe('Inventory')
+            expect(labeled.find('table').attributes('aria-label')).toBe('Inventory')
+
+            const labelledBy = mountTable({}, { 'aria-labelledby': 'heading' })
+            await nextTick()
+            expect(labelledBy.attributes('role')).toBe('region')
+            expect(labelledBy.attributes('aria-labelledby')).toBe('heading')
         })
 
         it('drops the role, the tab stop and the name when the table stops overflowing', async () => {

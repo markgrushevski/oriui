@@ -22,7 +22,7 @@ defineOptions({ inheritAttrs: false })
  * The closed vocabulary `aria-haspopup` accepts on a trigger. Deliberately NOT the same set as the
  * panel's `role`: a popover panel is legitimately a `group`, a `region`, a `tooltip` or roleless, and
  * none of those are legal `aria-haspopup` tokens — so narrowing `role` to this union would forbid valid
- * markup, while widening this to `string` is what used to make the trigger bag un-spreadable.
+ * markup, while widening this to `string` would make the trigger bag un-spreadable onto a <button>.
  */
 type PopupRole = 'dialog' | 'menu' | 'listbox' | 'tree' | 'grid'
 
@@ -51,8 +51,7 @@ const anchorName = `--ori-popover-${uid}`
 // The trigger's popup HINT, resolved from the two concerns kept apart above: an explicit `haspopup`
 // wins; otherwise mirror `role` when it happens to be one of the five popup types (the ergonomic case
 // — `role="menu"` should not need a second prop), and fall back to "dialog" when it is not, because a
-// generic popup is what a `group`/`region` panel is from the trigger's point of view. The mirror used
-// to be unconditional, which is what leaked `string` into the bag below.
+// generic popup is what a `group`/`region` panel is from the trigger's point of view.
 const popupRole = computed<PopupRole>(() => haspopup ?? (POPUP_ROLES.includes(role) ? (role as PopupRole) : 'dialog'))
 
 // Spread onto the trigger button: opens the panel, names it as this panel's anchor, and conveys the

@@ -508,6 +508,24 @@ describe('OriToolbarButton', () => {
         wrapper.unmount()
     })
 
+    // An icon font's ligature is text in the DOM but hidden from the accessible name.
+    it('a slot whose only text is aria-hidden leaves the name to the tooltip', async () => {
+        const wrapper = mount(OriToolbar, {
+            props: { label: 'Bar' },
+            slots: {
+                default: () =>
+                    h(OriToolbarButton, { tooltip: 'Bold' }, () => h('span', { 'aria-hidden': 'true' }, 'format_bold'))
+            },
+            attachTo: document.body
+        })
+        await nextTick()
+
+        const button = wrapper.find('.ori-button')
+        expect(button.attributes('aria-label')).toBe('Bold')
+        expect(button.attributes('aria-describedby')).toBeUndefined()
+        wrapper.unmount()
+    })
+
     it('a slot that switches from text to an icon hands the name to the tooltip', async () => {
         const iconOnly = ref(false)
         const Host = defineComponent({

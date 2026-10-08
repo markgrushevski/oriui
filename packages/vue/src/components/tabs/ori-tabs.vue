@@ -2,6 +2,7 @@
 import { useSlots, watch, watchEffect } from 'vue'
 import { useTabs, type TabItem as HeadlessTabItem } from '@oriui/headless/vue'
 import type { ThemeColor } from '../../types'
+import { DEV } from '../../internal/dev'
 
 /**
  * A tab in `<OriTabs>` — the headless `TabItem` (behavior: identity + disabled) plus the display
@@ -65,9 +66,8 @@ watch(
 // old bare `#<value>` gets a SILENT miss — Vue never warns about an unconsumed slot — so the panel
 // would fall back to `#default`, or render empty. Name the rename instead. `tab` and `default` are
 // this component's own reserved slots, so a tab valued "tab" must not be reported: that template is
-// legitimately the label renderer, which is the very collision the prefix removed. DEV-only; the
-// `import.meta.env.DEV` constant drops the block from the production bundle.
-if (import.meta.env.DEV) {
+// legitimately the label renderer, which is the very collision the prefix removed. Development builds only.
+if (DEV) {
     const slots = useSlots()
     const reserved = ['tab', 'default']
     watchEffect(() => {

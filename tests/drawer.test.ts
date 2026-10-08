@@ -882,16 +882,9 @@ describe('OriDrawer — accessible name and description', () => {
         expect(drawerEl().getAttribute('aria-labelledby')).toBe('page-heading')
     })
 
-    it('wires aria-describedby to the body when there is body content', () => {
+    // A drawer holds filters, navigation or a form: read out whole on open, it would drown the title (APG).
+    it('is not described by its body', () => {
         mountDrawer({ defaultOpen: true }, { default: () => 'Narrow the list.' })
-
-        const body = document.querySelector('.ori-drawer__body') as HTMLElement
-        expect(body.id).toBeTruthy()
-        expect(drawerEl().getAttribute('aria-describedby')).toBe(body.id)
-    })
-
-    it('renders NO aria-describedby when the drawer has no body content', () => {
-        mountDrawer({ defaultOpen: true })
 
         expect(drawerEl().hasAttribute('aria-describedby')).toBe(false)
     })

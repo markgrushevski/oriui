@@ -354,11 +354,12 @@ describe('OriListItem disabled', () => {
         expect(el.hasAttribute('disabled')).toBe(false)
     })
 
-    it('a link row loses its href and gets aria-disabled="true"', () => {
+    it('a link row loses its href, keeps the link role and gets aria-disabled="true"', () => {
         const { row } = mountItem({ href: '/settings', disabled: true })
 
         expect(row.element.tagName).toBe('A')
         expect(row.attributes('href')).toBeUndefined()
+        expect(row.attributes('role')).toBe('link')
         expect(row.attributes('aria-disabled')).toBe('true')
     })
 

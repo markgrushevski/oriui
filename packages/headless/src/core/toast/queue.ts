@@ -1,13 +1,13 @@
 /**
  * Framework-agnostic toast queue — a tiny hand-rolled store (like the core machines), so `@oriui/headless`
- * keeps its no-runtime-dependency story. Deliberately reachable ONLY from the `./vue` and `./svelte` entries
- * (their `use-toast` adapters import it directly); it is NOT re-exported from the core `.` barrel, so it
- * never lands in the 1 kB core budget (the same trick as `core/color-picker`).
+ * keeps its no-runtime-dependency story. Deliberately reachable ONLY through the `./vue` entry (its
+ * `use-toast` adapter imports it directly); it is NOT re-exported from the core `.` barrel, so an app that
+ * does not use toasts never ships it (the same trick as `core/color-picker`).
  *
  * The engine owns a plain array + a `Set` of no-arg listeners + a `Map` of auto-dismiss countdowns. Each adapter
- * subscribes and PROJECTS the snapshot into its framework's reactivity (Vue: a `reactive` mirror; Svelte: a
- * `readable`). Toasts are only ever pushed from client interaction (`<OriToaster>` renders client-only), so
- * the server never populates the queue — see NOTES.md.
+ * subscribes and PROJECTS the snapshot into its framework's reactivity (in Vue, a `reactive` mirror). Toasts
+ * are only ever pushed from client interaction (`<OriToaster>` renders client-only), so the server never
+ * populates the queue.
  */
 
 /** The palette roles a toast can carry. Mirrors `@oriui/vue`'s `ThemeColor`; the core can't import up the

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, useId, useSlots, watchEffect } from 'vue'
 import type { RadiusSize, ThemeColor } from '../../types'
+import { DEV } from '../../internal/dev'
 
 /**
  * One disclosure in `<OriAccordion>`'s `items` prop. `label` is the `<summary>` text.
@@ -55,9 +56,8 @@ function blockDisabled(event: Event, disabled?: boolean): void {
 // `AccordionItem.title` was renamed to `label` before 1.0 to converge with every other collection
 // item in the catalog. TypeScript already rejects the old key, but a plainly-typed array (JS, JSON
 // from an API, an `as any` demo) would silently render empty summaries — so name the rename here
-// rather than leaving the caller to diff the markup. Ships only in DEV; `import.meta.env.DEV` is a
-// compile-time constant, so the whole block is dropped from the production bundle.
-if (import.meta.env.DEV) {
+// rather than leaving the caller to diff the markup. Development builds only.
+if (DEV) {
     const slots = useSlots()
     watchEffect(() => {
         // Typed as the caller may actually have built it, not as the prop promises: `label` optional

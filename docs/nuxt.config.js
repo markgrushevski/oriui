@@ -39,9 +39,8 @@ export default defineNuxtConfig({
         // Sections are QUERIES, not hand-written link lists. @nuxt/content appends an auto-generated
         // section whenever NO section declares a `contentCollection`, so a hand-authored list shipped
         // every page twice — once by hand without a description, once generated with one. Filtering the
-        // `docs` collection by path keeps the four groups, drops the duplication, and removes the
-        // 34-entry component list that was a registry to hand-maintain: a new page joins its section by
-        // existing. Order inside a group is by path (alphabetical), not curated.
+        // `docs` collection by path keeps the four groups, drops the duplication, and removes a
+        // hand-maintained component list: a new page joins its section by existing. Order inside a group is by path (alphabetical), not curated.
         sections: [
             {
                 title: 'Overview',
@@ -57,7 +56,7 @@ export default defineNuxtConfig({
             },
             {
                 title: 'Components',
-                description: 'The 34 styled components — each page has the class table, props, slots, and a11y.',
+                description: 'The styled Vue components — each page has the class table, props, slots, and a11y.',
                 contentCollection: 'docs',
                 contentFilters: [{ field: 'path', operator: 'LIKE', value: '/components/%' }]
             },
