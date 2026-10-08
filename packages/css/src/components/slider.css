@@ -13,6 +13,7 @@
            groove a faint currentcolor mix; --ori-slider-pct (set inline from the value) drives the
            WebKit fill (Firefox uses ::-moz-range-progress). */
         --ori-color: var(--ori-color-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-slider-track: color-mix(in srgb, currentcolor 18%, transparent);
         --ori-slider-pct: 0%;
         /* Painted-track axis. The engine reverses a native <input type=range> under `dir=rtl` — a click
@@ -128,7 +129,8 @@
         box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
     }
 
-    /* ---- focus (ring on the thumb, per engine) ---- */
+    /* ---- focus (ring on the thumb, per engine): a surface gap, then the role's text tone, which clears 3:1
+       where a tint of the fill does not ---- */
     .ori-slider .ori-slider__input:focus-visible {
         outline: none;
     }
@@ -136,18 +138,20 @@
     .ori-slider .ori-slider__input:focus-visible::-webkit-slider-thumb {
         box-shadow:
             0 1px 3px rgb(0 0 0 / 0.3),
-            0 0 0 3px color-mix(in srgb, var(--ori-color) 35%, transparent);
+            0 0 0 2px var(--ori-color-surface),
+            0 0 0 4px var(--ori-color-text);
     }
 
     .ori-slider .ori-slider__input:focus-visible::-moz-range-thumb {
         box-shadow:
             0 1px 3px rgb(0 0 0 / 0.3),
-            0 0 0 3px color-mix(in srgb, var(--ori-color) 35%, transparent);
+            0 0 0 2px var(--ori-color-surface),
+            0 0 0 4px var(--ori-color-text);
     }
 
     /* ---- disabled ---- */
     .ori-slider[data-disabled] {
-        opacity: 0.5;
+        opacity: 0.55;
     }
 
     .ori-slider[data-disabled] .ori-slider__input {

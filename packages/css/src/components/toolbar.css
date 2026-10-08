@@ -53,7 +53,7 @@
         width: 1px;
         margin-inline: var(--ori-toolbar-gap, 0.25rem);
 
-        background-color: color-mix(in srgb, var(--ori-color-on-surface) 20%, transparent);
+        background-color: var(--ori-color-outline);
     }
 
     .ori-toolbar_vertical .ori-toolbar__separator {

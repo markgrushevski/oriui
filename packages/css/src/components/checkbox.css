@@ -13,6 +13,7 @@
            Single-class utilities (.ori-color_danger, .ori-font-size_lg) override by layer order. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-font-size: var(--ori-font-size_md);
 
         display: inline-flex;
@@ -111,7 +112,7 @@
     }
 
     .ori-checkbox__input:focus-visible ~ .ori-checkbox__box {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 }

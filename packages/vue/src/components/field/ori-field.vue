@@ -68,13 +68,15 @@ const describedBy = computed(() => {
 // written with a `for` pointing at nothing. So the slot is also read here for the three groups by name;
 // `markGroup` still catches a group wrapped in a component of the caller's.
 const wrapsGroup = ref(false)
-const GROUPS = new Set(['ori-color-picker', 'ori-radio-group', 'ori-segmented-control'])
+// Matched on the SFC file name (`ori-radio-group`) less its prefix.
+const GROUPS = new Set(['color-picker', 'radio-group', 'segmented-control'])
 function holdsGroup(nodes: unknown): boolean {
     return (
         Array.isArray(nodes) &&
         nodes.some(
             (node: VNode) =>
-                GROUPS.has((node.type as { __name?: string } | null)?.__name ?? '') || holdsGroup(node.children)
+                GROUPS.has((node.type as { __name?: string } | null)?.__name?.replace(/^ori-/, '') ?? '') ||
+                holdsGroup(node.children)
         )
     )
 }

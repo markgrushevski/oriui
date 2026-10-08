@@ -76,7 +76,7 @@
     }
 
     .ori-list__row:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: -2px;
     }
 
@@ -160,9 +160,11 @@
        takes the system's selected pair, and the bar in the accent color stays off. */
     @media (forced-colors: active) {
         .ori-list__row[aria-current]:not([aria-current='false']) {
-            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. It also stops
+               forcing the focus outline, so the outline takes a system color here too. */
             forced-color-adjust: none;
 
+            outline-color: HighlightText;
             background-color: Highlight;
             box-shadow: none;
             color: HighlightText;

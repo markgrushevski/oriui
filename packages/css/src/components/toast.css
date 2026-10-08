@@ -216,7 +216,7 @@
     }
 
     .ori-toast .ori-toast__close:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 1px;
 
         opacity: 1;
@@ -229,7 +229,7 @@
 
     /* The toaster takes focus from its hotkey; the ring shows where the keyboard landed. */
     .ori-toaster:focus-visible {
-        outline: 2px solid var(--ori-color-primary);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: -2px;
     }
 
@@ -242,7 +242,7 @@
     .ori-toast-leave-active {
         transition:
             opacity 0.25s ease,
-            transform 0.25s ease;
+            transform 0.25s ease-out;
     }
 
     .ori-toast-enter-from,
@@ -258,7 +258,7 @@
     @media (prefers-reduced-motion: reduce) {
         .ori-toast-enter-active,
         .ori-toast-leave-active {
-            transition: opacity 0.15s ease;
+            transition: opacity 0.15s ease-out;
         }
 
         .ori-toast-enter-from,

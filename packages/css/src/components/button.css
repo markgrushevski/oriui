@@ -85,7 +85,7 @@
     }
 
     .ori-button:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 
@@ -217,10 +217,12 @@
         .ori-button[aria-pressed='true'],
         .ori-button[aria-pressed='true']:is(.ori-variant_text, .ori-variant_quiet, .ori-variant_outline),
         .ori-button[aria-pressed='true']:is(.ori-variant_text, .ori-variant_quiet, .ori-variant_outline):hover {
-            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. It also stops
+               forcing the focus outline, so the outline takes a system color here too. */
             forced-color-adjust: none;
 
             border-color: Highlight;
+            outline-color: CanvasText;
             background-color: Highlight;
             color: HighlightText;
         }

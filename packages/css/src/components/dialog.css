@@ -9,20 +9,23 @@
     }
 
     .ori-dialog {
+        --ori-size-radius: var(--ori-size-radius_lg);
+
         width: 100%;
-        max-width: 460px;
-        max-height: calc(100dvh - 32px);
+        max-width: 28.75rem;
+        max-height: calc(100dvh - 2rem);
         margin: auto;
         padding: 0;
 
         overflow: auto;
 
         border: 0;
-        border-radius: 14px;
+        border-radius: var(--ori-size-radius);
 
         background: var(--ori-color-surface);
 
-        box-shadow: var(--ori-shadow-lg);
+        /* The ring is the panel's edge where a shadow does not show: on a dark page. */
+        box-shadow: var(--ori-shadow-ring), var(--ori-shadow-lg);
         color: var(--ori-color-on-surface);
     }
 
@@ -38,36 +41,43 @@
     }
 
     .ori-dialog__content {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .ori-dialog__header {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
     }
 
     .ori-dialog__title {
         margin: 0;
 
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 700;
     }
 
     .ori-dialog__close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
+        margin-inline-start: auto;
         /* Explicit padding: the UA gives a native <button> padding the reset used to zero — without
            this the close button bloats whenever base.css isn't loaded. */
         padding: 0;
 
         border: 0;
+        border-radius: var(--ori-size-radius_sm);
         opacity: 0.7;
 
         background: none;
         color: inherit;
 
-        font-size: 22px;
+        font-size: 1.375rem;
         line-height: 1;
 
         cursor: pointer;
@@ -79,12 +89,19 @@
         }
     }
 
+    .ori-dialog__close:focus-visible {
+        outline: 2px solid var(--ori-color-text);
+        outline-offset: 2px;
+
+        opacity: 1;
+    }
+
     /* No opacity here: this element wraps the caller's content, and a container fade multiplies with
        every fade inside it (0.85 × a hint's 0.7 took text below AA). Hierarchy comes from the title's
        size and weight; secondary text uses its own leaf class. e2e/text-contrast.spec.ts measures a
        composited dialog. */
     .ori-dialog__body {
-        font-size: 14px;
+        font-size: 0.875rem;
     }
 
     /* The panel is lifted by its shadow alone, and forced colors drop shadows. A transparent border is

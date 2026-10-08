@@ -23,6 +23,7 @@
            layer) overrides by layer order. Maps onto the focus ring / error. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
         --ori-font-size: var(--ori-font-size_md);
     }
@@ -121,7 +122,7 @@
     }
 
     .ori-select__control:focus {
-        border-color: var(--ori-color);
+        border-color: var(--ori-color-text);
         outline: none;
 
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);

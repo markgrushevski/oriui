@@ -13,6 +13,7 @@
            (utilities layer) overrides by layer order. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         /* Baked default for the font-size axis: bare block uses `md` (the switch is em-sized off it). */
         --ori-font-size: var(--ori-font-size_md);
 
@@ -112,7 +113,7 @@
     }
 
     .ori-switch__input:focus-visible ~ .ori-switch__track {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 

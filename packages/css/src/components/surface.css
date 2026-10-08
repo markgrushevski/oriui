@@ -22,13 +22,8 @@
         color: var(--ori-color-on-surface);
     }
 
-    /* Structural hairline, derived from the AMBIENT INK (`currentcolor`), which is the library's one
-       mechanism for a neutral structural color — the same declaration menu.css, popover.css and the
-       combobox listbox use for the same job. It was `var(--ori-color-on-surface) 12%` here, which
-       renders identically while the panel keeps the surface ink but stops following a `color` the
-       consumer sets, so the same hairline resolved two different ways in two files. There is no
-       neutral/structural TOKEN on purpose: naming one is a public-API decision, and `currentcolor`
-       already adapts to theme, skin and ambient color without one. */
+    /* The structural hairline every panel uses (menu, popover, the combobox listbox). The token derives
+       from `currentcolor`, so the edge follows a `color` the consumer sets on the surface. */
     .ori-surface_bordered {
         border: 1px solid var(--ori-color-outline);
     }

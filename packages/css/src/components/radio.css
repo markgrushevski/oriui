@@ -13,6 +13,7 @@
            (utilities layer) overrides by layer order. The circle fill / focus ring read this pair. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). The radio
            circle is sized in `em`, so the size prop scales the whole control via this alias. */
         --ori-font-size: var(--ori-font-size_md);
@@ -25,7 +26,9 @@
         line-height: 1.4;
     }
 
+    /* The group's name, sized like every field label (OriField, OriSegmentedControl). */
     .ori-radio-group__label {
+        font-size: calc(var(--ori-font-size) * 0.875);
         font-weight: 500;
     }
 
@@ -112,7 +115,7 @@
        group carries `data-ori-keyboard` (the Vue component sets it during keyboard use). */
     .ori-radio__input:focus-visible ~ .ori-radio__circle,
     .ori-radio-group[data-ori-keyboard] .ori-radio__input:focus ~ .ori-radio__circle {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 

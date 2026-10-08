@@ -44,7 +44,7 @@
     .ori-link:focus-visible {
         border-radius: 2px;
 
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 }

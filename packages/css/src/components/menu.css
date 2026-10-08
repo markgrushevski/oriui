@@ -65,11 +65,11 @@
         height: 1px;
         margin: 0.25rem -0.35rem;
 
-        background: color-mix(in srgb, currentcolor 15%, transparent);
+        background: var(--ori-color-outline);
     }
 
     .ori-menu__item[aria-disabled='true'] {
-        opacity: 0.4;
+        opacity: 0.45;
 
         cursor: not-allowed;
     }
@@ -89,7 +89,7 @@
     }
 
     .ori-menu__item:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: -2px;
     }
 
