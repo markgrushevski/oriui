@@ -111,54 +111,61 @@ td code {
 
     border-radius: 9999px;
 
-    /* Neutral default; the type rules below override bg + color (equal specificity, later wins). */
-    background: color-mix(in srgb, var(--ori-color-on-surface) 12%, transparent);
-    color: var(--ori-color-on-surface);
+    /* One hue per type; neutral when the type has none. The label clamps the hue's lightness the way the
+       role text tones do (dark enough on a light page, light enough on a dark one), so it clears 4.5:1. */
+    background: color-mix(in srgb, var(--chip, var(--ori-color-on-surface)) 14%, transparent);
+    color: oklch(from var(--chip, var(--ori-color-on-surface)) min(l, 0.45) c h);
 
     font-size: 0.78em;
     font-weight: 600;
     white-space: nowrap;
 }
 
-/* Distinct hue per type for scannability (docs-only palette). */
+:global(html.dark) .ori-doc-chip {
+    color: oklch(from var(--chip, var(--ori-color-on-surface)) max(l, 0.85) c h);
+}
+
+/* Distinct hue per kind of class, for scanning (docs-only palette). */
 .ori-doc-chip_block,
 .ori-doc-chip_element,
 .ori-doc-chip_part,
-.ori-doc-chip_parts {
-    background: color-mix(in srgb, #7c3aed 16%, transparent);
-    color: color-mix(in srgb, #7c3aed, var(--ori-color-on-surface) 18%);
+.ori-doc-chip_parts,
+.ori-doc-chip_wrapper {
+    --chip: #7c3aed;
 }
 
 .ori-doc-chip_style,
-.ori-doc-chip_variant {
-    background: color-mix(in srgb, #db2777 16%, transparent);
-    color: color-mix(in srgb, #db2777, var(--ori-color-on-surface) 18%);
+.ori-doc-chip_variant,
+.ori-doc-chip_modifier {
+    --chip: #db2777;
 }
 
 .ori-doc-chip_color,
 .ori-doc-chip_accent {
-    background: color-mix(in srgb, #0d9488 18%, transparent);
-    color: color-mix(in srgb, #0d9488, var(--ori-color-on-surface) 18%);
+    --chip: #0d9488;
 }
 
-.ori-doc-chip_size {
-    background: color-mix(in srgb, #d97706 18%, transparent);
-    color: color-mix(in srgb, #d97706, var(--ori-color-on-surface) 18%);
+.ori-doc-chip_size,
+.ori-doc-chip_font {
+    --chip: #d97706;
 }
 
 .ori-doc-chip_radius {
-    background: color-mix(in srgb, #ea580c 16%, transparent);
-    color: color-mix(in srgb, #ea580c, var(--ori-color-on-surface) 18%);
+    --chip: #ea580c;
 }
 
-.ori-doc-chip_layout {
-    background: color-mix(in srgb, #0891b2 16%, transparent);
-    color: color-mix(in srgb, #0891b2, var(--ori-color-on-surface) 18%);
+.ori-doc-chip_layout,
+.ori-doc-chip_gap,
+.ori-doc-chip_position,
+.ori-doc-chip_placement,
+.ori-doc-chip_placement-base {
+    --chip: #0891b2;
 }
 
 .ori-doc-chip_state,
-.ori-doc-chip_behavior {
-    background: color-mix(in srgb, #2563eb 16%, transparent);
-    color: color-mix(in srgb, #2563eb, var(--ori-color-on-surface) 18%);
+.ori-doc-chip_behavior,
+.ori-doc-chip_semantics,
+.ori-doc-chip_custom-prop {
+    --chip: #2563eb;
 }
 </style>

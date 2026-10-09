@@ -10,9 +10,8 @@ of listeners + auto-dismiss timers) projected into the host framework's reactivi
 array**). It is a client-side **singleton** — every `useToast()` call shares the one queue, so a push from
 anywhere reaches the single renderer.
 
-This is the **Vue** binding; the framework-agnostic engine lives in
-[`@oriui/headless`](/headless/core) (kept out of the core barrel so it never weighs on the core budget),
-and the styled [`OriToaster`](/components/toast) + `OriToast` render the queue. Unlike the roving /
+This is the **Vue** binding over a framework-agnostic queue that ships inside it (not from the core
+barrel, so an app without toasts never loads it), and the styled [`OriToaster`](/components/toast) + `OriToast` render the queue. Unlike the roving /
 machine composables, a toast queue has no ARIA prop-getters — the live-region roles live on the styled
 `OriToast` (`role="status"` / `role="alert"` by color).
 

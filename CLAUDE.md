@@ -52,11 +52,12 @@ One fact, one home: write in the file whose question it answers, and link instea
 - `npm run build` — build the three packages (`size:build` builds, then checks the gzip budgets in
   `.size-limit.json`; `size` checks an existing build)
 - `npm run types` — type-check every package; `test:types` type-checks the test suite
-- `npm run test` — Vitest (`test:watch`, `test:cov`); `test:e2e` — Playwright in real Chromium
+- `npm run test` — Vitest (`test:watch`, `test:cov`); `test:e2e` — Playwright in real Chromium,
+  `test:e2e:engines` in Firefox and WebKit
 - `npm run lint:all` — prettier + stylelint + eslint with `--fix`; `lint:ci` is the check-only gate
 - `npm run api:check` — the built packages against the public API report in `api/`; `api:update` rewrites it
   after a deliberate API change
-- `npm run gate` — everything CI runs, in one script (the release workflow runs it too)
+- `npm run gate` — every check CI runs except the e2e, in one script (the release workflow runs it too)
 
 Tests in `tests/` (Vitest + happy-dom + `@vue/test-utils` + axe) cover behavior, a11y, the headless contract
 and token contrast. Anything about layout, pixels or composited color goes to `e2e/`: happy-dom has no layout

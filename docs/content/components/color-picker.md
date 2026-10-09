@@ -195,9 +195,9 @@ The props, events, and slots of the **Vue** component. Behavior comes from `useC
 
 | Prop         | Type                      | Default | Description                                                                                     |
 | ------------ | ------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| `alpha`      | `boolean`                 | —       | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.      |
-| `disabled`   | `boolean`                 | —       | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                   |
-| `eyedropper` | `boolean`                 | —       | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).       |
+| `alpha`      | `boolean`                 | `false` | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.      |
+| `disabled`   | `boolean`                 | `false` | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                   |
+| `eyedropper` | `boolean`                 | `false` | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).       |
 | `form`       | `string`                  | —       | Associate the hidden value input with a `<form>` by id (when the picker sits outside it).       |
 | `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase.                                          |
 | `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).              |

@@ -90,10 +90,10 @@ between the field and the button merges into one line.
 
 ## Vertical
 
-`vertical` stacks children in a column and collapses the block edges instead of the inline edges.
+`orientation="vertical"` stacks children in a column and collapses the block edges instead of the inline edges.
 
 ::example
-::ori-join{:vertical="true" aria-label="View mode"}
+::ori-join{orientation="vertical" aria-label="View mode"}
 :ori-button{variant="outline" label="List"}
 :ori-button{variant="outline" label="Grid"}
 :ori-button{variant="outline" label="Table"}
@@ -102,7 +102,7 @@ between the field and the button merges into one line.
 #vue
 
 ```vue
-<OriJoin :vertical="true" aria-label="View mode">
+<OriJoin orientation="vertical" aria-label="View mode">
     <OriButton variant="outline" label="List" />
     <OriButton variant="outline" label="Grid" />
     <OriButton variant="outline" label="Table" />
@@ -228,10 +228,12 @@ API — its surface is the [classes](#classes) above.
 
 ### Props
 
-| Prop       | Type               | Default | Description                                                                         |
-| ---------- | ------------------ | ------- | ----------------------------------------------------------------------------------- |
-| `as`       | `string \| object` | `'div'` | Element or component to render. Accepts any HTML tag name or a Component reference. |
-| `vertical` | `boolean`          | `false` | Stack children in a column and collapse block edges instead of inline edges.        |
+| Prop          | Type               | Default        | Description                                                                                 |
+| ------------- | ------------------ | -------------- | ------------------------------------------------------------------------------------------- |
+| `as`          | `string \| object` | `'div'`        | Element or component to render. Accepts any HTML tag name or a Component reference.         |
+| `orientation` | `Orientation`      | `'horizontal'` | `'vertical'` stacks children in a column and collapses block edges instead of inline edges. |
+
+`Orientation`: `'horizontal' | 'vertical'`
 
 ### Events & attributes
 

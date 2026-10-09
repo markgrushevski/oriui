@@ -19,10 +19,10 @@ see the [CSS guide](/guides/css).
 The headless layer is split along a framework axis. The behavior lives once, in the core; each
 binding is a thin adapter from the core contract to a framework's reactivity.
 
-| Package               | What it is                                                                                                                                                                  | Framework    |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `@oriui/headless`     | Behavior contract + native engine                                                                                                                                           | **agnostic** |
-| `@oriui/headless/vue` | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useToolbar`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
+| Package               | What it is                                                                                                                                                                                                                                 | Framework    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| `@oriui/headless`     | Behavior contract + native engine                                                                                                                                                                                                          | **agnostic** |
+| `@oriui/headless/vue` | Vue bindings — the composables (`useDisclosure` / `useDialog` / `useCombobox` / `useMenu` / `useTabs` / `useToolbar` / `useColorPicker` / `useToast` / `useDismissable`) + the `useToken` / `useTheme` bridges, as `ComputedRef`s / `Ref`s | Vue          |
 
 ## The contract
 
@@ -56,7 +56,7 @@ objects**. `connect()` is a pure projection of machine state to prop-getters; th
 and re-invokes `connect()` on every state change, wrapping the result in the framework's reactivity
 primitive (the Vue adapter returns a `ComputedRef`). The same engine, the same ARIA, expressed once.
 
-Three small building blocks back every primitive:
+Four small building blocks back every primitive:
 
 | Export          | Role                                                                                          |
 | --------------- | --------------------------------------------------------------------------------------------- |
@@ -112,15 +112,16 @@ app.use(OriHeadless, { dialog: myDialog, combobox: myCombobox })
 
 The package ships one framework binding, for Vue; the core underneath it imports no framework.
 
-- **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useToolbar / useColorPicker are compositional helpers — pure core math + a composable — rather than the swappable adapter contract.)
+- **Vue** — the full set of composables: [useDisclosure](/headless/use-disclosure), [useDialog](/headless/use-dialog), [useCombobox](/headless/use-combobox), [useMenu](/headless/use-menu), [useTabs](/headless/use-tabs), [useToolbar](/headless/use-toolbar), [useColorPicker](/headless/use-color-picker), [useToast](/headless/use-toast), [useDismissable](/headless/use-dismissable), plus the [useToken](/headless/use-token) / [useTheme](/headless/use-theme) bridges. (useTabs, useToolbar, useColorPicker, useToast and useDismissable are compositional helpers — pure core logic + a composable — rather than the swappable adapter contract.) For an adapter of your own, `useService` bridges a core machine to Vue reactivity, and the core exports the toolbar's selection rules (`resolveToolbarToggle`, `isToolbarTogglePressed`).
 
 ## See also
 
 - The composables —
   [useDisclosure](/headless/use-disclosure) · [useDialog](/headless/use-dialog) ·
   [useCombobox](/headless/use-combobox) · [useMenu](/headless/use-menu) ·
-  [useToolbar](/headless/use-toolbar) · [useColorPicker](/headless/use-color-picker) ·
-  [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
+  [useTabs](/headless/use-tabs) · [useToolbar](/headless/use-toolbar) ·
+  [useColorPicker](/headless/use-color-picker) · [useToast](/headless/use-toast) ·
+  [useDismissable](/headless/use-dismissable) · [useToken](/headless/use-token) · [useTheme](/headless/use-theme).
 - [Dialog](/components/dialog) — a styled component that consumes a headless contract (every component
   page shows the same pattern).
 - [CSS layer](/guides/css) — the other framework-agnostic layer: standalone `.ori-*` classes + tokens.

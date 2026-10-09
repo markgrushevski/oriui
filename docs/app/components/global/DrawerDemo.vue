@@ -38,7 +38,7 @@ const triggerLabel = computed(() => label ?? (modal ? 'Open drawer' : 'Open non-
 
 <template>
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
-        <OriRadioGroup v-if="!side" v-model="picked" label="Side" :inline="true" :options="sides" />
+        <OriRadioGroup v-if="!side" v-model="picked" label="Side" orientation="horizontal" :options="sides" />
 
         <OriDrawer
             v-model:open="open"

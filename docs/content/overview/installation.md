@@ -4,7 +4,7 @@ title: Installation
 
 # Installation
 
-oriUI is three layers in two packages. Install only the layer you need — they share one token
+oriUI is three layers, one package each. Install only the layer you need — they share one token
 contract, so you can add another later without reworking what you built.
 
 ## Requirements
@@ -18,8 +18,9 @@ contract, so you can add another later without reworking what you built.
 ## Browser support
 
 **Chrome and Edge 131+, Firefox 147+, Safari 26+.** The floor comes from CSS anchor positioning, which places
-the floating panels (menus, the combobox list, popovers, tooltips) next to their trigger; every other
-feature the CSS uses is older. In an earlier browser those panels open at the corner of the viewport instead.
+the floating panels (menus, the combobox list, popovers, tooltips) next to their trigger: Chrome 131 is where
+`anchor-scope` arrived, which keeps each tooltip on its own trigger. Every other feature the CSS uses is
+older. In an earlier browser those panels open at the corner of the viewport instead.
 
 We test every change in current Chromium, Firefox and WebKit. Where the components build on a native control,
 an engine's own behavior stays: Safari keeps physical arrow keys in a right-to-left radio group, and in

@@ -148,7 +148,7 @@ most 40rem wide, centered.
 
 ::
 
-## Right-to-left
+## Right to left
 
 `start` and `end` follow the writing direction, and the slide follows them: in a right-to-left layout `start`
 docks to the right edge and slides in from the right. `top` and `bottom` do not change. Nothing to configure —
@@ -415,7 +415,7 @@ until `showModal()` or `showPopover()` opens it.
 - **Name it.** Pass `title` (or the `#title` slot), or give the drawer an `aria-label` / `aria-labelledby`. The
   title element is rendered only when there is a title, so a drawer named by `aria-label` has no empty heading.
   In development a drawer that opens without any name logs a warning.
-- The close button has `aria-label="Close"`.
+- The close button is named by `closeLabel` (`aria-label`, `"Close"` by default).
 - The `#trigger` slot's `props` carry `aria-haspopup="dialog"` and `aria-expanded`; bind them with
   `v-bind="props"`.
 - Focus moves into the drawer on open (the first `[autofocus]` element, else the first focusable one — the close
@@ -436,15 +436,16 @@ component API — its surface is the [classes](#classes) above, and the behavior
 
 ### Props
 
-| Prop                     | Type                                    | Default | Description                                                                                                |
-| ------------------------ | --------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `closeOnEscape`          | `boolean`                               | `true`  | Whether `Esc` closes the drawer.                                                                           |
-| `closeOnInteractOutside` | `boolean`                               | `true`  | Whether a click on the backdrop (modal) or a press outside (non-modal) closes the drawer.                  |
-| `defaultOpen`            | `boolean`                               | `false` | Whether the drawer is open on first mount.                                                                 |
-| `modal`                  | `boolean`                               | `true`  | Modal mode: `showModal()` (trap, inert page, scroll lock, backdrop) vs a manual popover (page stays live). |
-| `open`                   | `boolean`                               | —       | Controlled open state for `v-model:open`. Omit for an uncontrolled drawer.                                 |
-| `side`                   | `'start' \| 'end' \| 'top' \| 'bottom'` | `'end'` | The viewport edge the drawer docks to; `start` / `end` swap sides in RTL.                                  |
-| `title`                  | `string`                                | —       | Heading text. Overridden by the `#title` slot when provided.                                               |
+| Prop                     | Type                                    | Default   | Description                                                                                                |
+| ------------------------ | --------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
+| `closeLabel`             | `string`                                | `'Close'` | The accessible name of the × button.                                                                       |
+| `closeOnEscape`          | `boolean`                               | `true`    | Whether `Esc` closes the drawer.                                                                           |
+| `closeOnInteractOutside` | `boolean`                               | `true`    | Whether a click on the backdrop (modal) or a press outside (non-modal) closes the drawer.                  |
+| `defaultOpen`            | `boolean`                               | `false`   | Whether the drawer is open on first mount.                                                                 |
+| `modal`                  | `boolean`                               | `true`    | Modal mode: `showModal()` (trap, inert page, scroll lock, backdrop) vs a manual popover (page stays live). |
+| `open`                   | `boolean`                               | —         | Controlled open state for `v-model:open`. Omit for an uncontrolled drawer.                                 |
+| `side`                   | `'start' \| 'end' \| 'top' \| 'bottom'` | `'end'`   | The viewport edge the drawer docks to; `start` / `end` swap sides in RTL.                                  |
+| `title`                  | `string`                                | —         | Heading text. Overridden by the `#title` slot when provided.                                               |
 
 ### Events & attributes
 

@@ -188,7 +188,7 @@ way, in fixed ±`0.125rem` (2px at the browser default) steps:
 
 Every hairline in the library reads `--ori-color-outline`, and every control edge reads
 `--ori-color-outline-strong`. Repointing either at `:root` restyles all of them at once — see
-[Design tokens](/guides/design-tokens#structure--outline-tokens) for what each weight covers.
+[Design tokens](/guides/design-tokens#structure-outline-tokens) for what each weight covers.
 
 ## 3 · Style one instance
 

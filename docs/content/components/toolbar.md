@@ -710,12 +710,14 @@ roving-tabindex keyboard behavior is JavaScript you would need to author yoursel
 
 **Props**
 
-| Prop          | Type                         | Default        | Description                                                                                                                                                                                    |
-| ------------- | ---------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dir`         | `'ltr' \| 'rtl'`             | inherited      | Writing direction, rendered as the `dir` attribute. `rtl` mirrors the layout and swaps `ArrowLeft` / `ArrowRight`. When omitted, the inherited direction is used.                              |
-| `label`       | `string`                     | —              | Accessible name → `aria-label`. **Required**, unless you supply your own `aria-labelledby` attribute instead (it falls through onto the root element) — a nameless `role="toolbar"` fails axe. |
-| `loop`        | `boolean`                    | `true`         | Whether arrow navigation wraps first⇄last at the ends.                                                                                                                                         |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout and arrow-key axis. `horizontal` = row, Left/Right; `vertical` = column, Up/Down.                                                                                                       |
+| Prop          | Type             | Default        | Description                                                                                                                                                                                    |
+| ------------- | ---------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dir`         | `'ltr' \| 'rtl'` | inherited      | Writing direction, rendered as the `dir` attribute. `rtl` mirrors the layout and swaps `ArrowLeft` / `ArrowRight`. When omitted, the inherited direction is used.                              |
+| `label`       | `string`         | —              | Accessible name → `aria-label`. **Required**, unless you supply your own `aria-labelledby` attribute instead (it falls through onto the root element) — a nameless `role="toolbar"` fails axe. |
+| `loop`        | `boolean`        | `true`         | Whether arrow navigation wraps first⇄last at the ends.                                                                                                                                         |
+| `orientation` | `Orientation`    | `'horizontal'` | Layout and arrow-key axis. `horizontal` = row, Left/Right; `vertical` = column, Up/Down.                                                                                                       |
+
+`Orientation`: `'horizontal' | 'vertical'`
 
 **Events & attributes**
 
@@ -860,11 +862,11 @@ import { useToolbar, useToolbarItem } from '@oriui/headless/vue'
 // The same engine OriToolbar / OriToolbarButton are built on — useToolbarItem() registers the
 // calling component with the roving context and returns its tabindex plus the DOM marker the root's
 // keydown handler navigates by.
-const { toolbarRef, toolbarProps } = useToolbar({ label: () => 'Custom toolbar' })
+const { toolbarProps } = useToolbar({ label: () => 'Custom toolbar' })
 </script>
 
 <template>
-    <div ref="toolbarRef" v-bind="toolbarProps">
+    <div v-bind="toolbarProps">
         <MyToolbarButton text="Cut" />
         <MyToolbarButton text="Copy" />
         <MyToolbarButton text="Paste" />

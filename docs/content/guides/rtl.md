@@ -23,7 +23,7 @@ There is no `dir` prop to thread through the styled components. Arrow keys follo
 (see [Keyboard and text](#keyboard-and-text)).
 
 Everything on this page is **measured**, not intended. `e2e/rtl.spec.ts` renders the same markup under
-`dir="ltr"` and `dir="rtl"` in real Chromium and asserts bounding boxes and computed values — never
+`dir="ltr"` and `dir="rtl"` in real Chromium, Firefox and WebKit and asserts bounding boxes and computed values — never
 class names, because a logical property only resolves against a real writing direction in a real
 engine.
 
@@ -96,14 +96,13 @@ Arrow keys in a horizontal row follow the layout: in RTL the first item is on th
 `ArrowLeft` moves to the next one. Tabs, Toolbar and the color picker's presets read the direction
 they are laid out in when a key is pressed, so an ancestor `dir="rtl"` is all they need.
 `useTabs` and `useToolbar` also take a `dir` option (and `<OriToolbar>` a `dir` prop) that sets
-the direction on the widget itself. `e2e/rtl-keyboard.spec.ts` checks this in Chromium. Vertical
+the direction on the widget itself. `e2e/rtl-keyboard.spec.ts` checks this in Chromium, Firefox and WebKit. Vertical
 navigation (`ArrowUp` / `ArrowDown`) and `Home` / `End` do not depend on direction.
 
 Direction is not **text**: oriUI ships no translations and no message catalog. Most built-in strings are
-props with English defaults you override — `OriSpinner` / `OriProgress` take `label` (`'Loading'`),
-`OriAlert` and `OriTag` take `closeLabel` (`'Dismiss'` / `'Remove'`). A few are hardcoded and cannot
-be localized today: `<OriDialog>`'s close button (`aria-label="Close"`), `<OriToast>`'s dismiss
-button, and the color picker's channel labels.
+props with English defaults you override — `OriSpinner` / `OriProgress` take `label` (`'Loading'`), and
+`OriAlert`, `OriTag`, `OriDialog`, `OriDrawer`, `OriToast` and `OriToaster` take `closeLabel`. Two are still
+fixed in English: the color picker's channel labels and the combobox's clear button.
 
 ## See also
 

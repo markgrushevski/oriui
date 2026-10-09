@@ -46,14 +46,14 @@ A `DialogControl` — the open state plus the prop bags you bind to each part. E
 | `setOpen(open)`     | `(open: boolean) => void` | Open / close imperatively.                                                                                                             |
 | `toggle()`          | `() => void`              | Flip the open state.                                                                                                                   |
 | `triggerProps`      | `ComputedRef<object>`     | The control that opens the dialog.                                                                                                     |
-| `dialogProps`       | `ComputedRef<object>`     | The `<dialog>` element: `role`, `aria-modal`, labeling, and the `close` / `cancel` / backdrop-click handlers that keep `open` in sync. |
+| `contentProps`      | `ComputedRef<object>`     | The `<dialog>` element: `role`, `aria-modal`, labeling, and the `close` / `cancel` / backdrop-click handlers that keep `open` in sync. |
 | `titleProps`        | `ComputedRef<object>`     | Wires the accessible name (`aria-labelledby`).                                                                                         |
 | `descriptionProps`  | `ComputedRef<object>`     | Wires the accessible description (`aria-describedby`).                                                                                 |
 | `closeTriggerProps` | `ComputedRef<object>`     | The close control.                                                                                                                     |
 
 ## Usage
 
-Render a real `<dialog>`, bind `dialogProps`, and drive `showModal()` / `close()` from `open`:
+Render a real `<dialog>`, bind `contentProps`, and drive `showModal()` / `close()` from `open`:
 
 ::example
 
@@ -78,7 +78,7 @@ watchPostEffect(() => {
 <template>
     <button v-bind="dlg.triggerProps.value">Open</button>
 
-    <dialog ref="dialog" v-bind="dlg.dialogProps.value">
+    <dialog ref="dialog" v-bind="dlg.contentProps.value">
         <h2 v-bind="dlg.titleProps.value">Title</h2>
         <p v-bind="dlg.descriptionProps.value">Body copy.</p>
         <button v-bind="dlg.closeTriggerProps.value">Close</button>
@@ -118,7 +118,7 @@ never changes.
 
 The native `<dialog>` carries the WAI-ARIA dialog contract; the prop bags complete the wiring.
 
-- `dialogProps` set `role="dialog"`, `aria-modal` (per the `modal` option), `aria-labelledby` pointing at
+- `contentProps` set `role="dialog"`, `aria-modal` (per the `modal` option), `aria-labelledby` pointing at
   the element you bind `titleProps` to, and the `close` / `cancel` handlers that keep `open` in sync when
   the browser closes the dialog (Esc, backdrop click).
 - `triggerProps` carry the `aria-*` attributes the open control needs.

@@ -37,7 +37,7 @@ import { useTabs } from '@oriui/headless/vue'
 | `dir`         | `'ltr' \| 'rtl'`                    | inherited      | Writing direction. When set, it is added to `tablistProps` as `dir`; when omitted, the direction the tablist is laid out in is read on each keydown. `rtl` swaps Left/Right. |
 | `label`       | `string`                            | —              | Accessible name for the tablist → `aria-label` (WAI-ARIA recommends naming a tablist).                                                                                       |
 | `labelledby`  | `string`                            | —              | Accessible name by element id → `aria-labelledby` (use instead of `label`).                                                                                                  |
-| `idBase`      | `string`                            | `useId()`      | SSR-stable base for the derived `${base}-tab-${i}` / `-panel-${i}` ids.                                                                                                      |
+| `id`          | `string`                            | `useId()`      | SSR-stable base for the derived `${base}-tab-${i}` / `-panel-${i}` ids.                                                                                                      |
 | `onChange`    | `(value: string \| number) => void` | —              | Commit the next selected value (wire to your `v-model`).                                                                                                                     |
 
 ## Returns

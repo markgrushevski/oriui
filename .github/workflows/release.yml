@@ -52,7 +52,7 @@ jobs:
             # Gate the publish on the same checks CI runs: one root script, `npm run gate`, and
             # tests/packaging.test.ts fails if a check reachable from ci.yml is not reachable from here.
             # ORI_SMOKE_IGNORE_SCRIPTS: the gate has just built the dist the smoke leg packs.
-            - name: Quality gate (lint → types → test → build → size → publint → attw → smoke → docs)
+            - name: Quality gate (lint → types → test → build → api → size → publint → attw → smoke → docs)
               run: npm run gate
               env:
                   ORI_SMOKE_IGNORE_SCRIPTS: '1'

@@ -129,12 +129,16 @@ Leaving pre mode is its own release. Run it in this order.
     Deleting it (`npm dist-tag rm`) would make `npm i @oriui/vue@rc` fail with `ETARGET` for anyone who used
     that tag; repointing keeps those installs resolving.
 
+7. **Retire the release-candidate wording** in the same release PR: the status paragraph in
+   `docs/content/overview/introduction.md`, the home page footer (`docs/app/pages/index.vue`) and the
+   Versioning section of `CONTRIBUTING.md` describe the `1.0.0-rc.*` line.
+
 ## Verify
 
 Before the release, locally:
 
 ```bash
-npm run gate     # the exact gate release.yml runs (lint → types → test → build → size → publint → attw → smoke → docs)
+npm run gate     # the exact gate release.yml runs (lint → types → test → build → api → size → publint → attw → smoke → docs)
 npm run smoke    # just the consumer leg: pack the three packages, install the tarballs into a scratch
                  # dir, import every published entry through its `exports` map. ~15s.
 ```

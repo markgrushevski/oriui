@@ -32,7 +32,7 @@ The control is a block class plus single-class token utilities — one class rep
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-segmented-control","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface — the checked fill, its edge tone and the focus ring."},{"class":"ori-segmented-control_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the control height, from the action-size scale."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the text; segment padding and gap follow in em."},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full — the track radius; segments sit 3px inside it."},{"class":"ori-segmented-control_fluid","type":"Layout","description":"Stretches to the container width; segments stay equal."},{"class":"ori-segmented-control__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-segmented-control__track","type":"Part","description":"The tinted track; an equal-column grid that holds the segments."},{"class":"ori-segmented-control__item","type":"Part","description":"Wrapping <label> for each segment."},{"class":"ori-segmented-control__input · ori-segmented-control__icon · ori-segmented-control__text","type":"Part","description":"Hidden native radio laid over the segment / optional leading icon / segment text."},{"class":"disabled · checked · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
+:class-table{:rows='[{"class":"ori-segmented-control","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface — the checked fill, its edge tone and the focus ring."},{"class":"ori-segmented-control_* (size)","type":"Size","description":"inherit · xs · sm · <b>md</b> · lg · xl · xxl — the control height, from the action-size scale."},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales the text; segment padding and gap follow in em."},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full — the track radius; segments sit 3px inside it."},{"class":"ori-segmented-control_fluid","type":"Layout","description":"Stretches to the container width; segments stay equal."},{"class":"ori-segmented-control__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-segmented-control__track","type":"Part","description":"The tinted track; an equal-column grid that holds the segments."},{"class":"ori-segmented-control__item","type":"Part","description":"Wrapping <label> for each segment."},{"class":"ori-segmented-control__input · ori-segmented-control__icon · ori-segmented-control__text","type":"Part","description":"Hidden native radio laid over the segment / optional leading icon / segment text."},{"class":"disabled · checked · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/segmented-control.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -452,7 +452,7 @@ inputs are real radios sharing one `name`, so the checked segment's `value` subm
 
 ::
 
-## Live demo
+## Custom segment content
 
 The selection is plain `v-model`. The second control fills the `#option` slot to carry a count beside each
 label — the slot replaces the segment's text and is scoped, so this demo is a small Vue component rather than
@@ -589,12 +589,12 @@ same attributes and keyboard behavior.
 - A new control starts with nothing checked unless you give it a value, and a user cannot clear a choice —
   give `v-model` an initial value when one option is the sensible default.
 
-| Key                      | Action                                                                                                                             |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `Tab` / `Shift+Tab`      | Moves focus into / out of the group — one stop, on the checked segment (the browser picks the entry point if none is checked yet). |
-| `ArrowRight` `ArrowDown` | Checks and focuses the next enabled segment, wrapping at the end (native). In RTL, `ArrowLeft` is "next".                          |
-| `ArrowLeft` `ArrowUp`    | Checks and focuses the previous enabled segment (native). In RTL, `ArrowRight` is "previous".                                      |
-| `Space`                  | Checks the focused segment if it is not already checked (native).                                                                  |
+| Key                      | Action                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`      | Moves focus into / out of the group — one stop, on the checked segment (the browser picks the entry point if none is checked yet).                            |
+| `ArrowRight` `ArrowDown` | Checks and focuses the next enabled segment, wrapping at the end (native). In RTL, `ArrowLeft` is "next" — except in Safari, which keeps the physical arrows. |
+| `ArrowLeft` `ArrowUp`    | Checks and focuses the previous enabled segment (native). In RTL, `ArrowRight` is "previous".                                                                 |
+| `Space`                  | Checks the focused segment if it is not already checked (native).                                                                                             |
 
 ## Framework API
 

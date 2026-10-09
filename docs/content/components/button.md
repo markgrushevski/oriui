@@ -19,7 +19,7 @@ A button is a block class plus single-class token utilities — one class repoin
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-button","type":"Block","description":"Required base class."},{"class":"ori-variant_*","type":"Style","description":"<b>solid</b> · soft · outline · text · quiet"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-button_* (size)","type":"Size","description":"inherit · xs · sm · <b>md</b> · lg · xl · xxl"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (scales the label)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · md · lg · xl · <b>full</b>"},{"class":"ori-button_fluid · ori-button_icon","type":"Layout","description":"full-width · icon-only"},{"class":"ori-button__icon · ori-button__text","type":"Part","description":"icon / label elements"},{"class":"disabled · aria-busy · data-active","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/button.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -166,20 +166,21 @@ From `none` to the default `full` (pill).
 
 ## With icon
 
-Pass an SVG path to `icon`. `iconPosition` places it. For an icon-only square, pass `icon` **without**
+Pass an SVG path to `icon`. `iconPosition` places it: `start` (the default), `end`, `top` or `bottom` —
+`start` and `end` are logical, so they swap sides in RTL. For an icon-only square, pass `icon` **without**
 `label` (give it an `aria-label`) — icon mode is triggered by the explicit `icon` prop, so a slot-only or
 text button is never forced into a square.
 
 ::example
 :ori-button{label="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"}
-:ori-button{label="Next" icon="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" iconPosition="right"}
+:ori-button{label="Next" icon="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" iconPosition="end"}
 :ori-button{icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="soft"}
 
 #vue
 
 ```vue
 <OriButton label="Add" icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
-<OriButton label="Next" icon="M12 4l-1.41…" iconPosition="right" />
+<OriButton label="Next" icon="M12 4l-1.41…" iconPosition="end" />
 <!-- icon-only square: pass `icon` with no `label`, add an accessible name -->
 <OriButton icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" aria-label="Add" variant="soft" />
 ```
@@ -255,7 +256,7 @@ is a claim that the control is a toggle that happens to be off.
 
 ::
 
-## Block
+## Fluid
 
 `fluid` stretches the button to the full width of its container.
 
@@ -335,7 +336,7 @@ component API — its surface is the [classes](#classes) above.
 | `size`         | `ActionSize`                                          | `'md'`      | Height + label scale (`xs`–`xxl`).                                                                              |
 | `radius`       | `RadiusSize`                                          | `'full'`    | Corner radius (`none`–`full`).                                                                                  |
 | `icon`         | `string`                                              | —           | SVG path for an icon; hidden while `loading`. `icon` with no `label` → an icon-only square (`ori-button_icon`). |
-| `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'`              | `'left'`    | Icon placement around the label.                                                                                |
+| `iconPosition` | `'top' \| 'bottom' \| 'start' \| 'end'`               | `'start'`   | Icon placement around the label.                                                                                |
 | `loading`      | `boolean`                                             | `false`     | Shows a spinner, sets `aria-busy`, and blocks interaction.                                                      |
 | `disabled`     | `boolean`                                             | `false`     | Real `disabled` (button) or `aria-disabled` + `tabindex="-1"` (other tags).                                     |
 | `active`       | `boolean`                                             | `false`     | Forced `:active` LOOK via `data-active`. Not a toggle state — see `pressed`.                                    |

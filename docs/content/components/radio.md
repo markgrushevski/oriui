@@ -22,7 +22,7 @@ The group is a block class plus single-class token utilities — one class repoi
 class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-radio-group","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales all option labels."},{"class":"ori-radio-group_inline","type":"Layout","description":"Lays options out in a row (flex-wrap) instead of a column."},{"class":"ori-radio-group__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-radio-group__options","type":"Part","description":"Options wrapper; flex column (or row when _inline)."},{"class":"ori-radio","type":"Part","description":"Wrapping <label> for each option. Add ori-radio_disabled when disabled."},{"class":"ori-radio__input · ori-radio__circle · ori-radio__label","type":"Part","description":"Hidden native input / styled circle indicator / visible label text."},{"class":"disabled · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
+:class-table{:rows='[{"class":"ori-radio-group","type":"Block","description":"Required base class on the container; carries role=radiogroup."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — scales all option labels."},{"class":"ori-radio-group_horizontal","type":"Layout","description":"Lays options out in a row (flex-wrap) instead of a column."},{"class":"ori-radio-group__label","type":"Part","description":"Group label element; referenced by aria-labelledby."},{"class":"ori-radio-group__options","type":"Part","description":"Options wrapper; flex column (or row when _horizontal)."},{"class":"ori-radio","type":"Part","description":"Wrapping <label> for each option. Dims when its input is disabled."},{"class":"ori-radio__input · ori-radio__circle · ori-radio__label","type":"Part","description":"Hidden native input / styled circle indicator / visible label text."},{"class":"disabled · aria-required","type":"State","description":"Real attributes on the native input / container, not extra classes."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/radio.css`. `.ori-radio-group` lives in
 `radio.css`, not a file of its own. Import a foundation (`@oriui/css/base.css` or `@oriui/css/tokens.css`)
@@ -132,25 +132,25 @@ via `em` units.
 
 ::
 
-## Inline
+## Horizontal
 
-`inline` lays the options out in a wrapping row instead of a column — useful for short label sets.
+`orientation="horizontal"` lays the options out in a wrapping row instead of a column — useful for short label sets.
 
 ::example
-:ori-radio-group{label="Notifications" :inline="true" :options='[{"label":"All","value":"all"},{"label":"Mentions","value":"mentions"},{"label":"None","value":"none"}]'}
+:ori-radio-group{label="Notifications" orientation="horizontal" :options='[{"label":"All","value":"all"},{"label":"Mentions","value":"mentions"},{"label":"None","value":"none"}]'}
 
 #vue
 
 ```vue
-<OriRadioGroup v-model="notify" label="Notifications" inline :options="notifyOptions" />
+<OriRadioGroup v-model="notify" label="Notifications" orientation="horizontal" :options="notifyOptions" />
 ```
 
 #html
 
 ```html
-<!-- add ori-radio-group_inline to the container -->
+<!-- add ori-radio-group_horizontal to the container -->
 <div
-    class="ori-radio-group ori-radio-group_inline ori-color_primary ori-font-size_md"
+    class="ori-radio-group ori-radio-group_horizontal ori-color_primary ori-font-size_md"
     role="radiogroup"
     aria-labelledby="notify-label"
 >
@@ -184,8 +184,8 @@ Pass `disabled` to lock all options at once.
 <div class="ori-radio-group ori-color_primary ori-font-size_md" role="radiogroup">
     <div class="ori-radio-group__label">Plan (locked)</div>
     <div class="ori-radio-group__options">
-        <!-- each label gets ori-radio_disabled; each input gets the disabled attribute -->
-        <label class="ori-radio ori-radio_disabled">
+        <!-- each input gets the disabled attribute; its label dims through it -->
+        <label class="ori-radio">
             <input class="ori-radio__input" type="radio" name="plan" value="free" disabled />
             <span class="ori-radio__circle" aria-hidden="true"></span>
             <span class="ori-radio__label">Free</span>
@@ -220,8 +220,8 @@ Set `disabled: true` on individual items in the `options` array to lock only tho
 #html
 
 ```html
-<!-- only the disabled option's label + input get the modifier/attribute -->
-<label class="ori-radio ori-radio_disabled">
+<!-- only the disabled option's input gets the attribute; its label dims through it -->
+<label class="ori-radio">
     <input class="ori-radio__input" type="radio" name="plan" value="enterprise" disabled />
     <span class="ori-radio__circle" aria-hidden="true"></span>
     <span class="ori-radio__label">Enterprise (contact us)</span>
@@ -266,10 +266,10 @@ Set `disabled: true` on individual items in the `options` array to lock only tho
 
 ## Common patterns
 
-Color, size, inline layout, and per-option disabled in a compact panel.
+Color, size, horizontal layout, and per-option disabled in a compact panel.
 
 ::example
-:ori-radio-group{label="Theme" :inline="true" color="secondary" size="sm" :options='[{"label":"Light","value":"light"},{"label":"Dark","value":"dark"},{"label":"System","value":"system"}]'}
+:ori-radio-group{label="Theme" orientation="horizontal" color="secondary" size="sm" :options='[{"label":"Light","value":"light"},{"label":"Dark","value":"dark"},{"label":"System","value":"system"}]'}
 
 #vue
 
@@ -277,7 +277,7 @@ Color, size, inline layout, and per-option disabled in a compact panel.
 <OriRadioGroup
     v-model="theme"
     label="Theme"
-    inline
+    orientation="horizontal"
     color="secondary"
     size="sm"
     :options="[
@@ -292,7 +292,7 @@ Color, size, inline layout, and per-option disabled in a compact panel.
 
 ```html
 <div
-    class="ori-radio-group ori-radio-group_inline ori-color_secondary ori-font-size_sm"
+    class="ori-radio-group ori-radio-group_horizontal ori-color_secondary ori-font-size_sm"
     role="radiogroup"
     aria-labelledby="theme-label"
 >
@@ -331,11 +331,11 @@ render the same attributes and keyboard behavior.
   use and the ring follows `:focus` under it; in plain HTML, set that attribute yourself on keydown and remove
   it on pointerdown.
 
-| Key          | Action                                            |
-| ------------ | ------------------------------------------------- |
-| `Tab`        | Moves focus into / out of the radio group.        |
-| `Arrow keys` | Cycles between options within the group (native). |
-| `Space`      | Selects the focused option (native).              |
+| Key          | Action                                                                                                                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Tab`        | Moves focus into / out of the radio group.                                                                                                                                                              |
+| `Arrow keys` | Cycles between options within the group (native). In RTL the left and right arrows swap, except in Safari, which keeps the physical arrows ([Browser support](/overview/installation#browser-support)). |
+| `Space`      | Selects the focused option (native).                                                                                                                                                                    |
 
 ## Framework API
 
@@ -344,16 +344,18 @@ API — its surface is the [classes](#classes) above.
 
 ### Props
 
-| Prop       | Type            | Default     | Description                                                                          |
-| ---------- | --------------- | ----------- | ------------------------------------------------------------------------------------ |
-| `color`    | `ThemeColor`    | `'primary'` | Accent color for the checked circle and focus ring.                                  |
-| `disabled` | `boolean`       | `false`     | Disables all options; per-option disable is also supported via `options[].disabled`. |
-| `inline`   | `boolean`       | `false`     | Lays options out in a wrapping row (`ori-radio-group_inline`).                       |
-| `label`    | `string`        | —           | Group heading. When present the container is `aria-labelledby` this element.         |
-| `name`     | `string`        | —           | Shared `name` for all radio inputs. Auto-generated via `useId` when omitted.         |
-| `options`  | `RadioOption[]` | `[]`        | Array of `{ label, value, disabled? }` objects — the full options-array API.         |
-| `required` | `boolean`       | `false`     | Sets `aria-required="true"` on the group and `required` on each input.               |
-| `size`     | `ActionSize`    | `'md'`      | Font size scale (`xs`–`xxl`); the circle and gap scale with it via `em` units.       |
+| Prop          | Type            | Default      | Description                                                                                                 |
+| ------------- | --------------- | ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`    | `'primary'`  | Accent color for the checked circle and focus ring.                                                         |
+| `disabled`    | `boolean`       | `false`      | Disables all options; per-option disable is also supported via `options[].disabled`.                        |
+| `label`       | `string`        | —            | Group heading. When present the container is `aria-labelledby` this element.                                |
+| `name`        | `string`        | —            | Shared `name` for all radio inputs. Auto-generated via `useId` when omitted.                                |
+| `options`     | `RadioOption[]` | `[]`         | Array of `{ label, value, disabled? }` objects — the full options-array API.                                |
+| `orientation` | `Orientation`   | `'vertical'` | `'horizontal'` lays options out in a wrapping row (`ori-radio-group_horizontal`); `'vertical'` stacks them. |
+| `required`    | `boolean`       | `false`      | Sets `aria-required="true"` on the group and `required` on each input.                                      |
+| `size`        | `ActionSize`    | `'md'`       | Font size scale (`xs`–`xxl`); the circle and gap scale with it via `em` units.                              |
+
+`Orientation`: `'horizontal' | 'vertical'`
 
 `RadioOption` is exported — `import type { RadioOption } from '@oriui/vue'`:
 
@@ -372,8 +374,8 @@ const options: RadioOption[] = [
 the component emits `update:modelValue` when the user picks another option. The `name` attribute is
 shared across all native inputs; omit it to let the component auto-generate a unique id via `useId`.
 
-The component does **not** set `inheritAttrs: false`, so extra attributes (e.g. `aria-label`,
-`class`, `data-*`) fall through to the root `div.ori-radio-group`. An unlabeled group should
+Extra attributes (e.g. `aria-label`, `class`, `data-*`) are bound to the root `div.ori-radio-group`, the
+`role="radiogroup"` element. An unlabeled group should
 pass `aria-label` this way:
 
 ```vue

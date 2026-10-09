@@ -21,7 +21,7 @@ A switch is a block class on the `<label>` wrapper plus two single-class token u
 per axis, no base class needed. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>label</code>."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>input type=checkbox role=switch</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"ori-switch_disabled","type":"State","description":"Added by the component when <code>disabled</code> is true; also sets the native <code>disabled</code> attribute on the input."}]'}
+:class-table{:rows='[{"class":"ori-switch","type":"Block","description":"Required base class — placed on the wrapping <code>label</code>."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl — the track and thumb scale with this."},{"class":"ori-switch__input","type":"Part","description":"The visually-hidden native <code>input type=checkbox role=switch</code>."},{"class":"ori-switch__track","type":"Part","description":"The visible pill track; <code>aria-hidden</code>."},{"class":"ori-switch__thumb","type":"Part","description":"The sliding circle inside the track; <code>aria-hidden</code>."},{"class":"ori-switch__label","type":"Part","description":"Optional visible text label beside the track."},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes; a disabled input dims its wrapper"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/switch.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -100,8 +100,8 @@ Every semantic color role. The track fill and the focus ring both use `--ori-col
 
 ## States
 
-`disabled` sets the native `disabled` on the `<input>` and adds `ori-switch_disabled` (reduced
-opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="true"` on the input.
+`disabled` sets the native `disabled` on the `<input>`, and the wrapper dims from it (reduced opacity +
+`not-allowed` cursor), so a `<fieldset disabled>` dims it too. `invalid` sets `aria-invalid="true"` on the input.
 `required` sets the native `required`.
 
 ::example
@@ -111,12 +111,12 @@ opacity + `not-allowed` cursor) on the wrapper. `invalid` sets `aria-invalid="tr
 #html
 
 ```html
-<label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="d1">
+<label class="ori-switch ori-color_primary ori-font-size_md" for="d1">
     <input id="d1" type="checkbox" role="switch" class="ori-switch__input" disabled />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Disabled off</span>
 </label>
-<label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="d2">
+<label class="ori-switch ori-color_primary ori-font-size_md" for="d2">
     <input id="d2" type="checkbox" role="switch" class="ori-switch__input" disabled checked />
     <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
     <span class="ori-switch__label">Disabled on</span>
@@ -206,7 +206,7 @@ A settings row — switch on the right aligned to a description — is the most 
         <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
         <span class="ori-switch__label">Dark mode</span>
     </label>
-    <label class="ori-switch ori-switch_disabled ori-color_primary ori-font-size_md" for="p3">
+    <label class="ori-switch ori-color_primary ori-font-size_md" for="p3">
         <input id="p3" type="checkbox" role="switch" class="ori-switch__input" disabled />
         <span class="ori-switch__track" aria-hidden="true"><span class="ori-switch__thumb"></span></span>
         <span class="ori-switch__label">Auto-save</span>
@@ -258,7 +258,7 @@ API — its surface is the [classes](#classes) above.
 | Prop       | Type         | Default     | Description                                                                                        |
 | ---------- | ------------ | ----------- | -------------------------------------------------------------------------------------------------- |
 | `color`    | `ThemeColor` | `'primary'` | Semantic color for the "on" track fill and the focus ring.                                         |
-| `disabled` | `boolean`    | `false`     | Disables the control — sets native `disabled` and adds `ori-switch_disabled` on the wrapper.       |
+| `disabled` | `boolean`    | `false`     | Disables the control — sets native `disabled`; the wrapper dims from it.                           |
 | `id`       | `string`     | —           | Overrides the auto-generated `useId()` id that links the `<label>` to the `<input>`.               |
 | `invalid`  | `boolean`    | —           | Sets `aria-invalid="true"` on the input; pair with a visible error message.                        |
 | `label`    | `string`     | —           | Visible text label rendered beside the track. Omit to render the track alone.                      |

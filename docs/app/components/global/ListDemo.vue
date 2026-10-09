@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Live List demos for the docs (MDC renders it as `:list-demo{kind="…"}`). MDC cannot parse a named slot
-// (`#end`) three blocks deep (example > list > item), and its attributes cannot carry a click listener, so
+// (`#append`) three blocks deep (example > list > item), and its attributes cannot carry a click listener, so
 // every demo whose rows act or fill a slot lives here; the rest of the page uses inline `:ori-list` markup.
 import { ref } from 'vue'
 import { OriIcon, OriList, OriListItem, OriSegmentedControl, OriSurface, OriSwitch, OriTag } from '@oriui/vue'
@@ -24,9 +24,9 @@ const failed = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 
 const last = ref('')
 
 const views = [
-    { value: 'layers', label: 'Layers', description: 'Stack, reorder and hide' },
-    { value: 'brushes', label: 'Brushes', description: 'Size, opacity and shape' },
-    { value: 'palette', label: 'Palette', description: 'Swatches and recent colors' }
+    { value: 'layers', label: 'Layers', subtitle: 'Stack, reorder and hide' },
+    { value: 'brushes', label: 'Brushes', subtitle: 'Size, opacity and shape' },
+    { value: 'palette', label: 'Palette', subtitle: 'Swatches and recent colors' }
 ]
 const view = ref('layers')
 
@@ -42,8 +42,8 @@ const themes = [
 <template>
     <div v-if="kind === 'actions'" style="width: 100%; max-width: 24rem">
         <OriList divided>
-            <OriListItem label="New drawing" hint="Ctrl+N" @click="last = 'New drawing'" />
-            <OriListItem label="Save" hint="Ctrl+S" @click="last = 'Save'" />
+            <OriListItem label="New drawing" meta="Ctrl+N" @click="last = 'New drawing'" />
+            <OriListItem label="Save" meta="Ctrl+S" @click="last = 'Save'" />
             <OriListItem label="Export" chevron @click="last = 'Export'" />
             <OriListItem label="Revert to saved" disabled @click="last = 'Revert to saved'" />
         </OriList>
@@ -58,7 +58,7 @@ const themes = [
                 v-for="v in views"
                 :key="v.value"
                 :label="v.label"
-                :description="v.description"
+                :subtitle="v.subtitle"
                 :current="view === v.value"
                 @click="view = v.value"
             />
@@ -69,32 +69,32 @@ const themes = [
     </div>
 
     <OriList v-else-if="kind === 'control'" divided style="width: 100%; max-width: 24rem">
-        <OriListItem :icon="bell" label="Notifications" description="Mentions and replies">
-            <template #end>
+        <OriListItem :icon="bell" label="Notifications" subtitle="Mentions and replies">
+            <template #append>
                 <OriSwitch v-model="notify" aria-label="Notifications" />
             </template>
         </OriListItem>
         <OriListItem :icon="moon" label="Theme">
-            <template #end>
+            <template #append>
                 <OriSegmentedControl v-model="theme" aria-label="Theme" size="sm" :options="themes" />
             </template>
         </OriListItem>
     </OriList>
 
     <OriList v-else-if="kind === 'custom'" divided style="width: 100%; max-width: 24rem">
-        <OriListItem label="Build 128" description="Deployed 4 minutes ago">
-            <template #start>
+        <OriListItem label="Build 128" subtitle="Deployed 4 minutes ago">
+            <template #prepend>
                 <OriIcon :icon="passed" color="success" />
             </template>
-            <template #end>
+            <template #append>
                 <OriTag label="Passed" color="success" />
             </template>
         </OriListItem>
-        <OriListItem label="Build 127" description="Failed 1 hour ago">
-            <template #start>
+        <OriListItem label="Build 127" subtitle="Failed 1 hour ago">
+            <template #prepend>
                 <OriIcon :icon="failed" color="danger" />
             </template>
-            <template #end>
+            <template #append>
                 <OriTag label="Failed" color="danger" />
             </template>
         </OriListItem>
@@ -102,15 +102,15 @@ const themes = [
 
     <OriSurface v-else style="width: 100%; max-width: 26rem; padding: 0.375rem">
         <OriList divided>
-            <OriListItem :icon="plus" label="New drawing" hint="Ctrl+N" @click="last = 'New drawing'" />
-            <OriListItem :icon="save" label="Save" hint="Ctrl+S" @click="last = 'Save'" />
+            <OriListItem :icon="plus" label="New drawing" meta="Ctrl+N" @click="last = 'New drawing'" />
+            <OriListItem :icon="save" label="Save" meta="Ctrl+S" @click="last = 'Save'" />
             <OriListItem :icon="download" label="Export" chevron @click="last = 'Export'" />
             <OriListItem :icon="moon" label="Theme">
-                <template #end>
+                <template #append>
                     <OriSegmentedControl v-model="theme" aria-label="Theme" size="sm" :options="themes" />
                 </template>
             </OriListItem>
-            <OriListItem :icon="image" label="Gallery" description="Your saved drawings" href="#common-patterns" />
+            <OriListItem :icon="image" label="Gallery" subtitle="Your saved drawings" href="#common-patterns" />
         </OriList>
     </OriSurface>
 </template>

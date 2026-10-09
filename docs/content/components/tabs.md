@@ -386,13 +386,15 @@ API — its surface is the [classes](#classes) above.
 
 ### Props
 
-| Prop          | Type                         | Default                      | Description                                                                                                                |
-| ------------- | ---------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `color`       | `ThemeColor`                 | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label color, and the focus ring.            |
-| `label`       | `string`                     | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
-| `modelValue`  | `string \| number`           | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
-| `tabs`        | `TabItem[]`                  | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
+| Prop          | Type               | Default                      | Description                                                                                                                |
+| ------------- | ------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`       | `'primary'`                  | Active-tab accent: drives the indicator (underline / side-bar), the active tab label color, and the focus ring.            |
+| `label`       | `string`           | —                            | Accessible name for the tablist (→ `aria-label`). WAI-ARIA recommends naming a tablist, especially with several on a page. |
+| `modelValue`  | `string \| number` | first non-disabled tab value | Active tab value (`v-model`). Auto-defaults to the first non-disabled tab; self-heals if the value becomes invalid.        |
+| `orientation` | `Orientation`      | `'horizontal'`               | Layout + keyboard axis. `horizontal` = row tablist with underline; `vertical` = column tablist with right side-bar.        |
+| `tabs`        | `TabItem[]`        | — (**required**)             | The set of tabs. Each item: `value` (unique key), `label` (visible text), optional `disabled`.                             |
+
+`Orientation`: `'horizontal' | 'vertical'`
 
 `TabItem` is exported — `import type { TabItem } from '@oriui/vue'`. It is the headless `TabItem`
 (`value`, optional `disabled`) plus the `label` this styled shell renders, so a `TabItem[]` can be

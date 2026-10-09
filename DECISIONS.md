@@ -3,6 +3,54 @@
 Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
 argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
 
+## The last API changes before 1.0, and what the final review left alone
+
+**Date:** 2026-10-08.
+
+A review in five lenses (API, accessibility, code, docs, design) read the whole public surface before
+the freeze. Every rename it led to makes a name agree with a rule already recorded here, or with a
+sibling component:
+
+- **Logical positions.** `OriButton icon-position` is `start | end | top | bottom`: `left` was already
+  drawn with `flex-direction: row`, so it mirrored in RTL under a physical name. `DrawerSide` spells it
+  the same way.
+- **`orientation` is the one axis prop.** Tabs and Toolbar had it; Divider and Join had a `vertical`
+  boolean and RadioGroup an `inline` boolean. `inline` already meant inline display on Icon, Avatar and
+  Spinner, so the radio group's row layout could not keep that name.
+- **Decorator slots are `#prepend` / `#append`** (rule 2 of the slot decision). `OriListItem` had
+  `#start` / `#end`, plus `description` for what Card and Avatar call `subtitle`, and `hint` for trailing
+  text where every field uses `hint` for helper text. The trailing text is `meta`, Material's name for
+  the same part of a list row.
+- **A hidden name is `ariaLabel`** (the content-prop rule). `OriBadge` renders `content`, so its
+  `label`, never rendered, was the exception.
+- **One way to add a description: the `aria-describedby` attribute.** The controls had a `describedby`
+  prop as well, which an `OriField` silently dropped. The attribute was already joined with the
+  control's own ids in both cases. `OriField` keeps its prop, because its attributes go to a `<div>`.
+- **A seed option is `default*`.** `useCombobox`'s `value` / `inputValue` were read once, while `value`
+  on `useTabs` and `useColorPicker` is live.
+- **`useDismissable` dismisses on both triggers unless told otherwise**, the DismissableLayer default.
+  With both off by default, a call that set neither did nothing and reported nothing.
+- **Focus rings use the role's text tone.** A pale role's fill is under 3:1 against the page, and the
+  text tone is AA by construction, so a ring painted with it clears 3:1 for every role. Blocks that bake
+  a role now bake its text tone with it. The tone also reaches a block's content, as it already did for
+  Tabs: a bare link inside an accordion panel takes the accordion's role.
+- **A drawer is not described by its body.** A drawer holds filters, navigation or a form, and APG's
+  dialog pattern says to leave out `aria-describedby` when the content is that complex. OriDialog keeps
+  the body as its description, because a dialog's body is usually one message.
+
+**Left as they are, on purpose:**
+
+- **The toggle-group helpers (`resolveToolbarToggle`, `isToolbarTogglePressed`) and `useService` stay
+  exported.** They are what a third-party adapter is built from, the same reason the option types live in
+  core.
+- **`useColorPicker`'s `onPresetKeydown` stays a separate member** rather than moving into
+  `presetGroupProps`. It works the same way, and moving it would only change the spelling.
+- **Every `--ori-*` custom property in the stylesheet is public**, including ones a component writes
+  (`--ori-slider-pct`, `--ori-drawer-from`). Plain-HTML users set them, so a private spelling would hide a
+  real input.
+- **`TabItem` is two related types:** the headless one carries behavior, and the styled one adds `label`.
+  The styled one is declared as an extension of the headless one, so the two cannot drift.
+
 ## 1.0 publishes the headless engine and its Vue adapter, not the Svelte and React ones
 
 **Date:** 2026-10-07.

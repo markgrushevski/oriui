@@ -262,7 +262,7 @@ same attributes. The interactive behavior, however, must be driven by JavaScript
 
 - The `<dialog>` is `role="dialog"`, `aria-modal="true"` (modal mode), and labeled by the title
   element via `aria-labelledby`.
-- The close button has `aria-label="Close"`.
+- The close button is named by `closeLabel` (`aria-label`, `"Close"` by default).
 - The `#trigger` slot's `props` object includes the `aria-*` attributes for the trigger element; bind
   them with `v-bind="props"`.
 - `showModal()` provides the live behavior — focus trap, `::backdrop`, and returning focus to the trigger
@@ -282,14 +282,15 @@ no component API — its surface is the [classes](#classes) above, and the behav
 
 ### Props
 
-| Prop                     | Type      | Default | Description                                                                       |
-| ------------------------ | --------- | ------- | --------------------------------------------------------------------------------- |
-| `closeOnEscape`          | `boolean` | `true`  | Whether `Esc` closes the dialog.                                                  |
-| `closeOnInteractOutside` | `boolean` | `true`  | Whether a click on the `::backdrop` closes the dialog.                            |
-| `defaultOpen`            | `boolean` | `false` | Whether the dialog is open on first mount.                                        |
-| `modal`                  | `boolean` | `true`  | Modal mode: `showModal()` (trap + `::backdrop` + page scroll locked) vs `show()`. |
-| `open`                   | `boolean` | —       | Controlled open state for `v-model:open`. Omit for an uncontrolled dialog.        |
-| `title`                  | `string`  | —       | Heading text. Overridden by the `#title` slot when provided.                      |
+| Prop                     | Type      | Default   | Description                                                                       |
+| ------------------------ | --------- | --------- | --------------------------------------------------------------------------------- |
+| `closeLabel`             | `string`  | `'Close'` | The accessible name of the × button.                                              |
+| `closeOnEscape`          | `boolean` | `true`    | Whether `Esc` closes the dialog.                                                  |
+| `closeOnInteractOutside` | `boolean` | `true`    | Whether a click on the `::backdrop` closes the dialog.                            |
+| `defaultOpen`            | `boolean` | `false`   | Whether the dialog is open on first mount.                                        |
+| `modal`                  | `boolean` | `true`    | Modal mode: `showModal()` (trap + `::backdrop` + page scroll locked) vs `show()`. |
+| `open`                   | `boolean` | —         | Controlled open state for `v-model:open`. Omit for an uncontrolled dialog.        |
+| `title`                  | `string`  | —         | Heading text. Overridden by the `#title` slot when provided.                      |
 
 ### Events & attributes
 

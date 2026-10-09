@@ -124,39 +124,6 @@ a:not(:where(.ori-button, .ori-list__row)) {
     flex: 1;
 }
 
-/* Icon-only language button (placeholder — disabled until i18n lands). */
-.docs-nav__lang {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 36px;
-    height: 36px;
-
-    border: 0;
-    border-radius: 8px;
-
-    background: none;
-    color: var(--ori-color-on-background);
-    opacity: 0.72;
-
-    cursor: pointer;
-}
-
-.docs-nav__lang:hover {
-    background: color-mix(in srgb, var(--ori-color-on-background) 8%, transparent);
-    opacity: 1;
-}
-
-.docs-nav__lang:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.docs-nav__lang:disabled:hover {
-    background: none;
-}
-
 /* Body */
 .docs-body {
     display: flex;
@@ -751,6 +718,11 @@ a:not(:where(.ori-button, .ori-list__row)) {
 
 .prose p {
     margin: 0 0 16px;
+}
+
+/* The reset zeroes list padding, which hung the markers in the gutter (at the screen edge on a phone). */
+.prose :where(ul, ol) {
+    padding-inline-start: 1.5em;
 }
 
 .prose code {

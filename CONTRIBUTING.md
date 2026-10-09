@@ -36,9 +36,10 @@ git push origin main && git branch -d feat/my-thing
 
 A husky **pre-commit** hook runs `npm run build` + `lint-staged`, so a commit fails fast if the build or
 formatting breaks. CI re-runs the gate on every push to `main` and every PR: `lint:ci → types → test:types →
-test → build` on Node 22 and 24, then `size → publint → attw → smoke → docs:build` once, plus the Playwright
-e2e in real Chromium. The whole list is one script, **`npm run gate`**, which the release workflow runs too;
-`tests/packaging.test.ts` fails if a check reachable from `ci.yml` is not reachable from `release.yml`.
+test → build` on Node 22 and 24, then `api:check → size → publint → attw → smoke → docs:build` once. That list is
+one script, **`npm run gate`**, which the release workflow runs too. The Playwright e2e run beside it, as their
+own jobs: `test:e2e` in Chromium and `test:e2e:engines` in Firefox and WebKit. `tests/packaging.test.ts` fails if
+a check reachable from `ci.yml` is not reachable from `release.yml`.
 
 ## Versioning
 

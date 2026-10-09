@@ -239,13 +239,13 @@ const strokeCount = computed(() => `${strokes.value.length} ${strokes.value.leng
 
             <aside class="home-editor__panel">
                 <OriList divided class="home-editor__layers" aria-label="Layers">
-                    <OriListItem label="Sketch" :description="strokeCount">
-                        <template #end>
+                    <OriListItem label="Sketch" :subtitle="strokeCount">
+                        <template #append>
                             <OriSwitch v-model="showSketch" size="sm" aria-label="Show the sketch" />
                         </template>
                     </OriListItem>
-                    <OriListItem label="Weave" description="Drawn in role tokens">
-                        <template #end>
+                    <OriListItem label="Weave" subtitle="Drawn in role tokens">
+                        <template #append>
                             <OriSwitch v-model="showWeave" size="sm" aria-label="Show the weave" />
                         </template>
                     </OriListItem>

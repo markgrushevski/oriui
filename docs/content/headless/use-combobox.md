@@ -11,10 +11,9 @@ highlight, selection, and the full keyboard) and the ARIA wiring as ready-to-bin
 the markup and styles**.
 
 This is the **Vue** binding; the framework-agnostic core lives in [`@oriui/headless`](/headless/core),
-and the styled [`OriCombobox`](/components/combobox) is built on it. Unlike
-[`useDialog`](/headless/use-dialog) / [`useDisclosure`](/headless/use-disclosure) lean on a
-zero-dependency native platform default; a combobox has no native primitive, so `useCombobox`'s
-**default** is the core **state machine + prop-getters**. Like the overlays it still resolves through the
+and the styled [`OriCombobox`](/components/combobox) is built on it. [`useDialog`](/headless/use-dialog)
+and [`useDisclosure`](/headless/use-disclosure) lean on a native platform element; a combobox has no native
+primitive, so `useCombobox`'s **default** is the core **state machine + prop-getters**. Like the overlays it still resolves through the
 [`OriHeadless`](/headless/core) contract, so an app can swap a custom / Zag-backed engine — the native
 core adapter is simply the default. It is the first behavior to fully exercise the
 [`@oriui/headless`](/headless/core) engine.
@@ -28,17 +27,17 @@ import { useCombobox } from '@oriui/headless/vue'
 ## Options
 
 Pass an options object — or a getter returning one, to stay reactive (the styled component passes
-`() => ({ … })`). `options`, `disabled`, and `filter` are read live; `id` and the initial `value` /
-`inputValue` are read once at setup.
+`() => ({ … })`). `options`, `disabled`, and `filter` are read live; `id`, `defaultValue` and
+`defaultInputValue` are read once at setup.
 
-| Option       | Type                                             | Default        | Description                                                                                     |
-| ------------ | ------------------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
-| `options`    | `ComboboxItem[]`                                 | **required**   | The full option list. Reactive — filtering re-runs when it changes.                             |
-| `id`         | `string`                                         | auto (`useId`) | Stable base id for the part ARIA wiring; auto-generated when omitted (pass one for stable SSR). |
-| `value`      | `string \| null`                                 | `null`         | Initial selected value (uncontrolled).                                                          |
-| `inputValue` | `string`                                         | `''`           | Initial input text (uncontrolled).                                                              |
-| `disabled`   | `boolean`                                        | `false`        | Disable the control; also closes the listbox.                                                   |
-| `filter`     | `(item: ComboboxItem, query: string) => boolean` | substring      | Filter predicate; default = case-insensitive substring on the label. Swap for fuzzy / async.    |
+| Option              | Type                                             | Default        | Description                                                                                     |
+| ------------------- | ------------------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
+| `options`           | `ComboboxItem[]`                                 | **required**   | The full option list. Reactive — filtering re-runs when it changes.                             |
+| `id`                | `string`                                         | auto (`useId`) | Stable base id for the part ARIA wiring; auto-generated when omitted (pass one for stable SSR). |
+| `defaultValue`      | `string \| null`                                 | `null`         | The selected value to start with (read once).                                                   |
+| `defaultInputValue` | `string`                                         | `''`           | The input text to start with (read once).                                                       |
+| `disabled`          | `boolean`                                        | `false`        | Disable the control; also closes the listbox.                                                   |
+| `filter`            | `(item: ComboboxItem, query: string) => boolean` | substring      | Filter predicate; default = case-insensitive substring on the label. Swap for fuzzy / async.    |
 
 Each option is a `ComboboxItem` — `value` is the stable identity, `label` is what the input shows:
 
@@ -123,7 +122,8 @@ const cb = useCombobox(() => ({
 
 The machine keeps no notion of validation, `v-model`, or blur-to-close — those live in the consumer. The
 styled [`OriCombobox`](/components/combobox) wraps exactly this pattern and layers the form contract
-(label / hint / error / `required`), `v-model` sync, and `@blur="setOpen(false)"` on top.
+(label / hint / error / `required`), `v-model` sync, and dismissal on top: it closes the list on a press or a
+focus outside with [`useDismissable`](/headless/use-dismissable).
 
 ::
 
@@ -142,8 +142,9 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern; the prop bags c
   accessible labels ("Open / Close suggestions", "Clear selection"); the trigger also carries
   `aria-expanded` / `aria-controls`.
 - Selecting an option reflects its `label` into the input and closes the list. The machine does **not**
-  dismiss on blur — wire `setOpen(false)` on the input's `blur` yourself (as the example and the styled
-  component do); `Tab` therefore moves focus away but does not itself close the list.
+  dismiss on blur or on a press outside — wire that yourself, with `setOpen(false)` on the input's `blur`
+  (as the example does) or with [`useDismissable`](/headless/use-dismissable) (as the styled component does);
+  `Tab` therefore moves focus away but does not itself close the list.
 - Option ids are derived from the position in `items`, so always pass the same `index` you iterate
   `items` with into `getOptionProps(item, index)`, or `aria-activedescendant` will point at the wrong row.
 
