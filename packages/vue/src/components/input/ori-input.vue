@@ -11,7 +11,6 @@ defineOptions({ inheritAttrs: false })
 
 const {
     color = 'primary',
-    describedby,
     disabled = false,
     error,
     hint,
@@ -24,8 +23,6 @@ const {
     variant = 'outline'
 } = defineProps<{
     color?: ThemeColor
-    /** Extra element id(s) to append to aria-describedby (e.g. a shared form note). */
-    describedby?: string
     disabled?: boolean
     /** Error message: rendered below the field (role=alert) and flips the field to aria-invalid. */
     error?: string
@@ -49,7 +46,7 @@ const model = defineModel<string>()
 // Inside an OriField the control takes the field's id and a11y wiring and the field renders the label,
 // hint and error; standalone it wires its own.
 const { inField, fieldId, hintId, errorId, describedBy, isInvalid, isRequired, isDisabled, fieldSize } =
-    useFieldControl(() => ({ describedby, disabled, error, hint, id, invalid, required, size }))
+    useFieldControl(() => ({ disabled, error, hint, id, invalid, required, size }))
 </script>
 
 <template>

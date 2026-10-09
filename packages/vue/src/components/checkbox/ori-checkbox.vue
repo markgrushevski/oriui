@@ -32,10 +32,7 @@ const fieldId = computed(() => id ?? uid)
 </script>
 
 <template>
-    <label
-        :for="fieldId"
-        :class="['ori-checkbox', `ori-color_${color}`, `ori-font-size_${size}`, { 'ori-checkbox_disabled': disabled }]"
-    >
+    <label :for="fieldId" :class="['ori-checkbox', `ori-color_${color}`, `ori-font-size_${size}`]">
         <input
             v-bind="$attrs"
             :id="fieldId"

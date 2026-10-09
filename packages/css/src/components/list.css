@@ -12,8 +12,8 @@
     }
 
     /* A vertical list of rows: settings, a panel of actions, navigation outside a role="menu". Each row
-       reads start → label → end. A row that acts is a real <button> or <a>; a row that only holds
-       content (or a control of its own in `__end`) is a <div>. Accent for the current row: `primary`. */
+       reads prepend → label → append. A row that acts is a real <button> or <a>; a row that only holds
+       content (or a control of its own in `__append`) is a <div>. Accent for the current row: `primary`. */
     :where(.ori-list) {
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
@@ -90,7 +90,7 @@
     }
 
     /* On the current row's tint the 0.7 fade of the second line falls under AA (4.24:1 measured, sumi light). */
-    .ori-list__row[aria-current]:not([aria-current='false']) :is(.ori-list__description, .ori-list__hint) {
+    .ori-list__row[aria-current]:not([aria-current='false']) :is(.ori-list__subtitle, .ori-list__meta) {
         opacity: 0.85;
     }
 
@@ -105,15 +105,15 @@
         cursor: not-allowed;
     }
 
-    .ori-list__start,
-    .ori-list__end {
+    .ori-list__prepend,
+    .ori-list__append {
         display: inline-flex;
         flex-shrink: 0;
         align-items: center;
         gap: 0.5em;
     }
 
-    .ori-list__start {
+    .ori-list__prepend {
         opacity: 0.8;
     }
 
@@ -131,12 +131,12 @@
         white-space: nowrap;
     }
 
-    .ori-list__description {
+    .ori-list__subtitle {
         opacity: 0.7;
         font-size: 0.85em;
     }
 
-    .ori-list__hint {
+    .ori-list__meta {
         opacity: 0.7;
         font-size: 0.8em;
     }

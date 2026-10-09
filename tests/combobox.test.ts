@@ -430,12 +430,12 @@ describe('OriCombobox', () => {
         expect(wrapper.findAll('[role="option"]').map((o) => o.text())).toEqual(['Apple', 'Grape'])
     })
 
-    it('#option scoped slot renders custom content with item + selected', () => {
+    it('#option scoped slot renders custom content with option + selected', () => {
         const wrapper = mount(OriCombobox, {
             props: { options: OPTIONS, label: 'Fruit', modelValue: 'banana' },
             slots: {
-                option: (props: { item: { label: string }; selected: boolean }) =>
-                    h('span', { class: 'custom-option' }, `${props.item.label}:${props.selected}`)
+                option: (props: { option: { label: string }; selected: boolean }) =>
+                    h('span', { class: 'custom-option' }, `${props.option.label}:${props.selected}`)
             }
         })
 

@@ -131,6 +131,11 @@
         flex-shrink: 0;
     }
 
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-segmented-control_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
+    }
+
     .ori-segmented-control_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }

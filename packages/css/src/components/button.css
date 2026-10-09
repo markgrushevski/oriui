@@ -161,28 +161,33 @@
         font-size: calc(var(--ori-size-action) / 2);
     }
 
-    .ori-button_icon-position_top {
+    .ori-button_icon-position-top {
         flex-direction: column;
 
         /* font-size: calc(var(--ori-font-size) - var(--ori-font-size-step_dec) * 1); */
     }
 
-    .ori-button_icon-position_right {
+    .ori-button_icon-position-end {
         flex-direction: row-reverse;
     }
 
-    .ori-button_icon-position_bottom {
+    .ori-button_icon-position-bottom {
         flex-direction: column-reverse;
 
         /* font-size: calc(var(--ori-font-size) - var(--ori-font-size-step_dec) * 1); */
     }
 
-    .ori-button_icon-position_left {
+    .ori-button_icon-position-start {
         flex-direction: row;
     }
 
     /* Size sugar (action-size axis) — the daisyUI-familiar `.ori-button_lg` shape; mirrors the
        low-level `.ori-size-action_*` utility. Drives both the height and the icon-button square. */
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-button_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
+    }
+
     .ori-button_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }

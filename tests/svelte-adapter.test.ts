@@ -122,7 +122,7 @@ describe('Svelte nativeDialog', () => {
         expect(trigger['aria-expanded']).toBe(false)
         expect(typeof trigger.onclick).toBe('function')
 
-        const dialog = get(dlg.dialogProps)
+        const dialog = get(dlg.contentProps)
         expect(dialog.role).toBe('dialog')
         expect(dialog['aria-modal']).toBe('true')
         expect(dialog['aria-labelledby']).toBe('dl-title')
@@ -151,18 +151,18 @@ describe('Svelte nativeDialog', () => {
     })
 
     it('modal:false drops aria-modal; closeOnEscape:false keeps an oncancel guard', () => {
-        const nonModal = get(nativeDialog({ id: 'm', modal: false }).dialogProps)
+        const nonModal = get(nativeDialog({ id: 'm', modal: false }).contentProps)
         expect(nonModal['aria-modal']).toBeUndefined()
 
-        const noEsc = get(nativeDialog({ id: 'e', closeOnEscape: false }).dialogProps)
+        const noEsc = get(nativeDialog({ id: 'e', closeOnEscape: false }).contentProps)
         expect(typeof noEsc.oncancel).toBe('function')
     })
 
-    // dialogProps was a `readable({…})` built once, so unlike the Vue (`computed`) and React
+    // contentProps was a `readable({…})` built once, so unlike the Vue (`computed`) and React
     // (per-render) twins it could never see an option change. The Svelte contract takes a plain options
     // object, so the reactive call style is a getter property — which only pays off if the bag is
     // re-projected rather than frozen.
-    it('re-projects dialogProps, so an option read through a getter is not frozen at creation', () => {
+    it('re-projects contentProps, so an option read through a getter is not frozen at creation', () => {
         let modal = true
         const dlg = nativeDialog({
             id: 'live',
@@ -171,18 +171,18 @@ describe('Svelte nativeDialog', () => {
             }
         })
 
-        expect(get(dlg.dialogProps)['aria-modal']).toBe('true')
+        expect(get(dlg.contentProps)['aria-modal']).toBe('true')
 
         modal = false
         dlg.setOpen(true)
 
-        expect(get(dlg.dialogProps)['aria-modal']).toBeUndefined()
+        expect(get(dlg.contentProps)['aria-modal']).toBeUndefined()
     })
 
-    it('emits a fresh dialogProps to live subscribers on every open change', () => {
+    it('emits a fresh contentProps to live subscribers on every open change', () => {
         const dlg = nativeDialog({ id: 'sub' })
         const seen: unknown[] = []
-        const stop = dlg.dialogProps.subscribe((bag) => seen.push(bag))
+        const stop = dlg.contentProps.subscribe((bag) => seen.push(bag))
 
         dlg.setOpen(true)
         dlg.setOpen(false)
@@ -321,7 +321,7 @@ describe('Svelte resolvers fall back to native outside a component', () => {
 
         const dlg = useDialog({ id: 'rd' })
         expect(get(dlg.open)).toBe(false)
-        expect(get(dlg.dialogProps).role).toBe('dialog')
+        expect(get(dlg.contentProps).role).toBe('dialog')
 
         const cb = useCombobox({ id: 'rc', options: [{ label: 'A', value: 'a' }] })
         expect(get(cb.open)).toBe(false)

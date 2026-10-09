@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { computed, useId, useSlots, watchEffect } from 'vue'
 import type { RadiusSize, ThemeColor } from '../../types'
-import { DEV } from '../../internal/dev'
+
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
 
 /**
  * One disclosure in `<OriAccordion>`'s `items` prop. `label` is the `<summary>` text.
@@ -9,7 +11,7 @@ import { DEV } from '../../internal/dev'
  * The display key is `label`, matching `TabItem` / `SelectOption` / `RadioOption` / `ComboboxItem` /
  * `MenuItem` — one collection-item shape across the catalog, so an item array can be mapped from the
  * same source data whichever component renders it. It was `title` until the pre-1.0 convergence; see
- * the DEV warning below, which names the rename when a stale `title` arrives.
+ * the development warning below, which names the rename when a stale `title` arrives.
  */
 export interface AccordionItem {
     value: string | number
@@ -57,7 +59,7 @@ function blockDisabled(event: Event, disabled?: boolean): void {
 // item in the catalog. TypeScript already rejects the old key, but a plainly-typed array (JS, JSON
 // from an API, an `as any` demo) would silently render empty summaries — so name the rename here
 // rather than leaving the caller to diff the markup. Development builds only.
-if (DEV) {
+if (process.env.NODE_ENV !== 'production') {
     const slots = useSlots()
     watchEffect(() => {
         // Typed as the caller may actually have built it, not as the prop promises: `label` optional

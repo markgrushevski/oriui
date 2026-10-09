@@ -38,7 +38,7 @@ export function useTabs(options: MaybeRefOrGetter<UseTabsOptions>) {
     const orientation = (): RovingOrientation => opts().orientation ?? 'horizontal'
 
     const uid = useId() ?? `ori-tabs-${(fallbackId += 1)}`
-    const base = () => opts().idBase ?? uid
+    const base = () => opts().id ?? uid
     const tabId = (index: number) => `${base()}-tab-${index}`
     const panelId = (index: number) => `${base()}-panel-${index}`
 

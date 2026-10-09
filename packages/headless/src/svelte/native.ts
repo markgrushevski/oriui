@@ -92,7 +92,7 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
         // re-projection. The Svelte contract takes a plain options object (no store), so the reactive
         // call style here is a getter property — `useDialog({ get modal() { return modal } })` — which a
         // frozen bag would read exactly once.
-        dialogProps: derived(open, () => ({
+        contentProps: derived(open, () => ({
             role: 'dialog',
             'aria-modal': options.modal === false ? undefined : 'true',
             'aria-labelledby': titleId,
@@ -130,8 +130,8 @@ export const nativeCombobox = (options: MaybeReactive<UseComboboxOptions>): Comb
 
     const service = combobox.machine({
         id: initial.id ?? uid('combobox'),
-        defaultValue: initial.value ?? null,
-        defaultInputValue: initial.inputValue ?? '',
+        defaultValue: initial.defaultValue ?? null,
+        defaultInputValue: initial.defaultInputValue ?? '',
         disabled: initial.disabled
     })
 

@@ -29,7 +29,7 @@ export function fakeDialog(options?: MaybeRefOrGetter<UseDialogOptions>): Dialog
             'aria-expanded': open.value,
             onClick: () => setOpen(true)
         })),
-        dialogProps: computed(() => ({
+        contentProps: computed(() => ({
             role: 'dialog',
             'aria-modal': opts.value.modal === false ? undefined : 'true',
             'aria-labelledby': `${id}-title`,

@@ -13,6 +13,7 @@ defineOptions({ inheritAttrs: false })
 // wire (useDialog defaults to the native engine). The OriHeadless contract still lets an app swap a
 // custom dialog adapter; the markup never changes. Open state and naming: see use-dialog-shell.ts.
 const {
+    closeLabel = 'Close',
     closeOnEscape = true,
     closeOnInteractOutside = true,
     defaultOpen = false,
@@ -23,6 +24,8 @@ const {
     open = undefined,
     title
 } = defineProps<{
+    /** The accessible name of the × button. */
+    closeLabel?: string
     closeOnEscape?: boolean
     closeOnInteractOutside?: boolean
     defaultOpen?: boolean
@@ -58,7 +61,12 @@ const { dlg, bindings, hasTitle } = useDialogShell(
                 <h2 v-if="hasTitle()" v-bind="dlg.titleProps.value" class="ori-dialog__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
-                <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-dialog__close" aria-label="Close">
+                <button
+                    v-bind="dlg.closeTriggerProps.value"
+                    type="button"
+                    class="ori-dialog__close"
+                    :aria-label="closeLabel"
+                >
                     ×
                 </button>
             </header>

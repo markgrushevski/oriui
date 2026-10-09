@@ -120,8 +120,8 @@ describe('OriBadge', () => {
         expect(wrapper.attributes('aria-hidden')).toBe('true')
     })
 
-    it('dot badge with a label is NOT decorative', () => {
-        const wrapper = mount(OriBadge, { props: { dot: true, label: 'Notifications' } })
+    it('dot badge with an ariaLabel is NOT decorative', () => {
+        const wrapper = mount(OriBadge, { props: { dot: true, ariaLabel: 'Notifications' } })
 
         expect(wrapper.attributes('aria-hidden')).toBeUndefined()
         expect(wrapper.attributes('aria-label')).toBe('Notifications')
@@ -192,8 +192,8 @@ describe('OriBadge', () => {
     // Accessible name (label) and aria-hidden (decorative)
     // -------------------------------------------------------------------------
 
-    it('sets aria-label when label prop is provided', () => {
-        const wrapper = mount(OriBadge, { props: { label: '3 unread', content: 3 } })
+    it('sets aria-label from the ariaLabel prop', () => {
+        const wrapper = mount(OriBadge, { props: { ariaLabel: '3 unread', content: 3 } })
 
         expect(wrapper.attributes('aria-label')).toBe('3 unread')
         expect(wrapper.attributes('aria-hidden')).toBeUndefined()
@@ -217,9 +217,9 @@ describe('OriBadge', () => {
         expect(wrapper.attributes('aria-hidden')).toBe('true')
     })
 
-    it('label is exposed on the inner badge in floating mode too', () => {
+    it('ariaLabel is exposed on the inner badge in floating mode too', () => {
         const wrapper = mount(OriBadge, {
-            props: { content: 4, label: '4 alerts' },
+            props: { content: 4, ariaLabel: '4 alerts' },
             slots: { default: '<button>Bell</button>' }
         })
         const badge = wrapper.find('.ori-badge')

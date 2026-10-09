@@ -13,6 +13,7 @@ defineOptions({ inheritAttrs: false })
 // a manual popover closes on nothing by itself, so Escape, a press outside and focus return are wired
 // here. Open state, naming and the controlled / uncontrolled split: see use-dialog-shell.ts.
 const {
+    closeLabel = 'Close',
     closeOnEscape = true,
     closeOnInteractOutside = true,
     defaultOpen = false,
@@ -22,6 +23,8 @@ const {
     side = 'end',
     title
 } = defineProps<{
+    /** The accessible name of the × button. */
+    closeLabel?: string
     closeOnEscape?: boolean
     closeOnInteractOutside?: boolean
     defaultOpen?: boolean
@@ -91,7 +94,8 @@ useDismissable(() => ({
     enabled: dlg.open.value && !modal && closeOnInteractOutside,
     elements: () => [drawerEl.value, triggerEl()],
     onDismiss: () => dlg.setOpen(false),
-    pointerDownOutside: true
+    // Non-modal on purpose: focus may move to the page while the drawer stays open.
+    focusOutside: false
 }))
 
 function onEscape(event: KeyboardEvent): void {
@@ -127,7 +131,12 @@ watch(
                 <h2 v-if="hasTitle()" v-bind="dlg.titleProps.value" class="ori-drawer__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
-                <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-drawer__close" aria-label="Close">
+                <button
+                    v-bind="dlg.closeTriggerProps.value"
+                    type="button"
+                    class="ori-drawer__close"
+                    :aria-label="closeLabel"
+                >
                     ×
                 </button>
             </header>

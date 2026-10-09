@@ -5,10 +5,15 @@ import {
     OriPopover,
     type ActionSize,
     type AnchoredPlacement,
+    type AnchoredSide,
     type CenteredPosition,
+    type ColorFormat,
     type GapSize,
+    type Orientation,
+    type PopupRole,
     type RadiusSize,
     type ThemeColor,
+    type ToastColor,
     type Variant
 } from '../packages/vue/src'
 
@@ -55,9 +60,6 @@ import type {
     // @ts-expect-error — pruned before 1.0: the union of every position vocabulary; overlays take
     // `AnchoredPlacement`, and no component took this.
     Position,
-    // @ts-expect-error — pruned before 1.0: still exists as a private building block of
-    // `AnchoredPlacement`, but is no longer public on its own.
-    AnchoredSide,
     // @ts-expect-error — pruned before 1.0: no component narrows `color` to the severity roles —
     // OriAlert and OriToast both take the full `ThemeColor`.
     SeverityColor,
@@ -88,7 +90,7 @@ describe('@oriui/vue public types', () => {
     // -------------------------------------------------------------------------
 
     it('CenteredPosition is the four edges a centered decoration can take', () => {
-        expectTypeOf<CenteredPosition>().toEqualTypeOf<'top' | 'bottom' | 'right' | 'left'>()
+        expectTypeOf<CenteredPosition>().toEqualTypeOf<'top' | 'bottom' | 'start' | 'end'>()
     })
 
     it('AnchoredPlacement is the full 12-value grid', () => {
@@ -106,6 +108,24 @@ describe('@oriui/vue public types', () => {
             | 'right-start'
             | 'right-end'
         >()
+    })
+
+    it('AnchoredSide is the four sides of the placement grid', () => {
+        expectTypeOf<AnchoredSide>().toEqualTypeOf<'top' | 'bottom' | 'left' | 'right'>()
+    })
+
+    it('Orientation is the one axis vocabulary', () => {
+        expectTypeOf<Orientation>().toEqualTypeOf<'horizontal' | 'vertical'>()
+    })
+
+    it('PopupRole is the aria-haspopup vocabulary', () => {
+        expectTypeOf<PopupRole>().toEqualTypeOf<'dialog' | 'menu' | 'listbox' | 'tree' | 'grid'>()
+    })
+
+    // Types a public prop already used, now importable from the styled package.
+    it('ColorFormat and ToastColor are exported from @oriui/vue', () => {
+        expectTypeOf<ColorFormat>().toEqualTypeOf<'hex' | 'rgb' | 'hsl'>()
+        expectTypeOf<ToastColor>().toEqualTypeOf<ThemeColor>()
     })
 
     it('ThemeColor is the eight palette roles', () => {

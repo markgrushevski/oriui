@@ -26,7 +26,7 @@ describe('React useDialog (native fallback)', () => {
         expect(trigger['aria-expanded']).toBe(false)
         expect(typeof trigger.onClick).toBe('function')
 
-        const dialog = result.current.dialogProps
+        const dialog = result.current.contentProps
         expect(dialog.role).toBe('dialog')
         expect(dialog['aria-modal']).toBe('true')
         expect(dialog['aria-labelledby']).toBe('dl-title')
@@ -59,10 +59,10 @@ describe('React useDialog (native fallback)', () => {
 
     it('modal:false drops aria-modal; closeOnEscape:false keeps an onCancel guard', () => {
         const nonModal = renderHook(() => useDialog({ id: 'm', modal: false }))
-        expect(nonModal.result.current.dialogProps['aria-modal']).toBeUndefined()
+        expect(nonModal.result.current.contentProps['aria-modal']).toBeUndefined()
 
         const noEsc = renderHook(() => useDialog({ id: 'e', closeOnEscape: false }))
-        expect(typeof noEsc.result.current.dialogProps.onCancel).toBe('function')
+        expect(typeof noEsc.result.current.contentProps.onCancel).toBe('function')
     })
 
     it('resolves a provided adapter over the native default', () => {
@@ -71,7 +71,7 @@ describe('React useDialog (native fallback)', () => {
             setOpen: () => {},
             toggle: () => {},
             triggerProps: { 'data-fake': 'trigger' },
-            dialogProps: { 'data-fake': 'dialog' },
+            contentProps: { 'data-fake': 'dialog' },
             titleProps: {},
             descriptionProps: {},
             closeTriggerProps: {}
@@ -81,7 +81,7 @@ describe('React useDialog (native fallback)', () => {
 
         const { result } = renderHook(() => useDialog({ id: 'p' }), { wrapper })
         expect(result.current.open).toBe(true)
-        expect(result.current.dialogProps['data-fake']).toBe('dialog')
+        expect(result.current.contentProps['data-fake']).toBe('dialog')
     })
 })
 

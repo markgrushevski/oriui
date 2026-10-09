@@ -83,7 +83,7 @@ export const nativeDialog = (options: MaybeRefOrGetter<UseDialogOptions> = () =>
             'aria-expanded': open.value,
             onClick: () => setOpen(true)
         })),
-        dialogProps: computed(() => ({
+        contentProps: computed(() => ({
             role: 'dialog',
             'aria-modal': opts.value.modal === false ? undefined : 'true',
             'aria-labelledby': titleId,
@@ -121,8 +121,8 @@ export const nativeCombobox = (options: MaybeRefOrGetter<UseComboboxOptions>): C
 
     const service = combobox.machine({
         id: init.id ?? useId() ?? 'combobox',
-        defaultValue: init.value ?? null,
-        defaultInputValue: init.inputValue ?? '',
+        defaultValue: init.defaultValue ?? null,
+        defaultInputValue: init.defaultInputValue ?? '',
         disabled: init.disabled
     })
     const version = useService(service)

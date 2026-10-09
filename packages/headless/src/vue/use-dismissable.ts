@@ -18,9 +18,9 @@ export interface UseDismissableOptions {
     elements: () => (HTMLElement | null | undefined)[]
     /** Called to dismiss — typically `() => setOpen(false)`. */
     onDismiss: () => void
-    /** Close on a `pointerdown` outside `elements` (default false). */
+    /** Close on a `pointerdown` outside `elements` (default true). */
     pointerDownOutside?: boolean
-    /** Close when focus lands outside `elements` (default false). */
+    /** Close when focus lands outside `elements` (default true). */
     focusOutside?: boolean
 }
 
@@ -37,8 +37,8 @@ export function useDismissable(options: () => UseDismissableOptions): void {
             if (isTargetOutside(event.target as Node | null, o.elements())) o.onDismiss()
         }
         const types: string[] = []
-        if (o.pointerDownOutside) types.push('pointerdown')
-        if (o.focusOutside) types.push('focusin')
+        if (o.pointerDownOutside ?? true) types.push('pointerdown')
+        if (o.focusOutside ?? true) types.push('focusin')
         // Capture phase (like Radix DismissableLayer / Floating-UI useDismiss) so an outside handler that
         // `stopPropagation()`s the event before it bubbles can't defeat the dismiss.
         types.forEach((type) => document.addEventListener(type, handler, true))

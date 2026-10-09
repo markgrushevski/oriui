@@ -48,6 +48,11 @@
     /* Size sugar (action-size axis / field height) — the daisyUI-familiar `.ori-input_lg` shape.
        One class, like the `.ori-size-action_*` utility it mirrors: it beats the baked `md` default
        because that default sits in the `:where()` rule above at (0,0,0). The field inherits the alias. */
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-input_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
+    }
+
     .ori-input_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }

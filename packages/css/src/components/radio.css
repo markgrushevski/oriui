@@ -38,7 +38,7 @@
         gap: 0.5em;
     }
 
-    .ori-radio-group_inline .ori-radio-group__options {
+    .ori-radio-group_horizontal .ori-radio-group__options {
         flex-flow: row wrap;
         gap: 1em;
     }
@@ -52,10 +52,8 @@
         cursor: pointer;
     }
 
-    /* Disabled reads from the REAL control state, not only from the prop-driven modifier class —
-       `<fieldset disabled>` (or a hand-written `disabled` attribute in the CSS layer) left the
-       radio inert but rendered fully enabled. See checkbox.css for the full rationale. */
-    .ori-radio_disabled,
+    /* Disabled reads from the REAL control state, so `<fieldset disabled>` and a hand-written
+       `disabled` attribute dim it too (see checkbox.css). */
     .ori-radio:has(.ori-radio__input:disabled) {
         opacity: 0.55;
 

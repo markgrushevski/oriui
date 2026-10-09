@@ -9,7 +9,9 @@ interface AccordionItem {
 }
 type ActionSize = "inherit" | "lg" | "md" | "sm" | "xl" | "xs" | "xxl"
 type AnchoredPlacement = "bottom-end" | "bottom-start" | "left-end" | "left-start" | "right-end" | "right-start" | "top-end" | "top-start" | AnchoredSide
-type CenteredPosition = "bottom" | "left" | "right" | "top"
+type AnchoredSide = "bottom" | "left" | "right" | "top"
+type CenteredPosition = "bottom" | "end" | "start" | "top"
+type ColorFormat = "hex" | "hsl" | "rgb"
 interface ComboboxItem {
     disabled?: boolean | undefined
     label: string
@@ -35,6 +37,7 @@ component OriCombobox
 component OriDialog
 component OriDivider
 component OriDrawer
+type Orientation = "horizontal" | "vertical"
 component OriField
 interface OriFieldContext {
     describedBy: ComputedRef<string | undefined>
@@ -77,6 +80,7 @@ component OriToolbarSeparator
 component OriToolbarToggleGroup
 component OriToolbarToggleItem
 component OriTooltip
+type PopupRole = "dialog" | "grid" | "listbox" | "menu" | "tree"
 interface RadioOption {
     disabled?: boolean | undefined
     label: string
@@ -104,6 +108,7 @@ interface ToastAction {
     label: string
     onClick: () => void
 }
+type ToastColor = "background" | "danger" | "info" | "primary" | "secondary" | "success" | "surface" | "warning"
 interface ToastItem {
     action?: ToastAction | undefined
     closable?: boolean | undefined
@@ -165,11 +170,11 @@ OriAvatar (packages/vue/src/components/avatar/ori-avatar.vue)
     slot subtitle: {}
     slot title: {}
 OriBadge (packages/vue/src/components/badge/ori-badge.vue)
+    prop ariaLabel?: string | undefined
     prop color?: ThemeColor | undefined = "primary"
     prop content?: string | number | undefined
     prop dot?: boolean | undefined = false
     prop floating?: boolean | undefined
-    prop label?: string | undefined
     prop max?: number | undefined
     prop radius?: RadiusSize | undefined = "full"
     prop variant?: Variant | undefined = "solid"
@@ -182,7 +187,7 @@ OriButton (packages/vue/src/components/button/ori-button.vue)
     prop disabled?: boolean | undefined
     prop fluid?: boolean | undefined
     prop icon?: string | undefined
-    prop iconPosition?: CenteredPosition | undefined = "left"
+    prop iconPosition?: CenteredPosition | undefined = "start"
     prop label?: string | undefined
     prop loading?: boolean | undefined
     prop pressed?: boolean | undefined = undefined
@@ -244,7 +249,6 @@ OriColorPicker (packages/vue/src/components/color-picker/ori-color-picker.vue)
 OriCombobox (packages/vue/src/components/combobox/ori-combobox.vue)
     prop clearable?: boolean | undefined = false
     prop color?: ThemeColor | undefined = "primary"
-    prop describedby?: string | undefined
     prop disabled?: boolean | undefined = false
     prop error?: string | undefined
     prop filter?: ((item: ComboboxItem, query: string) => boolean) | undefined
@@ -265,8 +269,9 @@ OriCombobox (packages/vue/src/components/combobox/ori-combobox.vue)
     event update:modelValue: [value: string | null | undefined]
     slot empty: {}
     slot label: {}
-    slot option: { item: ComboboxItem; index: number; selected: boolean; }
+    slot option: { option: ComboboxItem; index: number; selected: boolean; }
 OriDialog (packages/vue/src/components/dialog/ori-dialog.vue)
+    prop closeLabel?: string | undefined = "Close"
     prop closeOnEscape?: boolean | undefined = true
     prop closeOnInteractOutside?: boolean | undefined = true
     prop defaultOpen?: boolean | undefined = false
@@ -281,9 +286,10 @@ OriDialog (packages/vue/src/components/dialog/ori-dialog.vue)
 OriDivider (packages/vue/src/components/divider/ori-divider.vue)
     prop color?: ThemeColor | undefined
     prop label?: string | undefined
-    prop vertical?: boolean | undefined
+    prop orientation?: Orientation | undefined = "horizontal"
     slot default: {}
 OriDrawer (packages/vue/src/components/drawer/ori-drawer.vue)
+    prop closeLabel?: string | undefined = "Close"
     prop closeOnEscape?: boolean | undefined = true
     prop closeOnInteractOutside?: boolean | undefined = true
     prop defaultOpen?: boolean | undefined = false
@@ -322,7 +328,6 @@ OriIcon (packages/vue/src/components/icon/ori-icon.vue)
     slot default: {}
 OriInput (packages/vue/src/components/input/ori-input.vue)
     prop color?: ThemeColor | undefined = "primary"
-    prop describedby?: string | undefined
     prop disabled?: boolean | undefined = false
     prop error?: string | undefined
     prop fluid?: boolean | undefined
@@ -340,7 +345,7 @@ OriInput (packages/vue/src/components/input/ori-input.vue)
     event update:modelValue: [value: string | undefined]
 OriJoin (packages/vue/src/components/join/ori-join.vue)
     prop as?: string | object | undefined = "div"
-    prop vertical?: boolean | undefined
+    prop orientation?: Orientation | undefined = "horizontal"
     slot default: {}
 OriKbd (packages/vue/src/components/kbd/ori-kbd.vue)
     prop as?: string | object | undefined = "kbd"
@@ -357,15 +362,15 @@ OriListItem (packages/vue/src/components/list/ori-list-item.vue)
     prop as?: string | object | undefined
     prop chevron?: boolean | undefined = false
     prop current?: boolean | undefined = false
-    prop description?: string | undefined
     prop disabled?: boolean | undefined = false
-    prop hint?: string | undefined
     prop href?: string | undefined
     prop icon?: string | undefined
     prop label?: string | undefined
+    prop meta?: string | undefined
+    prop subtitle?: string | undefined
+    slot append: {}
     slot default: {}
-    slot end: {}
-    slot start: {}
+    slot prepend: {}
 OriList (packages/vue/src/components/list/ori-list.vue)
     prop divided?: boolean | undefined = false
     slot default: {}
@@ -393,11 +398,11 @@ OriProgress (packages/vue/src/components/progress/ori-progress.vue)
 OriRadioGroup (packages/vue/src/components/radio/ori-radio-group.vue)
     prop color?: ThemeColor | undefined = "primary"
     prop disabled?: boolean | undefined = false
-    prop inline?: boolean | undefined
     prop label?: string | undefined
     prop modelValue?: string | number | undefined
     prop name?: string | undefined
     prop options?: RadioOption[] | undefined = []
+    prop orientation?: Orientation | undefined = "vertical"
     prop required?: boolean | undefined = false
     prop size?: ActionSize | undefined = "md"
     event update:modelValue: [value: string | number | undefined]
@@ -416,7 +421,6 @@ OriSegmentedControl (packages/vue/src/components/segmented-control/ori-segmented
     slot option: { option: SegmentedOption; }
 OriSelect (packages/vue/src/components/select/ori-select.vue)
     prop color?: ThemeColor | undefined = "primary"
-    prop describedby?: string | undefined
     prop disabled?: boolean | undefined = false
     prop error?: string | undefined
     prop fluid?: boolean | undefined
@@ -490,7 +494,7 @@ OriTabs (packages/vue/src/components/tabs/ori-tabs.vue)
     prop color?: ThemeColor | undefined = "primary"
     prop label?: string | undefined
     prop modelValue?: string | number | undefined
-    prop orientation?: "horizontal" | "vertical" | undefined = "horizontal"
+    prop orientation?: Orientation | undefined = "horizontal"
     prop tabs: TabItem[]
     event update:modelValue: [value: string | number | undefined]
     slot default: { tab: TabItem; }
@@ -512,7 +516,6 @@ OriTag (packages/vue/src/components/tag/ori-tag.vue)
     slot prepend: {}
 OriTextarea (packages/vue/src/components/textarea/ori-textarea.vue)
     prop color?: ThemeColor | undefined = "primary"
-    prop describedby?: string | undefined
     prop disabled?: boolean | undefined = false
     prop error?: string | undefined
     prop fluid?: boolean | undefined
@@ -532,6 +535,7 @@ OriToast (packages/vue/src/components/toast/ori-toast.vue)
     prop actionLabel?: string | undefined
     prop align?: "start" | "center" | undefined = "start"
     prop closable?: boolean | undefined = false
+    prop closeLabel?: string | undefined = "Dismiss notification"
     prop color?: ThemeColor | undefined = "surface"
     prop icon?: string | undefined
     prop text?: string | undefined
@@ -543,6 +547,7 @@ OriToast (packages/vue/src/components/toast/ori-toast.vue)
     slot title: {}
 OriToaster (packages/vue/src/components/toast/ori-toaster.vue)
     prop align?: "start" | "center" | undefined = "start"
+    prop closeLabel?: string | undefined = "Dismiss notification"
     prop hotkey?: string | undefined = "F8"
     prop label?: string | undefined = "Notifications"
     prop position?: "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | undefined = "top-right"
@@ -581,7 +586,7 @@ OriToolbar (packages/vue/src/components/toolbar/ori-toolbar.vue)
     prop dir?: "ltr" | "rtl" | undefined
     prop label?: string | undefined
     prop loop?: boolean | undefined = true
-    prop orientation?: "horizontal" | "vertical" | undefined = "horizontal"
+    prop orientation?: Orientation | undefined = "horizontal"
     slot default: {}
 OriTooltip (packages/vue/src/components/tooltip/ori-tooltip.vue)
     prop color?: ThemeColor | undefined

@@ -61,13 +61,32 @@ describe('useDismissable (Vue)', () => {
         scope.stop()
     })
 
+    // A dismiss layer that does nothing until told how would be a silent no-op: both are on by default.
+    it('dismisses on a pointerdown and on focus outside by default', async () => {
+        const outside = document.createElement('div')
+        document.body.append(outside)
+        const onDismiss = vi.fn()
+
+        const scope = effectScope()
+        scope.run(() => useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss })))
+        await nextTick()
+
+        outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+        outside.dispatchEvent(new Event('focusin', { bubbles: true }))
+        expect(onDismiss).toHaveBeenCalledTimes(2)
+
+        scope.stop()
+    })
+
     it('only the requested strategy is wired (focusOutside → ignores pointerdown)', async () => {
         const outside = document.createElement('div')
         document.body.append(outside)
         const onDismiss = vi.fn()
 
         const scope = effectScope()
-        scope.run(() => useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss, focusOutside: true })))
+        scope.run(() =>
+            useDismissableVue(() => ({ enabled: true, elements: () => [], onDismiss, pointerDownOutside: false }))
+        )
         await nextTick()
 
         outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))

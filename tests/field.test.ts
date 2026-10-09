@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { defineComponent, h, nextTick, ref } from 'vue'
+import { defineComponent, h, nextTick, ref, type Component } from 'vue'
 import { mount } from '@vue/test-utils'
 import { renderToString } from 'vue/server-renderer'
 import {
@@ -24,7 +24,7 @@ describe('OriField', () => {
             { value: 'b', label: 'B' }
         ]
         for (const group of [OriRadioGroup, OriSegmentedControl, OriColorPicker]) {
-            const html = await renderToString(h(OriField, { label: 'Pick' }, () => h(group, { options })))
+            const html = await renderToString(h(OriField, { label: 'Pick' }, () => h(group as Component, { options })))
             expect(html).toContain('ori-field__label')
             expect(html).not.toMatch(/<label[^>]*\bfor=/)
         }

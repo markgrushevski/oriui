@@ -93,7 +93,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown))
         <kbd class="cmdk-trigger__kbd">⌘K</kbd>
     </button>
 
-    <dialog ref="dialog" v-bind="dlg.dialogProps.value" class="cmdk-dialog">
+    <dialog ref="dialog" v-bind="dlg.contentProps.value" class="cmdk-dialog">
         <div v-if="dlg.open.value" class="cmdk">
             <h2 v-bind="dlg.titleProps.value" class="cmdk__title">Search the docs</h2>
             <input

@@ -214,14 +214,6 @@ describe('OriSelect', () => {
         )
     })
 
-    it('appends the describedby prop to aria-describedby', () => {
-        const wrapper = mount(OriSelect, { props: { hint: 'A hint', describedby: 'form-note' } })
-        const describedby = wrapper.find('select').attributes('aria-describedby')
-
-        expect(describedby).toContain('form-note')
-        expect(describedby).toContain(wrapper.find('.ori-select__hint').attributes('id'))
-    })
-
     it('joins a caller-supplied aria-describedby instead of clobbering it', () => {
         const wrapper = mount(OriSelect, { props: { hint: 'A hint' }, attrs: { 'aria-describedby': 'form-note' } })
         const ids = (wrapper.find('select').attributes('aria-describedby') ?? '').split(' ')

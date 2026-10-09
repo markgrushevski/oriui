@@ -33,8 +33,9 @@ export interface UseTabsOptions {
     label?: string
     /** Accessible name by element id → `aria-labelledby` (use instead of `label`). */
     labelledby?: string
-    /** SSR-stable id base for the derived tab/panel ids; defaults to the adapter's own id source. */
-    idBase?: string
+    /** Stable base id for the derived tab and panel ids; the adapter generates an SSR-safe one when
+     *  omitted. */
+    id?: string
     /** Commit the next selected value (wire to your bound value). */
     onChange?: (value: string | number) => void
 }

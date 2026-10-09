@@ -98,7 +98,7 @@ export const nativeDialog = (options: UseDialogOptions = {}): DialogControl => {
             'aria-expanded': open,
             onClick: () => setOpen(true)
         },
-        dialogProps: {
+        contentProps: {
             role: 'dialog',
             'aria-modal': options.modal === false ? undefined : 'true',
             'aria-labelledby': titleId,
@@ -139,8 +139,8 @@ export const nativeCombobox = (options: UseComboboxOptions): ComboboxControl => 
     const serviceRef = useRef<ReturnType<typeof combobox.machine> | null>(null)
     const service = (serviceRef.current ??= combobox.machine({
         id,
-        defaultValue: options.value ?? null,
-        defaultInputValue: options.inputValue ?? '',
+        defaultValue: options.defaultValue ?? null,
+        defaultInputValue: options.defaultInputValue ?? '',
         disabled: options.disabled
     }))
 

@@ -48,21 +48,17 @@ describe('OriSwitch', () => {
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([true])
     })
 
-    it('disabled sets the real disabled attribute + modifier class', () => {
+    it('disabled sets the real disabled attribute', () => {
         const wrapper = mount(OriSwitch, { props: { disabled: true, label: 'x' } })
 
         expect((wrapper.find('input').element as HTMLInputElement).disabled).toBe(true)
-        expect(wrapper.classes()).toContain('ori-switch_disabled')
     })
 
-    // The modifier class is prop-driven, so it is absent exactly when the control is disabled by
-    // something the prop knows nothing about — a surrounding `<fieldset disabled>`, or a hand-written
-    // `disabled` attribute in the CSS layer. Drop the class from a really-disabled switch: the
-    // stylesheet must still dim it.
-    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+    // The disabled look reads the input's real state, so a control disabled by something the props know
+    // nothing about — a surrounding `<fieldset disabled>`, or a hand-written `disabled` attribute in the
+    // CSS layer — is dimmed too.
+    it('the disabled look comes from the real disabled state (fieldset / attribute disabled)', () => {
         const el = mount(OriSwitch, { props: { disabled: true, label: 'x' } }).element as HTMLElement
-
-        el.classList.remove('ori-switch_disabled')
 
         const selectors = disabledSelectors()
         expect(selectors.length).toBeGreaterThan(0)

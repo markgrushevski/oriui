@@ -18,8 +18,8 @@ describe('OriDivider', () => {
         expect(wrapper.attributes('aria-orientation')).toBeUndefined()
     })
 
-    it('vertical sets aria-orientation="vertical" and the modifier class', () => {
-        const wrapper = mount(OriDivider, { props: { vertical: true } })
+    it('orientation="vertical" sets aria-orientation and the modifier class', () => {
+        const wrapper = mount(OriDivider, { props: { orientation: 'vertical' } })
 
         expect(wrapper.attributes('aria-orientation')).toBe('vertical')
         expect(wrapper.classes()).toContain('ori-divider_vertical')

@@ -37,10 +37,10 @@ export interface UseComboboxOptions {
     id?: string
     /** The full option list. Live — filtering re-runs when it changes. */
     options: ComboboxItem[]
-    /** Uncontrolled initial selected value (init-only). */
-    value?: string | null
-    /** Uncontrolled initial input text (init-only). */
-    inputValue?: string
+    /** The selected value to start with (read once). */
+    defaultValue?: string | null
+    /** The input text to start with (read once). */
+    defaultInputValue?: string
     /** Live: re-read after creation. */
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */

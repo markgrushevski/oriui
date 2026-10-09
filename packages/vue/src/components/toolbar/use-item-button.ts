@@ -9,9 +9,11 @@ import {
     type Ref
 } from 'vue'
 import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
-import { DEV } from '../../internal/dev'
 import { swallowClick } from '../../internal/events'
 import { useSlotPresence } from '../../internal/slot-presence'
+
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
 
 interface ItemNameProps {
     ariaLabel?: string
@@ -118,7 +120,7 @@ function useItemName(
     onMounted(() => {
         observe(element())
         const { ariaLabel, tooltip } = props()
-        if (DEV && !ariaLabel && !tooltip && !visible()) {
+        if (process.env.NODE_ENV !== 'production' && !ariaLabel && !tooltip && !visible()) {
             console.warn(
                 `[${component}] an item without visible text needs an accessible name — pass \`aria-label\` or \`tooltip\`.`
             )

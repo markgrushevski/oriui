@@ -76,6 +76,11 @@ resolve. Editors need a Vue language service for template prop hints — **VS Co
 editor's dependency index is usually stale — reload the TS server (VS Code) or _Invalidate Caches /
 Restart_ (WebStorm).
 
+## Browser support
+
+Chrome and Edge 131+, Firefox 147+, Safari 26+, the versions with CSS anchor positioning and `anchor-scope`.
+Details: [Installation → Browser support](https://oriui.vercel.app/overview/installation#browser-support).
+
 ## License
 
 [MIT](https://github.com/markgrushevski/oriui/blob/main/LICENSE) © Leonid

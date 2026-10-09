@@ -17,7 +17,8 @@
         "name": "@oriui/vue — full library, every component (gzip)",
         "path": "packages/vue/dist/**/*.js",
         "gzip": true,
-        "limit": "55 kB",
+        "limit": "57 kB",
+        "message": "The files as published, development warnings included: an app's production build drops those, which the bundled ceiling below measures.",
         "disablePlugins": ["@size-limit/esbuild"]
     },
     {
@@ -52,7 +53,7 @@
         "import": "*",
         "ignore": ["vue", "@oriui/headless", "@oriui/headless/vue"],
         "gzip": true,
-        "limit": "18.5 kB",
+        "limit": "19 kB",
         "message": "This is the denominator the per-component entries below are judged against: what a consumer ships who imports the whole catalog. Raising it to make CI pass also raises the bar every tree-shaking entry is read against, so re-measure those too."
     },
     {

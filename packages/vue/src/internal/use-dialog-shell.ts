@@ -1,6 +1,8 @@
 import { computed, mergeProps, useAttrs, useSlots, watch, watchPostEffect, type Ref } from 'vue'
 import { useDialog } from '@oriui/headless/vue'
-import { DEV } from './dev'
+
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
 
 export interface DialogShellProps {
     closeOnEscape: boolean
@@ -83,7 +85,7 @@ export function useDialogShell(
             ? (dlg.descriptionProps.value.id as string)
             : undefined
     const bindings = () => {
-        const { 'aria-labelledby': labelledBy, ...own } = dlg.dialogProps.value
+        const { 'aria-labelledby': labelledBy, ...own } = dlg.contentProps.value
         return mergeProps(
             attrs,
             own,
@@ -92,7 +94,7 @@ export function useDialogShell(
         )
     }
 
-    if (DEV) {
+    if (process.env.NODE_ENV !== 'production') {
         watchPostEffect(() => {
             if (dlg.open.value && !hasTitle() && !attrs['aria-label'] && !attrs['aria-labelledby']) {
                 console.warn(
