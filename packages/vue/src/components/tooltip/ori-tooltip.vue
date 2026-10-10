@@ -5,19 +5,22 @@ import type { AnchoredPlacement, ThemeColor } from '../../types'
 // WCAG 1.4.13 requires dismissing hover/focus content without moving the pointer or focus — Escape,
 // the one part CSS cannot do. One document listener serves every tooltip: each instance registers a
 // callback and checks the DOM (`:hover` / focus) to see whether it is the one showing. Show/hide stays CSS.
-const shown = new Set<() => void>()
+// An Escape that dismissed a tooltip is consumed, so the dialog or drawer around it stays open.
+const shown = new Set<() => boolean>()
 
 function onDocumentKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return
-    for (const dismiss of shown) dismiss()
+    let dismissed = false
+    for (const dismiss of shown) dismissed = dismiss() || dismissed
+    if (dismissed) event.preventDefault()
 }
 
-function register(dismiss: () => void): void {
+function register(dismiss: () => boolean): void {
     if (shown.size === 0) document.addEventListener('keydown', onDocumentKeydown, true)
     shown.add(dismiss)
 }
 
-function unregister(dismiss: () => void): void {
+function unregister(dismiss: () => boolean): void {
     shown.delete(dismiss)
     if (shown.size === 0) document.removeEventListener('keydown', onDocumentKeydown, true)
 }
@@ -32,12 +35,10 @@ function unregister(dismiss: () => void): void {
 // Placement rides the shared `.ori-anchored` primitive (CSS Anchor Positioning): the 12-value
 // `<side>[-start|-end]` grid with zero-JS collision handling — position-try flips the bubble when the
 // preferred side lacks room, and the bare sides anchor-center so the bubble shifts back into view at
-// screen edges. No per-instance anchor wiring is needed: the trigger and bubble pair through a shared
-// default anchor-name in tooltip.css (the trigger always immediately precedes its bubble, so anchor
-// resolution finds the right one); Esc-to-dismiss would need JS (out of scope; the CSS-only model
-// dismisses on blur / pointer-leave).
+// screen edges. The trigger and bubble pair through a shared anchor-name scoped to each tooltip in
+// tooltip.css, so no per-instance anchor wiring is needed.
 //
-// Color: the bubble defaults to a dedicated neutral inverse chip (neutral-900 on neutral-50) — NOT
+// Color: the bubble defaults to the neutral inverse pair from tooltip.css — NOT
 // var(--ori-color)/var(--ori-color-on), which are globally defined (currentColor) and so would pair
 // bg and text from two different sources. When `color` is set the wrapper gets the ori-color utility
 // and tooltip.css repoints the bubble's bg + text as a pair from that one role source.
@@ -61,10 +62,12 @@ const bubbleId = useId()
 const root = useTemplateRef<HTMLElement>('root')
 const dismissed = ref(false)
 
-function dismissIfShowing(): void {
+function dismissIfShowing(): boolean {
     const el = root.value
-    if (!el) return
-    if (el.matches(':hover') || el.contains(document.activeElement)) dismissed.value = true
+    if (!el || dismissed.value) return false
+    if (!el.matches(':hover') && !el.contains(document.activeElement)) return false
+    dismissed.value = true
+    return true
 }
 
 onMounted(() => register(dismissIfShowing))

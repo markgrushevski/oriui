@@ -1,5 +1,5 @@
 /**
- * Framework-agnostic roving-focus helpers, shared by the Vue and Svelte `useToolbar` adapters (and
+ * Framework-agnostic roving-focus helpers, shared by the `useToolbar` and `useTabs` adapters (and
  * reusable by any roving-tabindex widget). Pure functions — no DOM, no reactivity — so they unit-test
  * in isolation and behave identically across frameworks. The adapters own the DOM (real focus,
  * `querySelectorAll` in document order) and the reactive state; this module owns only the index math

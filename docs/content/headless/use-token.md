@@ -13,7 +13,7 @@ substitution only happens at a real property's computed-value time.
 This is the **Vue** binding; the framework-agnostic core (`resolveToken`, `observeTheme`) lives in
 [`@oriui/headless`](/headless/core). Like [`useTheme`](/headless/use-theme), this is DOM + state — a read-only
 reactive **value**, not a widget — so there are no prop bags and no swappable adapter. It re-resolves on every
-skin / mode flip, and is a **colors-only MVP**: the token must resolve to a `<color>`.
+skin / mode flip. It resolves **colors only**: the token must resolve to a `<color>`.
 
 ## Import
 

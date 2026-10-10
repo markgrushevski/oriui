@@ -7,7 +7,7 @@ const {
     as = 'button',
     color = 'primary',
     disabled,
-    iconPosition = 'left',
+    iconPosition = 'start',
     loading,
     // `= undefined` is load-bearing: Vue coerces an ABSENT boolean prop to `false`, which would render
     // aria-pressed="false" on every plain (non-toggle) button. An explicit default opts out of that
@@ -62,7 +62,7 @@ function onClickCapture(event: MouseEvent): void {
             {
                 'ori-button_icon': Boolean(icon) && !label,
                 'ori-button_fluid': fluid,
-                [`ori-button_icon-position_${iconPosition}`]: iconPosition,
+                [`ori-button_icon-position-${iconPosition}`]: iconPosition,
                 [`ori-button_${size}`]: size,
                 [`ori-size-radius_${radius}`]: radius,
                 [`ori-font-size_${size}`]: size,

@@ -3,7 +3,7 @@
 //
 // `changeset publish` packs every workspace in parallel, and each `prepack` rebuilds its package. Those
 // builds race: `@oriui/headless` cleans its `dist`, which is where `@oriui/vue` resolves its types
-// from, so vue-tsc fails and the fixed group half-publishes (that is what happened to 1.0.0-rc.18).
+// from, so vue-tsc fails and the fixed group half-publishes.
 // `ignore-scripts` turns the rebuilds off: the `release` script has already built the graph in order,
 // and the gate has measured that exact dist. `prepack` stays for RELEASING.md's manual fallback.
 //

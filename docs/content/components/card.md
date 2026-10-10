@@ -254,7 +254,7 @@ the trailing slot. Pass an SVG path to `prependIcon` or a URL to `prependAvatar`
 
 ::
 
-## Block (fluid)
+## Fluid
 
 `fluid` stretches the card to the full width of its container.
 

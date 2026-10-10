@@ -33,7 +33,7 @@ const claims = [
     },
     {
         title: 'Accessibility that is tested',
-        text: 'axe runs against every component, every color pair passes WCAG AA in every skin, and keyboard behavior is exercised in real Chromium.',
+        text: 'axe runs against every component, every color pair passes WCAG AA in every skin, and keyboard behavior is exercised in real Chromium, Firefox and WebKit.',
         link: 'See what is tested',
         to: '/overview/accessibility'
     },

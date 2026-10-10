@@ -42,7 +42,7 @@ export interface UseDialogOptions {
  * A modal/dialog control built around the native `<dialog>` element: the component renders a real
  * `<dialog>` and drives `showModal()` / `close()` from `open`, so the platform supplies the focus trap,
  * `Esc`, `::backdrop`, top-layer and `inert`-on-rest. The adapter owns only the open state and the ARIA
- * prop bags — `dialogProps` carries the `<dialog>`'s own attributes plus the `close` / `cancel` /
+ * prop bags — `contentProps` carries the `<dialog>`'s own attributes plus the `close` / `cancel` /
  * backdrop-click handlers that keep `open` in sync.
  */
 export interface DialogControl {
@@ -50,7 +50,7 @@ export interface DialogControl {
     setOpen(open: boolean): void
     toggle(): void
     triggerProps: Readable<Record<string, unknown>>
-    dialogProps: Readable<Record<string, unknown>>
+    contentProps: Readable<Record<string, unknown>>
     titleProps: Readable<Record<string, unknown>>
     descriptionProps: Readable<Record<string, unknown>>
     closeTriggerProps: Readable<Record<string, unknown>>
@@ -63,10 +63,10 @@ export interface UseComboboxOptions {
     id?: string
     /** The full option list. Reactive when the whole options object is passed as a store. */
     options: ComboboxItem[]
-    /** Initial selected value. */
-    value?: string | null
-    /** Initial input text. */
-    inputValue?: string
+    /** The selected value to start with (read once). */
+    defaultValue?: string | null
+    /** The input text to start with (read once). */
+    defaultInputValue?: string
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean

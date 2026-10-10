@@ -15,7 +15,7 @@ show the look without triggering a notification.
 ## Classes
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"align","type":"Prop (OriToaster)","description":"start (default) or center — the alignment of every toast in the stack. Pairs with a top-center / bottom-center position for one-line status messages."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-colored left-border accent, elevation shadow."},{"class":"ori-toast_align-center","type":"Modifier","description":"Centers the body on the CARD: the dismiss button leaves the flex flow and the card reserves equal inline room on both sides, so the text is not pushed off-center by the button. A leading icon deliberately stays in flow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warning / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; colored by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__action","type":"Part","description":"The action button (a small soft OriButton), between the body and the dismiss button."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
+:class-table{:rows='[{"class":"ori-toaster","type":"Block","description":"Fixed portal container (pointer-events: none so it never blocks the page). Rendered by OriToaster via Teleport to body."},{"class":"ori-toaster_top-right","type":"Position","description":"Anchors the stack to the top-right corner (default)."},{"class":"ori-toaster_top-left","type":"Position","description":"Anchors the stack to the top-left corner."},{"class":"ori-toaster_top-center","type":"Position","description":"Anchors the stack to the top-center."},{"class":"ori-toaster_bottom-right","type":"Position","description":"Anchors the stack to the bottom-right corner."},{"class":"ori-toaster_bottom-left","type":"Position","description":"Anchors the stack to the bottom-left corner."},{"class":"ori-toaster_bottom-center","type":"Position","description":"Anchors the stack to the bottom-center."},{"class":"ori-toast","type":"Block","description":"Single notification card: surface background, role-colored left-border accent, elevation shadow."},{"class":"ori-toast_align-center","type":"Modifier","description":"Centers the body on the CARD: the dismiss button leaves the flex flow and the card reserves equal inline room on both sides, so the text is not pushed off-center by the button. A leading icon deliberately stays in flow."},{"class":"ori-color_*","type":"Color","description":"Repoints --ori-color to drive the accent. Applied by useToast() severity shortcuts (success / danger / warning / info). Plain toast has no color class."},{"class":"ori-toast__icon","type":"Part","description":"Leading icon element; colored by --ori-color."},{"class":"ori-toast__body","type":"Part","description":"Flex column holding the title and text."},{"class":"ori-toast__title","type":"Part","description":"Bold heading above the body text."},{"class":"ori-toast__text","type":"Part","description":"Body message; slightly muted opacity."},{"class":"ori-toast__action","type":"Part","description":"The action button (a small soft OriButton), between the body and the dismiss button."},{"class":"ori-toast__close","type":"Part","description":"Dismiss button (aria-label=Dismiss notification); shown when closable is true."},{"class":"role=alert","type":"State","description":"Applied when color=danger (assertive live region). All other colors use role=status (polite)."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/toast.css`. `.ori-toast` and `.ori-toaster`
 both live in `toast.css` — there is no `toaster.css`. Import a foundation (`@oriui/css/base.css` or
@@ -80,7 +80,7 @@ const checkIcon = 'M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
 
 ::
 
-## Severity / colors
+## Colors
 
 Four severity shortcuts preset a color; the plain `toast()` call has no color class (neutral surface accent).
 
@@ -331,7 +331,7 @@ Toasts are announced without moving focus.
   sticky (`duration: 0`).
 - Toasts are non-modal: they never trap focus. When a toast's own button removes it, a keyboard user
   stays on the toaster while other toasts remain, and otherwise returns to where the hotkey was pressed.
-- The dismiss button carries `aria-label="Dismiss notification"`.
+- The dismiss button is named by `closeLabel` (`aria-label`, `"Dismiss notification"` by default).
 - With `prefers-reduced-motion`, the slide is dropped and only the fade remains.
 
 | Key               | Action                                         |
@@ -389,12 +389,13 @@ Passing a plain `string` is shorthand for `{ text: string }`.
 Place this component **once** near the app root (e.g. in the main layout). It Teleports to `<body>`
 and is gated behind an `onMounted` check so SSR markup stays stable.
 
-| Prop       | Type                                                                                              | Default           | Description                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `align`    | `'start' \| 'center'`                                                                             | `'start'`         | Alignment of every toast in the stack — forwarded to each `OriToast`. Pairs with a `top-center` / `bottom-center` position. |
-| `hotkey`   | `string`                                                                                          | `'F8'`            | The key (`KeyboardEvent.key`) that moves focus to the toasts. Pick one that types no text; `''` turns it off.               |
-| `label`    | `string`                                                                                          | `'Notifications'` | Accessible name of the toast region; the hotkey is appended to it.                                                          |
-| `position` | `'top-left' \| 'top-right' \| 'top-center' \| 'bottom-left' \| 'bottom-right' \| 'bottom-center'` | `'top-right'`     | Screen corner for the stack.                                                                                                |
+| Prop         | Type                                                                                              | Default                  | Description                                                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `align`      | `'start' \| 'center'`                                                                             | `'start'`                | Alignment of every toast in the stack — forwarded to each `OriToast`. Pairs with a `top-center` / `bottom-center` position. |
+| `closeLabel` | `string`                                                                                          | `'Dismiss notification'` | The accessible name of each toast's dismiss button.                                                                         |
+| `hotkey`     | `string`                                                                                          | `'F8'`                   | The key (`KeyboardEvent.key`) that moves focus to the toasts. Pick one that types no text; `''` turns it off.               |
+| `label`      | `string`                                                                                          | `'Notifications'`        | Accessible name of the toast region; the hotkey is appended to it.                                                          |
+| `position`   | `'top-left' \| 'top-right' \| 'top-center' \| 'bottom-left' \| 'bottom-right' \| 'bottom-center'` | `'top-right'`            | Screen corner for the stack.                                                                                                |
 
 `OriToaster` declares no custom events. It drives itself from the shared queue returned by
 `useToast()` and calls `dismiss(id)` internally when a toast emits `close`.
@@ -404,15 +405,16 @@ and is gated behind an `onMounted` check so SSR markup stays stable.
 The single-toast card component. Used internally by `<OriToaster>` but also usable standalone
 to display a static notification embedded in a page.
 
-| Prop          | Type                  | Default     | Description                                                                                                                     |
-| ------------- | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `actionLabel` | `string`              | —           | Renders an action button with this label; it emits `action`.                                                                    |
-| `align`       | `'start' \| 'center'` | `'start'`   | `center` centers the body on the CARD: the dismiss button leaves the flex flow and equal inline room is reserved on both sides. |
-| `closable`    | `boolean`             | `false`     | Renders a dismiss button (`aria-label="Dismiss notification"`).                                                                 |
-| `color`       | `ThemeColor`          | `'surface'` | Semantic color role — drives the accent border and icon color.                                                                  |
-| `icon`        | `string`              | —           | SVG path for a leading icon; rendered with `aria-hidden="true"`.                                                                |
-| `text`        | `string`              | —           | Body message. Use the `default` slot for richer markup.                                                                         |
-| `title`       | `string`              | —           | Bold heading above the body text.                                                                                               |
+| Prop          | Type                  | Default                  | Description                                                                                                                     |
+| ------------- | --------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `actionLabel` | `string`              | —                        | Renders an action button with this label; it emits `action`.                                                                    |
+| `align`       | `'start' \| 'center'` | `'start'`                | `center` centers the body on the CARD: the dismiss button leaves the flex flow and equal inline room is reserved on both sides. |
+| `closable`    | `boolean`             | `false`                  | Renders a dismiss button, named by `closeLabel`.                                                                                |
+| `closeLabel`  | `string`              | `'Dismiss notification'` | The accessible name of the dismiss button.                                                                                      |
+| `color`       | `ThemeColor`          | `'surface'`              | Semantic color role — drives the accent border and icon color.                                                                  |
+| `icon`        | `string`              | —                        | SVG path for a leading icon; rendered with `aria-hidden="true"`.                                                                |
+| `text`        | `string`              | —                        | Body message. Use the `default` slot for richer markup.                                                                         |
+| `title`       | `string`              | —                        | Bold heading above the body text.                                                                                               |
 
 ### Events
 

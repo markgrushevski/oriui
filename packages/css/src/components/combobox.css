@@ -44,6 +44,11 @@
     }
 
     /* Action-size sugar (field height) — mirrors `.ori-input_*`. */
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-combobox_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
+    }
+
     .ori-combobox_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
@@ -196,7 +201,7 @@
         background: color-mix(in srgb, var(--ori-color) 14%, transparent);
     }
 
-    .ori-combobox__option_selected {
+    .ori-combobox__option[aria-selected='true'] {
         color: var(--ori-color-text);
         font-weight: 600;
     }

@@ -94,10 +94,11 @@ ori-button
 ori-button__icon
 ori-button_fluid
 ori-button_icon
-ori-button_icon-position_bottom
-ori-button_icon-position_left
-ori-button_icon-position_right
-ori-button_icon-position_top
+ori-button_icon-position-bottom
+ori-button_icon-position-end
+ori-button_icon-position-start
+ori-button_icon-position-top
+ori-button_inherit
 ori-button_lg
 ori-button_md
 ori-button_sm
@@ -117,7 +118,6 @@ ori-card_row
 ori-checkbox
 ori-checkbox__box
 ori-checkbox__input
-ori-checkbox_disabled
 ori-cluster
 ori-color-picker
 ori-color-picker__area
@@ -149,10 +149,10 @@ ori-combobox__input
 ori-combobox__label
 ori-combobox__listbox
 ori-combobox__option
-ori-combobox__option_selected
 ori-combobox__required
 ori-combobox__trigger
 ori-combobox_fluid
+ori-combobox_inherit
 ori-combobox_lg
 ori-combobox_md
 ori-combobox_sm
@@ -209,6 +209,7 @@ ori-input__hint
 ori-input__label
 ori-input__required
 ori-input_fluid
+ori-input_inherit
 ori-input_lg
 ori-input_md
 ori-input_sm
@@ -222,15 +223,15 @@ ori-kbd
 ori-link
 ori-link_hover
 ori-list
+ori-list__append
 ori-list__chevron
-ori-list__description
-ori-list__end
-ori-list__hint
 ori-list__item
 ori-list__label
 ori-list__main
+ori-list__meta
+ori-list__prepend
 ori-list__row
-ori-list__start
+ori-list__subtitle
 ori-list_divided
 ori-menu
 ori-menu__item
@@ -245,10 +246,9 @@ ori-radio
 ori-radio-group
 ori-radio-group__label
 ori-radio-group__options
-ori-radio-group_inline
+ori-radio-group_horizontal
 ori-radio__circle
 ori-radio__input
-ori-radio_disabled
 ori-safe-area
 ori-safe-area_bottom
 ori-safe-area_inline
@@ -260,6 +260,7 @@ ori-segmented-control__item
 ori-segmented-control__label
 ori-segmented-control__track
 ori-segmented-control_fluid
+ori-segmented-control_inherit
 ori-segmented-control_lg
 ori-segmented-control_md
 ori-segmented-control_sm
@@ -275,6 +276,7 @@ ori-select__hint
 ori-select__label
 ori-select__required
 ori-select_fluid
+ori-select_inherit
 ori-select_lg
 ori-select_md
 ori-select_sm
@@ -334,7 +336,6 @@ ori-switch
 ori-switch__input
 ori-switch__thumb
 ori-switch__track
-ori-switch_disabled
 ori-table
 ori-table-scroll
 ori-table__num
@@ -362,6 +363,7 @@ ori-textarea__hint
 ori-textarea__label
 ori-textarea__required
 ori-textarea_fluid
+ori-textarea_inherit
 ori-textarea_lg
 ori-textarea_md
 ori-textarea_sm

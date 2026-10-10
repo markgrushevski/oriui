@@ -128,18 +128,6 @@ describe('OriTextarea', () => {
         expect(wrapper.find('textarea').attributes('rows')).toBe('6')
     })
 
-    it('describedby prop is appended to aria-describedby', () => {
-        const wrapper = mount(OriTextarea, {
-            props: { hint: 'Some hint', describedby: 'external-note' }
-        })
-        const fieldDescribedBy = wrapper.find('textarea').attributes('aria-describedby') ?? ''
-
-        expect(fieldDescribedBy).toContain('external-note')
-        // hint id should also be present
-        const hintId = wrapper.find('.ori-textarea__hint').attributes('id')
-        expect(fieldDescribedBy).toContain(hintId)
-    })
-
     it('joins a caller-supplied aria-describedby instead of clobbering it', () => {
         const wrapper = mount(OriTextarea, {
             props: { hint: 'Some hint' },

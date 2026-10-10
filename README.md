@@ -20,7 +20,7 @@ A design system in plain CSS, with accessible Vue components built on it.
 - **State is real attributes** — `disabled`, `aria-pressed`, `aria-invalid` — so the CSS reads the same
   state with or without the Vue components.
 - **Accessibility is tested.** axe runs against every component, every color pair passes WCAG AA contrast
-  in every skin, and keyboard behavior is exercised in real Chromium.
+  in every skin, and keyboard behavior is exercised in real Chromium, Firefox and WebKit.
 - **Behavior is replaceable.** Dialog, disclosure, combobox and menu run through a contract, so you can
   plug in another engine for one widget without changing its markup.
 
@@ -69,7 +69,7 @@ variables.
 
 ## Browser support
 
-Chrome and Edge 131+, Firefox 147+, Safari 26+, the versions with CSS anchor positioning. Every change is
+Chrome and Edge 131+, Firefox 147+, Safari 26+, the versions with CSS anchor positioning and `anchor-scope`. Every change is
 tested in current Chromium, Firefox and WebKit. Details:
 [Installation → Browser support](https://oriui.vercel.app/overview/installation#browser-support).
 

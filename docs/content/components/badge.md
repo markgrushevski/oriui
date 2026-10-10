@@ -170,7 +170,7 @@ as `{max}+`.
 ## Dot
 
 `dot` collapses the badge to a small filled circle. Content is hidden; it is always decorative
-(`aria-hidden="true"`) unless you provide a `label`.
+(`aria-hidden="true"`) unless you give it an `aria-label`.
 
 ::example
 :ori-badge{:dot="true"}
@@ -189,7 +189,7 @@ as `{max}+`.
 #html
 
 ```html
-<!-- dot is always aria-hidden unless a label is provided -->
+<!-- dot is always aria-hidden unless it has an aria-label -->
 <span class="ori-badge ori-badge_dot ori-color_danger" aria-hidden="true"></span>
 ```
 
@@ -250,13 +250,13 @@ A notification bell, an avatar with a status pip, and a tab bar with unread coun
     :max="99"
     floating
     color="danger"
-    aria-label="`${notifications} unread notifications`"
+    :aria-label="`${notifications} unread notifications`"
 >
     <OriButton icon="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5S10.5 3.17 10.5 4v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" aria-label="Notifications" />
 </OriBadge>
 
 <!-- status dot on an avatar -->
-<OriBadge dot floating color="success" label="Online">
+<OriBadge dot floating color="success" aria-label="Online">
     <OriAvatar name="Ada Lovelace" />
 </OriBadge>
 
@@ -297,9 +297,9 @@ The accessibility contract holds across every layer — the standalone classes a
 render the same attributes.
 
 - A badge with visible text content (`content`) conveys that text to assistive technology directly.
-- A pure dot badge — or an empty badge with no `label` — is marked `aria-hidden="true"` because it
+- A pure dot badge — or an empty badge with no `aria-label` — is marked `aria-hidden="true"` because it
   carries no information for screen readers.
-- Supply a `label` whenever the badge conveys meaning that a sighted user can read but a screen
+- Supply an `aria-label` whenever the badge conveys meaning that a sighted user can read but a screen
   reader cannot (e.g. a dot meaning "online", or a floating count with no textual fallback nearby).
 - A floating count that visually annotates an already-labeled control (e.g. "Inbox (3 unread)")
   should carry `aria-label` on the badge element or be hidden with `aria-hidden="true"` if the
@@ -308,10 +308,10 @@ render the same attributes.
   badge and its anchor together form an interactive control, apply focus management and ARIA to the
   outer interactive element.
 
-| Attribute            | Condition                                             | Value       |
-| -------------------- | ----------------------------------------------------- | ----------- |
-| `aria-hidden="true"` | `dot` with no `label`, or empty badge with no `label` | `"true"`    |
-| `aria-label`         | `label` prop is set                                   | label value |
+| Attribute            | Condition                                                          | Value     |
+| -------------------- | ------------------------------------------------------------------ | --------- |
+| `aria-hidden="true"` | `dot` with no `aria-label`, or an empty badge with no `aria-label` | `"true"`  |
+| `aria-label`         | `ariaLabel` is set                                                 | its value |
 
 ## Framework API
 
@@ -320,16 +320,16 @@ API — its surface is the [classes](#classes) above.
 
 ### Props
 
-| Prop       | Type               | Default     | Description                                                                                                          |
-| ---------- | ------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor`       | `'primary'` | Semantic color role: `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background`. |
-| `content`  | `string \| number` | —           | Text or number to display. Numbers are capped to `max+` when `max` is set.                                           |
-| `dot`      | `boolean`          | `false`     | Collapses the badge to a small filled circle; content is hidden.                                                     |
-| `floating` | `boolean`          | `false`     | Positions the badge in the top-end corner of the default-slot anchor (requires a default slot child).                |
-| `label`    | `string`           | —           | Accessible name (`aria-label`). Required for dot badges or empty badges that convey meaning to sighted users.        |
-| `max`      | `number`           | —           | When `content` is a number and exceeds `max`, the display value is capped to `{max}+`.                               |
-| `radius`   | `RadiusSize`       | `'full'`    | Corner radius: `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`.                                                   |
-| `variant`  | `Variant`          | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `quiet`.                                                       |
+| Prop        | Type               | Default     | Description                                                                                                                        |
+| ----------- | ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ariaLabel` | `string`           | —           | Accessible name (`aria-label` in a template). Needed by a dot or a count that means something a sighted user reads off the screen. |
+| `color`     | `ThemeColor`       | `'primary'` | Semantic color role: `primary` · `secondary` · `success` · `warning` · `danger` · `info` · `surface` · `background`.               |
+| `content`   | `string \| number` | —           | Text or number to display. Numbers are capped to `max+` when `max` is set.                                                         |
+| `dot`       | `boolean`          | `false`     | Collapses the badge to a small filled circle; content is hidden.                                                                   |
+| `floating`  | `boolean`          | `false`     | Positions the badge in the top-end corner of the default-slot anchor (requires a default slot child).                              |
+| `max`       | `number`           | —           | When `content` is a number and exceeds `max`, the display value is capped to `{max}+`.                                             |
+| `radius`    | `RadiusSize`       | `'full'`    | Corner radius: `none` · `xs` · `sm` · `md` · `lg` · `xl` · `full`.                                                                 |
+| `variant`   | `Variant`          | `'solid'`   | Visual style: `solid` · `soft` · `outline` · `text` · `quiet`.                                                                     |
 
 ### Events & attributes
 

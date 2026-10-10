@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useAttrs } from 'vue'
 import { useToolbar } from '@oriui/headless/vue'
+import type { Orientation } from '../../types'
+
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
 
 // OriToolbar — a styled WAI-ARIA toolbar: a set of controls behind a SINGLE tab stop, navigated with
 // arrow keys (roving tabindex, real DOM focus). All the behavior comes from the headless `useToolbar`
@@ -20,7 +24,7 @@ const {
     label?: string
     /** Whether arrow navigation wraps first⇄last (default true). */
     loop?: boolean
-    orientation?: 'horizontal' | 'vertical'
+    orientation?: Orientation
 }>()
 
 const { toolbarProps } = useToolbar({
@@ -33,7 +37,7 @@ const { toolbarProps } = useToolbar({
 // A11y guardrail: a role="toolbar" with no accessible name is non-conformant (axe fails it). Warn in dev
 // when neither `label` nor an aria-labelledby/aria-label attribute is present.
 const attrs = useAttrs()
-if (import.meta.env?.DEV && !label && !attrs['aria-label'] && !attrs['aria-labelledby']) {
+if (process.env.NODE_ENV !== 'production' && !label && !attrs['aria-label'] && !attrs['aria-labelledby']) {
     console.warn('[OriToolbar] needs an accessible name — pass `label` (aria-label) or `aria-labelledby`.')
 }
 </script>

@@ -21,7 +21,7 @@ The block is a labeled control wrapping a positioned listbox popup. The input re
 [`.ori-input__field`](/components/input) for its box, so the field look stays in one place.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-combobox","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-combobox_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl field height."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · … (focus ring + highlight + selected accent)."},{"class":"ori-combobox__control · __input · __trigger · __clear · __listbox · __option · __empty","type":"Part","description":"control wrap / input / chevron / clear / popup / option / no-results."},{"class":"ori-combobox__label · __required · __hint · __error","type":"Part","description":"label / required-asterisk / helper / error."},{"class":"ori-combobox_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)."},{"class":"role=combobox · aria-expanded · aria-activedescendant · aria-selected · data-highlighted","type":"State","description":"real ARIA + data attributes, not classes."}]'}
+:class-table{:rows='[{"class":"ori-combobox","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-combobox_* (size)","type":"Size","description":"inherit · xs · sm · <b>md</b> · lg · xl · xxl field height."},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · … (focus ring + highlight + selected accent)."},{"class":"ori-combobox__control · __input · __trigger · __clear · __listbox · __option · __empty","type":"Part","description":"control wrap / input / chevron / clear / popup / option / no-results."},{"class":"ori-combobox__label · __required · __hint · __error","type":"Part","description":"label / required-asterisk / helper / error."},{"class":"ori-combobox_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)."},{"class":"role=combobox · aria-expanded · aria-activedescendant · aria-selected · data-highlighted","type":"State","description":"real ARIA + data attributes, not classes."}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/combobox.css`. The shared `.ori-anchored`
 placement primitive is inlined here, so `anchored.css` needs no separate import. Import a foundation
@@ -169,7 +169,7 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
   `aria-activedescendant` (focus stays on the input — no roving tabindex needed).
 - Options are `role="option"` with `aria-selected`; the popup is `role="listbox"` labeled by the
   field label. A disabled option carries `aria-disabled` and is skipped by navigation.
-- `hint` / `error` are wired through `aria-describedby` (error supersedes hint); `error` also sets
+- `hint` / `error` are wired through `aria-describedby` (error supersedes hint); an `aria-describedby` attribute you pass is joined with them. `error` also sets
   `aria-invalid="true"` and `role="alert"`. `required` sets `aria-required` and blocks submission until a value is selected.
 - The list dismisses on blur and on `Escape`; selecting an option returns focus context to the input.
 
@@ -190,7 +190,6 @@ Implements the WAI-ARIA **combobox with listbox popup** pattern.
 | --------------- | -------------------------- | -------------- | -------------------------------------------------------------------- |
 | `clearable`     | `boolean`                  | `false`        | Show a clear button while there is a selection.                      |
 | `color`         | `ThemeColor`               | `'primary'`    | Accent for the focus ring, highlight, and selected option.           |
-| `describedby`   | `string`                   | —              | Extra id(s) appended to `aria-describedby`.                          |
 | `disabled`      | `boolean`                  | `false`        | Disable the control.                                                 |
 | `error`         | `string`                   | —              | Error message (`role="alert"`); sets `aria-invalid="true"`.          |
 | `filter`        | `(item, query) => boolean` | substring      | Override the default case-insensitive label filter.                  |
@@ -215,8 +214,8 @@ option emits `update:modelValue`; clearing emits `null`.
 
 ### Slots
 
-| Slot     | Scope                       | Description                                                                                                                           |
-| -------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `label`  | none                        | Rich label content (an icon + text, markup). Falls back to the `label` prop; keeps the for/id + listbox `aria-labelledby` wiring.     |
-| `option` | `{ item, index, selected }` | Per-option content — rich options such as an avatar + email or a leading icon. Rendered for every option. Falls back to `item.label`. |
-| `empty`  | none                        | No-results content, shown when the filter matches nothing. Falls back to the `noResultsText` prop.                                    |
+| Slot     | Scope                         | Description                                                                                                                             |
+| -------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`  | none                          | Rich label content (an icon + text, markup). Falls back to the `label` prop; keeps the for/id + listbox `aria-labelledby` wiring.       |
+| `option` | `{ option, index, selected }` | Per-option content — rich options such as an avatar + email or a leading icon. Rendered for every option. Falls back to `option.label`. |
+| `empty`  | none                          | No-results content, shown when the filter matches nothing. Falls back to the `noResultsText` prop.                                      |

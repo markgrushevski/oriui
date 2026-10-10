@@ -175,28 +175,6 @@ onMounted(() => {
             <ClientOnly>
                 <span class="docs-nav__skin"><SkinPicker /></span>
             </ClientOnly>
-
-            <button
-                class="docs-nav__lang"
-                type="button"
-                aria-label="Change language"
-                title="Language — coming soon"
-                disabled
-            >
-                <svg
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.7"
-                    aria-hidden="true"
-                >
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M3 12h18" />
-                    <path d="M12 3c2.6 2.9 2.6 15.1 0 18M12 3c-2.6 2.9-2.6 15.1 0 18" />
-                </svg>
-            </button>
         </header>
 
         <div class="docs-body">

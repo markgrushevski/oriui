@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ActionSize, ThemeColor } from '../../types'
+import type { ActionSize, Orientation, ThemeColor } from '../../types'
 import { useFieldGroup } from '../field/use-field-control'
 import { useKeyboardModality } from '../../internal/keyboard-modality'
 
@@ -22,16 +22,18 @@ const {
     label,
     name,
     options = [],
+    orientation = 'vertical',
     required = false,
     size = 'md'
 } = defineProps<{
     color?: ThemeColor
     disabled?: boolean
-    inline?: boolean
     label?: string
     /** Shared radio `name`; auto-generated (useId) when omitted. */
     name?: string
     options?: RadioOption[]
+    /** The options stack (`vertical`) or sit in a row (`horizontal`). */
+    orientation?: Orientation
     required?: boolean
     size?: ActionSize
 }>()
@@ -52,7 +54,7 @@ const { keyboard, onKeydown, onPointerdown } = useKeyboardModality()
             'ori-radio-group',
             `ori-color_${color}`,
             `ori-font-size_${groupSize}`,
-            { 'ori-radio-group_inline': inline }
+            { 'ori-radio-group_horizontal': orientation === 'horizontal' }
         ]"
         role="radiogroup"
         :data-ori-keyboard="keyboard ? '' : undefined"
@@ -67,11 +69,7 @@ const { keyboard, onKeydown, onPointerdown } = useKeyboardModality()
         <div v-if="label && !inField" :id="ownLabelId" class="ori-radio-group__label">{{ label }}</div>
 
         <div class="ori-radio-group__options">
-            <label
-                v-for="opt in options"
-                :key="opt.value"
-                :class="['ori-radio', { 'ori-radio_disabled': isDisabled || opt.disabled }]"
-            >
+            <label v-for="opt in options" :key="opt.value" class="ori-radio">
                 <input
                     v-model="model"
                     class="ori-radio__input"

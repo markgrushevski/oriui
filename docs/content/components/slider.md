@@ -319,7 +319,7 @@ API — its surface is the [classes](#classes) above.
 | Prop         | Type         | Default     | Description                                                                         |
 | ------------ | ------------ | ----------- | ----------------------------------------------------------------------------------- |
 | `color`      | `ThemeColor` | `'primary'` | Semantic accent: primary · secondary · success · warning · danger · info · surface. |
-| `disabled`   | `boolean`    | —           | Sets native `disabled` on the input and `data-disabled` on the wrapper.             |
+| `disabled`   | `boolean`    | `false`     | Sets native `disabled` on the input and `data-disabled` on the wrapper.             |
 | `label`      | `string`     | —           | Visible `<label>` text, linked to the input via `for`/`id`.                         |
 | `max`        | `number`     | `100`       | Maximum value — maps to the native `max` attribute.                                 |
 | `min`        | `number`     | `0`         | Minimum value — maps to the native `min` attribute.                                 |

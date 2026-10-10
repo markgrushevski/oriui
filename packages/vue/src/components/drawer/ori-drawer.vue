@@ -13,6 +13,7 @@ defineOptions({ inheritAttrs: false })
 // a manual popover closes on nothing by itself, so Escape, a press outside and focus return are wired
 // here. Open state, naming and the controlled / uncontrolled split: see use-dialog-shell.ts.
 const {
+    closeLabel = 'Close',
     closeOnEscape = true,
     closeOnInteractOutside = true,
     defaultOpen = false,
@@ -22,6 +23,8 @@ const {
     side = 'end',
     title
 } = defineProps<{
+    /** The accessible name of the × button. */
+    closeLabel?: string
     closeOnEscape?: boolean
     closeOnInteractOutside?: boolean
     defaultOpen?: boolean
@@ -38,7 +41,8 @@ const emit = defineEmits<{
     close: []
 }>()
 
-const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+const FOCUSABLE =
+    'button:not(:disabled), [href], input:not(:disabled, [type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
 const drawerEl = useTemplateRef<HTMLDialogElement>('drawer')
 // Where focus goes back to when a non-modal drawer closes with focus inside it.
 let returnTo: HTMLElement | null = null
@@ -69,7 +73,8 @@ const { dlg, bindings, hasTitle } = useDialogShell(
         hide,
         isShown: (el) => el.open || (typeof el.showPopover === 'function' && el.matches(':popover-open'))
     },
-    'OriDrawer'
+    'OriDrawer',
+    false
 )
 
 // The trigger toggles: a non-modal drawer leaves it reachable, and pressing it again should close. The
@@ -84,18 +89,21 @@ const triggerEl = () => document.querySelector<HTMLElement>(`[data-ori-drawer-tr
 
 // Non-modal dismissal. A press outside closes (the trigger excepted, so its click can toggle). Escape
 // closes unless another component took it (a menu or a combobox inside), or it was meant for another
-// dialog on top.
+// layer: a dialog on top, or a popover open inside the drawer, which closes itself without saying so.
 useDismissable(() => ({
     enabled: dlg.open.value && !modal && closeOnInteractOutside,
     elements: () => [drawerEl.value, triggerEl()],
     onDismiss: () => dlg.setOpen(false),
-    pointerDownOutside: true
+    // Non-modal on purpose: focus may move to the page while the drawer stays open.
+    focusOutside: false
 }))
 
 function onEscape(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || event.defaultPrevented) return
     const owner = event.target instanceof Element ? event.target.closest('dialog') : null
     if (owner && owner !== drawerEl.value) return
+    // The popover's own Escape handling runs after this listener, so it is still open here.
+    if (drawerEl.value?.querySelector(':popover-open')) return
     dlg.setOpen(false)
 }
 
@@ -123,7 +131,12 @@ watch(
                 <h2 v-if="hasTitle()" v-bind="dlg.titleProps.value" class="ori-drawer__title">
                     <slot name="title">{{ title }}</slot>
                 </h2>
-                <button v-bind="dlg.closeTriggerProps.value" type="button" class="ori-drawer__close" aria-label="Close">
+                <button
+                    v-bind="dlg.closeTriggerProps.value"
+                    type="button"
+                    class="ori-drawer__close"
+                    :aria-label="closeLabel"
+                >
                     ×
                 </button>
             </header>

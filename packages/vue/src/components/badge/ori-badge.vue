@@ -7,8 +7,8 @@ import { useSlotPresence } from '../../internal/slot-presence'
 // floating over wrapped content (default slot + `floating`). The badge surface rides the shared
 // ori-variant + ori-color + ori-size-radius utilities, so it reads the resolved aliases
 // (--ori-variant-*, --ori-size-radius) like the rest of the library. `dot` collapses it to a tiny
-// circle; `content` + `max` renders a capped count (e.g. 99+). `label` becomes the accessible name;
-// a bare dot — or an empty non-dot badge — with no label is decorative.
+// circle; `content` + `max` renders a capped count (e.g. 99+). `ariaLabel` becomes the accessible name;
+// a bare dot — or an empty non-dot badge — with no name is decorative.
 //
 // Consumer attrs (id / class / data-* / handlers) always land on the inner .ori-badge element via
 // inheritAttrs:false + v-bind="$attrs", so the attr target stays the same whether or not a default
@@ -18,19 +18,20 @@ import { useSlotPresence } from '../../internal/slot-presence'
 defineOptions({ inheritAttrs: false })
 
 const {
+    ariaLabel,
     color = 'primary',
     content,
     dot = false,
-    label,
     max,
     radius = 'full',
     variant = 'solid'
 } = defineProps<{
+    /** The accessible name, for a dot or a count that needs words ("3 unread messages"). */
+    ariaLabel?: string
     color?: ThemeColor
     content?: string | number
     dot?: boolean
     floating?: boolean
-    label?: string
     max?: number
     radius?: RadiusSize
     variant?: Variant
@@ -47,12 +48,12 @@ const displayValue = computed(() => {
 
 const slotted = useSlotPresence('content')
 
-// A pure dot with no label carries no information for assistive tech — hide it. An empty non-dot
-// badge (no label and nothing to render) is likewise an unnamed empty element, so hide it too.
-// Anything else is either named (label), has visible text content, or carries a #content slot.
+// A pure dot with no name carries no information for assistive tech — hide it. An empty non-dot
+// badge (no name and nothing to render) is likewise an unnamed empty element, so hide it too.
+// Anything else is either named (ariaLabel), has visible text content, or carries a #content slot.
 // The #content slot only renders when NOT a dot, so a dot stays decorative regardless of it.
 const decorative = computed(
-    () => !label && (dot || ((displayValue.value === undefined || displayValue.value === '') && !slotted.content))
+    () => !ariaLabel && (dot || ((displayValue.value === undefined || displayValue.value === '') && !slotted.content))
 )
 </script>
 
@@ -71,7 +72,7 @@ const decorative = computed(
                 }
             ]"
             v-bind="$attrs"
-            :aria-label="label || undefined"
+            :aria-label="ariaLabel || undefined"
             :aria-hidden="decorative ? 'true' : undefined"
         >
             <template v-if="!dot"
@@ -92,7 +93,7 @@ const decorative = computed(
             }
         ]"
         v-bind="$attrs"
-        :aria-label="label || undefined"
+        :aria-label="ariaLabel || undefined"
         :aria-hidden="decorative ? 'true' : undefined"
     >
         <template v-if="!dot"

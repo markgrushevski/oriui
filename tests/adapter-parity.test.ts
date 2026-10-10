@@ -446,7 +446,7 @@ const dialogCase: WidgetCase = {
         // currentTarget, which is how the light-dismiss check is written in all three.
         (host) => {
             const element = document.createElement('dialog')
-            handlerOf(bagOf(host, 'dialogProps'), 'onclick')({ currentTarget: element, target: element })
+            handlerOf(bagOf(host, 'contentProps'), 'onclick')({ currentTarget: element, target: element })
         }
     ],
     snapshot: (host) => ({
@@ -454,7 +454,7 @@ const dialogCase: WidgetCase = {
         state: { open: host.read(host.control().open) },
         bags: {
             trigger: bagOf(host, 'triggerProps'),
-            dialog: bagOf(host, 'dialogProps'),
+            dialog: bagOf(host, 'contentProps'),
             title: bagOf(host, 'titleProps'),
             description: bagOf(host, 'descriptionProps'),
             closeTrigger: bagOf(host, 'closeTriggerProps')

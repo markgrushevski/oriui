@@ -27,22 +27,32 @@ const UNRESOLVED_SENTINEL = 'rgba(1, 2, 3, 0.004)'
 
 /**
  * The package targets the DOM and deliberately carries no Node types — declare the bundler-injected
- * `process.env.NODE_ENV` shape locally (module-scoped) so the dev-only guard type-checks. The runtime
- * `typeof` check below keeps plain browser ESM (where no `process` global exists) safe.
+ * `process.env.NODE_ENV` shape locally (module-scoped) so the dev-only guard type-checks.
  */
-declare const process: { env: { NODE_ENV?: string } } | undefined
+declare const process: { env: { NODE_ENV?: string } }
+
+/**
+ * A bundler replaces `process.env.NODE_ENV` and leaves no `process` behind, so a `typeof process` test
+ * would call every development build of a browser app production. Reading it inside `try` keeps plain
+ * browser ESM, where nothing replaced it, from throwing.
+ */
+function isProduction(): boolean {
+    try {
+        return process.env.NODE_ENV === 'production'
+    } catch {
+        return false
+    }
+}
 
 /** Tokens already warned about — an unresolvable token warns once, not on every resolve call. */
 const warnedTokens = new Set<string>()
 
 /**
  * Dev-only diagnosis for the silent-`''` trap: `''` means SSR, but with a real `document` it means the
- * token genuinely failed to resolve — worth a console.warn naming the token. The `typeof process` guard
- * keeps plain browser ESM (no bundler, no `process` global) from throwing; bundlers inline `NODE_ENV`
- * and strip this whole branch from production builds.
+ * token genuinely failed to resolve — worth a console.warn naming the token. Silent in production.
  */
 function warnUnresolved(token: string): void {
-    if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+    if (isProduction()) return
     if (warnedTokens.has(token)) return
     warnedTokens.add(token)
     console.warn(

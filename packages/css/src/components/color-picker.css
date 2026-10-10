@@ -192,13 +192,13 @@
     }
 
     .ori-color-picker__preset:focus-visible {
-        outline: 2px solid var(--ori-color-primary);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 
     /* ---- disabled ---- */
     .ori-color-picker[data-disabled] {
-        opacity: 0.5;
+        opacity: 0.55;
         pointer-events: none;
     }
 
@@ -209,6 +209,11 @@
         .ori-color-picker__swatch,
         .ori-color-picker__preset {
             forced-color-adjust: none;
+        }
+
+        /* Opting out of forcing also stops forcing the focus outline. */
+        .ori-color-picker__preset:focus-visible {
+            outline-color: CanvasText;
         }
     }
 }

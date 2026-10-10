@@ -155,16 +155,16 @@ A colored label divider:
 
 ## Vertical
 
-`vertical` renders a column rule that stretches to the parent's cross-axis height. The parent must
+`orientation="vertical"` renders a column rule that stretches to the parent's cross-axis height. The parent must
 be a flex or grid container with a defined height — the divider uses `align-self: stretch` to fill
 it. Spacing around the vertical rule comes from `margin-inline` (driven by `--ori-size-gap`).
 
 ::example
 ::ori-stack{:cluster="true" gap="sm"}
 :ori-button{variant="text" label="Item one"}
-:ori-divider{:vertical="true"}
+:ori-divider{orientation="vertical"}
 :ori-button{variant="text" label="Item two"}
-:ori-divider{:vertical="true"}
+:ori-divider{orientation="vertical"}
 :ori-button{variant="text" label="Item three"}
 ::
 
@@ -173,9 +173,9 @@ it. Spacing around the vertical rule comes from `margin-inline` (driven by `--or
 ```vue
 <div style="display: flex; align-items: center; height: 3rem">
     <span>Item one</span>
-    <OriDivider vertical />
+    <OriDivider orientation="vertical" />
     <span>Item two</span>
-    <OriDivider vertical />
+    <OriDivider orientation="vertical" />
     <span>Item three</span>
 </div>
 ```
@@ -239,16 +239,16 @@ render the same attributes.
 
 - Renders `<div role="separator">` — the correct ARIA landmark for a thematic break between content
   regions.
-- `aria-orientation="vertical"` is set only when `vertical` is `true`. For the default horizontal
+- `aria-orientation="vertical"` is set only when `orientation` is `'vertical'`. For the default horizontal
   orientation the attribute is omitted (horizontal is the implied default per the ARIA spec).
 - The line itself is purely decorative. When a label is present it is plain text inside a `<span>`;
   no additional ARIA is needed — the `role="separator"` communicates structure, not the label.
 - The component is not interactive and is never focusable. No keyboard contract applies.
 
-| Attribute                     | Element      | Notes                                                                 |
-| ----------------------------- | ------------ | --------------------------------------------------------------------- |
-| `role="separator"`            | Root `<div>` | Always present; communicates a thematic break.                        |
-| `aria-orientation="vertical"` | Root `<div>` | Set only when `vertical` is `true`; omitted for horizontal (default). |
+| Attribute                     | Element      | Notes                                                                          |
+| ----------------------------- | ------------ | ------------------------------------------------------------------------------ |
+| `role="separator"`            | Root `<div>` | Always present; communicates a thematic break.                                 |
+| `aria-orientation="vertical"` | Root `<div>` | Set only when `orientation` is `'vertical'`; omitted for horizontal (default). |
 
 ## Framework API
 
@@ -257,13 +257,15 @@ API — its surface is the [classes](#classes) above.
 
 ### Props
 
-| Prop       | Type         | Default | Description                                                                                                                                    |
-| ---------- | ------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `ThemeColor` | —       | Semantic color role. Omit to use the default subtle 25% `currentcolor` mix.                                                                    |
-| `label`    | `string`     | —       | Centered label. Adds `ori-divider_text` and renders `<span class="ori-divider__label">`. Overridden by the default slot when both are present. |
-| `vertical` | `boolean`    | `false` | Renders a vertical rule. Requires a flex or grid parent with a defined height; the rule stretches to fill it.                                  |
+| Prop          | Type          | Default        | Description                                                                                                                                    |
+| ------------- | ------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`       | `ThemeColor`  | —              | Semantic color role. Omit to use the default subtle 25% `currentcolor` mix.                                                                    |
+| `label`       | `string`      | —              | Centered label. Adds `ori-divider_text` and renders `<span class="ori-divider__label">`. Overridden by the default slot when both are present. |
+| `orientation` | `Orientation` | `'horizontal'` | `'vertical'` renders a vertical rule. Requires a flex or grid parent with a defined height; the rule stretches to fill it.                     |
 
 `ThemeColor`: `'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'surface' | 'background'`
+
+`Orientation`: `'horizontal' | 'vertical'`
 
 ### Events & attributes
 

@@ -269,6 +269,17 @@ describe('useTheme (Vue)', () => {
         wrapper.unmount()
     })
 
+    // `v-model="theme"` writes the ref: it has to reach the controller, not just the ref.
+    it('writing theme applies it like setTheme', () => {
+        const { wrapper, api } = mountTheme({ default: 'light', storageKey: null })
+
+        api().theme.value = 'dark'
+        expect(api().theme.value).toBe('dark')
+        expect(api().resolvedTheme.value).toBe('dark')
+        expect(document.documentElement.classList.contains('ori-theme_dark')).toBe(true)
+        wrapper.unmount()
+    })
+
     it('tears the controller down on unmount', () => {
         const media = stubMatchMedia(false)
         const { wrapper } = mountTheme({ default: 'auto', storageKey: null })

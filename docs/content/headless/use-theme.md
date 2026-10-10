@@ -40,13 +40,14 @@ All optional; forwarded to `createThemeController`.
 
 Reactive state plus imperative setters.
 
-| Property            | Type                                             | Description                                                      |
-| ------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| `theme`             | `Ref<'auto' \| 'light' \| 'dark'>`               | The current SETTING (reactive).                                  |
-| `resolvedTheme`     | `Ref<'light' \| 'dark'>`                         | The theme actually on the DOM; tracks the OS scheme when `auto`. |
-| `setTheme(setting)` | `(setting: 'auto' \| 'light' \| 'dark') => void` | Set the setting (`auto` re-follows the OS), apply, and persist.  |
-| `toggleTheme()`     | `() => void`                                     | Flip the resolved theme light ⇄ dark (pins an explicit setting). |
-| `cycleTheme()`      | `() => void`                                     | Cycle `auto → light → dark → auto`.                              |
+| Property            | Type                                               | Description                                                                                                                                        |
+| ------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `theme`             | `WritableComputedRef<'auto' \| 'light' \| 'dark'>` | The current SETTING (reactive). Assigning it is `setTheme`, so `v-model="theme"` works.                                                            |
+| `resolvedTheme`     | `Readonly<Ref<'light' \| 'dark'>>`                 | The theme actually on the DOM (read-only); tracks the OS scheme when `auto`.                                                                       |
+| `setTheme(setting)` | `(setting: 'auto' \| 'light' \| 'dark') => void`   | Set the setting (`auto` re-follows the OS), apply, and persist.                                                                                    |
+| `toggleTheme()`     | `() => void`                                       | Flip the resolved theme light ⇄ dark (pins an explicit setting).                                                                                   |
+| `cycleTheme()`      | `() => void`                                       | Cycle `auto → light → dark → auto`.                                                                                                                |
+| `destroy()`         | `() => void`                                       | Stop the OS-scheme listener. Called for you when the component's scope is disposed; call it yourself only when `useTheme` ran outside a component. |
 
 ## Usage
 

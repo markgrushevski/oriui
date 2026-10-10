@@ -54,13 +54,13 @@ watch(
     }
 )
 
-// Outside-pointerdown dismissal via the shared headless dismiss layer (was a hand-rolled document
-// listener). A menu has no single focus anchor, so pointerdown-outside is its strategy.
+// Outside-pointerdown dismissal via the shared headless dismiss layer. A menu has no single focus anchor,
+// so pointerdown-outside is its strategy, not focus-out.
 useDismissable(() => ({
     enabled: m.open.value,
     elements: () => [contentRef.value, triggerEl()],
     onDismiss: () => m.setOpen(false),
-    pointerDownOutside: true
+    focusOutside: false
 }))
 
 // Into the top layer before any focus moves: the focus watchers below wait a tick, a post watcher does not.

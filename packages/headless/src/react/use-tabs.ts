@@ -19,11 +19,11 @@ import { resolveRovingIndex, rovingIntent, textDirection, type TabItem, type Use
 export type { TabItem, UseTabsOptions }
 
 export function useTabs(options: UseTabsOptions) {
-    const { tabs, value, orientation = 'horizontal', dir, label, labelledby, idBase, onChange } = options
+    const { tabs, value, orientation = 'horizontal', dir, label, labelledby, id, onChange } = options
 
     // `useId()` is SSR-stable; strip the colons React wraps ids in so the derived ids stay valid selectors.
     const autoId = useId().replace(/:/g, '')
-    const base = idBase ?? autoId
+    const base = id ?? autoId
 
     // The effective selection: the bound value when it points at a real, enabled tab; otherwise recover to
     // the first enabled tab (so a panel is always valid without forcing the caller to seed the value).

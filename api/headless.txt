@@ -219,12 +219,12 @@ type ThemeSetting = "auto" | ThemeMode
 type ToolbarToggleType = "multiple" | "single"
 type ToolbarToggleValue = string | string[] | undefined
 interface UseComboboxOptions {
+    defaultInputValue?: string | undefined
+    defaultValue?: null | string | undefined
     disabled?: boolean | undefined
     filter?: ((item: ComboboxItem, query: string) => boolean) | undefined
     id?: string | undefined
-    inputValue?: string | undefined
     options: ComboboxItem[]
-    value?: null | string | undefined
 }
 interface UseDialogOptions {
     closeOnEscape?: boolean | undefined
@@ -247,7 +247,7 @@ interface UseMenuOptions {
 }
 interface UseTabsOptions {
     dir?: RovingDirection | undefined
-    idBase?: string | undefined
+    id?: string | undefined
     label?: string | undefined
     labelledby?: string | undefined
     onChange?: ((value: number | string) => void) | undefined
@@ -287,8 +287,8 @@ interface ComboboxItem {
 type DialogAdapter = (options?: MaybeRefOrGetter<UseDialogOptions> | undefined) => DialogControl
 interface DialogControl {
     closeTriggerProps: ComputedRef<Record<string, unknown>>
+    contentProps: ComputedRef<Record<string, unknown>>
     descriptionProps: ComputedRef<Record<string, unknown>>
-    dialogProps: ComputedRef<Record<string, unknown>>
     open: ComputedRef<boolean>
     setOpen: (open: boolean) => void
     titleProps: ComputedRef<Record<string, unknown>>
@@ -397,12 +397,12 @@ interface UseColorPickerOptions {
 }
 function useCombobox(options: (() => UseComboboxOptions) | ComputedRef<UseComboboxOptions> | MaybeRef<UseComboboxOptions>) => ComboboxControl
 interface UseComboboxOptions {
+    defaultInputValue?: string | undefined
+    defaultValue?: null | string | undefined
     disabled?: boolean | undefined
     filter?: ((item: ComboboxItem, query: string) => boolean) | undefined
     id?: string | undefined
-    inputValue?: string | undefined
     options: ComboboxItem[]
-    value?: null | string | undefined
 }
 function useDialog(options?: MaybeRefOrGetter<UseDialogOptions> | undefined) => DialogControl
 interface UseDialogOptions {
@@ -438,7 +438,7 @@ function useService<Context, Event>(service: Service<Context, Event>) => Ref<num
 function useTabs(options: (() => UseTabsOptions) | ComputedRef<UseTabsOptions> | MaybeRef<UseTabsOptions>) => { selectedValue: ComputedRef<number | string | undefined>; select: (tab: TabItem) => void; tablistProps: ComputedRef<{ role: "tablist"; 'aria-orientation': RovingOrientation; 'aria-label': string | undefined; dir: RovingDirection | undefined; 'aria-labelledby': string | undefined; onKeydown: (event: KeyboardEvent) => void; }>; getTabProps: (tab: TabItem, index: number) => { id: string; type: "button"; role: "tab"; 'aria-selected': "false" | "true"; 'aria-controls': string; tabindex: number; disabled: boolean | undefined; onClick: () => void; }; getPanelProps: (tab: TabItem, index: number) => { id: string; role: "tabpanel"; 'aria-labelledby': string; hidden: boolean; tabindex: number; }; }
 interface UseTabsOptions {
     dir?: RovingDirection | undefined
-    idBase?: string | undefined
+    id?: string | undefined
     label?: string | undefined
     labelledby?: string | undefined
     onChange?: ((value: number | string) => void) | undefined
@@ -451,9 +451,9 @@ function useThemeColor(color: (() => string) | ComputedRef<string> | MaybeRef<st
 interface UseThemeReturn {
     cycleTheme: () => void
     destroy: () => void
-    resolvedTheme: Ref<ThemeMode, ThemeMode>
+    resolvedTheme: { readonly value: ThemeMode; readonly [RefSymbol]: true; }
     setTheme: (setting: ThemeSetting) => void
-    theme: Ref<ThemeSetting, ThemeSetting>
+    theme: WritableComputedRef<ThemeSetting, ThemeSetting>
     toggleTheme: () => void
 }
 function useToast() => { toast: (options: string | ToastOptions) => number; success: (options: string | ToastOptions) => number; error: (options: string | ToastOptions) => number; warning: (options: string | ToastOptions) => number; info: (options: string | ToastOptions) => number; dismiss: (id: number) => void; clear: () => void; pause: () => void; resume: () => void; toasts: Reactive<ToastItem[]>; }

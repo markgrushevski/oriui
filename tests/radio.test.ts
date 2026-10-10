@@ -70,15 +70,12 @@ describe('OriRadioGroup', () => {
         expect((partial.findAll('input')[0].element as HTMLInputElement).disabled).toBe(false)
     })
 
-    // The modifier class is prop-driven, so it is absent exactly when the radio is disabled by
-    // something the props know nothing about — a surrounding `<fieldset disabled>`, or a hand-written
-    // `disabled` attribute in the CSS layer. Drop the class from a really-disabled radio: the
-    // stylesheet must still dim it.
-    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+    // The disabled look reads the input's real state, so a control disabled by something the props know
+    // nothing about — a surrounding `<fieldset disabled>`, or a hand-written `disabled` attribute in the
+    // CSS layer — is dimmed too.
+    it('the disabled look comes from the real disabled state (fieldset / attribute disabled)', () => {
         const wrapper = mount(OriRadioGroup, { props: { options: OPTIONS, disabled: true } })
         const el = wrapper.findAll('.ori-radio')[0].element as HTMLElement
-
-        el.classList.remove('ori-radio_disabled')
 
         const selectors = disabledSelectors()
         expect(selectors.length).toBeGreaterThan(0)
@@ -95,12 +92,12 @@ describe('OriRadioGroup', () => {
         expect((wrapper.find('input').element as HTMLInputElement).required).toBe(true)
     })
 
-    it('maps inline / size / color to classes', () => {
+    it('maps orientation / size / color to classes', () => {
         const c = mount(OriRadioGroup, {
-            props: { options: OPTIONS, inline: true, size: 'lg', color: 'success' }
+            props: { options: OPTIONS, orientation: 'horizontal', size: 'lg', color: 'success' }
         }).classes()
 
-        expect(c).toContain('ori-radio-group_inline')
+        expect(c).toContain('ori-radio-group_horizontal')
         expect(c).toContain('ori-font-size_lg')
         expect(c).toContain('ori-color_success')
     })

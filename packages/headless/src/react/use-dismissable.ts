@@ -19,14 +19,14 @@ export interface UseDismissableOptions {
     elements: () => (HTMLElement | null | undefined)[]
     /** Called to dismiss — typically `() => setOpen(false)`. */
     onDismiss: () => void
-    /** Close on a `pointerdown` outside `elements` (default false). */
+    /** Close on a `pointerdown` outside `elements` (default true). */
     pointerDownOutside?: boolean
-    /** Close when focus lands outside `elements` (default false). */
+    /** Close when focus lands outside `elements` (default true). */
     focusOutside?: boolean
 }
 
 export function useDismissable(options: UseDismissableOptions): void {
-    const { enabled, pointerDownOutside = false, focusOutside = false } = options
+    const { enabled, pointerDownOutside = true, focusOutside = true } = options
 
     // Mirror the newest options into a ref every render so the (rarely re-subscribed) document listener
     // reads the current `elements()` / `onDismiss` — never a stale closure — while the subscribe effect below

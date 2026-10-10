@@ -3,7 +3,6 @@ import type { ActionSize } from '../../types'
 import { useOriField } from './context'
 
 export interface FieldControlProps {
-    describedby?: string
     disabled?: boolean
     error?: string
     hint?: string
@@ -46,8 +45,8 @@ export function useFieldControl(props: () => FieldControlProps, ownId?: () => st
     // An error replaces the hint, so only the helper actually rendered is referenced.
     const describedBy = useDescribedBy(() => {
         if (field) return [field.describedBy.value]
-        const { describedby, error, hint } = props()
-        return [error ? errorId.value : hint ? hintId.value : undefined, describedby]
+        const { error, hint } = props()
+        return [error ? errorId.value : hint ? hintId.value : undefined]
     })
     return {
         inField: Boolean(field),

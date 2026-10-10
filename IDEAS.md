@@ -13,7 +13,7 @@ Priority: ⭐ a real screen needs it, or it is foundational · ◽ parity nice-t
   the API gaps isolated demos hide, and it is the first real screen that needs a Calendar and a DatePicker.
 - ◽ **Generic item values** — `T extends string` narrowing for Tabs / Select / RadioGroup values. Today a
   narrowed union has to be bridged to `string | number | undefined` by hand (justpaint's `AuthForm.vue`).
-- ◽ **A rule for polymorphic `as`** — it exists on 7 of 34 components with no stated policy. The ones that
+- ◽ **A rule for polymorphic `as`** — it exists on eight components (Button, Join, Kbd, Link, ListItem, Skeleton, Stack, Surface) with no stated policy. The ones that
   render a `<div>` without it (Card, Alert) are where it bites: a `<div>` has far more invalid parents than
   a `<span>`.
 - ◽ **`glass` variant.**

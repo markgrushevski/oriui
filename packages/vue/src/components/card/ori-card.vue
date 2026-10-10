@@ -35,11 +35,11 @@ const {
     radius?: RadiusSize
     reverseAppendedActions?: boolean
     reversePrependedActions?: boolean
+    row?: boolean
     subtitle?: string
     text?: string
     title?: string
     variant?: Variant
-    row?: boolean
 }>()
 
 // Read while rendering: `useSlots()` is not reactive, so a computed would miss a slot that appears later.

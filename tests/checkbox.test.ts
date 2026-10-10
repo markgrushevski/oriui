@@ -52,22 +52,18 @@ describe('OriCheckbox', () => {
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false])
     })
 
-    it('disabled sets the real disabled attribute + modifier class', () => {
+    it('disabled sets the real disabled attribute', () => {
         const wrapper = mount(OriCheckbox, { props: { disabled: true, label: 'x' } })
 
         expect((wrapper.find('input').element as HTMLInputElement).disabled).toBe(true)
-        expect(wrapper.classes()).toContain('ori-checkbox_disabled')
     })
 
-    // The modifier class is prop-driven, so it is absent exactly when the control is disabled by
-    // something the prop knows nothing about — a surrounding `<fieldset disabled>`, or a hand-written
-    // `disabled` attribute in the CSS layer. That control was inert but rendered fully enabled.
-    // Drop the class from a really-disabled checkbox: the stylesheet must still dim it.
-    it('the disabled look survives without the modifier class (fieldset / attribute disabled)', () => {
+    // The disabled look reads the input's real state, so a control disabled by something the props know
+    // nothing about — a surrounding `<fieldset disabled>`, or a hand-written `disabled` attribute in the
+    // CSS layer — is dimmed too.
+    it('the disabled look comes from the real disabled state (fieldset / attribute disabled)', () => {
         const wrapper = mount(OriCheckbox, { props: { disabled: true, label: 'x' } })
         const el = wrapper.element as HTMLElement
-
-        el.classList.remove('ori-checkbox_disabled')
 
         const selectors = disabledSelectors('checkbox')
         expect(selectors.length).toBeGreaterThan(0)

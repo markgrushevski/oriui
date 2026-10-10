@@ -12,6 +12,9 @@ import type { ActionSize, RadiusSize, ThemeColor, Variant } from '../../types'
 import { swallowClick } from '../../internal/events'
 import { useSlotPresence } from '../../internal/slot-presence'
 
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
+
 interface ItemNameProps {
     ariaLabel?: string
     label?: string
@@ -62,6 +65,18 @@ export function useItemButton<ItemProps extends object>(
     return { bindings, describedBy: name.describedBy, onClickCapture }
 }
 
+// Text that names the element: a text node outside any `aria-hidden` subtree. An icon font's ligature
+// (`<span aria-hidden="true">format_bold</span>`) is text in the DOM but not in the accessible name.
+function hasReadableText(el: Node): boolean {
+    const walker = el.ownerDocument?.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+    for (let node = walker?.nextNode(); node; node = walker?.nextNode()) {
+        if (!node.textContent?.trim()) continue
+        const hidden = node.parentElement?.closest('[aria-hidden="true"]')
+        if (!hidden || !el.contains(hidden)) return true
+    }
+    return false
+}
+
 // The accessible name of a toolbar item. The tooltip names the item only when nothing visible does: a
 // tooltip that renamed a button with visible text would break WCAG 2.5.3 Label in Name (the button reads
 // "Save" but answers to its tooltip). Slotted content counts as visible only if it renders text. That is
@@ -86,12 +101,17 @@ function useItemName(
         observer?.disconnect()
         if (!el) return
         const measure = () => {
-            slotText.value = Boolean(el.textContent?.trim())
+            slotText.value = hasReadableText(el)
         }
         measure()
         if (typeof MutationObserver === 'undefined') return
         observer = new MutationObserver(measure)
-        observer.observe(el, { childList: true, characterData: true, subtree: true })
+        observer.observe(el, {
+            attributeFilter: ['aria-hidden'],
+            characterData: true,
+            childList: true,
+            subtree: true
+        })
     }
 
     const element = () => button.value?.$el as Node | undefined
@@ -100,7 +120,7 @@ function useItemName(
     onMounted(() => {
         observe(element())
         const { ariaLabel, tooltip } = props()
-        if (import.meta.env?.DEV && !ariaLabel && !tooltip && !visible()) {
+        if (process.env.NODE_ENV !== 'production' && !ariaLabel && !tooltip && !visible()) {
             console.warn(
                 `[${component}] an item without visible text needs an accessible name — pass \`aria-label\` or \`tooltip\`.`
             )

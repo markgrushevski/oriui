@@ -1,5 +1,5 @@
 export { default as OriToast } from './ori-toast.vue'
 export { default as OriToaster } from './ori-toaster.vue'
-// The toast queue behavior now lives in @oriui/headless (core queue + Vue/Svelte adapters); re-export
-// the Vue binding so the @oriui/vue public path (`import { useToast } from '@oriui/vue'`) is unchanged.
-export { useToast, type ToastAction, type ToastItem, type ToastOptions } from '@oriui/headless/vue'
+// The toast queue lives in @oriui/headless; the Vue binding is re-exported so `import { useToast } from
+// '@oriui/vue'` works without a second package import.
+export { useToast, type ToastAction, type ToastColor, type ToastItem, type ToastOptions } from '@oriui/headless/vue'

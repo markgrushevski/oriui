@@ -99,104 +99,107 @@ describe('OriListItem structure', () => {
         expect(wrapper.element.firstElementChild?.classList.contains('ori-list__row')).toBe(true)
     })
 
-    it('renders the label in .ori-list__main, with no description element when there is none', () => {
+    it('renders the label in .ori-list__main, with no subtitle element when there is none', () => {
         const { row } = mountItem({ label: 'Profile' })
 
         expect(row.find('.ori-list__main > .ori-list__label').text()).toBe('Profile')
-        expect(row.find('.ori-list__description').exists()).toBe(false)
+        expect(row.find('.ori-list__subtitle').exists()).toBe(false)
     })
 
-    it('renders the description under the label', () => {
-        const { row } = mountItem({ label: 'Profile', description: 'Name and avatar' })
+    it('renders the subtitle under the label', () => {
+        const { row } = mountItem({ label: 'Profile', subtitle: 'Name and avatar' })
 
         const children = [...(row.find('.ori-list__main').element.children as HTMLCollection)]
-        expect(children.map((c) => c.className)).toEqual(['ori-list__label', 'ori-list__description'])
-        expect(row.find('.ori-list__description').text()).toBe('Name and avatar')
+        expect(children.map((c) => c.className)).toEqual(['ori-list__label', 'ori-list__subtitle'])
+        expect(row.find('.ori-list__subtitle').text()).toBe('Name and avatar')
     })
 
-    it('the default slot replaces both the label and the description', () => {
+    it('the default slot replaces both the label and the subtitle', () => {
         const { row } = mountItem(
-            { label: 'Ignored', description: 'Ignored too' },
+            { label: 'Ignored', subtitle: 'Ignored too' },
             { default: () => h('strong', { class: 'custom' }, 'Custom') }
         )
 
         expect(row.find('.ori-list__main .custom').text()).toBe('Custom')
         expect(row.find('.ori-list__label').exists()).toBe(false)
-        expect(row.find('.ori-list__description').exists()).toBe(false)
+        expect(row.find('.ori-list__subtitle').exists()).toBe(false)
         expect(row.text()).not.toContain('Ignored')
     })
 
-    // ----- start -----
+    // ----- prepend -----
 
-    it('renders no .ori-list__start without an icon or a #start slot', () => {
+    it('renders no .ori-list__prepend without an icon or a #prepend slot', () => {
         const { row } = mountItem()
 
-        expect(row.find('.ori-list__start').exists()).toBe(false)
+        expect(row.find('.ori-list__prepend').exists()).toBe(false)
     })
 
-    it('`icon` renders an OriIcon in .ori-list__start', () => {
+    it('`icon` renders an OriIcon in .ori-list__prepend', () => {
         const { row } = mountItem({ icon: ICON })
 
-        const icon = row.find('.ori-list__start > .ori-icon')
+        const icon = row.find('.ori-list__prepend > .ori-icon')
         expect(icon.exists()).toBe(true)
         expect(icon.attributes('aria-hidden')).toBe('true')
         expect(icon.find('path').attributes('d')).toBe(ICON)
     })
 
-    it('the #start slot renders in .ori-list__start and replaces the icon', () => {
+    it('the #prepend slot renders in .ori-list__prepend and replaces the icon', () => {
         const { row } = mountItem(
             { icon: ICON },
-            { start: () => h('span', { class: 'avatar', 'aria-hidden': 'true' }, 'A') }
+            { prepend: () => h('span', { class: 'avatar', 'aria-hidden': 'true' }, 'A') }
         )
 
-        expect(row.find('.ori-list__start .avatar').exists()).toBe(true)
+        expect(row.find('.ori-list__prepend .avatar').exists()).toBe(true)
         expect(row.find('.ori-icon').exists()).toBe(false)
     })
 
-    it('a #start slot alone is enough to render .ori-list__start', () => {
-        const { row } = mountItem({}, { start: () => h('span', { class: 'avatar' }, 'A') })
+    it('a #prepend slot alone is enough to render .ori-list__prepend', () => {
+        const { row } = mountItem({}, { prepend: () => h('span', { class: 'avatar' }, 'A') })
 
-        expect(row.find('.ori-list__start .avatar').exists()).toBe(true)
+        expect(row.find('.ori-list__prepend .avatar').exists()).toBe(true)
     })
 
-    // ----- end -----
+    // ----- append -----
 
-    it('renders no .ori-list__end without a hint, a chevron or an #end slot', () => {
+    it('renders no .ori-list__append without meta, a chevron or an #append slot', () => {
         const { row } = mountItem({ label: 'Plain' })
 
-        expect(row.find('.ori-list__end').exists()).toBe(false)
-        expect(row.find('.ori-list__hint').exists()).toBe(false)
+        expect(row.find('.ori-list__append').exists()).toBe(false)
+        expect(row.find('.ori-list__meta').exists()).toBe(false)
         expect(row.find('.ori-list__chevron').exists()).toBe(false)
     })
 
-    it('`hint` renders .ori-list__hint in .ori-list__end', () => {
-        const { row } = mountItem({ hint: 'Ctrl+S' })
+    it('`meta` renders .ori-list__meta in .ori-list__append', () => {
+        const { row } = mountItem({ meta: 'Ctrl+S' })
 
-        expect(row.find('.ori-list__end > .ori-list__hint').text()).toBe('Ctrl+S')
+        expect(row.find('.ori-list__append > .ori-list__meta').text()).toBe('Ctrl+S')
         expect(row.find('.ori-list__chevron').exists()).toBe(false)
     })
 
-    it('`chevron` renders an aria-hidden svg and no hint', () => {
+    it('`chevron` renders an aria-hidden svg and no meta', () => {
         const { row } = mountItem({ chevron: true })
 
-        const chevron = row.find('.ori-list__end > svg.ori-list__chevron')
+        const chevron = row.find('.ori-list__append > svg.ori-list__chevron')
         expect(chevron.exists()).toBe(true)
         expect(chevron.attributes('aria-hidden')).toBe('true')
-        expect(row.find('.ori-list__hint').exists()).toBe(false)
+        expect(row.find('.ori-list__meta').exists()).toBe(false)
     })
 
-    it('a hint and a chevron sit together, the hint first', () => {
-        const { row } = mountItem({ hint: 'Ctrl+K', chevron: true })
+    it('meta and a chevron sit together, meta first', () => {
+        const { row } = mountItem({ meta: 'Ctrl+K', chevron: true })
 
-        const children = [...(row.find('.ori-list__end').element.children as HTMLCollection)]
-        expect(children.map((c) => c.classList[0])).toEqual(['ori-list__hint', 'ori-list__chevron'])
+        const children = [...(row.find('.ori-list__append').element.children as HTMLCollection)]
+        expect(children.map((c) => c.classList[0])).toEqual(['ori-list__meta', 'ori-list__chevron'])
     })
 
-    it('the #end slot renders in .ori-list__end and replaces the hint and the chevron', () => {
-        const { row } = mountItem({ hint: 'Ctrl+S', chevron: true }, { end: () => h('span', { class: 'badge' }, '3') })
+    it('the #append slot renders in .ori-list__append and replaces the meta and the chevron', () => {
+        const { row } = mountItem(
+            { meta: 'Ctrl+S', chevron: true },
+            { append: () => h('span', { class: 'badge' }, '3') }
+        )
 
-        expect(row.find('.ori-list__end .badge').text()).toBe('3')
-        expect(row.find('.ori-list__hint').exists()).toBe(false)
+        expect(row.find('.ori-list__append .badge').text()).toBe('3')
+        expect(row.find('.ori-list__meta').exists()).toBe(false)
         expect(row.find('.ori-list__chevron').exists()).toBe(false)
     })
 })
@@ -354,11 +357,12 @@ describe('OriListItem disabled', () => {
         expect(el.hasAttribute('disabled')).toBe(false)
     })
 
-    it('a link row loses its href and gets aria-disabled="true"', () => {
+    it('a link row loses its href, keeps the link role and gets aria-disabled="true"', () => {
         const { row } = mountItem({ href: '/settings', disabled: true })
 
         expect(row.element.tagName).toBe('A')
         expect(row.attributes('href')).toBeUndefined()
+        expect(row.attributes('role')).toBe('link')
         expect(row.attributes('aria-disabled')).toBe('true')
     })
 
@@ -443,10 +447,10 @@ describe('OriListItem attribute and listener routing', () => {
 
     it('a click on a part inside the row bubbles to the row listener', async () => {
         const onClick = vi.fn()
-        const { row } = mountItem({ label: 'Open', hint: 'Ctrl+O' }, {}, { onClick })
+        const { row } = mountItem({ label: 'Open', meta: 'Ctrl+O' }, {}, { onClick })
 
         await row.find('.ori-list__label').trigger('click')
-        await row.find('.ori-list__hint').trigger('click')
+        await row.find('.ori-list__meta').trigger('click')
 
         expect(onClick).toHaveBeenCalledTimes(2)
     })
@@ -468,20 +472,20 @@ describe('OriListItem attribute and listener routing', () => {
 })
 
 describe('OriListItem static row with a control of its own', () => {
-    it('holds a real checkbox in #end inside a <div> row, never inside a button or a link', () => {
+    it('holds a real checkbox in #append inside a <div> row, never inside a button or a link', () => {
         const { row } = mountItem(
             { label: 'Notifications' },
-            { end: () => h('input', { type: 'checkbox', 'aria-label': 'Notifications' }) }
+            { append: () => h('input', { type: 'checkbox', 'aria-label': 'Notifications' }) }
         )
-        const checkbox = row.find('.ori-list__end input[type="checkbox"]')
+        const checkbox = row.find('.ori-list__append input[type="checkbox"]')
 
         expect(row.element.tagName).toBe('DIV')
         expect(checkbox.exists()).toBe(true)
         expect(checkbox.element.closest('button, a')).toBeNull()
     })
 
-    it('the control in #end keeps working: toggling it changes its state and does not need a row listener', async () => {
-        const { row } = mountItem({ label: 'Notifications' }, { end: () => h('input', { type: 'checkbox' }) })
+    it('the control in #append keeps working: toggling it changes its state and does not need a row listener', async () => {
+        const { row } = mountItem({ label: 'Notifications' }, { append: () => h('input', { type: 'checkbox' }) })
         const checkbox = row.find('input').element as HTMLInputElement
 
         expect(checkbox.checked).toBe(false)
@@ -489,12 +493,12 @@ describe('OriListItem static row with a control of its own', () => {
         expect(checkbox.checked).toBe(true)
     })
 
-    it('a reactive v-model on a control in #end round-trips through a host', async () => {
+    it('a reactive v-model on a control in #append round-trips through a host', async () => {
         const on = ref(false)
         const wrapper = mountTree(
             `<OriList>
                 <OriListItem label="Dark mode">
-                    <template #end><input v-model="on" type="checkbox" aria-label="Dark mode" /></template>
+                    <template #append><input v-model="on" type="checkbox" aria-label="Dark mode" /></template>
                 </OriListItem>
             </OriList>`,
             { on }
@@ -519,7 +523,7 @@ describe('OriList a11y', () => {
                 <OriList>
                     <OriListItem label="Overview" href="/" current />
                     <OriListItem label="Projects" href="/projects" icon="M0 0h24v24H0z" />
-                    <OriListItem label="Settings" href="/settings" description="Account and billing" chevron />
+                    <OriListItem label="Settings" href="/settings" subtitle="Account and billing" chevron />
                 </OriList>
             </nav>
         `)
@@ -529,13 +533,13 @@ describe('OriList a11y', () => {
         await expectNoA11yViolations(wrapper.element)
     })
 
-    it('has no axe violations as a divided action list of button rows with hints and a chevron', async () => {
+    it('has no axe violations as a divided action list of button rows with meta text and a chevron', async () => {
         const wrapper = mountTree(
             `
             <OriList divided>
-                <OriListItem label="Save" hint="Ctrl+S" icon="M0 0h24v24H0z" @click="noop" />
-                <OriListItem label="Export" hint="Ctrl+E" @click="noop" />
-                <OriListItem label="More options" description="Share, print, rename" chevron @click="noop" />
+                <OriListItem label="Save" meta="Ctrl+S" icon="M0 0h24v24H0z" @click="noop" />
+                <OriListItem label="Export" meta="Ctrl+E" @click="noop" />
+                <OriListItem label="More options" subtitle="Share, print, rename" chevron @click="noop" />
                 <OriListItem label="Delete" disabled @click="noop" />
             </OriList>
         `,
@@ -550,11 +554,11 @@ describe('OriList a11y', () => {
         const wrapper = mountTree(
             `
             <OriList>
-                <OriListItem label="Notifications" description="Email me about new activity">
-                    <template #end><input v-model="notify" type="checkbox" aria-label="Notifications" /></template>
+                <OriListItem label="Notifications" subtitle="Email me about new activity">
+                    <template #append><input v-model="notify" type="checkbox" aria-label="Notifications" /></template>
                 </OriListItem>
                 <OriListItem label="Dark mode">
-                    <template #end><input v-model="dark" type="checkbox" aria-label="Dark mode" /></template>
+                    <template #append><input v-model="dark" type="checkbox" aria-label="Dark mode" /></template>
                 </OriListItem>
             </OriList>
         `,

@@ -6,6 +6,7 @@ import { OriIcon } from '../icon'
 const {
     align = 'start',
     closable = false,
+    closeLabel = 'Dismiss notification',
     color = 'surface'
 } = defineProps<{
     /** Label of an action button, such as "Undo". The button emits `action`. */
@@ -14,6 +15,8 @@ const {
      *  the text is centered on the CARD rather than on the space the button leaves behind. */
     align?: 'start' | 'center'
     closable?: boolean
+    /** The accessible name of the dismiss button. */
+    closeLabel?: string
     color?: ThemeColor
     icon?: string
     text?: string
@@ -50,13 +53,7 @@ defineEmits<{ action: []; close: [] }>()
             @click="$emit('action')"
         />
 
-        <button
-            v-if="closable"
-            class="ori-toast__close"
-            type="button"
-            aria-label="Dismiss notification"
-            @click="$emit('close')"
-        >
+        <button v-if="closable" class="ori-toast__close" type="button" :aria-label="closeLabel" @click="$emit('close')">
             ×
         </button>
     </div>

@@ -83,7 +83,8 @@
         transform: scaleX(0);
         transition: transform 0.15s ease-out;
 
-        background-color: var(--ori-color);
+        /* The text tone, not the fill: a pale role's fill is under 3:1 against the page (WCAG 1.4.11). */
+        background-color: var(--ori-color-text);
     }
 
     .ori-tabs_vertical .ori-tabs__tab::after {
@@ -116,7 +117,7 @@
     }
 
     .ori-tabs__tab:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: -2px;
     }
 
@@ -133,7 +134,15 @@
     }
 
     .ori-tabs__panel:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
+    }
+
+    /* Forced colors repaint the indicator's background as Canvas, which leaves the selected tab looking like
+       the others: the system's selection color keeps it. */
+    @media (forced-colors: active) {
+        .ori-tabs__tab::after {
+            background-color: Highlight;
+        }
     }
 }

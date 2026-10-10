@@ -43,7 +43,7 @@
        :root `currentColor` IS what resolves), but dead code that looks live is how the misleading ones
        got written. */
     .ori-popover:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 
@@ -57,9 +57,9 @@
     @media (prefers-reduced-motion: no-preference) {
         .ori-popover {
             transition:
-                opacity 0.14s ease-out,
-                overlay 0.14s ease-out allow-discrete,
-                display 0.14s ease-out allow-discrete;
+                opacity 0.15s ease-out,
+                overlay 0.15s ease-out allow-discrete,
+                display 0.15s ease-out allow-discrete;
 
             opacity: 1;
         }

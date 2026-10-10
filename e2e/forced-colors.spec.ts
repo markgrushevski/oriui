@@ -66,6 +66,10 @@ const menuItem = (highlighted: boolean) =>
     `<div class="ori-menu" role="menu" style="width: 200px"><div role="menuitem" class="ori-menu__item" ${highlighted ? 'data-highlighted' : ''}>Rename</div></div>`
 const option = (highlighted: boolean) =>
     `<div class="ori-combobox__listbox" role="listbox" style="width: 200px"><div role="option" class="ori-combobox__option" ${highlighted ? 'data-highlighted' : ''}>Apple</div></div>`
+const tabs = (selected: number) =>
+    `<div class="ori-tabs"><div class="ori-tabs__list" role="tablist">${['Account', 'Billing']
+        .map((text, i) => `<button class="ori-tabs__tab" role="tab" aria-selected="${i === selected}">${text}</button>`)
+        .join('')}</div></div>`
 const tableRow = (current: boolean) =>
     `<table class="ori-table" style="width: 240px"><tbody><tr ${current ? 'aria-current="true"' : ''}><td>Row</td></tr></tbody></table>`
 
@@ -83,7 +87,8 @@ const pairs: Record<string, [string, string]> = {
     'a list row, and the current one': [listRow(false), listRow(true)],
     'a menu item, and the highlighted one': [menuItem(false), menuItem(true)],
     'a combobox option, and the highlighted one': [option(false), option(true)],
-    'a table row, and the current one': [tableRow(false), tableRow(true)]
+    'a table row, and the current one': [tableRow(false), tableRow(true)],
+    'the tabs, first and second selected': [tabs(0), tabs(1)]
 }
 
 for (const scheme of ['light', 'dark'] as const) {

@@ -3,8 +3,8 @@ import { computed, useAttrs } from 'vue'
 import { swallowClick } from '../../internal/events'
 import { OriIcon } from '../icon'
 
-// OriListItem — one row of an OriList: start (an icon), a label with an optional description, and an end
-// (a shortcut hint, a chevron into a sub-panel, or a control of the caller's). The row's element follows
+// OriListItem — one row of an OriList: a prepended icon, a label with an optional subtitle, and an appended
+// end (short text such as a shortcut, a chevron into a sub-panel, or a control of the caller's). The row's element follows
 // what it does: `as` wins (a router link component, say); `href` makes a link; a click listener makes a
 // button; otherwise it is a plain <div> that only holds content, and only that kind of row may hold a
 // control of its own, since a control inside a button or a link is invalid HTML. Attributes and listeners
@@ -15,12 +15,12 @@ const {
     as,
     chevron = false,
     current = false,
-    description,
     disabled = false,
-    hint,
     href,
     icon,
-    label
+    label,
+    meta,
+    subtitle
 } = defineProps<{
     /** The row element: a tag name or a component (a router link). */
     as?: string | object
@@ -28,16 +28,16 @@ const {
     chevron?: boolean
     /** The current page or the selected entry → aria-current. */
     current?: boolean
-    /** A second line under the label. */
-    description?: string
     disabled?: boolean
-    /** Text at the end, such as a shortcut ("Ctrl+S"). */
-    hint?: string
     /** Renders the row as a link. */
     href?: string
-    /** An SVG path drawn at the start (`OriIcon`). */
+    /** An SVG path drawn before the label (`OriIcon`). */
     icon?: string
     label?: string
+    /** Short text at the end of the row, such as a shortcut ("Ctrl+S") or a value ("800 × 600"). */
+    meta?: string
+    /** A second line under the label. */
+    subtitle?: string
 }>()
 
 const attrs = useAttrs()
@@ -54,8 +54,10 @@ const rowBindings = computed(() => {
         if (disabled) bindings.disabled = true
     } else if (isLink.value) {
         // A disabled link has no href, so it is neither followed nor focused; its clicks are swallowed too.
+        // An <a> without href has no role of its own, so it keeps `link` explicitly to be announced as one.
         if (href && !disabled) bindings.href = href
         if (disabled) {
+            if (tag.value === 'a') bindings.role = 'link'
             bindings['aria-disabled'] = 'true'
             bindings.onClickCapture = swallowClick
         }
@@ -68,18 +70,18 @@ const rowBindings = computed(() => {
 <template>
     <li class="ori-list__item">
         <component :is="tag" class="ori-list__row" v-bind="{ ...rowBindings, ...$attrs }">
-            <span v-if="$slots.start || icon" class="ori-list__start">
-                <slot name="start"><OriIcon :icon="icon!" /></slot>
+            <span v-if="$slots.prepend || icon" class="ori-list__prepend">
+                <slot name="prepend"><OriIcon :icon="icon!" /></slot>
             </span>
             <span class="ori-list__main">
                 <slot>
                     <span class="ori-list__label">{{ label }}</span>
-                    <span v-if="description" class="ori-list__description">{{ description }}</span>
+                    <span v-if="subtitle" class="ori-list__subtitle">{{ subtitle }}</span>
                 </slot>
             </span>
-            <span v-if="$slots.end || hint || chevron" class="ori-list__end">
-                <slot name="end">
-                    <span v-if="hint" class="ori-list__hint">{{ hint }}</span>
+            <span v-if="$slots.append || meta || chevron" class="ori-list__append">
+                <slot name="append">
+                    <span v-if="meta" class="ori-list__meta">{{ meta }}</span>
                     <svg
                         v-if="chevron"
                         class="ori-list__chevron"

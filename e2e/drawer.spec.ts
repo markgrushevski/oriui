@@ -197,6 +197,30 @@ test.describe('OriDrawer — non-modal (real Chromium)', () => {
         expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(false)
     })
 
+    test('Escape that dismisses a tooltip inside it leaves it open', async ({ page }) => {
+        await page.getByTestId('open-panel').click()
+        await settledBox(panel(page))
+        await page.getByTestId('panel-tooltip-trigger').focus()
+
+        await page.keyboard.press('Escape')
+        expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(true)
+        // The tooltip took that one; the next Escape is the drawer's.
+        await page.keyboard.press('Escape')
+        expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(false)
+    })
+
+    test('Escape that closes a popover inside it leaves it open', async ({ page }) => {
+        await page.getByTestId('open-panel').click()
+        await settledBox(panel(page))
+        await page.getByTestId('panel-popover-trigger').click()
+        const popover = page.getByTestId('panel-popover').locator('xpath=..')
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(true)
+
+        await page.keyboard.press('Escape')
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(false)
+        expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(true)
+    })
+
     test('the page scrolls while it is open', async ({ page }) => {
         await page.getByTestId('open-panel').click()
         await settledBox(panel(page))

@@ -13,6 +13,7 @@
        with `aria-current` (not `aria-selected`, which a plain table row does not take). */
     :where(.ori-table) {
         --ori-color: var(--ori-color-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         --ori-table-cell-padding: 0.6em 0.75em;
         --ori-table-header-bg: var(--ori-color-surface);
     }
@@ -121,7 +122,7 @@
     }
 
     .ori-table-scroll:focus-visible {
-        outline: 2px solid var(--ori-color-primary);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 

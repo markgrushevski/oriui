@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, provide, ref, useId } from 'vue'
+import { computed, provide, ref, useId, type VNode } from 'vue'
 import type { ActionSize } from '../../types'
 import { oriFieldKey } from './context'
 import { useSlotPresence } from '../../internal/slot-presence'
@@ -64,7 +64,22 @@ const describedBy = computed(() => {
 
 // Hand the contract to a nested Ori control.
 // A group control names itself through aria-labelledby and takes no id, so the label drops its `for`.
+// The group says so from its setup, which runs after this render: on the server the label would already be
+// written with a `for` pointing at nothing. So the slot is also read here for the three groups by name;
+// `markGroup` still catches a group wrapped in a component of the caller's.
 const wrapsGroup = ref(false)
+// Matched on the SFC file name (`ori-radio-group`) less its prefix.
+const GROUPS = new Set(['color-picker', 'radio-group', 'segmented-control'])
+function holdsGroup(nodes: unknown): boolean {
+    return (
+        Array.isArray(nodes) &&
+        nodes.some(
+            (node: VNode) =>
+                GROUPS.has((node.type as { __name?: string } | null)?.__name?.replace(/^ori-/, '') ?? '') ||
+                holdsGroup(node.children)
+        )
+    )
+}
 
 provide(oriFieldKey, {
     id: fieldId,
@@ -100,7 +115,7 @@ const slotProps = computed(() => ({
         <label
             v-if="label || $slots.label"
             :id="labelId"
-            :for="wrapsGroup ? undefined : fieldId"
+            :for="wrapsGroup || holdsGroup($slots.default?.(slotProps)) ? undefined : fieldId"
             class="ori-field__label"
         >
             <slot name="label">{{ label }}</slot

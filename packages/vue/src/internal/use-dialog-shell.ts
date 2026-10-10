@@ -1,6 +1,9 @@
 import { computed, mergeProps, useAttrs, useSlots, watch, watchPostEffect, type Ref } from 'vue'
 import { useDialog } from '@oriui/headless/vue'
 
+// Supplied by the app's bundler (see NOTES.md, Build / tests).
+declare const process: { env: { NODE_ENV?: string } }
+
 export interface DialogShellProps {
     closeOnEscape: boolean
     closeOnInteractOutside: boolean
@@ -19,7 +22,9 @@ export interface DialogPresenter {
 }
 
 // What OriDialog and OriDrawer share: dual-mode open state over useDialog, the <dialog> element driven
-// from it, and an accessible name and description that never point at an empty node.
+// from it, and an accessible name and description that never point at an empty node. `describeByBody`
+// makes the body the description: right for a dialog's short message, wrong for a drawer of filters or
+// navigation, which a screen reader would then read out whole on open.
 //
 // Open state is dual-mode. Bind `v-model:open` to drive it from the host; omit the binding and use
 // `defaultOpen` + the #trigger slot for a self-contained one. Either way `update:open` fires on every
@@ -30,7 +35,8 @@ export function useDialogShell(
     emit: { (event: 'update:open', open: boolean): void; (event: 'close'): void },
     element: Readonly<Ref<HTMLDialogElement | null>>,
     presenter: DialogPresenter,
-    component: string
+    component: string,
+    describeByBody = true
 ) {
     const p = computed(props)
 
@@ -75,9 +81,11 @@ export function useDialogShell(
     // miss a #title or a body that appears later. They run on every render instead.
     const hasTitle = () => Boolean(p.value.title) || Boolean(slots.title)
     const describedBy = () =>
-        slots.default && !attrs['aria-describedby'] ? (dlg.descriptionProps.value.id as string) : undefined
+        describeByBody && slots.default && !attrs['aria-describedby']
+            ? (dlg.descriptionProps.value.id as string)
+            : undefined
     const bindings = () => {
-        const { 'aria-labelledby': labelledBy, ...own } = dlg.dialogProps.value
+        const { 'aria-labelledby': labelledBy, ...own } = dlg.contentProps.value
         return mergeProps(
             attrs,
             own,
@@ -86,7 +94,7 @@ export function useDialogShell(
         )
     }
 
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV !== 'production') {
         watchPostEffect(() => {
             if (dlg.open.value && !hasTitle() && !attrs['aria-label'] && !attrs['aria-labelledby']) {
                 console.warn(

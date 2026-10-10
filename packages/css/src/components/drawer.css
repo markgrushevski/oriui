@@ -31,7 +31,8 @@
 
         background: var(--ori-color-surface);
 
-        box-shadow: var(--ori-shadow-lg);
+        /* The ring is the panel's edge where a shadow does not show: on a dark page. */
+        box-shadow: var(--ori-shadow-ring), var(--ori-shadow-lg);
         color: var(--ori-color-on-surface);
     }
 
@@ -127,50 +128,56 @@
         display: flex;
         flex: 1 1 auto;
         flex-direction: column;
-        gap: 12px;
+        gap: 0.75rem;
         min-height: 0;
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .ori-drawer_start .ori-drawer__content,
     .ori-drawer_end .ori-drawer__content {
-        padding-block: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-bottom));
+        padding-block: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-bottom));
     }
 
     .ori-drawer_top .ori-drawer__content {
-        padding-block-start: max(24px, env(safe-area-inset-top));
+        padding-block-start: max(1.5rem, env(safe-area-inset-top));
     }
 
     .ori-drawer_bottom .ori-drawer__content {
-        padding-block-end: max(24px, env(safe-area-inset-bottom));
+        padding-block-end: max(1.5rem, env(safe-area-inset-bottom));
     }
 
     .ori-drawer__header {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 12px;
+        gap: 0.75rem;
     }
 
     .ori-drawer__title {
         margin: 0;
 
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 700;
     }
 
     .ori-drawer__close {
-        /* Explicit padding: the UA gives a native <button> padding the reset used to zero. */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
         margin-inline-start: auto;
+        /* Explicit padding: the UA gives a native <button> padding the reset used to zero. */
         padding: 0;
 
         border: 0;
+        border-radius: var(--ori-size-radius_sm);
         opacity: 0.7;
 
         background: none;
         color: inherit;
 
-        font-size: 22px;
+        font-size: 1.375rem;
         line-height: 1;
 
         cursor: pointer;
@@ -180,6 +187,13 @@
         .ori-drawer__close:hover {
             opacity: 1;
         }
+    }
+
+    .ori-drawer__close:focus-visible {
+        outline: 2px solid var(--ori-color-text);
+        outline-offset: 2px;
+
+        opacity: 1;
     }
 
     /* No opacity: this wraps the caller's content, and a container fade multiplies with every fade
@@ -192,7 +206,7 @@
         padding: 4px;
         overflow: auto;
 
-        font-size: 14px;
+        font-size: 0.875rem;
 
         overscroll-behavior: contain;
     }
@@ -202,7 +216,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-end;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     /* Slide in from the docked edge and back out (discrete display + overlay keep it in the top layer

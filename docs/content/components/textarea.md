@@ -22,7 +22,7 @@ base class needed. The `ori-color_*` accent drives the focus ring; the idle bord
 theme-aware blend. The Vue props in [Framework API](#framework-api) map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · solid"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
+:class-table{:rows='[{"class":"ori-textarea","type":"Block","description":"Required base class (wrapper div)."},{"class":"ori-textarea_*","type":"Style","description":"<b>outline</b> · solid"},{"class":"ori-color_*","type":"Color","description":"<b>primary</b> · secondary · success · warning · danger · info · surface · background (focus ring accent)"},{"class":"ori-textarea_* (size)","type":"Size","description":"inherit · xs · sm · <b>md</b> · lg · xl · xxl (sets min-height on wrapper via --ori-size-action)"},{"class":"ori-size-radius_*","type":"Radius","description":"none · xs · sm · <b>md</b> · lg · xl · full (field corners)"},{"class":"ori-font-size_*","type":"Font","description":"xs · sm · <b>md</b> · lg · xl · xxl (label + field text scale)"},{"class":"ori-textarea__label · ori-textarea__required · ori-textarea__field · ori-textarea__hint · ori-textarea__error","type":"Part","description":"label / required-asterisk / textarea / helper / error elements"},{"class":"ori-textarea_fluid","type":"Layout","description":"full-width (stretches wrapper to 100 %)"},{"class":"disabled · aria-invalid · aria-describedby","type":"State","description":"real attributes, not classes"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/textarea.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -332,8 +332,8 @@ render the same attributes and ARIA wiring.
 - `label` is associated with the field via `for`/`id`; the id is auto-generated (`useId`) when you
   don't pass one, so the association holds even without an explicit `id` prop.
 - `hint` and `error` are wired through `aria-describedby`, referencing only the element that is
-  actually rendered (`error` supersedes `hint`). Pass extra ids with `describedby` to reference
-  additional descriptions (e.g. a shared form note).
+  actually rendered (`error` supersedes `hint`). An `aria-describedby` you pass is joined with
+  them, so you can reference a shared form note too.
 - `error` sets `aria-invalid="true"` and announces via `role="alert"`; `invalid` flips
   `aria-invalid` on its own for external validation flows.
 - Uses the real `disabled` attribute and native `required`; the focus ring is always visible and
@@ -355,7 +355,6 @@ API — its surface is the [classes](#classes) above.
 | Prop          | Type                   | Default     | Description                                                                                                  |
 | ------------- | ---------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
 | `color`       | `ThemeColor`           | `'primary'` | Accent color for focus ring: primary · secondary · success · warning · danger · info · surface · background. |
-| `describedby` | `string`               | —           | Extra element id(s) appended to `aria-describedby` (e.g. a shared form note).                                |
 | `disabled`    | `boolean`              | `false`     | Real `disabled` attribute; blocks interaction, dims the field, and disables the resize handle.               |
 | `error`       | `string`               | —           | Error message rendered below the field (`role="alert"`); also sets `aria-invalid="true"`.                    |
 | `fluid`       | `boolean`              | `false`     | Full-width — stretches wrapper to 100 % of its container.                                                    |

@@ -62,8 +62,9 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   registered in `docs/app/plugins/oriui.ts` (for MDC) **and** added to the sidebar in
   `docs/app/layouts/default.vue`. Forgetting the barrel makes `import { OriX } from '../src'` resolve
   to `undefined` (test-utils then throws "Invalid value used as weak map key").
-- Component doc pages follow the **Button page template** (Examples → Props → Events → Slots → CSS
-  classes → Accessibility; interactive components add Anatomy + Headless + keyboard table).
+- Component doc pages follow the **Button page template**: Classes → examples → Common patterns →
+  Accessibility → Framework API (Props, Events, Slots); interactive components add Anatomy, the keyboard
+  table and a Headless section.
 - **Bound MDC attributes (`:rows`, `:options`) must not contain quotes or apostrophes inside string
   values** — no `&quot;`, no `\"`, no raw `"`, no `'`. MDC fails to parse such a value and passes the
   raw string instead; a component that assumes an array then 500s the whole page. Keep description
@@ -127,6 +128,14 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   lays a `Canvas` backplate under the text, which hides `HighlightText` as a blank box: any part that pairs
   them needs `forced-color-adjust: none` too. A transparent border is drawn in the text color, which is the
   cheap way to give a shadow-only surface an edge. e2e/forced-colors.spec.ts pins all three.
+  `forced-color-adjust: none` also stops forcing `outline-color` and `box-shadow`, and it inherits: a part
+  that opts out needs a system-color `outline-color` in the same block, or its focus ring keeps the theme
+  color on a Highlight fill.
+- **A component that takes Escape at document level must `preventDefault()` it.** Every outer layer
+  reads Escape too: a native `<dialog>` closes on the key's default action, and a non-modal drawer
+  listens on the document. The tooltip consumes the Escape that dismissed it; a layer that closes on
+  Escape skips an event that is `defaultPrevented`, and checks for a `:popover-open` inside it, because a
+  native popover closes itself without preventing anything.
 - **`showModal()` does not lock the page scroll.** The page goes inert, but a wheel over the backdrop
   still scrolls it (measured: 800px under an open dialog). dialog.css and drawer.css set
   `:root:has(…:modal) { overflow: hidden }`. Not `scrollbar-gutter: stable` with it: the reserved gutter
@@ -215,9 +224,8 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   off-hue a `color-mix` toward the neutral ink gave (the first cut, replaced). Declared IN EACH theme block
   (`:root` / light + `.ori-theme_dark`), NOT only `:root`, so it re-resolves for a SUBTREE theme and under a
   consumer's UNLAYERED `--ori-color` override too (a `:root`-only derive froze to the page value, breaking a real
-  consumer's dark theme). Non-text axes: the focus ring + tab indicator still use raw `--ori-color`, where pale
-  roles miss the 3:1 minimum (1.4.11) — a SEPARATE, pre-existing axis, unfixed; the outline border now reads the
-  darker `--ori-color-text`, so it clears 3:1 for pale roles too. Guard: **e2e/text-contrast.spec.ts** (real
+  consumer's dark theme). Non-text axes read the same token: the focus rings, the tab indicator and the outline
+  border use `--ori-color-text`, so they clear 3:1 for pale roles too, where the raw `--ori-color` did not. Guard: **e2e/text-contrast.spec.ts** (real
   Chromium — Node can't evaluate `oklch(from …)`, happy-dom axe has no layout): resolves computed `oklch()` /
   `color(srgb …)` via a 1×1 canvas, composites the soft tint over surface, asserts >= 4.5:1 for every role × skin
   × theme × text kind + the soft hover/active tint + the bare-block baked path. `quiet` is asserted like the rest (its
@@ -390,6 +398,15 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
 
 ## Build / tests
 
+- **`import.meta.env.DEV` is `false` in our published build.** Vite's library mode replaces `import.meta.env`
+  at build time, so a warning gated on it never reaches a consumer, in development or not. Gate on
+  `process.env.NODE_ENV !== 'production'` written at the warning itself, the way Vue does; the smoke test
+  checks that the dist still carries a warning. Two shapes that look safer are wrong. `typeof process`
+  is `'undefined'` in a Vite dev build in the browser (the bundler replaces the expression and defines no
+  `process`), so a `typeof` guard silences every warning in development. A shared `DEV` constant
+  exported from one module is emitted as a `var`, which a minifier does not fold across modules, so the
+  warnings stay in the app's production bundle. Where a throw in plain browser ESM would hurt (the
+  headless core), read it inside `try`.
 - **Regenerate the lockfile with npm 10, then check it installs under npm 11.** npm 11.7, rebuilding
   `package-lock.json` from scratch, dropped `"optional": true` from 19 platform bindings that arrive through
   a peer (`oxc-parser`'s). npm 11 tolerates that; the Node 22 CI job's npm 10 refuses with `EBADPLATFORM`

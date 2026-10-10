@@ -85,7 +85,8 @@ Companion to [CLAUDE.md](CLAUDE.md) (conventions / how) and [DECISIONS.md](DECIS
       line for the stylesheet that actually carries the block (not always one file per component —
       `.ori-toaster` ships in `toast.css`, `.ori-radio-group` in `radio.css`).
 - [ ] Every registry the new component has to appear in, not just the first one: the global MDC
-      registration, the sidebar, and the `nuxt-llms` config that feeds `/llms.txt`.
+      registration, the sidebar, and the table in `docs/content/overview/cheat-sheet.md`. (`/llms.txt`
+      picks a new page up by its path.)
 
 ### Build & packaging
 

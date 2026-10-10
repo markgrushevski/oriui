@@ -24,6 +24,7 @@
            layer) overrides by layer order — it maps onto the focus ring / error. */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         /* Baked default for the font-size axis (text scale): bare block uses `md` (16px). */
         --ori-font-size: var(--ori-font-size_md);
     }
@@ -48,6 +49,11 @@
        One class, like the `.ori-size-action_*` utility it mirrors: it beats the baked `md` default
        because that default sits in the `:where(.ori-textarea)` rule above at (0,0,0). The field
        inherits the repointed alias. */
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-textarea_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
+    }
+
     .ori-textarea_xs {
         --ori-size-action: var(--ori-size-action_xs);
     }
@@ -117,7 +123,7 @@
     }
 
     .ori-textarea__field:focus {
-        border-color: var(--ori-color);
+        border-color: var(--ori-color-text);
         outline: none;
 
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--ori-color) 25%, transparent);

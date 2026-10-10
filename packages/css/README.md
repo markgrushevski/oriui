@@ -100,6 +100,11 @@ upgrade-safe. Recipes: [Customization](https://oriui.vercel.app/guides/customiza
 
 **[Full docs → oriui.vercel.app](https://oriui.vercel.app)**
 
+## Browser support
+
+Chrome and Edge 131+, Firefox 147+, Safari 26+, the versions with CSS anchor positioning and `anchor-scope`.
+Details: [Installation → Browser support](https://oriui.vercel.app/overview/installation#browser-support).
+
 ## License
 
 [MIT](https://github.com/markgrushevski/oriui/blob/main/LICENSE) © Leonid

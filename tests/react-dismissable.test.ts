@@ -38,7 +38,7 @@ describe('React useDismissable', () => {
         document.body.append(outside)
         const onDismiss = vi.fn()
 
-        renderHook(() => useDismissable({ enabled: true, elements: () => [], onDismiss, focusOutside: true }))
+        renderHook(() => useDismissable({ enabled: true, elements: () => [], onDismiss, pointerDownOutside: false }))
 
         outside.dispatchEvent(new Event('pointerdown', { bubbles: true }))
         expect(onDismiss).not.toHaveBeenCalled() // pointerdown not wired

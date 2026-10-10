@@ -63,10 +63,10 @@ function markup(): string {
         <span class="ori-tag" data-role="baked-primary" data-kind="bare-tag"><span class="ori-tag__text">Bare</span></span>
         <div class="ori-alert" data-role="baked-info" data-kind="bare-alert"><div class="ori-alert__content"><div class="ori-alert__title">Bare</div></div></div>
         <div class="ori-tabs"><div class="ori-tabs__list" role="tablist"><button class="ori-tabs__tab" role="tab" aria-selected="true" data-role="baked-primary" data-kind="bare-tab-selected">Bare</button></div></div>
-        <div class="ori-combobox"><ul class="ori-combobox__listbox"><li class="ori-combobox__option ori-combobox__option_selected" data-role="baked-primary" data-kind="bare-combobox-option-selected">Bare</li></ul></div>
+        <div class="ori-combobox"><ul class="ori-combobox__listbox"><li class="ori-combobox__option" aria-selected="true" data-role="baked-primary" data-kind="bare-combobox-option-selected">Bare</li></ul></div>
         <div class="ori-segmented-control"><div class="ori-segmented-control__track"><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-bare" checked><span class="ori-segmented-control__text" data-role="baked-primary" data-kind="bare-segmented-checked">On</span></label><label class="ori-segmented-control__item"><input class="ori-segmented-control__input" type="radio" name="seg-bare"><span class="ori-segmented-control__text" data-role="baked-primary" data-kind="bare-segmented-idle">Off</span></label></div></div>
-        <ul class="ori-list" role="list"><li class="ori-list__item"><button type="button" class="ori-list__row" aria-current="true"><span class="ori-list__main"><span class="ori-list__label" data-role="baked-primary" data-kind="list-current-label">Current</span><span class="ori-list__description" data-role="baked-primary" data-kind="list-current-description">Description</span></span><span class="ori-list__end"><span class="ori-list__hint" data-role="baked-primary" data-kind="list-current-hint">Ctrl+N</span></span></button></li>
-        <li class="ori-list__item"><div class="ori-list__row"><span class="ori-list__main"><span class="ori-list__label">Row</span><span class="ori-list__description" data-role="baked-primary" data-kind="list-description">Description</span></span><span class="ori-list__end"><span class="ori-list__hint" data-role="baked-primary" data-kind="list-hint">Ctrl+S</span></span></div></li></ul>
+        <ul class="ori-list" role="list"><li class="ori-list__item"><button type="button" class="ori-list__row" aria-current="true"><span class="ori-list__main"><span class="ori-list__label" data-role="baked-primary" data-kind="list-current-label">Current</span><span class="ori-list__subtitle" data-role="baked-primary" data-kind="list-current-subtitle">Description</span></span><span class="ori-list__append"><span class="ori-list__meta" data-role="baked-primary" data-kind="list-current-meta">Ctrl+N</span></span></button></li>
+        <li class="ori-list__item"><div class="ori-list__row"><span class="ori-list__main"><span class="ori-list__label">Row</span><span class="ori-list__subtitle" data-role="baked-primary" data-kind="list-subtitle">Description</span></span><span class="ori-list__append"><span class="ori-list__meta" data-role="baked-primary" data-kind="list-meta">Ctrl+S</span></span></div></li></ul>
         <table class="ori-table ori-table_striped"><thead><tr><th data-role="baked-primary" data-kind="table-header">Header</th></tr></thead><tbody><tr><td>Odd</td></tr><tr><td data-role="baked-primary" data-kind="table-striped-cell">Even</td></tr><tr aria-current="true"><td data-role="baked-primary" data-kind="table-current-cell">Current</td></tr></tbody></table>`
     return surface(`${ROLES.map(cell).join('\n')}${bare}${form()}`)
 }
@@ -87,8 +87,8 @@ function surface(body: string): string {
 function listbox(role: string): string {
     return `<ul class="ori-combobox__listbox">
             <li class="ori-combobox__option" data-highlighted data-role="${role}" data-kind="combobox-option-highlighted">Option</li>
-            <li class="ori-combobox__option ori-combobox__option_selected" data-role="${role}" data-kind="combobox-option-selected">Option</li>
-            <li class="ori-combobox__option ori-combobox__option_selected" data-highlighted data-role="${role}" data-kind="combobox-option-selected-highlighted">Option</li>
+            <li class="ori-combobox__option" aria-selected="true" data-role="${role}" data-kind="combobox-option-selected">Option</li>
+            <li class="ori-combobox__option" aria-selected="true" data-highlighted data-role="${role}" data-kind="combobox-option-selected-highlighted">Option</li>
         </ul>`
 }
 

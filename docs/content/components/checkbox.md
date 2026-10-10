@@ -21,7 +21,7 @@ repoints one token; no paired base class is needed. The Vue props in [Framework 
 map 1:1 to these.
 
 <!-- prettier-ignore -->
-:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the label wrapper."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · md · lg · xl · xxl · inherit (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"ori-checkbox_disabled","type":"State","description":"added by the component when disabled; dims the wrapper"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes"}]'}
+:class-table{:rows='[{"class":"ori-checkbox","type":"Block","description":"Required base class — applied to the label wrapper."},{"class":"ori-color_*","type":"Color","description":"primary · secondary · success · warning · danger · info · surface · background"},{"class":"ori-font-size_*","type":"Size","description":"xs · sm · md · lg · xl · xxl · inherit (box and label scale together off the font size)"},{"class":"ori-checkbox__input","type":"Part","description":"the visually-hidden native input type=checkbox"},{"class":"ori-checkbox__box","type":"Part","description":"the visible styled square; aria-hidden"},{"class":"ori-checkbox__label","type":"Part","description":"the text label rendered next to the box"},{"class":"disabled · aria-invalid","type":"State","description":"real attributes on the input, not classes; a disabled input dims its wrapper"}]'}
 
 **À la carte:** the classes above ship in `@oriui/css/components/checkbox.css`. Import a foundation
 (`@oriui/css/base.css` or `@oriui/css/tokens.css`) first — the token utilities (`ori-color_*`,
@@ -113,7 +113,7 @@ the box dimensions use `em` units.
 #html
 
 ```html
-<label class="ori-checkbox ori-checkbox_disabled" for="d1">
+<label class="ori-checkbox" for="d1">
     <input id="d1" type="checkbox" class="ori-checkbox__input" disabled />
     <span class="ori-checkbox__box" aria-hidden="true"></span>
     <span class="ori-checkbox__label">Disabled</span>
@@ -129,7 +129,7 @@ the box dimensions use `em` units.
 #vue
 
 ```vue
-<!-- disabled — native attribute, dims wrapper via ori-checkbox_disabled -->
+<!-- disabled — the native attribute, which also dims the wrapper -->
 <OriCheckbox v-model="checked" label="Disabled" disabled />
 
 <!-- invalid — sets aria-invalid="true" on the <input> -->
@@ -279,7 +279,7 @@ render the same attributes and keyboard behavior.
 - Focus is visible via `:focus-visible` on the `__box` (2 px outline using `var(--ori-color)`); the
   ring never appears on mouse click.
 - `disabled` is the real native attribute — the input is excluded from tab order and form submission
-  automatically; the wrapper dims via `ori-checkbox_disabled`.
+  automatically, and the wrapper dims from it (`:has(:disabled)`), so a `<fieldset disabled>` dims it too.
 - `invalid` sets `aria-invalid="true"` on the input; pair it with an `aria-describedby` pointing at
   visible error text for a complete a11y contract.
 
@@ -298,7 +298,7 @@ API — its surface is the [classes](#classes) above.
 | Prop       | Type               | Default     | Description                                                                                    |
 | ---------- | ------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
 | `color`    | `ThemeColor`       | `'primary'` | Accent color for the checked fill and focus ring.                                              |
-| `disabled` | `boolean`          | `false`     | Native `disabled` on the input; adds `ori-checkbox_disabled` (opacity) to the wrapper.         |
+| `disabled` | `boolean`          | `false`     | Native `disabled` on the input; the wrapper dims from it.                                      |
 | `id`       | `string`           | —           | Overrides the auto-generated `useId()` for the input/label pair.                               |
 | `invalid`  | `boolean`          | —           | Sets `aria-invalid="true"` on the input to signal a validation error.                          |
 | `label`    | `string`           | —           | Visible text rendered inside `ori-checkbox__label`. Omit when providing your own slot content. |

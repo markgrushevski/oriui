@@ -18,6 +18,7 @@
            token instead (see --ori-tooltip-bg / --ori-checker-*). */
         --ori-color: var(--ori-color-primary);
         --ori-color-on: var(--ori-color-on-primary);
+        --ori-color-text: var(--ori-color-primary-text);
         /* Baked default for the radius axis: bare block uses `md`; `.ori-size-radius_lg` overrides.
            Without this a bare var(--ori-size-radius) would compute to 0 (square corners). */
         --ori-size-radius: var(--ori-size-radius_md);
@@ -66,7 +67,7 @@
     }
 
     .ori-accordion__trigger:focus-visible {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: -2px;
     }
 

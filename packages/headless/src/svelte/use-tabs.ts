@@ -69,12 +69,12 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
         onkeydown
     }))
 
-    // Derive on selectedValue AND opts$ so a change to idBase (or the selection) re-emits — parity with the
+    // Derive on selectedValue AND opts$ so a change to id (or the selection) re-emits — parity with the
     // Vue twin, which reads the id base fresh on every render.
     const getTabProps: Readable<(tab: TabItem, index: number) => Record<string, unknown>> = derived(
         [selectedValue, opts$],
         ([sel, o]) => {
-            const base = o.idBase ?? fallback
+            const base = o.id ?? fallback
             return (tab: TabItem, index: number) => {
                 const selected = tab.value === sel
                 return {
@@ -94,7 +94,7 @@ export function useTabs(options: MaybeReactive<UseTabsOptions>) {
     const getPanelProps: Readable<(tab: TabItem, index: number) => Record<string, unknown>> = derived(
         [selectedValue, opts$],
         ([sel, o]) => {
-            const base = o.idBase ?? fallback
+            const base = o.id ?? fallback
             return (tab: TabItem, index: number) => ({
                 id: `${base}-panel-${index}`,
                 role: 'tabpanel' as const,

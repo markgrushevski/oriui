@@ -12,14 +12,14 @@ describe('OriJoin', () => {
         expect(wrapper.attributes('role')).toBe('group')
     })
 
-    it('does not add ori-join_vertical when vertical is not set', () => {
+    it('does not add ori-join_vertical by default', () => {
         const wrapper = mount(OriJoin)
 
         expect(wrapper.classes()).not.toContain('ori-join_vertical')
     })
 
-    it('adds ori-join_vertical modifier when vertical prop is true', () => {
-        const wrapper = mount(OriJoin, { props: { vertical: true } })
+    it('adds the ori-join_vertical modifier for orientation="vertical"', () => {
+        const wrapper = mount(OriJoin, { props: { orientation: 'vertical' } })
 
         expect(wrapper.classes()).toContain('ori-join')
         expect(wrapper.classes()).toContain('ori-join_vertical')
@@ -53,8 +53,8 @@ describe('OriJoin', () => {
         expect(wrapper.classes()).toContain('ori-join')
     })
 
-    it('vertical + as polymorphism combined', () => {
-        const wrapper = mount(OriJoin, { props: { as: 'span', vertical: true } })
+    it('orientation + as polymorphism combined', () => {
+        const wrapper = mount(OriJoin, { props: { as: 'span', orientation: 'vertical' } })
 
         expect(wrapper.element.tagName.toLowerCase()).toBe('span')
         expect(wrapper.classes()).toContain('ori-join')

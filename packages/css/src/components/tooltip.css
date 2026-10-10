@@ -22,8 +22,8 @@
         /* Default chip: the page INVERTED — the page ink as the fill, the page itself as the label.
            That is a contrast-checked pair by construction (it is the background/on-background pairing
            the token guard already measures, read backwards), and it tracks theme and skin, so the chip
-           stays legible on any page. The literal neutral ramp it replaced could not: neutral-900 on the
-           dark page measured 1.04:1, a chip invisible against what it floated over.
+           stays legible on any page. A fixed neutral pair cannot: neutral-900 on the dark page measures
+           1.04:1, a chip invisible against what it floats over.
            Deliberately NOT var(--ori-color) / var(--ori-color-on) — those aliases are globally defined
            (currentColor at :root), so a var() fallback never fires and bg + text would come from two
            different sources (a host app with near-ink ambient color rendered the text invisible). The

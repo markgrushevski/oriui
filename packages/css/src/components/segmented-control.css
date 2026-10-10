@@ -116,7 +116,7 @@
        group carries `data-ori-keyboard` (the Vue component sets it during keyboard use). */
     .ori-segmented-control__item:has(.ori-segmented-control__input:focus-visible),
     .ori-segmented-control[data-ori-keyboard] .ori-segmented-control__item:has(.ori-segmented-control__input:focus) {
-        outline: 2px solid var(--ori-color);
+        outline: 2px solid var(--ori-color-text);
         outline-offset: 2px;
     }
 
@@ -129,6 +129,11 @@
 
     .ori-segmented-control__icon {
         flex-shrink: 0;
+    }
+
+    /* `inherit` takes the surrounding text size (1em), for a control set inside a line of text. */
+    .ori-segmented-control_inherit {
+        --ori-size-action: var(--ori-size-action_inherit);
     }
 
     .ori-segmented-control_xs {
@@ -165,10 +170,12 @@
        segment takes the system's selected pair. */
     @media (forced-colors: active) {
         .ori-segmented-control__item:has(.ori-segmented-control__input:checked) {
-            /* Without it the browser lays a Canvas backplate under the HighlightText label. */
+            /* Without it the browser lays a Canvas backplate under the HighlightText label. It also stops
+               forcing the focus outline, so the outline takes a system color here too. */
             forced-color-adjust: none;
 
             border-color: Highlight;
+            outline-color: CanvasText;
             background-color: Highlight;
             color: HighlightText;
         }

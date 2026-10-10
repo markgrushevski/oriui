@@ -52,7 +52,7 @@ describe('useTabs (Vue)', () => {
     })
 
     it('getTabProps returns the ARIA + roving bag (active tab is the only tab stop)', () => {
-        const { getTabProps } = useTabsVue(() => ({ tabs: TABS, value: 'b', idBase: 'x' }))
+        const { getTabProps } = useTabsVue(() => ({ tabs: TABS, value: 'b', id: 'x' }))
         expect(getTabProps(TABS[0], 0)).toMatchObject({
             id: 'x-tab-0',
             type: 'button',
@@ -67,7 +67,7 @@ describe('useTabs (Vue)', () => {
     })
 
     it('getPanelProps hides every panel but the selected one', () => {
-        const { getPanelProps } = useTabsVue(() => ({ tabs: TABS, value: 'b', idBase: 'x' }))
+        const { getPanelProps } = useTabsVue(() => ({ tabs: TABS, value: 'b', id: 'x' }))
         expect(getPanelProps(TABS[1], 1)).toMatchObject({
             id: 'x-panel-1',
             role: 'tabpanel',
@@ -228,7 +228,7 @@ describe('useTabs (Svelte)', () => {
     })
 
     it('tablistProps is a store with a LOWERCASED onkeydown; getTabProps is a store of a function', () => {
-        const { tablistProps, getTabProps, getPanelProps } = useTabsSvelte({ tabs: TABS, value: 'b', idBase: 'x' })
+        const { tablistProps, getTabProps, getPanelProps } = useTabsSvelte({ tabs: TABS, value: 'b', id: 'x' })
 
         const list = get(tablistProps)
         expect(list.role).toBe('tablist')
@@ -246,17 +246,17 @@ describe('useTabs (Svelte)', () => {
         expect(panel(TABS[0], 0).hidden).toBe(true)
     })
 
-    it('getTabProps RE-EMITS when idBase changes (a Svelte {#each} only re-renders on emit)', () => {
-        const idBase = writable('a')
-        const opts = derived(idBase, (b) => ({ tabs: TABS, value: 'a', idBase: b }))
+    it('getTabProps RE-EMITS when id changes (a Svelte {#each} only re-renders on emit)', () => {
+        const id = writable('a')
+        const opts = derived(id, (b) => ({ tabs: TABS, value: 'a', id: b }))
         const { getTabProps } = useTabsSvelte(opts)
 
         const seen: string[] = []
         const unsub = getTabProps.subscribe((fn) => seen.push(fn(TABS[0], 0).id as string))
-        idBase.set('b')
+        id.set('b')
         unsub()
 
-        // Without deriving on the options store, an idBase change (selection unchanged) would not re-emit,
+        // Without deriving on the options store, an id change (selection unchanged) would not re-emit,
         // so a Svelte template would keep the stale ids — the store must emit for BOTH bases.
         expect(seen).toContain('a-tab-0')
         expect(seen).toContain('b-tab-0')

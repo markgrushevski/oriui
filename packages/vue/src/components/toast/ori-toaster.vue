@@ -5,6 +5,7 @@ import OriToast from './ori-toast.vue'
 
 const {
     align = 'start',
+    closeLabel = 'Dismiss notification',
     hotkey = 'F8',
     label = 'Notifications',
     position = 'top-right'
@@ -12,6 +13,8 @@ const {
     /** Body alignment for every toast in the stack — a look of the stack, like `position`. A centered
      *  stack usually pairs with `top-center` / `bottom-center` and one-line status messages. */
     align?: 'start' | 'center'
+    /** The accessible name of each toast's dismiss button. */
+    closeLabel?: string
     /** The key (a `KeyboardEvent.key` that types no text) that moves focus to the toasts; `''` turns it off. */
     hotkey?: string
     /** Accessible name of the toast region; the hotkey is appended to it. */
@@ -125,6 +128,7 @@ onBeforeUnmount(() => {
                 :action-label="t.action?.label"
                 :align="align"
                 :closable="t.closable"
+                :close-label="closeLabel"
                 :color="t.color"
                 :icon="t.icon"
                 :text="t.text"

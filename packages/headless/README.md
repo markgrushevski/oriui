@@ -32,10 +32,11 @@ const d = useDisclosure()
 ```
 
 Also ships `useDialog` (native `<dialog>`: focus-trap, `Esc`, `::backdrop`, top-layer), `useCombobox`,
-`useMenu`, `useToolbar`, and `useColorPicker`, plus the `useToken` / `useTheme` bridges. The
+`useMenu`, `useTabs`, `useToolbar`, `useColorPicker`, `useToast` and `useDismissable`, plus the `useToken` /
+`useTheme` bridges. The
 machine-based behaviors (Disclosure / Dialog / Combobox / Menu) each take a swappable engine
 (Zag / custom) through `provideHeadless()` / the `OriHeadless` plugin — the component markup never
-changes. (`useToolbar` / `useColorPicker` are compositional helpers, not adapter-backed.)
+changes. (The others are compositional helpers, not adapter-backed.)
 
 ## Use — the engine directly
 
@@ -51,7 +52,7 @@ import { combobox } from '@oriui/headless'
 Canvas/WebGL/chart renderers (Konva, ECharts, …) paint outside the CSS cascade but should still follow
 the active skin. The token bridge resolves `--ori-*` tokens to their **computed** values —
 `getComputedStyle().getPropertyValue('--x')` only returns the unresolved `var()` chain — and re-resolves
-on theme changes. Colors-only MVP: the token must resolve to a `<color>`. The value is `''` during SSR
+on theme changes. Colors only: the token must resolve to a `<color>`. The value is `''` during SSR
 and before mount (the first client frame renders without it); in dev builds, a token that genuinely
 fails to resolve warns once per token.
 

@@ -31,7 +31,7 @@ everything shares the same tokens.
 - **The platform comes first.** Dialogs use the native `<dialog>`, popovers the Popover API and CSS anchor
   positioning, the accordion `<details>`. JavaScript fills in only what the platform lacks.
 - **Accessibility is tested.** axe runs against every component, every color pair passes WCAG AA
-  contrast in every skin, and keyboard behavior is exercised in real Chromium. See
+  contrast in every skin, and keyboard behavior is exercised in real Chromium, Firefox and WebKit. See
   [Accessibility](/overview/accessibility).
 - **The engine is replaceable.** Disclosure, dialog, combobox and menu run through the `OriHeadless`
   contract. The default engine has no dependencies; you can register another one for a single widget,

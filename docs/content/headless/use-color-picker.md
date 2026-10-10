@@ -7,11 +7,10 @@ title: useColorPicker
 A headless **sRGB color picker** — a 2D **saturation × brightness** area, a **hue** channel, an optional
 **alpha** channel, a **hex** field, and optional **preset** swatches, assembled from ready-to-bind
 prop-getters. It owns the working color as an internal **HSVA** object (so the hue survives a grayscale
-round-trip when you drag into a corner and back) and composes a zero-dependency sRGB engine plus pure
-2D-area math from the core: `parseColor` / `formatColor` (loose parse in, lowercase string out),
-`hsvToRgb` / `rgbToHex` / `rgbToHsl` (hex / rgb / hsv / hsl conversion), `readableInk` (WCAG-luminance
-ink over a swatch), and `resolveAreaPosition` / `stepAreaPosition` (pointer → coordinate and keyboard
-stepping across the two axes).
+round-trip when you drag into a corner and back). Underneath is a zero-dependency sRGB engine — a loose
+parser and a lowercase formatter, hex / rgb / hsv / hsl conversion, readable ink over a swatch by WCAG
+luminance — and the 2D-area math for pointer and keyboard. That engine is internal: it ships inside this
+composable, not as exports of its own.
 
 This is the **Vue** binding; the framework-agnostic core lives in [`@oriui/headless`](/headless/core),
 and the styled [`OriColorPicker`](/components/color-picker) is built on it. Like
@@ -42,7 +41,6 @@ on release / keyboard settle (one undo entry).
 | `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string (`ColorFormat`). `rgb` / `hsl` emit function notation; output is lowercase.  |
 | `alpha`      | `boolean`                 | `false` | Include an alpha channel — the emitted string carries it (`#rrggbbaa` / `rgba()` / `hsla()`).                    |
 | `eyedropper` | `boolean`                 | `false` | Expose an eyedropper action (the `EyeDropper` API); `eyedropperSupported` is `false` where the browser lacks it. |
-| `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the root `role="group"`).                               |
 | `disabled`   | `boolean`                 | `false` | Blocks the area pointer drag / keyboard and disables the channel inputs.                                         |
 | `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                                                |
 | `onInput`    | `(next: string) => void`  | —       | **Required.** Live value on every interaction tick — wire to `update:modelValue`.                                |
@@ -67,7 +65,7 @@ Reactive state, prop-getters (spread with `v-bind`), and imperative setters. `HS
 | `opaqueColor`         | `ComputedRef<string>`                 | The opaque current color, for the alpha slider's transparent → color track.                                                                                                         |
 | `ink`                 | `ComputedRef<'#000000' \| '#ffffff'>` | Readable ink over the current color, per WCAG luminance (`readableInk`).                                                                                                            |
 | `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-color-picker-hue` gradient anchor.                                                                                                |
-| `eyedropperSupported` | `boolean`                             | Whether the `EyeDropper` API exists (a plain, non-reactive boolean — gate the eyedropper trigger on it).                                                                            |
+| `eyedropperSupported` | `Ref<boolean>`                        | Whether the `EyeDropper` API exists. Set on mount, so it is `false` on the server — gate the eyedropper trigger on `eyedropperSupported.value`.                                     |
 
 ### Prop-getters
 
@@ -109,7 +107,7 @@ import { ref, watch } from 'vue'
 import { useColorPicker } from '@oriui/headless/vue'
 import type { ColorFormat } from '@oriui/headless/vue'
 
-const { format = 'hex', presets } = defineProps<{ format?: ColorFormat; presets?: string[] }>()
+const { format = 'hex', label, presets } = defineProps<{ format?: ColorFormat; label?: string; presets?: string[] }>()
 
 const model = defineModel<string>()
 const emit = defineEmits<{ change: [value: string] }>()
@@ -185,7 +183,7 @@ watch(
 
 Passing `alpha: true` adds the alpha channel (bind a second slider to `alpha` / `setAlpha`, using
 `opaqueColor` for its track), and `eyedropper: true` enables `openEyeDropper` (gate its trigger on
-`cp.eyedropperSupported`) — see how the styled [`OriColorPicker`](/components/color-picker) wires both.
+`cp.eyedropperSupported.value`) — see how the styled [`OriColorPicker`](/components/color-picker) wires both.
 
 ::
 
@@ -205,8 +203,8 @@ already provides.
 - **Presets are a single-select `role="listbox"`** (`presetGroupProps`) with **roving tabindex** — one tab
   stop, arrow keys move real DOM focus (`onPresetKeydown`, wrapping), `aria-selected` marks the active
   color. Each chip is a `role="option"` button labeled by its color.
-- **`label`** names the whole control (`role="group"`); **`disabled`** blocks the area drag / keyboard and
-  disables the channel inputs.
+- Name the whole control yourself, with an `aria-label` on the root `role="group"` (as the example does);
+  **`disabled`** blocks the area drag / keyboard and disables the channel inputs.
 
 **Area keyboard** (focus is on a channel input; the area routes the key):
 
@@ -219,8 +217,7 @@ already provides.
 
 ## See also
 
-- [@oriui/headless](/headless/core) — the framework-agnostic core: the zero-dependency sRGB engine and the
-  pure 2D-area math behind this binding.
+- [@oriui/headless](/headless/core) — the framework-agnostic core, and the roving helpers this binding reuses.
 - [Color picker](/components/color-picker) — the styled `OriColorPicker` built on this composable.
 - [Slider](/components/slider) — the native-range primitive the styled picker reuses for the hue / alpha channels.
 - [Popover](/components/popover) — compose the inline picker into a popover for a swatch-triggered flow.

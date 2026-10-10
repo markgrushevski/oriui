@@ -32,7 +32,7 @@ import {
 
 The module exports five composables. `useToolbar` is the root — its options and return are below; the
 four companions (`useToolbarItem`, `useToolbarOrientation`, `useToolbarToggleGroup`,
-`useToolbarToggleItem`) follow in [Item & selection composables](#item--selection-composables).
+`useToolbarToggleItem`) follow in [Item & selection composables](#item-selection-composables).
 
 ## Options
 
@@ -85,14 +85,14 @@ group to render perpendicular / matching. It returns the getter **directly** (no
 `useToolbarToggleGroup(options)` — provides a toggle-selection context to nested
 `useToolbarToggleItem`s. It is a `role="group"` layered over the flat toolbar roving order: its items
 remain ordinary toolbar items, reached by the same arrow navigation, so the group adds no stop of its
-own. Wire `value` / `onChange` to your `v-model`. All three `UseToolbarToggleGroupOptions` fields are
-required:
+own. Wire `value` / `onChange` to your `v-model`. `type`, `value` and `onChange` are required:
 
-| Option     | Type                                               | Description                                                                                        |
-| ---------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `type`     | `MaybeRefOrGetter<'single' \| 'multiple'>`         | `single` keeps one value and is deselectable (re-selecting clears it); `multiple` keeps a set.     |
-| `value`    | `() => string \| string[] \| undefined`            | Getter for the current value: a string (or `undefined`) for `single`, a `string[]` for `multiple`. |
-| `onChange` | `(value: string \| string[] \| undefined) => void` | Commit the next value (wire to your `v-model`).                                                    |
+| Option         | Type                                                | Description                                                                                                                                        |
+| -------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`         | `MaybeRefOrGetter<'single' \| 'multiple'>`          | `single` keeps one value; `multiple` keeps a set.                                                                                                  |
+| `value`        | `MaybeRefOrGetter<string \| string[] \| undefined>` | The current value: a string (or `undefined`) for `single`, a `string[]` for `multiple`.                                                            |
+| `deselectable` | `MaybeRefOrGetter<boolean>`                         | Whether pressing the selected item clears it (default `true`). `false` keeps the selection non-empty — a tool picker that must always have a tool. |
+| `onChange`     | `(value: string \| string[] \| undefined) => void`  | Commit the next value (wire to your `v-model`).                                                                                                    |
 
 | Property     | Type                  | Description                                                                                    |
 | ------------ | --------------------- | ---------------------------------------------------------------------------------------------- |

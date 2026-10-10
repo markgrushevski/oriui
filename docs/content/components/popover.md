@@ -182,8 +182,9 @@ API and CSS Anchor Positioning drive open/close and placement with no state to k
   matches the panel's actual content.
 - **The expanded state is unmanaged.** The Popover API opens and closes the panel entirely in the
   browser with no JS state to reflect, so there is no live `aria-expanded` to toggle. The `#trigger`
-  slot's `props` bag instead conveys the popup relationship **statically**: `aria-haspopup` mirrors the
-  panel's `role`, and `aria-controls` points at the panel's id.
+  slot's `props` bag instead conveys the popup relationship **statically**: `aria-haspopup` comes from
+  `haspopup` (by default the panel's `role` when that is a popup role, else `dialog`), and `aria-controls`
+  points at the panel's id.
 - `Esc` and outside-click dismissal, and returning focus to the trigger, come from the platform via the
   Popover API — no focus-trap or dismiss handler to wire.
 
@@ -201,10 +202,11 @@ yourself.
 
 ### Props
 
-| Prop        | Type                                                                   | Default          | Description                                                                                        |
-| ----------- | ---------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
-| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'` | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier.                 |
-| `role`      | `string`                                                               | `'dialog'`       | ARIA role for the panel — `'dialog'` (default), `'menu'`, `'listbox'`, … per the content it holds. |
+| Prop        | Type                                                                   | Default                                         | Description                                                                                                                     |
+| ----------- | ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `haspopup`  | `PopupRole` (`'dialog' \| 'menu' \| 'listbox' \| 'tree' \| 'grid'`)    | `role` when it is one of these, else `'dialog'` | What the trigger announces it opens (`aria-haspopup`). Set it when the panel's `role` is outside that list (`group`, `region`). |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` (each also `-start` / `-end`) | `'bottom-start'`                                | Placement relative to the trigger. Drives the `ori-anchored_<placement>` modifier.                                              |
+| `role`      | `string`                                                               | `'dialog'`                                      | ARIA role for the panel — `'dialog'` (default), `'menu'`, `'listbox'`, … per the content it holds.                              |
 
 ### Events & attributes
 

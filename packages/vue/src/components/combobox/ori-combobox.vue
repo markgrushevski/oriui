@@ -21,7 +21,6 @@ defineOptions({ inheritAttrs: false })
 const {
     clearable = false,
     color = 'primary',
-    describedby,
     disabled = false,
     error,
     filter,
@@ -39,8 +38,6 @@ const {
     /** Show a clear button while there is a selection. */
     clearable?: boolean
     color?: ThemeColor
-    /** Extra element id(s) to append to aria-describedby (e.g. a shared form note). */
-    describedby?: string
     disabled?: boolean
     /** Error message: rendered below the control (role=alert) and flips it to aria-invalid. */
     error?: string
@@ -75,7 +72,7 @@ const anchorName = `--ori-combobox-${useId()}`
 // useCombobox below, so this comes first (the id getter is only read later, once `inputProps` exists).
 const { inField, fieldId, hintId, errorId, describedBy, isInvalid, isRequired, isDisabled, fieldSize } =
     useFieldControl(
-        () => ({ describedby, disabled, error, hint, id, invalid, required, size }),
+        () => ({ disabled, error, hint, id, invalid, required, size }),
         () => inputProps.value.id as string
     )
 
@@ -98,8 +95,8 @@ const {
 } = useCombobox(() => ({
     id,
     options,
-    value: model.value ?? null,
-    inputValue: model.value != null ? (options.find((o) => o.value === model.value)?.label ?? '') : '',
+    defaultValue: model.value ?? null,
+    defaultInputValue: model.value != null ? (options.find((o) => o.value === model.value)?.label ?? '') : '',
     disabled: isDisabled.value,
     filter
 }))
@@ -156,9 +153,7 @@ const controlEl = ref<HTMLElement>()
 useDismissable(() => ({
     enabled: open.value,
     elements: () => [controlEl.value],
-    onDismiss: () => setOpen(false),
-    pointerDownOutside: true,
-    focusOutside: true
+    onDismiss: () => setOpen(false)
 }))
 
 // The listbox opens in the top layer, so no ancestor's transform, overflow or z-index can displace or clip it.
@@ -237,13 +232,10 @@ watch(open, (isOpen) => setTopLayer(listboxEl.value, isOpen), { flush: 'post' })
                     v-for="(item, index) in items"
                     :key="item.value"
                     v-bind="getOptionProps(item, index)"
-                    :class="[
-                        'ori-combobox__option',
-                        { 'ori-combobox__option_selected': getOptionState(item).selected }
-                    ]"
+                    class="ori-combobox__option"
                     @mousedown.prevent
                 >
-                    <slot name="option" :item="item" :index="index" :selected="getOptionState(item).selected">{{
+                    <slot name="option" :option="item" :index="index" :selected="getOptionState(item).selected">{{
                         item.label
                     }}</slot>
                 </li>
