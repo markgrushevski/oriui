@@ -165,7 +165,7 @@ export const nativeCombobox = (options: UseComboboxOptions): ComboboxControl => 
         return all.filter((item) => filter(item, state.inputValue))
     }, [options.options, options.filter, state.inputValue, state.value])
 
-    const api = combobox.connect(service, normalizeProps, items)
+    const api = combobox.connect(service, normalizeProps, items, options.labels)
 
     return {
         open: api.open,

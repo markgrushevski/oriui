@@ -5,6 +5,16 @@ export interface ComboboxItem {
     disabled?: boolean
 }
 
+/** The accessible names of the combobox's own buttons. Each one defaults to English. */
+export interface ComboboxLabels {
+    /** The clear button (default `'Clear selection'`). */
+    clear: string
+    /** The trigger while the list is open (default `'Close suggestions'`). */
+    close: string
+    /** The trigger while the list is closed (default `'Open suggestions'`). */
+    open: string
+}
+
 export interface ComboboxContext {
     /** Whether the listbox is open. */
     open: boolean

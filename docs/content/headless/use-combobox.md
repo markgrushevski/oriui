@@ -38,6 +38,7 @@ Pass an options object — or a getter returning one, to stay reactive (the styl
 | `defaultInputValue` | `string`                                         | `''`           | The input text to start with (read once).                                                       |
 | `disabled`          | `boolean`                                        | `false`        | Disable the control; also closes the listbox.                                                   |
 | `filter`            | `(item: ComboboxItem, query: string) => boolean` | substring      | Filter predicate; default = case-insensitive substring on the label. Swap for fuzzy / async.    |
+| `labels`            | `Partial<ComboboxLabels>`                        | English        | Accessible names of the trigger (`open`, `close`) and the clear button (`clear`). Read live.    |
 
 Each option is a `ComboboxItem` — `value` is the stable identity, `label` is what the input shows:
 

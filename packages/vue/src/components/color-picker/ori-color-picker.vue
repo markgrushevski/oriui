@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, provide, ref, watch } from 'vue'
 import { useColorPicker } from '@oriui/headless/vue'
-import type { ColorFormat } from '@oriui/headless/vue'
+import type { ColorFormat, ColorPickerLabels } from '@oriui/headless/vue'
 import { OriSlider } from '../slider'
 import { OriInput } from '../input'
 import { OriButton } from '../button'
@@ -23,6 +23,7 @@ const {
     form,
     format = 'hex',
     label,
+    labels,
     name,
     presets
 } = defineProps<{
@@ -37,6 +38,8 @@ const {
     format?: ColorFormat
     /** Accessible name for the whole control (→ `aria-label`). */
     label?: string
+    /** Accessible names of the parts (the area, the sliders, the hex field, the presets, the eyedropper). */
+    labels?: Partial<ColorPickerLabels>
     /** Submit the current color under this field name via a hidden input (a color always has a value). */
     name?: string
     /** Preset swatches — a `string[]` of colors, rendered as a single-select roving listbox. */
@@ -66,6 +69,7 @@ const cp = useColorPicker(() => ({
     alpha,
     eyedropper,
     disabled: isDisabled.value,
+    labels,
     presets,
     onInput: (next) => {
         model.value = next
@@ -136,7 +140,7 @@ function commitHex(): void {
                     :max="359"
                     :step="1"
                     :disabled="isDisabled"
-                    aria-label="Hue"
+                    :aria-label="cp.labels.value.hue"
                     :aria-valuetext="`${Math.round(cp.hue.value)}°`"
                     @update:model-value="cp.setHue"
                     @change="cp.commit"
@@ -151,7 +155,7 @@ function commitHex(): void {
                     :step="1"
                     :disabled="isDisabled"
                     :style="{ '--ori-color': cp.opaqueColor.value }"
-                    aria-label="Alpha"
+                    :aria-label="cp.labels.value.alpha"
                     :aria-valuetext="`${Math.round(cp.alpha.value * 100)}%`"
                     @update:model-value="(v) => cp.setAlpha(v / 100)"
                     @change="cp.commit"
@@ -164,7 +168,7 @@ function commitHex(): void {
                 variant="outline"
                 :icon="EYEDROPPER_ICON"
                 :disabled="isDisabled"
-                aria-label="Pick a color from the screen"
+                :aria-label="cp.labels.value.eyedropper"
                 @click="cp.openEyeDropper"
             />
         </div>
@@ -174,7 +178,7 @@ function commitHex(): void {
             :model-value="hexDraft"
             :disabled="isDisabled"
             :error="hexInvalid ? 'Enter a valid hex color' : undefined"
-            aria-label="Hex color"
+            :aria-label="cp.labels.value.hex"
             autocapitalize="none"
             autocomplete="off"
             spellcheck="false"

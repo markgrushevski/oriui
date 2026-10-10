@@ -64,31 +64,14 @@ watch(
     { immediate: true }
 )
 
-// Panel slots gained their `panel-` prefix before 1.0 (see the note above). A caller still passing the
-// old bare `#<value>` gets a SILENT miss — Vue never warns about an unconsumed slot — so the panel
-// would fall back to `#default`, or render empty. Name the rename instead. `tab` and `default` are
-// this component's own reserved slots, so a tab valued "tab" must not be reported: that template is
-// legitimately the label renderer, which is the very collision the prefix removed. Development builds only.
+// A `#panel-<value>` slot whose value is a typo, or whose tab was removed, consumes nothing and Vue says
+// nothing, so the panel renders the `#default` fallback (or empty) and the caller sees a blank tab. Exact
+// match against the tab values — with one guard: an EMPTY `tabs` is how a caller spells "not loaded yet",
+// and every declared panel slot is an orphan against an empty set, so the check would cry on correct code
+// on every render until the fetch resolved. Development builds only.
 if (process.env.NODE_ENV !== 'production') {
     const slots = useSlots()
-    const reserved = ['tab', 'default']
     watchEffect(() => {
-        const stale = tabs
-            .map((tab) => String(tab.value))
-            .filter((value) => !reserved.includes(value) && slots[value] && !slots[`panel-${value}`])
-        if (stale.length)
-            console.warn(
-                `[OriTabs] panel slot(s) #${stale.join(', #')} are unused — per-value panel slots are now ` +
-                    `named \`#panel-<value>\` (e.g. #panel-${stale[0]}), so a tab's value can never collide ` +
-                    'with the reserved #tab / #default slots.'
-            )
-
-        // The other half of the same silence: a correctly PREFIXED slot whose value is a typo, or
-        // whose tab was removed. It consumes nothing and Vue says nothing, so the panel renders the
-        // `#default` fallback (or empty) and the caller sees a blank tab. Exact match against the
-        // tab values — with one guard: an EMPTY `tabs` is how a caller spells "not loaded yet", and
-        // every declared panel slot is an orphan against an empty set, so the check would cry on
-        // correct code on every render until the fetch resolved.
         if (tabs.length === 0) return
         const values = new Set(tabs.map((tab) => `panel-${tab.value}`))
         const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))

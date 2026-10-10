@@ -148,7 +148,7 @@ export const nativeCombobox = (options: MaybeRefOrGetter<UseComboboxOptions>): C
 
     const api = computed(() => {
         void version.value
-        return combobox.connect(service, normalizeProps, items.value)
+        return combobox.connect(service, normalizeProps, items.value, opts.value.labels)
     })
 
     return {

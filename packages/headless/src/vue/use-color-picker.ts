@@ -35,10 +35,47 @@ export interface UseColorPickerOptions {
     disabled?: boolean
     /** Preset swatches (a `string[]` of colors) rendered as a single-select roving listbox. */
     presets?: string[]
+    /**
+     * Accessible names of the parts; a missing one keeps its English default. The prop-getters apply the
+     * area, channel and preset names; read the rest (hue, alpha, hex, eyedropper) from the returned
+     * `labels` for the parts you render yourself.
+     */
+    labels?: Partial<ColorPickerLabels>
     /** Live update on every interaction tick → wire to `update:modelValue`. */
     onInput: (next: string) => void
     /** Committed value on pointer-release / keyboard settle → wire to `change` (one undo entry). */
     onChange: (next: string) => void
+}
+
+/** The accessible names of a color picker's parts. Each one defaults to English. */
+export interface ColorPickerLabels {
+    /** The alpha slider (default `'Alpha'`). */
+    alpha: string
+    /** The saturation and brightness area (default `'Saturation and brightness'`). */
+    area: string
+    /** The area's vertical channel (default `'Brightness'`). */
+    brightness: string
+    /** The eyedropper button (default `'Pick a color from the screen'`). */
+    eyedropper: string
+    /** The hex field (default `'Hex color'`). */
+    hex: string
+    /** The hue slider (default `'Hue'`). */
+    hue: string
+    /** The preset list (default `'Preset colors'`). */
+    presets: string
+    /** The area's horizontal channel (default `'Saturation'`). */
+    saturation: string
+}
+
+const DEFAULT_LABELS: ColorPickerLabels = {
+    alpha: 'Alpha',
+    area: 'Saturation and brightness',
+    brightness: 'Brightness',
+    eyedropper: 'Pick a color from the screen',
+    hex: 'Hex color',
+    hue: 'Hue',
+    presets: 'Preset colors',
+    saturation: 'Saturation'
 }
 
 const DEFAULT: HSVA = { h: 0, s: 0, v: 0, a: 1 }
@@ -118,6 +155,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
 
     // --- 2D saturation/value area --------------------------------------------------------------------
     const disabled = (): boolean => opts().disabled ?? false
+    const labels = computed<ColorPickerLabels>(() => ({ ...DEFAULT_LABELS, ...opts().labels }))
 
     function onAreaPointerdown(event: PointerEvent): void {
         if (disabled() || event.button !== 0) return
@@ -141,7 +179,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
 
     const areaProps = computed(() => ({
         role: 'group' as const,
-        'aria-label': 'Saturation and brightness',
+        'aria-label': labels.value.area,
         'aria-disabled': disabled() || undefined,
         style: { '--ori-color-picker-hue': hueColor.value },
         onPointerdown: onAreaPointerdown
@@ -170,7 +208,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
             step: 1,
             value: pct,
             disabled: disabled() || undefined,
-            'aria-label': channel === 'saturation' ? 'Saturation' : 'Brightness',
+            'aria-label': channel === 'saturation' ? labels.value.saturation : labels.value.brightness,
             'aria-orientation': channel === 'value' ? ('vertical' as const) : undefined,
             // Announce the axis value AND the resulting opaque color, so the settled color is spoken too.
             'aria-valuetext': `${pct}%, ${opaqueColor.value}`,
@@ -216,7 +254,7 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
 
     const presetGroupProps = computed(() => ({
         role: 'listbox' as const,
-        'aria-label': 'Preset colors',
+        'aria-label': labels.value.presets,
         'aria-orientation': 'horizontal' as const
     }))
 
@@ -300,6 +338,8 @@ export function useColorPicker(options: () => UseColorPickerOptions) {
         ink,
         hueColor,
         eyedropperSupported,
+        /** Every part's accessible name, defaults filled in. */
+        labels,
         // prop-getters
         areaProps,
         areaThumbStyle,

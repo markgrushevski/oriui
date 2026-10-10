@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, mergeProps, ref, useId, watch, watchEffect } from 'vue'
-import { useCombobox, useDismissable, type ComboboxItem } from '@oriui/headless/vue'
+import { useCombobox, useDismissable, type ComboboxItem, type ComboboxLabels } from '@oriui/headless/vue'
 import type { ActionSize, RadiusSize, ThemeColor } from '../../types'
 import { useOriField } from '../field/context'
 import { useFieldControl } from '../field/use-field-control'
@@ -28,6 +28,7 @@ const {
     id,
     invalid = false,
     label,
+    labels,
     noResultsText = 'No results',
     options,
     placeholder,
@@ -51,6 +52,8 @@ const {
     id?: string
     invalid?: boolean
     label?: string
+    /** Accessible names of the open / close trigger and the clear button. */
+    labels?: Partial<ComboboxLabels>
     /** Submit the selected value under this field name via a hidden input; the visible input is text-only. */
     name?: string
     /** Text shown when the filter matches nothing. */
@@ -98,7 +101,8 @@ const {
     defaultValue: model.value ?? null,
     defaultInputValue: model.value != null ? (options.find((o) => o.value === model.value)?.label ?? '') : '',
     disabled: isDisabled.value,
-    filter
+    filter,
+    labels
 }))
 
 // Two-way sync between v-model and the machine selection (equality-guarded so the watchers settle).

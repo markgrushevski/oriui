@@ -51,6 +51,11 @@ namespace combobox {
         label: string
         value: string
     }
+    interface ComboboxLabels {
+        clear: string
+        close: string
+        open: string
+    }
     interface ComboboxOptionState {
         highlighted: boolean
         selected: boolean
@@ -62,13 +67,18 @@ namespace combobox {
         id: string
     }
     type ComboboxService = Service<ComboboxContext, ComboboxEvent>
-    function connect<T extends PropTypes>(service: Service<ComboboxContext, ComboboxEvent>, normalize: NormalizeProps<T>, collection: ComboboxItem[]) => ComboboxApi<T>
+    function connect<T extends PropTypes>(service: Service<ComboboxContext, ComboboxEvent>, normalize: NormalizeProps<T>, collection: ComboboxItem[], labels?: Partial<ComboboxLabels> | undefined) => ComboboxApi<T>
     function machine(props: ComboboxProps) => Service<ComboboxContext, ComboboxEvent>
 }
 interface ComboboxItem {
     disabled?: boolean | undefined
     label: string
     value: string
+}
+interface ComboboxLabels {
+    clear: string
+    close: string
+    open: string
 }
 interface ComboboxOptionState {
     highlighted: boolean
@@ -224,6 +234,7 @@ interface UseComboboxOptions {
     disabled?: boolean | undefined
     filter?: ((item: ComboboxItem, query: string) => boolean) | undefined
     id?: string | undefined
+    labels?: Partial<ComboboxLabels> | undefined
     options: ComboboxItem[]
 }
 interface UseDialogOptions {
@@ -258,6 +269,16 @@ interface UseTabsOptions {
 
 ## @oriui/headless/vue
 type ColorFormat = "hex" | "hsl" | "rgb"
+interface ColorPickerLabels {
+    alpha: string
+    area: string
+    brightness: string
+    eyedropper: string
+    hex: string
+    hue: string
+    presets: string
+    saturation: string
+}
 type ComboboxAdapter = (options: MaybeRefOrGetter<UseComboboxOptions>) => ComboboxControl
 interface ComboboxControl {
     clear: () => void
@@ -283,6 +304,11 @@ interface ComboboxItem {
     disabled?: boolean | undefined
     label: string
     value: string
+}
+interface ComboboxLabels {
+    clear: string
+    close: string
+    open: string
 }
 type DialogAdapter = (options?: MaybeRefOrGetter<UseDialogOptions> | undefined) => DialogControl
 interface DialogControl {
@@ -384,12 +410,13 @@ interface ToastOptions {
 }
 type ToolbarToggleType = "multiple" | "single"
 type ToolbarToggleValue = string | string[] | undefined
-function useColorPicker(options: () => UseColorPickerOptions) => { hsva: ComputedRef<{ h: number; s: number; v: number; a: number; }>; rgb: ComputedRef<RGB>; hex: ComputedRef<string>; value: ComputedRef<string>; hue: ComputedRef<number>; alpha: ComputedRef<number>; swatchColor: ComputedRef<string>; opaqueColor: ComputedRef<string>; ink: ComputedRef<"#000000" | "#ffffff">; hueColor: ComputedRef<string>; eyedropperSupported: Ref<boolean, boolean>; areaProps: ComputedRef<{ role: "group"; 'aria-label': string; 'aria-disabled': true | undefined; style: { '--ori-color-picker-hue': string; }; onPointerdown: (event: PointerEvent) => void; }>; areaThumbStyle: ComputedRef<{ left: string; top: string; }>; getChannelInputProps: (channel: "saturation" | "value") => { type: "range"; min: number; max: number; step: number; value: number; disabled: true | undefined; 'aria-label': string; 'aria-orientation': "vertical" | undefined; 'aria-valuetext': string; onKeydown: (event: KeyboardEvent) => void; onInput: (event: Event) => void; }; presetGroupProps: ComputedRef<{ role: "listbox"; 'aria-label': string; 'aria-orientation': "horizontal"; }>; getPresetProps: (color: string, index: number) => { 'data-ori-preset': string; type: "button"; role: "option"; 'aria-label': string; 'aria-selected': boolean; disabled: true | undefined; tabindex: number; style: { '--ori-color': string; }; onClick: () => void; onFocus: () => void; }; onPresetKeydown: (event: KeyboardEvent) => void; setHue: (h: number) => void; setAlpha: (a: number) => void; setColor: (next: string) => boolean; setHex: (next: string) => boolean; setSaturationValue: (s: number, v: number) => void; openEyeDropper: () => Promise<void>; commit: () => void; }
+function useColorPicker(options: () => UseColorPickerOptions) => { hsva: ComputedRef<{ h: number; s: number; v: number; a: number; }>; rgb: ComputedRef<RGB>; hex: ComputedRef<string>; value: ComputedRef<string>; hue: ComputedRef<number>; alpha: ComputedRef<number>; swatchColor: ComputedRef<string>; opaqueColor: ComputedRef<string>; ink: ComputedRef<"#000000" | "#ffffff">; hueColor: ComputedRef<string>; eyedropperSupported: Ref<boolean, boolean>; labels: ComputedRef<ColorPickerLabels>; areaProps: ComputedRef<{ role: "group"; 'aria-label': string; 'aria-disabled': true | undefined; style: { '--ori-color-picker-hue': string; }; onPointerdown: (event: PointerEvent) => void; }>; areaThumbStyle: ComputedRef<{ left: string; top: string; }>; getChannelInputProps: (channel: "saturation" | "value") => { type: "range"; min: number; max: number; step: number; value: number; disabled: true | undefined; 'aria-label': string; 'aria-orientation': "vertical" | undefined; 'aria-valuetext': string; onKeydown: (event: KeyboardEvent) => void; onInput: (event: Event) => void; }; presetGroupProps: ComputedRef<{ role: "listbox"; 'aria-label': string; 'aria-orientation': "horizontal"; }>; getPresetProps: (color: string, index: number) => { 'data-ori-preset': string; type: "button"; role: "option"; 'aria-label': string; 'aria-selected': boolean; disabled: true | undefined; tabindex: number; style: { '--ori-color': string; }; onClick: () => void; onFocus: () => void; }; onPresetKeydown: (event: KeyboardEvent) => void; setHue: (h: number) => void; setAlpha: (a: number) => void; setColor: (next: string) => boolean; setHex: (next: string) => boolean; setSaturationValue: (s: number, v: number) => void; openEyeDropper: () => Promise<void>; commit: () => void; }
 interface UseColorPickerOptions {
     alpha?: boolean | undefined
     disabled?: boolean | undefined
     eyedropper?: boolean | undefined
     format?: ColorFormat | undefined
+    labels?: Partial<ColorPickerLabels> | undefined
     onChange: (next: string) => void
     onInput: (next: string) => void
     presets?: string[] | undefined
@@ -402,6 +429,7 @@ interface UseComboboxOptions {
     disabled?: boolean | undefined
     filter?: ((item: ComboboxItem, query: string) => boolean) | undefined
     id?: string | undefined
+    labels?: Partial<ComboboxLabels> | undefined
     options: ComboboxItem[]
 }
 function useDialog(options?: MaybeRefOrGetter<UseDialogOptions> | undefined) => DialogControl

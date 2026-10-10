@@ -1,5 +1,5 @@
 import type { Readable } from 'svelte/store'
-import type { ComboboxItem, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
+import type { ComboboxItem, ComboboxLabels, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
 import type { MaybeReactive } from './use-store'
 
 // The Svelte adapter mirrors the Vue contract (packages/headless/src/vue/contract.ts) but returns
@@ -70,6 +70,8 @@ export interface UseComboboxOptions {
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean
+    /** Accessible names of the trigger and clear buttons; a missing one keeps its English default. Live. */
+    labels?: Partial<ComboboxLabels>
 }
 
 /** The shape a Svelte combobox UI consumes, regardless of which engine produced it. Item prop-getters

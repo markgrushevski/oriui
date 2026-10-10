@@ -38,6 +38,11 @@ sibling component:
   dialog pattern says to leave out `aria-describedby` when the content is that complex. OriDialog keeps
   the body as its description, because a dialog's body is usually one message.
 
+- **Built-in accessible names are props, in two shapes.** A component with one built-in name takes a
+  `<part>Label` prop (`closeLabel`). A composite with a name for each of several parts takes one `labels`
+  object of optional keys (`OriColorPicker`, `OriCombobox`, and the matching composables), so a translation
+  passes only the strings it changes and a new part adds a key rather than a prop.
+
 **Left as they are, on purpose:**
 
 - **The toggle-group helpers (`resolveToolbarToggle`, `isToolbarTogglePressed`) and `useService` stay

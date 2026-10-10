@@ -101,8 +101,8 @@ navigation (`ArrowUp` / `ArrowDown`) and `Home` / `End` do not depend on directi
 
 Direction is not **text**: oriUI ships no translations and no message catalog. Most built-in strings are
 props with English defaults you override — `OriSpinner` / `OriProgress` take `label` (`'Loading'`), and
-`OriAlert`, `OriTag`, `OriDialog`, `OriDrawer`, `OriToast` and `OriToaster` take `closeLabel`. Two are still
-fixed in English: the color picker's channel labels and the combobox's clear button.
+`OriAlert`, `OriTag`, `OriDialog`, `OriDrawer`, `OriToast` and `OriToaster` take `closeLabel`, and
+`OriColorPicker` and `OriCombobox` take a `labels` object that names their parts.
 
 ## See also
 

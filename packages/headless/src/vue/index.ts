@@ -8,7 +8,7 @@ export { useDialog } from './use-dialog'
 
 // Headless behaviors built directly on the core engine
 export { useCombobox, type UseComboboxOptions } from './use-combobox'
-export type { ComboboxItem } from '../core'
+export type { ComboboxItem, ComboboxLabels } from '../core'
 
 // Headless menu (WAI-ARIA menu-button + roving tabindex) built on the core engine
 export { useMenu, type UseMenuOptions } from './use-menu'
@@ -35,7 +35,7 @@ export { useToast, type ToastAction, type ToastColor, type ToastItem, type Toast
 export { useDismissable, type UseDismissableOptions } from './use-dismissable'
 
 // Headless color picker — compositional sRGB + 2D-area helpers (not a machine); Vue binding
-export { useColorPicker, type UseColorPickerOptions } from './use-color-picker'
+export { useColorPicker, type ColorPickerLabels, type UseColorPickerOptions } from './use-color-picker'
 export type { ColorFormat, HSVA } from '../core/color-picker'
 
 // Token bridge — resolved --ori-* tokens for canvas/WebGL/chart consumers, theme-reactive

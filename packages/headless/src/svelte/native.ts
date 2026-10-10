@@ -159,7 +159,9 @@ export const nativeCombobox = (options: MaybeReactive<UseComboboxOptions>): Comb
         return all.filter((item) => filter(item, inputValue))
     }
 
-    const api = derived([version$, opts$], ([, o]) => combobox.connect(service, normalizeProps, visibleItems(o)))
+    const api = derived([version$, opts$], ([, o]) =>
+        combobox.connect(service, normalizeProps, visibleItems(o), o.labels)
+    )
 
     return {
         open: derived(api, (a) => a.open),

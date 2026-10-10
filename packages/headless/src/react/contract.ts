@@ -1,4 +1,4 @@
-import type { ComboboxItem, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
+import type { ComboboxItem, ComboboxLabels, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
 
 // The React controls mirror the Vue (`ComputedRef`) / Svelte (`Readable`) contracts member-for-member, but
 // expose PLAIN values recomputed each render — the component re-renders on machine changes via
@@ -68,6 +68,8 @@ export interface UseComboboxOptions {
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean
+    /** Accessible names of the trigger and clear buttons; a missing one keeps its English default. Live. */
+    labels?: Partial<ComboboxLabels>
 }
 
 /** The shape a combobox UI consumes, regardless of which engine (native core / Zag / custom) produced it. */
