@@ -7,7 +7,9 @@
         "@oriui/vue": "1.0.0-alpha.17"
     },
     "changesets": [
+        "accessible-name-labels",
         "anchored-panels-top-layer",
+        "api-freeze-1-0",
         "api-vocabulary-rename",
         "box-edge-non-text-contrast",
         "card-drop-unrendered-image-prop",
@@ -46,6 +48,7 @@
         "group-describedby-fallthrough",
         "headless-adapter-polish",
         "headless-option-shape-consistency",
+        "headless-vue-only",
         "list",
         "menu-separator",
         "neutral-skin-tooltip-fix",
@@ -60,6 +63,8 @@
         "react-toast-stable-action-identities",
         "rem-tokens",
         "reset-independence",
+        "review-correctness",
+        "review-focus-and-forced-colors",
         "role-text-one-hue",
         "role-text-tone",
         "roving-arrows-follow-direction",
@@ -94,6 +99,7 @@
         "use-tabs-headless",
         "use-toast-headless",
         "vue-dts-node16",
-        "vue-packaging-hygiene"
+        "vue-packaging-hygiene",
+        "webkit-firefox-fixes"
     ]
 }
