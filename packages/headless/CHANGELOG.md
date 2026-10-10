@@ -1,5 +1,105 @@
 # @oriui/headless
 
+## 1.0.0-rc.23
+
+### Major Changes
+
+- [`03ef8f9`](https://github.com/markgrushevski/oriui/commit/03ef8f95850c84a6f7e3fd9567e59f13849ca40d): **The last API changes before 1.0.** Each one makes a name agree with the rest of the library. After 1.0 the
+  same change would need a major version.
+
+    **`@oriui/vue`**
+
+    | Before                                                                 | After                                                         |
+    | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+    | `<OriButton icon-position="left">` / `"right"`                         | `icon-position="start"` / `"end"` (they mirror in RTL)        |
+    | `<OriDivider vertical>`, `<OriJoin vertical>`                          | `orientation="vertical"`                                      |
+    | `<OriRadioGroup inline>`                                               | `orientation="horizontal"`                                    |
+    | `<OriCombobox>` `#option="{ item }"`                                   | `#option="{ option }"` (`index` and `selected` are unchanged) |
+    | `<OriListItem>` `#start` / `#end`                                      | `#prepend` / `#append`                                        |
+    | `<OriListItem description hint>`                                       | `subtitle`, `meta`                                            |
+    | `<OriBadge label>`                                                     | `aria-label` (`ariaLabel`)                                    |
+    | `describedby` on `OriInput`, `OriSelect`, `OriTextarea`, `OriCombobox` | the `aria-describedby` attribute                              |
+    - `orientation` takes the new exported `Orientation` type (`'horizontal' | 'vertical'`), as on `OriTabs` and
+      `OriToolbar`.
+    - `OriListItem` names its parts like `OriTag` and `OriCard`. Its `hint` was trailing text, not the helper
+      text that `hint` means on a field.
+    - `OriBadge` renders `content`, so the name that is not rendered is `ariaLabel`.
+    - The `aria-describedby` attribute already did what the `describedby` prop did: it is joined with the
+      control's own hint and error ids, inside an `OriField` too, where the prop used to be dropped.
+    - New `closeLabel` on `OriDialog`, `OriDrawer` (`'Close'`), `OriToast` and `OriToaster`
+      (`'Dismiss notification'`), so the close button can be named in your language.
+    - Newly exported types: `Orientation`, `PopupRole`, `AnchoredSide`, `ColorFormat`, `ToastColor`. They
+      already appeared in public props.
+
+    **`@oriui/css`**
+
+    | Before                                                                  | After                                                           |
+    | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+    | `.ori-button_icon-position_left` / `_right` / `_top` / `_bottom`        | `.ori-button_icon-position-start` / `-end` / `-top` / `-bottom` |
+    | `.ori-radio-group_inline`                                               | `.ori-radio-group_horizontal`                                   |
+    | `.ori-list__start` / `__end` / `__description` / `__hint`               | `.ori-list__prepend` / `__append` / `__subtitle` / `__meta`     |
+    | `.ori-checkbox_disabled`, `.ori-switch_disabled`, `.ori-radio_disabled` | removed: the look follows the input's `disabled`                |
+    | `.ori-combobox__option_selected`                                        | removed: the look follows `aria-selected="true"`                |
+    - Every keyed modifier now joins key and value with a hyphen, like `.ori-surface_elevation-lg`.
+    - New `.ori-button_inherit`, `.ori-input_inherit`, `.ori-select_inherit`, `.ori-textarea_inherit`,
+      `.ori-combobox_inherit` and `.ori-segmented-control_inherit`. Until now `size="inherit"` had no class on
+      these blocks and fell back to `md`.
+
+    **`@oriui/headless`**
+
+    - `useCombobox`: the options `value` and `inputValue` were read once, at creation, so they are now
+      `defaultValue` and `defaultInputValue`.
+    - `useTabs`: `idBase` is `id`, as in every other composable.
+    - `useDialog`: `dialogProps` is `contentProps`, as in `useDisclosure` and `useMenu`. This also applies to
+      the `DialogControl` contract for a custom adapter.
+    - `useDismissable`: `pointerDownOutside` and `focusOutside` both default to `true`. Before, a call that set
+      neither did nothing. Pass `false` for the one your overlay should not use.
+    - `useTheme`: assigning `theme.value` (or `v-model="theme"`) now applies and persists the theme, and
+      `resolvedTheme` is read-only. Before, writing either ref changed the ref and nothing else.
+
+- [`1b9d5ba`](https://github.com/markgrushevski/oriui/commit/1b9d5ba0f43d76e9382c9240aa72da443b219ba0): The Svelte and React adapters are no longer published. `@oriui/headless` now exports the framework-free core
+  (`@oriui/headless`) and the Vue adapter (`@oriui/headless/vue`): the `@oriui/headless/svelte` and
+  `@oriui/headless/react` subpaths are gone, and `svelte` and `react` are no longer peer dependencies.
+
+    Both adapters were in development and are not part of 1.0. An app that imports one can stay on
+    `@oriui/headless@1.0.0-rc.22`. The `@oriui/css` classes and tokens work in Svelte and React as before.
+
+### Minor Changes
+
+- [`5eeed86`](https://github.com/markgrushevski/oriui/commit/5eeed8630cf1c6d8ed63ce07240a6dd4ddf4b64a): **Every built-in accessible name can be translated.** The color picker and the combobox were the last
+  components with English names fixed in the code.
+
+    - `OriColorPicker` and `useColorPicker` take `labels`, the names of the parts: `area`, `saturation`,
+      `brightness`, `hue`, `alpha`, `hex`, `presets` and `eyedropper`. Pass only the ones you translate; the
+      rest keep their English defaults. `useColorPicker` also returns the resolved `labels`, so a picker you
+      render yourself names its hue, alpha, hex and eyedropper parts from the same place.
+    - `OriCombobox` and `useCombobox` take `labels` for the trigger (`open`, `close`) and the clear button
+      (`clear`). The core `combobox.connect` takes them as an optional fourth argument.
+    - New exported types: `ColorPickerLabels` and `ComboboxLabels`.
+
+### Patch Changes
+
+- [`1bd55a7`](https://github.com/markgrushevski/oriui/commit/1bd55a7f2ceffb365b676d8faf2703d041786105): Correctness and accessibility fixes:
+
+    - **Development warnings reach your app.** Our library build compiled every development warning out of
+      `@oriui/vue`: a missing accessible name, a `#panel-<value>` slot that matches no tab or item. They now
+      depend on `process.env.NODE_ENV`, which your bundler sets, so they show in development and are dropped
+      from your production build. The two warnings that only named pre-1.0 renames (a bare `#<value>` tab slot,
+      an accordion item passing `title`) are gone.
+    - **Escape closes one layer at a time.** Pressing Escape on a tooltip inside a dialog or drawer dismisses the
+      tooltip and leaves the dialog or drawer open. A non-modal `OriDrawer` also stays open when Escape closes a
+      popover inside it.
+    - **Toolbar items named by their tooltip** when the slot holds an icon font: text inside `aria-hidden`
+      (`<span aria-hidden="true">format_bold</span>`) is not a visible name.
+    - **`OriTable`** that scrolls without a caption names its scroll region after the table's `aria-label` or
+      `aria-labelledby`. If the table has no name, the box is still a tab stop but no longer an unnamed region.
+    - **A disabled `OriListItem` link** keeps the link role, so it is announced as an unavailable link.
+    - **`OriField` around a radio group, segmented control or color picker** renders no label `for` in
+      server-rendered HTML. It used to point at an element that does not exist.
+    - **`OriDrawer`** is no longer described by its whole body: a screen reader announces the title on open
+      instead of reading out every filter. Pass `aria-describedby` to describe it. Its first focus skips
+      disabled and hidden controls.
+
 ## 1.0.0-rc.22
 
 ## 1.0.0-rc.21
