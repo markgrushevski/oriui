@@ -1,6 +1,6 @@
 {
     "name": "@oriui/headless",
-    "version": "1.0.0-rc.23",
+    "version": "1.0.0-rc.24",
     "description": "Headless behavior for oriUI: focus, keyboard and ARIA, as a framework-free engine with a Vue adapter.",
     "license": "MIT",
     "repository": {

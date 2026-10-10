@@ -1,5 +1,7 @@
 # @oriui/css
 
+## 1.0.0-rc.24
+
 ## 1.0.0-rc.23
 
 ### Major Changes
