@@ -15,17 +15,4 @@ dependency or a registry are in [ISSUES-OUTER.md](ISSUES-OUTER.md).
 
 ---
 
-## ORI-I-102 — a few built-in accessible names are English only
-
-`confirmed` · found by the final 1.0 review (October 2026)
-
-- **What:** Alert, Tag, Dialog, Drawer and Toast take a `closeLabel`, and Combobox a `noResultsText`. These
-  strings still have no prop:
-    - the color picker's labels: the area, the hue and alpha sliders, the hex field and the preset list,
-      some of them set in `useColorPicker`;
-    - the combobox's clear button, named "Clear selection" in the core connect.
-
-    An app in another language gets English names on those controls.
-
-- **Fix:** additive props (a `labels` object on `OriColorPicker` and `useColorPicker`, a `clearLabel` on
-  `OriCombobox` and in the combobox options). A minor release after 1.0, so it does not block it.
+Nothing is open right now.

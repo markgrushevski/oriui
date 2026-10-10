@@ -1,4 +1,4 @@
-import type { ComboboxItem } from './combobox'
+import type { ComboboxItem, ComboboxLabels } from './combobox'
 import type { MenuItem } from './menu'
 
 /**
@@ -45,6 +45,8 @@ export interface UseComboboxOptions {
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean
+    /** Accessible names of the trigger and clear buttons; a missing one keeps its English default. Live. */
+    labels?: Partial<ComboboxLabels>
 }
 
 export interface UseMenuOptions {

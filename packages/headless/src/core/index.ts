@@ -33,5 +33,5 @@ export * as combobox from './combobox'
 export * as menu from './menu'
 
 // Public data shapes consumers pass in + the per-item state a UI reads back (flat, not namespaced)
-export type { ComboboxItem, ComboboxOptionState } from './combobox'
+export type { ComboboxItem, ComboboxLabels, ComboboxOptionState } from './combobox'
 export type { MenuItem, MenuItemState } from './menu'

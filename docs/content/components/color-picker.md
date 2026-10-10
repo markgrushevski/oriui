@@ -193,17 +193,18 @@ The props, events, and slots of the **Vue** component. Behavior comes from `useC
 
 ### Props
 
-| Prop         | Type                      | Default | Description                                                                                     |
-| ------------ | ------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| `alpha`      | `boolean`                 | `false` | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.      |
-| `disabled`   | `boolean`                 | `false` | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                   |
-| `eyedropper` | `boolean`                 | `false` | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).       |
-| `form`       | `string`                  | —       | Associate the hidden value input with a `<form>` by id (when the picker sits outside it).       |
-| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string. Always lowercase.                                          |
-| `label`      | `string`                  | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).              |
-| `modelValue` | `string`                  | —       | Controlled color; bind with `v-model`. Parsed loosely (hex, `rgb()/rgba()`, `hsl()/hsla()`).    |
-| `name`       | `string`                  | —       | Submit the current color under this field name via a hidden input (a color always has a value). |
-| `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                               |
+| Prop         | Type                         | Default | Description                                                                                                                                          |
+| ------------ | ---------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `alpha`      | `boolean`                    | `false` | Add an alpha channel: a checkerboard slider + `#rrggbbaa` (or `rgba()` / `hsla()`) output.                                                           |
+| `disabled`   | `boolean`                    | `false` | Dims the panel, blocks pointer events, and disables the channel + hex inputs.                                                                        |
+| `eyedropper` | `boolean`                    | `false` | Show a pick-from-screen trigger (EyeDropper API; auto-hidden where the browser lacks it).                                                            |
+| `form`       | `string`                     | —       | Associate the hidden value input with a `<form>` by id (when the picker sits outside it).                                                            |
+| `format`     | `'hex' \| 'rgb' \| 'hsl'`    | `'hex'` | Output format of the emitted string. Always lowercase.                                                                                               |
+| `label`      | `string`                     | —       | Accessible name for the whole control (→ `aria-label` on the `role="group"` root).                                                                   |
+| `labels`     | `Partial<ColorPickerLabels>` | English | Accessible names of the parts: `area`, `saturation`, `brightness`, `hue`, `alpha`, `hex`, `presets`, `eyedropper`. Pass only the ones you translate. |
+| `modelValue` | `string`                     | —       | Controlled color; bind with `v-model`. Parsed loosely (hex, `rgb()/rgba()`, `hsl()/hsla()`).                                                         |
+| `name`       | `string`                     | —       | Submit the current color under this field name via a hidden input (a color always has a value).                                                      |
+| `presets`    | `string[]`                   | —       | Preset swatch colors, rendered as a single-select roving listbox.                                                                                    |
 
 ### Events
 

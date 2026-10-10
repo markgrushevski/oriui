@@ -6,9 +6,10 @@
 Correctness and accessibility fixes:
 
 - **Development warnings reach your app.** Our library build compiled every development warning out of
-  `@oriui/vue`: a missing accessible name, a stale `#<value>` tab slot, an accordion item still passing
-  `title`. They now depend on `process.env.NODE_ENV`, which your bundler sets, so they show in development
-  and are dropped from your production build.
+  `@oriui/vue`: a missing accessible name, a `#panel-<value>` slot that matches no tab or item. They now
+  depend on `process.env.NODE_ENV`, which your bundler sets, so they show in development and are dropped
+  from your production build. The two warnings that only named pre-1.0 renames (a bare `#<value>` tab slot,
+  an accordion item passing `title`) are gone.
 - **Escape closes one layer at a time.** Pressing Escape on a tooltip inside a dialog or drawer dismisses the
   tooltip and leaves the dialog or drawer open. A non-modal `OriDrawer` also stays open when Escape closes a
   popover inside it.

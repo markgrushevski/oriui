@@ -270,6 +270,19 @@ describe('OriCombobox', () => {
         expect(selected?.attributes('aria-selected')).toBe('true')
     })
 
+    // The buttons' names are English by default and replaceable one by one.
+    it('labels names the trigger and the clear button; a missing one keeps its default', async () => {
+        const wrapper = mountCb({ modelValue: 'banana', clearable: true, labels: { clear: 'Effacer' } })
+
+        expect(wrapper.find('.ori-combobox__clear').attributes('aria-label')).toBe('Effacer')
+        expect(wrapper.find('.ori-combobox__trigger').attributes('aria-label')).toBe('Open suggestions')
+
+        await wrapper.setProps({ labels: { open: 'Ouvrir', close: 'Fermer' } })
+        expect(wrapper.find('.ori-combobox__trigger').attributes('aria-label')).toBe('Ouvrir')
+        await wrapper.find('.ori-combobox__trigger').trigger('click')
+        expect(wrapper.find('.ori-combobox__trigger').attributes('aria-label')).toBe('Fermer')
+    })
+
     it('clearable clears the selection', async () => {
         const wrapper = mountCb({ modelValue: 'banana', clearable: true })
         expect((wrapper.find('input').element as HTMLInputElement).value).toBe('Banana')

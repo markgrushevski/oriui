@@ -203,46 +203,7 @@ describe('OriAccordion', () => {
         })
     })
 
-    // ----- the pre-1.0 `title` → `label` rename -----
-    //
-    // The key is now `label`, matching every other collection item in the catalog. TypeScript rejects
-    // the old key, but an untyped array (JS, JSON from an API) would silently render empty summaries —
-    // so the component names the rename in DEV. These tests pin BOTH halves: that the stale key is
-    // reported, and that the report does not fire for a correct array (a warn nobody can silence is
-    // worse than no warn).
-
-    it('warns in DEV, naming the renamed key, when an item still carries `title`', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-        mount(OriAccordion, {
-            // The whole point is the untyped caller the type system cannot reach.
-            props: { items: [{ value: 'a', title: 'Alpha' }] as unknown as { value: string; label: string }[] }
-        })
-
-        expect(warn).toHaveBeenCalledTimes(1)
-        const message = warn.mock.calls[0]![0] as string
-        expect(message).toContain('[OriAccordion]')
-        expect(message).toContain('`title`')
-        expect(message).toContain('`label`')
-        // The offending item is named, so a long list points at the one that is wrong.
-        expect(message).toContain('a')
-
-        warn.mockRestore()
-    })
-
-    it('renders nothing for a stale `title` — the summary is empty, which is what the warning is for', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-        const wrapper = mount(OriAccordion, {
-            props: { items: [{ value: 'a', title: 'Alpha' }] as unknown as { value: string; label: string }[] }
-        })
-
-        expect(wrapper.find('.ori-accordion__title').text()).toBe('')
-
-        warn.mockRestore()
-    })
-
-    it('stays silent for a correct `label` array', () => {
+    it('stays silent for a correct items array', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
         mount(OriAccordion, { props: { items: ITEMS } })

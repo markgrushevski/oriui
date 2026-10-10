@@ -398,24 +398,7 @@ describe('OriTabs', () => {
         expect(wrapper.findAll('.ori-tabs__panel')[1]!.find('.fallback').exists()).toBe(true)
     })
 
-    it('warns in DEV when a caller passes the old un-prefixed #<value> panel slot', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-        mount(OriTabs, {
-            props: { tabs: TABS, modelValue: 'account' },
-            slots: { account: '<p>Account panel</p>' }
-        })
-
-        expect(warn).toHaveBeenCalledTimes(1)
-        const message = warn.mock.calls[0]![0] as string
-        expect(message).toContain('[OriTabs]')
-        expect(message).toContain('#account')
-        expect(message).toContain('#panel-account')
-
-        warn.mockRestore()
-    })
-
-    it('does not mistake the reserved #tab slot for a stale panel slot on a tab valued "tab"', () => {
+    it('does not warn about the reserved #tab slot on a tab valued "tab"', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
         mount(OriTabs, {

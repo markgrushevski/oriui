@@ -35,16 +35,17 @@ import { useColorPicker } from '@oriui/headless/vue'
 with the dual-event convention: `onInput` streams live on every interaction tick, `onChange` commits once
 on release / keyboard settle (one undo entry).
 
-| Option       | Type                      | Default | Description                                                                                                      |
-| ------------ | ------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
-| `value`      | `string \| undefined`     | —       | The controlled color (the `v-model` value). Parsed loosely: hex, `rgb()/rgba()`, `hsl()/hsla()`.                 |
-| `format`     | `'hex' \| 'rgb' \| 'hsl'` | `'hex'` | Output format of the emitted string (`ColorFormat`). `rgb` / `hsl` emit function notation; output is lowercase.  |
-| `alpha`      | `boolean`                 | `false` | Include an alpha channel — the emitted string carries it (`#rrggbbaa` / `rgba()` / `hsla()`).                    |
-| `eyedropper` | `boolean`                 | `false` | Expose an eyedropper action (the `EyeDropper` API); `eyedropperSupported` is `false` where the browser lacks it. |
-| `disabled`   | `boolean`                 | `false` | Blocks the area pointer drag / keyboard and disables the channel inputs.                                         |
-| `presets`    | `string[]`                | —       | Preset swatch colors, rendered as a single-select roving listbox.                                                |
-| `onInput`    | `(next: string) => void`  | —       | **Required.** Live value on every interaction tick — wire to `update:modelValue`.                                |
-| `onChange`   | `(next: string) => void`  | —       | **Required.** Committed value on pointer-release / keyboard settle — wire to `change` (one undo entry).          |
+| Option       | Type                         | Default | Description                                                                                                                                                                                              |
+| ------------ | ---------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `value`      | `string \| undefined`        | —       | The controlled color (the `v-model` value). Parsed loosely: hex, `rgb()/rgba()`, `hsl()/hsla()`.                                                                                                         |
+| `format`     | `'hex' \| 'rgb' \| 'hsl'`    | `'hex'` | Output format of the emitted string (`ColorFormat`). `rgb` / `hsl` emit function notation; output is lowercase.                                                                                          |
+| `alpha`      | `boolean`                    | `false` | Include an alpha channel — the emitted string carries it (`#rrggbbaa` / `rgba()` / `hsla()`).                                                                                                            |
+| `eyedropper` | `boolean`                    | `false` | Expose an eyedropper action (the `EyeDropper` API); `eyedropperSupported` is `false` where the browser lacks it.                                                                                         |
+| `disabled`   | `boolean`                    | `false` | Blocks the area pointer drag / keyboard and disables the channel inputs.                                                                                                                                 |
+| `presets`    | `string[]`                   | —       | Preset swatch colors, rendered as a single-select roving listbox.                                                                                                                                        |
+| `labels`     | `Partial<ColorPickerLabels>` | English | Accessible names of the parts. The prop-getters apply `area`, `saturation`, `brightness` and `presets`; read `hue`, `alpha`, `hex` and `eyedropper` from the returned `labels` for the parts you render. |
+| `onInput`    | `(next: string) => void`     | —       | **Required.** Live value on every interaction tick — wire to `update:modelValue`.                                                                                                                        |
+| `onChange`   | `(next: string) => void`     | —       | **Required.** Committed value on pointer-release / keyboard settle — wire to `change` (one undo entry).                                                                                                  |
 
 ## Returns
 
@@ -66,6 +67,7 @@ Reactive state, prop-getters (spread with `v-bind`), and imperative setters. `HS
 | `ink`                 | `ComputedRef<'#000000' \| '#ffffff'>` | Readable ink over the current color, per WCAG luminance (`readableInk`).                                                                                                            |
 | `hueColor`            | `ComputedRef<string>`                 | The fully-saturated hue color — the area's `--ori-color-picker-hue` gradient anchor.                                                                                                |
 | `eyedropperSupported` | `Ref<boolean>`                        | Whether the `EyeDropper` API exists. Set on mount, so it is `false` on the server — gate the eyedropper trigger on `eyedropperSupported.value`.                                     |
+| `labels`              | `ComputedRef<ColorPickerLabels>`      | Every part's accessible name, with the English defaults filled in.                                                                                                                  |
 
 ### Prop-getters
 
@@ -158,7 +160,7 @@ watch(
             :max="360"
             :step="1"
             :value="cp.hue.value"
-            aria-label="Hue"
+            :aria-label="cp.labels.value.hue"
             @input="cp.setHue(Number(($event.target as HTMLInputElement).value))"
             @change="cp.commit"
         />
@@ -166,7 +168,7 @@ watch(
         <!-- Hex field — setHex parses and commits, returning false on a bad hex. -->
         <input
             :value="hexDraft"
-            aria-label="Hex color"
+            :aria-label="cp.labels.value.hex"
             spellcheck="false"
             @input="hexDraft = ($event.target as HTMLInputElement).value"
             @blur="cp.setHex(hexDraft)"

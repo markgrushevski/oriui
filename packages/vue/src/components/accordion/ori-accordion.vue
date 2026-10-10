@@ -10,8 +10,7 @@ declare const process: { env: { NODE_ENV?: string } }
  *
  * The display key is `label`, matching `TabItem` / `SelectOption` / `RadioOption` / `ComboboxItem` /
  * `MenuItem` — one collection-item shape across the catalog, so an item array can be mapped from the
- * same source data whichever component renders it. It was `title` until the pre-1.0 convergence; see
- * the development warning below, which names the rename when a stale `title` arrives.
+ * same source data whichever component renders it.
  */
 export interface AccordionItem {
     value: string | number
@@ -55,31 +54,13 @@ function blockDisabled(event: Event, disabled?: boolean): void {
     if (disabled) event.preventDefault()
 }
 
-// `AccordionItem.title` was renamed to `label` before 1.0 to converge with every other collection
-// item in the catalog. TypeScript already rejects the old key, but a plainly-typed array (JS, JSON
-// from an API, an `as any` demo) would silently render empty summaries — so name the rename here
-// rather than leaving the caller to diff the markup. Development builds only.
+// A `#panel-<value>` slot whose value is a typo, or whose item was removed, consumes nothing and Vue never
+// warns about an unconsumed slot — the section silently falls back to `#default` or renders empty. Exact
+// match against the item values, with the same empty-collection guard as OriTabs: an empty `items` is "not
+// loaded yet", and every panel slot is an orphan against an empty set. Development builds only.
 if (process.env.NODE_ENV !== 'production') {
     const slots = useSlots()
     watchEffect(() => {
-        // Typed as the caller may actually have built it, not as the prop promises: `label` optional
-        // (that is the whole failure mode) and the retired `title` visible to the check.
-        const loose = items as ReadonlyArray<Partial<AccordionItem> & { title?: unknown }>
-        const stale = loose
-            .filter((item) => item.label === undefined && typeof item.title === 'string')
-            .map((item) => String(item.value))
-        if (stale.length)
-            console.warn(
-                `[OriAccordion] item(s) ${stale.join(', ')} pass \`title\`, which was renamed to \`label\` ` +
-                    'before 1.0 (matching TabItem / SelectOption / RadioOption / ComboboxItem / MenuItem). ' +
-                    'Rename the key — the summary renders empty otherwise.'
-            )
-
-        // A `#panel-<value>` slot whose value is a typo, or whose item was removed, consumes nothing
-        // and Vue never warns about an unconsumed slot — the section silently falls back to `#default`
-        // or renders empty. Exact match against the item values, with the same empty-collection guard
-        // as OriTabs: an empty `items` is "not loaded yet", and every panel slot is an orphan against
-        // an empty set.
         if (items.length === 0) return
         const values = new Set(items.map((item) => `panel-${item.value}`))
         const orphans = Object.keys(slots).filter((name) => name.startsWith('panel-') && !values.has(name))

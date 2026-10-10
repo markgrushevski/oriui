@@ -1,7 +1,7 @@
 import type { NormalizeProps, PropTypes } from '../types'
 import { anatomy } from './combobox.anatomy'
 import type { ComboboxService } from './combobox.machine'
-import type { ComboboxItem } from './combobox.types'
+import type { ComboboxItem, ComboboxLabels } from './combobox.types'
 
 const parts = anatomy.build()
 
@@ -37,11 +37,13 @@ export interface ComboboxApi<T extends PropTypes = PropTypes> {
  * (Arrow/Home/End move the highlight, Enter selects, Escape closes). `collection` is the currently
  * visible (already-filtered) items, so navigation and the active-descendant id stay in sync with what
  * the user sees. The framework adapter supplies `normalize` and re-invokes this on every state change.
+ * `labels` names the trigger and clear buttons; a missing one keeps its English default.
  */
 export function connect<T extends PropTypes>(
     service: ComboboxService,
     normalize: NormalizeProps<T>,
-    collection: ComboboxItem[]
+    collection: ComboboxItem[],
+    labels: Partial<ComboboxLabels> = {}
 ): ComboboxApi<T> {
     const { open, value, inputValue, highlightedValue, disabled } = service.getState()
     const { scope } = service
@@ -173,7 +175,7 @@ export function connect<T extends PropTypes>(
                 ...parts.trigger.attrs,
                 type: 'button',
                 tabindex: -1,
-                'aria-label': open ? 'Close suggestions' : 'Open suggestions',
+                'aria-label': open ? (labels.close ?? 'Close suggestions') : (labels.open ?? 'Open suggestions'),
                 'aria-controls': listboxId,
                 'aria-expanded': open,
                 disabled: disabled || undefined,
@@ -188,7 +190,7 @@ export function connect<T extends PropTypes>(
                 ...parts.clearTrigger.attrs,
                 type: 'button',
                 tabindex: -1,
-                'aria-label': 'Clear selection',
+                'aria-label': labels.clear ?? 'Clear selection',
                 disabled: disabled || undefined,
                 onClick() {
                     send({ type: 'CLEAR' })

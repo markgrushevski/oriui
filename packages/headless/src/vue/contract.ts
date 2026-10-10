@@ -1,5 +1,5 @@
 import type { ComputedRef, InjectionKey, MaybeRefOrGetter } from 'vue'
-import type { ComboboxItem, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
+import type { ComboboxItem, ComboboxLabels, ComboboxOptionState, MenuItem, MenuItemState } from '../core'
 
 export interface UseDisclosureOptions {
     id?: string
@@ -64,6 +64,8 @@ export interface UseComboboxOptions {
     disabled?: boolean
     /** Filter predicate; default = case-insensitive substring on the label. */
     filter?: (item: ComboboxItem, query: string) => boolean
+    /** Accessible names of the trigger and clear buttons; a missing one keeps its English default. Live. */
+    labels?: Partial<ComboboxLabels>
 }
 
 /**

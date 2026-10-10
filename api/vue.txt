@@ -12,10 +12,25 @@ type AnchoredPlacement = "bottom-end" | "bottom-start" | "left-end" | "left-star
 type AnchoredSide = "bottom" | "left" | "right" | "top"
 type CenteredPosition = "bottom" | "end" | "start" | "top"
 type ColorFormat = "hex" | "hsl" | "rgb"
+interface ColorPickerLabels {
+    alpha: string
+    area: string
+    brightness: string
+    eyedropper: string
+    hex: string
+    hue: string
+    presets: string
+    saturation: string
+}
 interface ComboboxItem {
     disabled?: boolean | undefined
     label: string
     value: string
+}
+interface ComboboxLabels {
+    clear: string
+    close: string
+    open: string
 }
 type DrawerSide = "bottom" | "end" | "start" | "top"
 type GapSize = "lg" | "md" | "none" | "sm" | "xl" | "xs"
@@ -239,6 +254,7 @@ OriColorPicker (packages/vue/src/components/color-picker/ori-color-picker.vue)
     prop form?: string | undefined
     prop format?: ColorFormat | undefined = "hex"
     prop label?: string | undefined
+    prop labels?: Partial<ColorPickerLabels> | undefined
     prop modelValue?: string | undefined
     prop name?: string | undefined
     prop presets?: string[] | undefined
@@ -258,6 +274,7 @@ OriCombobox (packages/vue/src/components/combobox/ori-combobox.vue)
     prop id?: string | undefined
     prop invalid?: boolean | undefined = false
     prop label?: string | undefined
+    prop labels?: Partial<ComboboxLabels> | undefined
     prop modelValue?: string | null | undefined
     prop name?: string | undefined
     prop noResultsText?: string | undefined = "No results"

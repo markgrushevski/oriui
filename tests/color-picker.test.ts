@@ -284,6 +284,40 @@ describe('OriColorPicker — eyedropper', () => {
     })
 })
 
+describe('OriColorPicker — labels', () => {
+    // Every part's name is English by default and replaceable one by one; the rest keep their defaults.
+    it('labels names the parts', async () => {
+        ;(window as unknown as { EyeDropper: unknown }).EyeDropper = class {}
+        const wrapper = mount(OriColorPicker, {
+            props: {
+                modelValue: '#3366ff',
+                alpha: true,
+                eyedropper: true,
+                presets: ['#ff0000'],
+                labels: {
+                    alpha: 'Opacité',
+                    area: 'Saturation et luminosité',
+                    brightness: 'Luminosité',
+                    eyedropper: 'Pipette',
+                    hex: 'Couleur hex',
+                    hue: 'Teinte',
+                    presets: 'Couleurs prédéfinies'
+                }
+            }
+        })
+        await wrapper.vm.$nextTick()
+
+        expect(area(wrapper).attributes('aria-label')).toBe('Saturation et luminosité')
+        expect(channels(wrapper)[0].attributes('aria-label')).toBe('Saturation')
+        expect(channels(wrapper)[1].attributes('aria-label')).toBe('Luminosité')
+        expect(hueInput(wrapper).attributes('aria-label')).toBe('Teinte')
+        expect(wrapper.find('input.ori-slider_alpha').attributes('aria-label')).toBe('Opacité')
+        expect(hexInput(wrapper).attributes('aria-label')).toBe('Couleur hex')
+        expect(wrapper.find('.ori-color-picker__eyedropper').attributes('aria-label')).toBe('Pipette')
+        expect(wrapper.find('[role="listbox"]').attributes('aria-label')).toBe('Couleurs prédéfinies')
+    })
+})
+
 describe('OriColorPicker — form submission', () => {
     const hidden = (w: ReturnType<typeof mount>) => w.find('input[type="hidden"]')
 
