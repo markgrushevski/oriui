@@ -5,8 +5,19 @@ import type { AnchoredPlacement, ThemeColor } from '../../types'
 // WCAG 1.4.13 requires dismissing hover/focus content without moving the pointer or focus — Escape,
 // the one part CSS cannot do. One document listener serves every tooltip: each instance registers a
 // callback and checks the DOM (`:hover` / focus) to see whether it is the one showing. Show/hide stays CSS.
-// An Escape that dismissed a tooltip is consumed, so the dialog or drawer around it stays open.
+// An Escape that dismissed a tooltip is consumed, so the dialog or drawer around it stays open — but only
+// when the tooltip is the top layer. A popover or dialog opened above it (a picker its own trigger opened)
+// takes Escape first, and the tooltip under it must not swallow the key.
 const shown = new Set<() => boolean>()
+
+/** Whether an open popover or modal dialog that does not contain `el` sits above it. */
+function underAnotherLayer(el: Element): boolean {
+    try {
+        return [...document.querySelectorAll(':popover-open, dialog:modal')].some((layer) => !layer.contains(el))
+    } catch {
+        return false
+    }
+}
 
 function onDocumentKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return
@@ -62,10 +73,17 @@ const bubbleId = useId()
 const root = useTemplateRef<HTMLElement>('root')
 const dismissed = ref(false)
 
+// Showing is what the stylesheet decided, not just hover or focus: a pointer press can focus the trigger
+// while the bubble stays hidden (a style that shows it on `:focus-visible` only), and an Escape that hides
+// nothing must reach whatever else is listening. A bubble still in its show transition reads `hidden` for
+// that first frame, so a running transition counts as showing.
 function dismissIfShowing(): boolean {
     const el = root.value
     if (!el || dismissed.value) return false
     if (!el.matches(':hover') && !el.contains(document.activeElement)) return false
+    const bubble = el.querySelector('.ori-tooltip__bubble')
+    if (bubble && getComputedStyle(bubble).visibility === 'hidden' && !bubble.getAnimations?.().length) return false
+    if (underAnotherLayer(el)) return false
     dismissed.value = true
     return true
 }

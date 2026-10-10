@@ -44,6 +44,16 @@ const outsideClicks = ref(0)
             </OriDrawer>
         </div>
 
+        <!-- A button that has a tooltip and opens a popover: the popover is the top layer once it is open. -->
+        <OriPopover>
+            <template #trigger="{ props }">
+                <OriTooltip content="Canvas color">
+                    <button v-bind="props" type="button" data-testid="tooltip-popover-trigger">Color</button>
+                </OriTooltip>
+            </template>
+            <div data-testid="tooltip-popover">Pick a color</div>
+        </OriPopover>
+
         <OriDialog title="Confirm">
             <template #trigger="{ props }">
                 <button v-bind="props" type="button" data-testid="open-dialog">Open dialog</button>
