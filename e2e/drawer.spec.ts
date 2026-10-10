@@ -227,3 +227,27 @@ test.describe('OriDrawer — non-modal (real Chromium)', () => {
         expect(await wheelOver(page, 800, 400)).toBeGreaterThan(0)
     })
 })
+
+test.describe('OriTooltip on a popover trigger', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.goto('/#drawer')
+    })
+
+    // The popover the trigger opened sits above the tooltip, so one Escape closes it, whether the trigger
+    // was clicked or reached by keyboard.
+    test('one Escape closes the popover the trigger opened', async ({ page }) => {
+        const trigger = page.getByTestId('tooltip-popover-trigger')
+        const popover = page.getByTestId('tooltip-popover').locator('xpath=..')
+
+        await trigger.click()
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(true)
+        await page.keyboard.press('Escape')
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(false)
+
+        await trigger.focus()
+        await page.keyboard.press('Enter')
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(true)
+        await page.keyboard.press('Escape')
+        expect(await popover.evaluate((el) => el.matches(':popover-open'))).toBe(false)
+    })
+})

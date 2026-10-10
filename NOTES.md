@@ -135,7 +135,10 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   reads Escape too: a native `<dialog>` closes on the key's default action, and a non-modal drawer
   listens on the document. The tooltip consumes the Escape that dismissed it; a layer that closes on
   Escape skips an event that is `defaultPrevented`, and checks for a `:popover-open` inside it, because a
-  native popover closes itself without preventing anything.
+  native popover closes itself without preventing anything. The reverse holds too: a capture-phase
+  consumer must check that it is the top layer. A tooltip whose trigger opened a popover sat under that
+  popover and still took the first Escape, so the popover needed two. It now skips the key while an open
+  popover or modal dialog that does not contain it exists, and while its bubble is not visible.
 - **`showModal()` does not lock the page scroll.** The page goes inert, but a wheel over the backdrop
   still scrolls it (measured: 800px under an open dialog). dialog.css and drawer.css set
   `:root:has(…:modal) { overflow: hidden }`. Not `scrollbar-gutter: stable` with it: the reserved gutter
