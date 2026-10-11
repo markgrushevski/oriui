@@ -218,9 +218,11 @@ test.describe('OriTooltip — when it shows (real browser)', () => {
         await page.goto('/#tooltip')
     })
 
-    // The visibility the bubble settles on once its fade has run.
+    // The visibility the bubble settles on once its fade has run. Reading a style first starts the fade:
+    // WebKit's getAnimations() does not recalculate style, so it would miss a transition not yet begun.
     const settled = (page: Page): Promise<string> =>
         page.locator('.ori-tooltip__bubble').evaluate(async (el) => {
+            void getComputedStyle(el).visibility
             await Promise.all(el.getAnimations().map((animation) => animation.finished))
             return getComputedStyle(el).visibility
         })
