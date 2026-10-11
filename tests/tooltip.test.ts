@@ -236,6 +236,16 @@ describe('OriTooltip — Escape dismisses (WCAG 1.4.13)', () => {
         wrapper.unmount()
     })
 
+    it('a press of the trigger dismisses it, and the pointer leaving re-arms it', async () => {
+        const wrapper = mountTip()
+        await wrapper.find('button').trigger('click')
+        expect(wrapper.attributes('data-ori-dismissed')).toBe('true')
+
+        await wrapper.trigger('pointerleave')
+        expect(wrapper.attributes('data-ori-dismissed')).toBeUndefined()
+        wrapper.unmount()
+    })
+
     it('a key other than Escape does not dismiss', async () => {
         const wrapper = mountTip()
         ;(wrapper.find('button').element as HTMLElement).focus()

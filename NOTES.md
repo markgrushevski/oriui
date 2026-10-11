@@ -139,6 +139,10 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
   consumer must check that it is the top layer. A tooltip whose trigger opened a popover sat under that
   popover and still took the first Escape, so the popover needed two. It now skips the key while an open
   popover or modal dialog that does not contain it exists, and while its bubble is not visible.
+- **A clicked control matches `:focus-visible` after the next key press.** Chromium (measured) switches the
+  focused element to keyboard focus on any key, `Shift` and `Escape` included. A style that shows something
+  on `:focus-visible` shows it then, mid-interaction. The tooltip records at `focusin` whether the focus was
+  keyboard focus and keeps its focus rule off otherwise (`data-ori-pointer-focus`).
 - **`showModal()` does not lock the page scroll.** The page goes inert, but a wheel over the backdrop
   still scrolls it (measured: 800px under an open dialog). dialog.css and drawer.css set
   `:root:has(…:modal) { overflow: hidden }`. Not `scrollbar-gutter: stable` with it: the reserved gutter
@@ -272,7 +276,7 @@ td` drew a cell grid over `.ori-table` and left its numbers start-aligned; the d
 - **A pure-CSS tooltip can't make `aria-describedby` announce on its own.** `aria-describedby` is read
   when the element _bearing_ it is focused; OriTooltip puts it on the non-focusable `.ori-tooltip__trigger`
   wrapper (which only guarantees the id resolves) and exposes `bubbleId` on the **default slot scope** so
-  the consumer binds `:aria-describedby="bubbleId"` on their _own_ focusable control. `:focus-within`
+  the consumer binds `:aria-describedby="bubbleId"` on their _own_ focusable control. `:focus-visible`
   drives the bubble's CSS visibility, not the ARIA announcement — they're independent. Augmenting
   arbitrary slot content would need JS (out of the CSS-only scope).
 - **A native `<summary>`/`<select>`/`<details>` has no real `disabled` state** — `aria-disabled` +

@@ -6,9 +6,10 @@ title: Tooltip
 
 A CSS-driven tooltip that shows additional context when a control is focused or hovered. The bubble
 is always in the DOM (so the `aria-describedby` reference is never dangling) and shown/hidden in CSS —
-no state machine, no positioning engine. Show is `:focus-within` (keyboard) and `:hover` wrapped in
-`@media (hover: hover)` (pointer, without sticking open on touch). The pointer can move onto the bubble,
-and `Escape` hides it without moving focus or the pointer (WCAG 1.4.13).
+no state machine, no positioning engine. Show is `:focus-visible` (keyboard focus) and `:hover` wrapped
+in `@media (hover: hover)` (pointer, without sticking open on touch); a click or a tap that focuses the
+trigger does not show it. A press of the trigger hides it, the pointer can move onto the bubble, and
+`Escape` hides it without moving focus or the pointer (WCAG 1.4.13).
 
 The examples are organized by **layer**: the [class reference](#classes) is the standalone
 **`@oriui/css`** layer, and the [Framework API](#framework-api) is the **`@oriui/vue`** component. Every
@@ -290,16 +291,26 @@ component cannot do for arbitrary slot content.
 > because `aria-describedby` surfaces on focus of the element bearing it and the wrapper isn't focusable.
 > For the description to actually be announced, bind `:aria-describedby="bubbleId"` on your own focusable
 > control. Hand-written markup has no such limit: put the attribute straight on the `<button>`.
-> `:focus-within` governs the bubble's CSS visibility, not the ARIA announcement; the two are independent.
+> `:focus-visible` governs the bubble's CSS visibility, not the ARIA announcement; the two are independent.
 
-| Key         | Action                                                                  |
-| ----------- | ----------------------------------------------------------------------- |
-| `Tab`       | Focuses the trigger control; shows the tooltip.                         |
-| `Shift+Tab` | Blurs the trigger control; hides the tooltip.                           |
-| `Escape`    | Hides the tooltip while focus or the pointer stays; leaving re-arms it. |
+| Key               | Action                                                                  |
+| ----------------- | ----------------------------------------------------------------------- |
+| `Tab`             | Focuses the trigger control; shows the tooltip.                         |
+| `Shift+Tab`       | Blurs the trigger control; hides the tooltip.                           |
+| `Enter` / `Space` | Activates the trigger and hides the tooltip, as a click does.           |
+| `Escape`          | Hides the tooltip while focus or the pointer stays; leaving re-arms it. |
 
-In the CSS layer, `Escape` is yours to wire: set `data-ori-dismissed` on `.ori-tooltip` to hide the bubble,
-and remove it on `pointerleave` / `focusout`.
+The Vue component follows the model of Radix, React Aria and Zag: the tooltip shows on hover and on
+keyboard focus, never on focus a click or a tap put there, and it hides when the trigger is pressed —
+whatever the press opens, the hint would cover it. An `Escape` that hides no tooltip, or that comes while a
+popover or modal dialog sits above it, passes through to whatever else listens for it.
+
+In the CSS layer, two attributes on `.ori-tooltip` are yours to wire. `data-ori-dismissed` hides the bubble:
+set it on `Escape` and on a click of the trigger, and remove it once the pointer and the focus have left.
+`data-ori-pointer-focus` turns off the focus rule only: browsers start matching `:focus-visible` on a
+clicked control at the next key press, so set it on `focusin` when the focus inside does not match
+`:focus-visible`, and remove it on `focusout`. Without the second one, a key pressed after a click shows
+the bubble.
 
 ## Framework API
 
@@ -321,7 +332,7 @@ directly on `<OriTooltip>` fall through to the root `<span class="ori-tooltip">`
 
 ### Slots
 
-| Slot      | Scope | Description                                                                                                                                                                                                                                                  |
-| --------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `default` | —     | The trigger. Rendered inside `.ori-tooltip__trigger`. Should contain a real focusable control (button or link) so keyboard focus reveals the tooltip via `:focus-within` — bind the slot-scope `bubbleId` to its `aria-describedby` to get the announcement. |
-| `content` | —     | Rich tooltip content. Overrides the `content` prop when provided. Use for markup beyond plain text (e.g. `<kbd>`).                                                                                                                                           |
+| Slot      | Scope | Description                                                                                                                                                                                                                                                   |
+| --------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —     | The trigger. Rendered inside `.ori-tooltip__trigger`. Should contain a real focusable control (button or link) so keyboard focus reveals the tooltip via `:focus-visible` — bind the slot-scope `bubbleId` to its `aria-describedby` to get the announcement. |
+| `content` | —     | Rich tooltip content. Overrides the `content` prop when provided. Use for markup beyond plain text (e.g. `<kbd>`).                                                                                                                                            |
