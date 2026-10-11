@@ -210,3 +210,95 @@ test.describe('OriTooltip — anchored placement + color pairing (real Chromium)
         expect(owner).toBe('page')
     })
 })
+
+// When the bubble shows, as the component wires it: keyboard focus and hover show it, a press of the trigger
+// hides it, and it comes back only once the pointer and the focus have left.
+test.describe('OriTooltip — when it shows (real browser)', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.goto('/#tooltip')
+        // These tests are about when the bubble shows, not how it fades: without the fade its visibility is
+        // final as soon as the event has run (WebKit does not list the fade in getAnimations() to wait on).
+        await page.addStyleTag({ content: '.ori-tooltip__bubble { transition: none !important; }' })
+    })
+
+    const visibility = (page: Page): Promise<string> =>
+        page.locator('.ori-tooltip__bubble').evaluate((el) => getComputedStyle(el).visibility)
+
+    test('a click hides it, and it does not come back while the clicked trigger keeps focus', async ({ page }) => {
+        const save = page.getByTestId('save')
+        await save.hover()
+        expect(await visibility(page)).toBe('visible')
+
+        await save.click()
+        expect(await visibility(page)).toBe('hidden')
+
+        // Focus from a click (WebKit gives a button none) is not keyboard focus, so leaving does not hand
+        // the bubble to the focus rule.
+        await page.mouse.move(5, 5)
+        expect(await visibility(page)).toBe('hidden')
+
+        // Re-armed: hovering again shows it.
+        await save.hover()
+        expect(await visibility(page)).toBe('visible')
+    })
+
+    test('keyboard focus shows it, Enter hides it, and leaving re-arms it', async ({ page }) => {
+        await page.getByTestId('before').focus()
+        await page.keyboard.press('Tab')
+        await expect(page.getByTestId('save')).toBeFocused()
+        expect(await visibility(page)).toBe('visible')
+
+        await page.keyboard.press('Enter')
+        await expect(page.getByTestId('save')).toHaveText('Save 1')
+        expect(await visibility(page)).toBe('hidden')
+
+        await page.keyboard.press('Tab')
+        expect(await visibility(page)).toBe('hidden')
+        await page.keyboard.press('Shift+Tab')
+        expect(await visibility(page)).toBe('visible')
+    })
+
+    test('Escape hides it while focus stays, and leaving with the pointer does not bring it back', async ({ page }) => {
+        await page.getByTestId('before').focus()
+        await page.keyboard.press('Tab')
+        await page.getByTestId('save').hover()
+        expect(await visibility(page)).toBe('visible')
+
+        await page.keyboard.press('Escape')
+        expect(await visibility(page)).toBe('hidden')
+
+        await page.mouse.move(5, 5)
+        expect(await visibility(page)).toBe('hidden')
+    })
+
+    test('a key pressed after a click neither shows it nor takes Escape', async ({ page }) => {
+        const save = page.getByTestId('save')
+        await save.click()
+        await page.mouse.move(5, 5)
+        expect(await visibility(page)).toBe('hidden')
+
+        // The browser starts matching :focus-visible on the clicked button at the first key press.
+        await page.keyboard.press('Shift')
+        expect(await visibility(page)).toBe('hidden')
+
+        const consumed = page.evaluate(
+            () =>
+                new Promise<boolean>((resolve) =>
+                    window.addEventListener('keydown', (event) => resolve(event.defaultPrevented), { once: true })
+                )
+        )
+        await page.keyboard.press('Escape')
+        expect(await consumed).toBe(false)
+        expect(await visibility(page)).toBe('hidden')
+    })
+
+    test('focus that arrives by keyboard after a click shows it again', async ({ page }) => {
+        // The pointer stays on the trigger the whole time, so only the keyboard arrival can re-arm it.
+        await page.getByTestId('save').click()
+        expect(await visibility(page)).toBe('hidden')
+        await page.getByTestId('before').focus()
+        await page.keyboard.press('Tab')
+        await expect(page.getByTestId('save')).toBeFocused()
+        expect(await visibility(page)).toBe('visible')
+    })
+})

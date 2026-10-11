@@ -3,6 +3,24 @@
 Why oriUI is built the way it is. Each entry records a choice between real alternatives, so it is not
 argued again. Newest first. Conventions — the "how" — live in [CLAUDE.md](CLAUDE.md).
 
+## A tooltip shows on keyboard focus and hides when its trigger is pressed
+
+**Date:** 2026-10-11.
+
+The bubble showed on `:focus-within`, so a click or a tap that focused the trigger opened it and kept it
+open while the focus stayed, over whatever the press had opened. Radix, React Aria and Zag agree on the
+other model: open on hover and on keyboard focus only, close when the trigger is pressed. We follow them.
+The focus rule is `:has(:focus-visible)`, and a click, `Enter` or `Space` on the trigger sets
+`data-ori-dismissed`.
+
+`:focus-visible` alone is not enough, because the show is CSS state rather than an event: browsers start
+matching it on a clicked control at the next key press, so the bubble would appear on any key and take the
+`Escape` meant for the dialog around it. The libraries above open on the focus event and never see that
+change. The component marks focus that a pointer put there with `data-ori-pointer-focus`, which turns off
+the focus rule until the focus leaves. That is a second attribute for a CSS-layer consumer to wire; the
+alternative, re-arming the dismissal only after the focus leaves, would stop a clicked button's tooltip
+from showing on hover again until the user clicked elsewhere.
+
 ## The last API changes before 1.0, and what the final review left alone
 
 **Date:** 2026-10-08.

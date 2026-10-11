@@ -200,11 +200,24 @@ test.describe('OriDrawer — non-modal (real Chromium)', () => {
     test('Escape that dismisses a tooltip inside it leaves it open', async ({ page }) => {
         await page.getByTestId('open-panel').click()
         await settledBox(panel(page))
-        await page.getByTestId('panel-tooltip-trigger').focus()
+        // By keyboard: the tooltip shows on keyboard focus only.
+        await page.getByTestId('panel-item').focus()
+        await page.keyboard.press('Tab')
+        await expect(page.getByTestId('panel-tooltip-trigger')).toBeFocused()
 
         await page.keyboard.press('Escape')
         expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(true)
         // The tooltip took that one; the next Escape is the drawer's.
+        await page.keyboard.press('Escape')
+        expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(false)
+    })
+
+    test('Escape after a click on a tooltip trigger inside it closes it', async ({ page }) => {
+        await page.getByTestId('open-panel').click()
+        await settledBox(panel(page))
+        await page.getByTestId('panel-tooltip-trigger').click()
+
+        // A click is not keyboard focus, so the tooltip is not showing and the Escape is the drawer's.
         await page.keyboard.press('Escape')
         expect(await panel(page).evaluate((el) => el.matches(':popover-open'))).toBe(false)
     })

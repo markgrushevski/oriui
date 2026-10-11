@@ -413,6 +413,7 @@ data-indeterminate
 data-ori-dismissed
 data-ori-interactive
 data-ori-keyboard
+data-ori-pointer-focus
 data-ori-skin
 
 ## custom properties

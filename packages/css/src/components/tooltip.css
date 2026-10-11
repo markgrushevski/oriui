@@ -166,9 +166,13 @@
         inset: calc(var(--ori-tooltip-gap) * -1);
     }
 
-    /* Show on keyboard focus. `data-ori-dismissed` (WCAG 1.4.13 Dismissible) is set on Escape and cleared
-       when the pointer or focus leaves; a CSS-layer consumer wires it themselves (see the tooltip docs). */
-    .ori-tooltip:not([data-ori-dismissed]):focus-within .ori-tooltip__bubble {
+    /* Show on keyboard focus: `:focus-visible`, not `:focus-within`, so a click or tap that focuses the
+       trigger does not open the bubble and leave it open (hover covers the pointer below). The browser
+       starts matching `:focus-visible` on a clicked control at the next key press, so the component marks
+       focus that a pointer put there with `data-ori-pointer-focus` until it leaves.
+       `data-ori-dismissed` (WCAG 1.4.13 Dismissible) is set on Escape and on a press of the trigger. A
+       CSS-layer consumer wires both themselves (see the tooltip docs). */
+    .ori-tooltip:not([data-ori-dismissed], [data-ori-pointer-focus]):has(:focus-visible) .ori-tooltip__bubble {
         visibility: visible;
         opacity: 1;
 

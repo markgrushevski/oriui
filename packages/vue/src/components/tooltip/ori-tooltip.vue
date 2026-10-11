@@ -39,9 +39,9 @@ function unregister(dismiss: () => boolean): void {
 // OriTooltip — a CSS-driven tooltip overlay, native-first: no JS state machine and no positioning
 // engine. The default slot is the trigger; the .ori-tooltip__bubble[role="tooltip"] is always in the
 // DOM (so the aria-describedby relationship is stable) but visually hidden — pointer-events:none and
-// opacity/visibility:hidden — until the wrapper is hovered or receives focus. Show is pure CSS: the
-// wrapper's :focus-within (keyboard) plus :hover wrapped in @media (hover: hover) so a tap on touch
-// doesn't leave it stuck open.
+// opacity/visibility:hidden — until the wrapper is hovered or its trigger takes keyboard focus. Show is
+// pure CSS: :focus-visible inside the wrapper plus :hover wrapped in @media (hover: hover), so neither a
+// click nor a tap leaves it stuck open.
 //
 // Placement rides the shared `.ori-anchored` primitive (CSS Anchor Positioning): the 12-value
 // `<side>[-start|-end]` grid with zero-JS collision handling — position-try flips the bubble when the
@@ -68,15 +68,40 @@ const {
 const bubbleId = useId()
 
 // Dismissed state is per instance and lives on the root as `data-ori-dismissed`, which tooltip.css
-// gates both show rules on. It re-arms by itself: the moment the pointer or the focus leaves, the
-// attribute goes and the tooltip can show again — so Escape dismisses THIS showing, not the tooltip.
+// gates both show rules on. Escape sets it, and so does a press of the trigger (a click, Enter or Space):
+// whatever the press does, the hint has done its job, and it would cover what opens. It re-arms once
+// neither rule would show the bubble any more — re-arming while one still would bring it straight back —
+// so a dismissal ends THIS showing, not the tooltip.
 const root = useTemplateRef<HTMLElement>('root')
 const dismissed = ref(false)
 
-// Showing is what the stylesheet decided, not just hover or focus: a pointer press can focus the trigger
-// while the bubble stays hidden (a style that shows it on `:focus-visible` only), and an Escape that hides
-// nothing must reach whatever else is listening. A bubble still in its show transition reads `hidden` for
-// that first frame, so a running transition counts as showing.
+// Focus that a click or a tap put on the trigger is not keyboard focus, but the browser starts matching
+// `:focus-visible` on it at the next key press. `data-ori-pointer-focus` keeps the focus rule off until
+// the focus leaves, so a key pressed after a click neither shows the bubble nor lets it take Escape from
+// the dialog or drawer around it: the bubble shows on focus only when the focus arrived by keyboard, and
+// focus arriving by keyboard starts a new showing.
+const pointerFocus = ref(false)
+
+function onFocusIn(): void {
+    pointerFocus.value = !root.value?.matches(':has(:focus-visible)')
+    if (!pointerFocus.value) dismissed.value = false
+}
+
+function onFocusOut(event: FocusEvent): void {
+    const el = root.value
+    if (!el || el.contains(event.relatedTarget as Node | null)) return
+    pointerFocus.value = false
+    if (!el.matches(':hover')) dismissed.value = false
+}
+
+function onPointerLeave(): void {
+    if (pointerFocus.value || !root.value?.matches(':has(:focus-visible)')) dismissed.value = false
+}
+
+// Showing is what the stylesheet decided, not just hover or focus: a click focuses the trigger while the
+// bubble stays hidden, and an Escape that hides nothing must reach whatever else is listening.
+// A bubble still in its show transition reads `hidden` for that first frame, so a running transition
+// counts as showing.
 function dismissIfShowing(): boolean {
     const el = root.value
     if (!el || dismissed.value) return false
@@ -97,10 +122,12 @@ onBeforeUnmount(() => unregister(dismissIfShowing))
         ref="root"
         :class="['ori-tooltip', color && `ori-color_${color}`]"
         :data-ori-dismissed="dismissed || undefined"
-        @pointerleave="dismissed = false"
-        @focusout="dismissed = false"
+        :data-ori-pointer-focus="pointerFocus || undefined"
+        @focusin="onFocusIn"
+        @focusout="onFocusOut"
+        @pointerleave="onPointerLeave"
     >
-        <span class="ori-tooltip__trigger" :aria-describedby="bubbleId">
+        <span class="ori-tooltip__trigger" :aria-describedby="bubbleId" @click="dismissed = true">
             <!-- bubbleId is exposed so the consumer can put aria-describedby on their OWN focusable
                  control — aria-describedby only announces when the element bearing it is focused, and
                  this wrapper span isn't focusable. -->
