@@ -95,6 +95,8 @@
         "toolbar-pressed-fill-and-button-color-transition",
         "toolbar",
         "tooltip-anchor-scope",
+        "tooltip-escape-top-layer",
+        "tooltip-keyboard-focus-and-press",
         "use-dismissable",
         "use-tabs-headless",
         "use-toast-headless",
